@@ -39,3 +39,36 @@ Thumbs.db
 *.db
 *.sqlite
 *.sqlite3
+
+# ============================================
+# MOBILE (Android)
+# ============================================
+
+# Built application files
+mobile/*.apk
+mobile/*.aab
+mobile/*.ap_
+mobile/*.dex
+mobile/*.class
+
+# Gradle files
+mobile/.gradle/
+mobile/build/
+mobile/app/build/
+mobile/captures/
+mobile/.externalNativeBuild/
+mobile/.cxx/
+mobile/local.properties
+
+# Android Studio
+mobile/*.iml
+mobile/.idea/
+mobile/.DS_Store
+
+# Keystore files
+mobile/*.jks
+mobile/*.keystore
+
+# Google Services
+mobile/google-services.json
+mobile/app/google-services.json
