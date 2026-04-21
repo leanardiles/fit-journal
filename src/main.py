@@ -126,11 +126,20 @@ def login(user: schemas.UserLogin, db: Session = Depends(get_db)):
     # Check if user is active
     if not db_user.user_is_active:
         raise HTTPException(status_code=403, detail="Account is inactive")
-    
+
+    # Create JWT token
+    access_token = create_access_token(
+        data={
+            "sub": str(db_user.user_id),
+            "email": db_user.user_email
+        }
+    )
+
     return {
         "message": "Login successful",
         "user_id": db_user.user_id,
-        "user_email": db_user.user_email
+        "user_email": db_user.user_email,
+        "access_token": access_token
     }
 
 

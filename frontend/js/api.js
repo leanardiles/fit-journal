@@ -130,9 +130,12 @@ if (loginForm) {
                 // Success! Store user info
                 localStorage.setItem('user_id', data.user_id);
                 localStorage.setItem('user_email', data.user_email);
+                localStorage.setItem('access_token', data.access_token);
                 
                 // Fetch and store user's first name
-                fetch(`${API_URL}/profile/${data.user_id}`)
+                fetch(`${API_URL}/profile/${data.user_id}`, {
+                    headers: { 'Authorization': `Bearer ${data.access_token}` }
+                })
                     .then(res => res.json())
                     .then(profile => {
                         if (profile.user_first_name) {
@@ -166,7 +169,7 @@ if (loginForm) {
 
 // Check if user is logged in
 function isLoggedIn() {
-    return localStorage.getItem('user_id') !== null;
+    return localStorage.getItem('access_token') !== null;
 }
 
 // Get current user ID
@@ -184,11 +187,26 @@ function getCurrentUserFirstName() {
     return localStorage.getItem('user_first_name');
 }
 
+// Get stored JWT token
+function getToken() {
+    return localStorage.getItem('access_token');
+}
+
+// Build Authorization header for API calls
+function authHeaders() {
+    const token = getToken();
+    return {
+        'Content-Type': 'application/json',
+        'Authorization': token ? `Bearer ${token}` : ''
+    };
+}
+
 // Logout function
 function logout() {
     localStorage.removeItem('user_id');
     localStorage.removeItem('user_email');
-    localStorage.removeItem('user_first_name');  // Add this line
+    localStorage.removeItem('user_first_name');
+    localStorage.removeItem('access_token');
     window.location.href = 'login.html';
 }
 
@@ -215,7 +233,9 @@ async function getUserExercises() {
     }
     
     try {
-        const response = await fetch(`${API_URL}/exercises?user_id=${userId}`);
+        const response = await fetch(`${API_URL}/exercises?user_id=${userId}`, {
+            headers: authHeaders()
+        });
         
         if (response.ok) {
             const exercises = await response.json();
@@ -243,9 +263,7 @@ async function createExercise(exerciseData) {
     try {
         const response = await fetch(`${API_URL}/exercises?user_id=${userId}`, {
             method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-            },
+            headers: authHeaders(),
             body: JSON.stringify(exerciseData)
         });
         
@@ -276,7 +294,8 @@ async function deleteExercise(exerciseId) {
     
     try {
         const response = await fetch(`${API_URL}/exercises/${exerciseId}?user_id=${userId}`, {
-            method: 'DELETE'
+            method: 'DELETE',
+            headers: authHeaders()
         });
         
         if (response.ok) {
@@ -308,7 +327,9 @@ async function getUserProfile() {
     }
     
     try {
-        const response = await fetch(`${API_URL}/profile/${userId}`);
+        const response = await fetch(`${API_URL}/profile/${userId}`, {
+            headers: authHeaders()
+        });
         
         if (response.ok) {
             const profile = await response.json();
@@ -336,9 +357,7 @@ async function updateUserProfile(profileData) {
     try {
         const response = await fetch(`${API_URL}/profile/${userId}`, {
             method: 'PUT',
-            headers: {
-                'Content-Type': 'application/json',
-            },
+            headers: authHeaders(),
             body: JSON.stringify(profileData)
         });
         
@@ -373,7 +392,9 @@ async function getUserRoutine() {
     }
     
     try {
-        const response = await fetch(`${API_URL}/routine/${userId}`);
+        const response = await fetch(`${API_URL}/routine/${userId}`, {
+            headers: authHeaders()
+        });
         
         if (response.ok) {
             const routine = await response.json();
@@ -401,9 +422,7 @@ async function saveUserRoutine(routineData) {
     try {
         const response = await fetch(`${API_URL}/routine/${userId}`, {
             method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-            },
+            headers: authHeaders(),
             body: JSON.stringify(routineData)
         });
         
@@ -434,7 +453,8 @@ async function deleteUserRoutine() {
     
     try {
         const response = await fetch(`${API_URL}/routine/${userId}`, {
-            method: 'DELETE'
+            method: 'DELETE',
+            headers: authHeaders()
         });
         
         if (response.ok) {
@@ -457,7 +477,9 @@ async function deleteUserRoutine() {
 // Get workout logs
 async function getWorkoutLogs(userId, limit = 30) {
     try {
-        const response = await fetch(`${API_URL}/workout/logs/${userId}?limit=${limit}`);
+        const response = await fetch(`${API_URL}/workout/logs/${userId}?limit=${limit}`, {
+            headers: authHeaders()
+        });
         if (response.ok) {
             return await response.json();
         }
@@ -471,7 +493,9 @@ async function getWorkoutLogs(userId, limit = 30) {
 // Get next workout selections
 async function getNextWorkoutSelections(userId) {
     try {
-        const response = await fetch(`${API_URL}/next-workout/selections/${userId}`);
+        const response = await fetch(`${API_URL}/next-workout/selections/${userId}`, {
+            headers: authHeaders()
+        });
         if (response.ok) {
             const data = await response.json();
             // Convert array to object for easier lookup
@@ -491,7 +515,9 @@ async function getNextWorkoutSelections(userId) {
 // Get workout sessions (last N sessions)
 async function getWorkoutSessions(userId, limit = 10) {
     try {
-        const response = await fetch(`${API_URL}/workout/sessions/${userId}?limit=${limit}`);
+        const response = await fetch(`${API_URL}/workout/sessions/${userId}?limit=${limit}`, {
+            headers: authHeaders()
+        });
         if (response.ok) {
             return await response.json();
         }
@@ -507,9 +533,7 @@ async function getWorkoutLogsBySessions(userId, sessionIds) {
     try {
         const response = await fetch(`${API_URL}/workout/logs-by-sessions/${userId}`, {
             method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-            },
+            headers: authHeaders(),
             body: JSON.stringify({ session_ids: sessionIds })
         });
         if (response.ok) {
