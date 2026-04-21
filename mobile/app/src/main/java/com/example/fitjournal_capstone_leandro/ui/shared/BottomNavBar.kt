@@ -47,10 +47,11 @@ sealed class BottomNavItem(
 fun BottomNavBar(
     items: List<BottomNavItem>,
     currentRoute: String?,
-    onItemClick: (BottomNavItem) -> Unit
+    onItemClick: (BottomNavItem) -> Unit,
+    modifier: Modifier = Modifier
 ) {
     Row(
-        modifier = Modifier
+        modifier = modifier
             .fillMaxWidth()
             .height(72.dp)
             .background(Color(0xFF1B1B1E)),
