@@ -25,6 +25,9 @@ import com.example.fitjournal_capstone_leandro.data.local.FitJournalDatabase
 import com.example.fitjournal_capstone_leandro.data.network.service
 import com.example.fitjournal_capstone_leandro.data.repository.ExerciseRepository
 import com.example.fitjournal_capstone_leandro.navigation.AppNavigation
+import com.example.fitjournal_capstone_leandro.data.local.TokenManager
+import com.example.fitjournal_capstone_leandro.ui.auth.AuthViewModel
+import com.example.fitjournal_capstone_leandro.ui.auth.AuthViewModelFactory
 import com.example.fitjournal_capstone_leandro.ui.BottomNavBar
 import com.example.fitjournal_capstone_leandro.ui.BottomNavItem
 import com.example.fitjournal_capstone_leandro.ui.shared.ProfileTopBar
@@ -47,6 +50,14 @@ class MainActivity : ComponentActivity() {
             database.muscleDao(),
             database.exerciseDao()
         )
+    }
+
+    private val tokenManager by lazy {
+        TokenManager(applicationContext)
+    }
+
+    private val authViewModel: AuthViewModel by viewModels {
+        AuthViewModelFactory(tokenManager)
     }
 
     private val homeViewModel: HomeViewModel by viewModels {
@@ -87,48 +98,55 @@ class MainActivity : ComponentActivity() {
 
                 Scaffold(
                     topBar = {
-                        // Show back button on all screens except main tabs
-                        val showBackButton = currentRoute !in listOf("home", "calendar", "exercises")
+                        // Hide top bar entirely on login screen
+                        if (currentRoute != "login") {
+                            // Show back button on all screens except main tabs
+                            val showBackButton = currentRoute !in listOf("home", "calendar", "exercises")
 
-                        ProfileTopBar(
-                            userName = "User Name",
-                            showBackButton = showBackButton,
-                            onBackClick = { navController.popBackStack() },
-                            onAccountClick = { navController.navigate("account") },
-                            onSettingsClick = { navController.navigate("settings") },
-                            onLogoutClick = {
-                                navController.navigate("home") {
-                                    popUpTo(navController.graph.startDestinationId) {
-                                        inclusive = true
+                            ProfileTopBar(
+                                userName = "User Name",
+                                showBackButton = showBackButton,
+                                onBackClick = { navController.popBackStack() },
+                                onAccountClick = { navController.navigate("account") },
+                                onSettingsClick = { navController.navigate("settings") },
+                                onLogoutClick = {
+                                    navController.navigate("home") {
+                                        popUpTo(navController.graph.startDestinationId) {
+                                            inclusive = true
+                                        }
                                     }
                                 }
-                            }
-                        )
+                            )
+                        }
                     },
                     bottomBar = {
-                        BottomNavBar(
-                            items = bottomNavItems,
-                            currentRoute = currentRoute,
-                            onItemClick = { item ->
-                                if (item.route == "timer") {
-                                    showStopwatch = true
-                                } else {
-                                    navController.navigate(item.route) {
-                                        popUpTo(navController.graph.startDestinationId) {
-                                            saveState = true
+                        // Hide bottom nav on login screen
+                        if (currentRoute != "login") {
+                            BottomNavBar(
+                                items = bottomNavItems,
+                                currentRoute = currentRoute,
+                                onItemClick = { item ->
+                                    if (item.route == "timer") {
+                                        showStopwatch = true
+                                    } else {
+                                        navController.navigate(item.route) {
+                                            popUpTo(navController.graph.startDestinationId) {
+                                                saveState = true
+                                            }
+                                            launchSingleTop = true
+                                            restoreState = (item.route != "home")
                                         }
-                                        launchSingleTop = true
-                                        restoreState = (item.route != "home")
                                     }
                                 }
-                            }
-                        )
+                            )
+                        }
                     }
                 ) { innerPadding ->
                     AppNavigation(
                         homeViewModel = homeViewModel,
                         exercisesViewModel = exercisesViewModel,
                         exerciseDetailsViewModel = exerciseDetailsViewModel,
+                        authViewModel = authViewModel,
                         navController = navController,
                         modifier = Modifier.padding(innerPadding)
                     )

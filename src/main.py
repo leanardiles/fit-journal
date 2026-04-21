@@ -1,5 +1,5 @@
 # Standard library imports
-from datetime import date
+from datetime import date, datetime, timedelta
 from typing import List
 
 # Third-party imports
@@ -7,6 +7,7 @@ from fastapi import FastAPI, Depends, HTTPException, status
 from fastapi.middleware.cors import CORSMiddleware
 from passlib.context import CryptContext
 from sqlalchemy.orm import Session
+from jose import JWTError, jwt
 
 # Local imports
 import models
@@ -41,6 +42,28 @@ def hash_password(password: str) -> str:
 def verify_password(plain_password: str, hashed_password: str) -> bool:
     """Verify a password against its hash"""
     return pwd_context.verify(plain_password, hashed_password)
+
+
+# ========== JWT CONFIGURATION ==========
+SECRET_KEY = "fitjournal-secret-key-change-this-in-production"  # TODO: Move to .env
+ALGORITHM = "HS256"
+ACCESS_TOKEN_EXPIRE_MINUTES = 43200  # 30 days
+
+def create_access_token(data: dict):
+    """
+    Create a JWT access token
+    
+    Args:
+        data: Dictionary with user info (user_id, email, etc.)
+    
+    Returns:
+        Encoded JWT token as string
+    """
+    to_encode = data.copy()
+    expire = datetime.utcnow() + timedelta(minutes=ACCESS_TOKEN_EXPIRE_MINUTES)
+    to_encode.update({"exp": expire})
+    encoded_jwt = jwt.encode(to_encode, SECRET_KEY, algorithm=ALGORITHM)
+    return encoded_jwt
 
 
 # ========== ROUTES ==========
@@ -106,6 +129,42 @@ def login(user: schemas.UserLogin, db: Session = Depends(get_db)):
     
     return {
         "message": "Login successful",
+        "user_id": db_user.user_id,
+        "user_email": db_user.user_email
+    }
+
+
+@app.post("/login/mobile")
+def login_mobile(user: schemas.UserLogin, db: Session = Depends(get_db)):
+    """
+    Login endpoint for mobile app - returns JWT token
+    
+    Mobile apps use token-based auth instead of sessions
+    Token is included in Authorization header for all requests
+    """
+    # Find user by email (same as regular login)
+    db_user = db.query(models.User).filter(models.User.user_email == user.user_email).first()
+    
+    # Verify user exists and password is correct (same as regular login)
+    if not db_user or not verify_password(user.user_password, db_user.user_password):
+        raise HTTPException(status_code=401, detail="Invalid email or password")
+    
+    # Check if user is active (same as regular login)
+    if not db_user.user_is_active:
+        raise HTTPException(status_code=403, detail="Account is inactive")
+    
+    # Create JWT token
+    access_token = create_access_token(
+        data={
+            "sub": str(db_user.user_id),  # "sub" = subject (standard JWT field)
+            "email": db_user.user_email
+        }
+    )
+    
+    # Return token + user info
+    return {
+        "access_token": access_token,
+        "token_type": "bearer",
         "user_id": db_user.user_id,
         "user_email": db_user.user_email
     }

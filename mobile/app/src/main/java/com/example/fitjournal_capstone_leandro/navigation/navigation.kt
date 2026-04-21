@@ -17,6 +17,8 @@ import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
+import com.example.fitjournal_capstone_leandro.ui.auth.AuthViewModel
+import com.example.fitjournal_capstone_leandro.ui.auth.LoginScreen
 import com.example.fitjournal_capstone_leandro.ui.exercise_details.ExerciseDetailsViewModel
 import com.example.fitjournal_capstone_leandro.ui.exercise_details.ExerciseDetailsScreen
 import com.example.fitjournal_capstone_leandro.ui.exercises.ExercisesScreen
@@ -31,14 +33,26 @@ fun AppNavigation(
     homeViewModel: HomeViewModel,
     exercisesViewModel: ExercisesViewModel,
     exerciseDetailsViewModel: ExerciseDetailsViewModel,
+    authViewModel: AuthViewModel,
     navController: NavHostController,
     modifier: Modifier = Modifier
 ) {
     NavHost(
         navController = navController,
-        startDestination = "home",
+        startDestination = "login",
         modifier = modifier
     ) {
+        // Login / Register screen
+        composable("login") {
+            LoginScreen(
+                viewModel = authViewModel,
+                onAuthSuccess = {
+                    navController.navigate("home") {
+                        popUpTo("login") { inclusive = true } // Can't go back to login
+                    }
+                }
+            )
+        }
         // Profile tab (placeholder)
         composable("profile") {
             PlaceholderScreen(title = "Profile")
