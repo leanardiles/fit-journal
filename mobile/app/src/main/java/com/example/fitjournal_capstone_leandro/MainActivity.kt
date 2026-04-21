@@ -90,11 +90,11 @@ class MainActivity : ComponentActivity() {
                 var showStopwatch by remember { mutableStateOf(false) }
 
                 val bottomNavItems = listOf(
-                    BottomNavItem.Timer,
                     BottomNavItem.Calendar,
-                    BottomNavItem.Home,
                     BottomNavItem.Exercises,
-                    BottomNavItem.Settings
+                    BottomNavItem.Home,
+                    BottomNavItem.Timer,
+                    BottomNavItem.Workout
                 )
 
                 Scaffold(

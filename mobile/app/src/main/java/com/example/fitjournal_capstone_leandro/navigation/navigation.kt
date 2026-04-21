@@ -90,6 +90,11 @@ fun AppNavigation(
             )
         }
 
+        // Workout tab (placeholder)
+        composable("workout") {
+            PlaceholderScreen(title = "Workout")
+        }
+
         // Settings tab (placeholder)
         composable("settings") {
             PlaceholderScreen(title = "Settings")

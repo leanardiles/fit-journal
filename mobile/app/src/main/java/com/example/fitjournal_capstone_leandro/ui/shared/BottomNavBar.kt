@@ -14,7 +14,7 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.DateRange
 import androidx.compose.material.icons.filled.FitnessCenter
 import androidx.compose.material.icons.filled.Timer
-import androidx.compose.material.icons.filled.Settings
+import com.example.fitjournal_capstone_leandro.ui.theme.myCustomFont
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -40,7 +40,7 @@ sealed class BottomNavItem(
     object Calendar : BottomNavItem("calendar", Icons.Filled.DateRange, null, "Calendar")
     object Home : BottomNavItem("home", null, R.drawable.logo_alone, "Home")
     object Exercises : BottomNavItem("exercises", Icons.Filled.FitnessCenter, null, "Exercises")
-    object Settings : BottomNavItem("settings", Icons.Filled.Settings, null, "Settings")
+    object Workout : BottomNavItem("workout", null, null, "Workout")
 }
 
 @Composable
@@ -89,6 +89,29 @@ fun BottomNavItemView(
                 painter = painterResource(id = item.logoRes),
                 contentDescription = item.title,
                 modifier = Modifier.size(45.dp)
+            )
+        }
+    } else if (item.route == "workout") {
+        // WOD text badge
+        Column(
+            modifier = Modifier
+                .clickable(onClick = onClick)
+                .padding(8.dp),
+            horizontalAlignment = Alignment.CenterHorizontally,
+            verticalArrangement = Arrangement.Center
+        ) {
+            Text(
+                text = "WOD",
+                color = tint,
+                fontSize = 16.sp,
+                fontWeight = FontWeight.Bold,
+                fontFamily = myCustomFont
+            )
+            Text(
+                text = item.title,
+                color = tint,
+                fontSize = 10.sp,
+                fontWeight = if (isSelected) FontWeight.Bold else FontWeight.Normal
             )
         }
     } else {
