@@ -8,36 +8,38 @@
     <link rel="stylesheet" href="css/style.css">
 </head>
 <body>
-    <h2 class="text-center">Welcome back</h2>
-    <div class="row flex-middle" style="display: flex; margin-top: 1rem;">
-        <!-- Left side: Login form -->
-        <div class="col sm-5">
-            <div>
-                <h3>Sign In to FitJournal</h3>
-                
-                <form id="login-form">
-                    <div class="form-group">
-                        <label for="email">Email</label>
-                        <input type="email" id="email" name="email" placeholder="your@email.com" class="input-block" required>
-                    </div>
-                    
-                    <div class="form-group">
-                        <label for="password">Password</label>
-                        <input type="password" id="password" name="password" placeholder="Your password" class="input-block" required>
-                    </div>
-                    
-                    <button type="submit" class="btn-primary btn-block">Sign In</button>
-                </form>
-                
-                <p class="margin-top">
-                    Don't have an account? <a href="registration.html">Register here</a>
-                </p>
-            </div>
+    <!-- Container to center everything -->
+    <div style="display: flex; flex-direction: column; align-items: center; justify-content: center; min-height: 100vh; padding: 2rem;">
+        
+        <!-- 1. Logo first -->
+        <div style="margin-bottom: 0.5rem;">
+            <img src="images/logo_only.png" alt="FitJournal logo" style="max-width: 300px; width: 90%; border: none; box-shadow: none; background: transparent;">
         </div>
         
-        <!-- Right side: Logo -->
-        <div class="col sm-7 text-center">
-            <img src="images/logo_only.png" alt="FitJournal logo only" class="no-border" style="max-width: 100%;">
+        <!-- 2. Welcome back -->
+        <h2 style="margin-bottom: 0.5rem; margin-top: 0;">Welcome back</h2>
+        
+        <!-- 3. Login form -->
+        <div style="width: 100%; max-width: 400px;">
+            <h3>Sign In to FitJournal</h3>
+            
+            <form id="login-form">
+                <div class="form-group">
+                    <label for="email">Email</label>
+                    <input type="email" id="email" name="email" placeholder="your@email.com" class="input-block" required>
+                </div>
+                
+                <div class="form-group">
+                    <label for="password">Password</label>
+                    <input type="password" id="password" name="password" placeholder="Your password" class="input-block" required>
+                </div>
+                
+                <button type="submit" class="btn-primary btn-block">Sign In</button>
+            </form>
+            
+            <p class="margin-top" style="text-align: center;">
+                Don't have an account? <a href="registration.html">Register here</a>
+            </p>
         </div>
     </div>
 
