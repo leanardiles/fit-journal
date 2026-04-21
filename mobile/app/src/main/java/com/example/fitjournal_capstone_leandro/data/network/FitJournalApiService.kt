@@ -1,10 +1,12 @@
 package com.example.fitjournal_capstone_leandro.data.network
 
+import com.example.fitjournal_capstone_leandro.data.local.TokenManager
 import com.example.fitjournal_capstone_leandro.data.model.LoginRequest
 import com.example.fitjournal_capstone_leandro.data.model.LoginResponse
 import com.example.fitjournal_capstone_leandro.data.model.RegisterRequest
 import com.example.fitjournal_capstone_leandro.data.model.RegisterResponse
 import retrofit2.Retrofit
+import okhttp3.OkHttpClient
 import retrofit2.converter.gson.GsonConverterFactory
 import retrofit2.http.Body
 import retrofit2.http.POST
@@ -58,25 +60,47 @@ interface FitJournalApiService {
 /**
  * Retrofit instance for FitJournal API
  *
- * Singleton object that creates and configures Retrofit
+ * Singleton object that creates and configures Retrofit.
+ * Must be initialized with a TokenManager before use.
+ * Call RetrofitClient.initialize(tokenManager) in MainActivity.
  */
 object RetrofitClient {
 
+    private var tokenManager: TokenManager? = null
+
     /**
-     * Create Retrofit instance with base URL and Gson converter
+     * Initialize with TokenManager
+     * Call this once from MainActivity before any API calls
      */
-    private val retrofit: Retrofit by lazy {
-        Retrofit.Builder()
-            .baseUrl(ApiConfig.BASE_URL)  // Use URL from ApiConfig
-            .addConverterFactory(GsonConverterFactory.create())  // JSON converter
+    fun initialize(tokenManager: TokenManager) {
+        this.tokenManager = tokenManager
+    }
+
+    /**
+     * OkHttp client with AuthInterceptor attached
+     */
+    private val okHttpClient by lazy {
+        val tm = tokenManager
+            ?: throw IllegalStateException("RetrofitClient not initialized. Call initialize() first.")
+
+        okhttp3.OkHttpClient.Builder()
+            .addInterceptor(AuthInterceptor(tm))
             .build()
     }
 
     /**
-     * Create FitJournalApiService instance
-     *
-     * This is what you'll use to make API calls:
-     * RetrofitClient.apiService.login(...)
+     * Retrofit instance with OkHttp client
+     */
+    private val retrofit: Retrofit by lazy {
+        Retrofit.Builder()
+            .baseUrl(ApiConfig.BASE_URL)
+            .client(okHttpClient)                          // Attach OkHttp client
+            .addConverterFactory(GsonConverterFactory.create())
+            .build()
+    }
+
+    /**
+     * FitJournalApiService instance
      */
     val apiService: FitJournalApiService by lazy {
         retrofit.create(FitJournalApiService::class.java)

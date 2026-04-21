@@ -34,6 +34,7 @@ import com.example.fitjournal_capstone_leandro.ui.shared.ProfileTopBar
 import com.example.fitjournal_capstone_leandro.ui.stopwatch.StopwatchBottomSheet
 import com.example.fitjournal_capstone_leandro.ui.stopwatch.StopwatchViewModel
 import androidx.compose.foundation.layout.navigationBarsPadding
+import com.example.fitjournal_capstone_leandro.data.network.RetrofitClient
 import com.example.fitjournal_capstone_leandro.ui.theme.FitJournal_Capstone_LeandroTheme
 
 class MainActivity : ComponentActivity() {
@@ -54,7 +55,9 @@ class MainActivity : ComponentActivity() {
     }
 
     private val tokenManager by lazy {
-        TokenManager(applicationContext)
+        TokenManager(applicationContext).also {
+            RetrofitClient.initialize(it)
+        }
     }
 
     private val authViewModel: AuthViewModel by viewModels {
