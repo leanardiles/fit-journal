@@ -39,32 +39,32 @@ fun AppNavigation(
 ) {
     NavHost(
         navController = navController,
-        startDestination = "login",
+        startDestination = Routes.LOGIN,
         modifier = modifier
     ) {
         // Login / Register screen
-        composable("login") {
+        composable(Routes.LOGIN) {
             LoginScreen(
                 viewModel = authViewModel,
                 onAuthSuccess = {
-                    navController.navigate("home") {
-                        popUpTo("login") { inclusive = true } // Can't go back to login
+                    navController.navigate(Routes.HOME) {
+                        popUpTo(Routes.LOGIN) { inclusive = true } // Can't go back to login
                     }
                 }
             )
         }
         // Profile tab (placeholder)
-        composable("profile") {
+        composable(Routes.PROFILE) {
             PlaceholderScreen(title = "Profile")
         }
 
         // Calendar tab (placeholder)
-        composable("calendar") {
+        composable(Routes.CALENDAR) {
             CalendarScreen()
         }
 
         // Home tab
-        composable("home") {
+        composable(Routes.HOME) {
             HomeScreen(
                 viewModel = homeViewModel,
                 onMuscleGroupClick = { muscle ->
@@ -73,30 +73,30 @@ fun AppNavigation(
         }
 
         // Exercises tab
-        composable("exercises") {
+        composable(Routes.EXERCISES) {
             ExercisesScreen(
                 viewModel = exercisesViewModel,
                 onExerciseClick = { exercise ->
                     exerciseDetailsViewModel.selectExercise(exercise)
-                    navController.navigate("exerciseDetails")
+                    navController.navigate(Routes.EXERCISE_DETAILS)
                 },
             )
         }
 
         // Exercise details
-        composable("exerciseDetails") {
+        composable(Routes.EXERCISE_DETAILS) {
             ExerciseDetailsScreen(
                 viewModel = exerciseDetailsViewModel
             )
         }
 
         // Workout tab (placeholder)
-        composable("workout") {
+        composable(Routes.WORKOUT) {
             PlaceholderScreen(title = "Workout")
         }
 
         // Settings tab (placeholder)
-        composable("settings") {
+        composable(Routes.SETTINGS) {
             PlaceholderScreen(title = "Settings")
         }
     }
