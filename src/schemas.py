@@ -57,6 +57,14 @@ class ExerciseCreate(ExerciseBase):
     exercise_link: Optional[str] = None
     comments: Optional[str] = None
 
+class ExerciseUpdate(BaseModel):
+    exercise_name: Optional[str] = None
+    exercise_muscle_group: Optional[str] = None
+    exercise_user_current_weight: Optional[float] = None
+    exercise_link: Optional[str] = None
+    exercise_is_in_routine: Optional[bool] = None
+    comments: Optional[str] = None    
+
 class ExerciseResponse(ExerciseBase):
     exercise_id: int
     user_id: int
@@ -110,7 +118,7 @@ class WorkoutLogCreate(BaseModel):
     reps_completed: int
     weight_used: Optional[float] = None
 
-class CompleteWorkoutRequest(BaseModel):
+class WorkoutComplete(BaseModel):
     day_number: int
     exercises: list[WorkoutLogCreate]
 
