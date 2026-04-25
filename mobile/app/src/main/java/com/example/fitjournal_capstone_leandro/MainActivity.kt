@@ -115,10 +115,9 @@ class MainActivity : ComponentActivity() {
                                 onAccountClick = { navController.navigate(Routes.ACCOUNT) },
                                 onSettingsClick = { navController.navigate(Routes.SETTINGS) },
                                 onLogoutClick = {
-                                    navController.navigate(Routes.HOME) {
-                                        popUpTo(navController.graph.startDestinationId) {
-                                            inclusive = true
-                                        }
+                                    tokenManager.clearAll()
+                                    navController.navigate(Routes.LOGIN) {
+                                        popUpTo(0) { inclusive = true }
                                     }
                                 }
                             )
