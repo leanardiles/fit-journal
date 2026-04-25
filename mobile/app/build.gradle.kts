@@ -2,6 +2,7 @@ plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.kotlin.compose)
     id("com.google.devtools.ksp")
+    id("jacoco")
 }
 
 android {
@@ -35,7 +36,68 @@ android {
     buildFeatures {
         compose = true
     }
+
+    testOptions {
+        unitTests {
+            isReturnDefaultValues = true
+        }
+    }
 }
+
+// JaCoCo Configuration
+tasks.withType<Test> {
+    configure<JacocoTaskExtension> {
+        isIncludeNoLocationClasses = true
+        excludes = listOf("jdk.internal.*")
+    }
+}
+
+tasks.register<JacocoReport>("jacocoTestReport") {
+    dependsOn("testDebugUnitTest")
+
+    reports {
+        xml.required.set(true)
+        html.required.set(true)
+    }
+
+    val excludes = listOf(
+        "**/R.class",
+        "**/R$*.class",
+        "**/BuildConfig.*",
+        "**/Manifest*.*",
+        "**/*Test*.*",
+        "android/**/*.*",
+        // Compose screens and UI
+        "**/*Screen*.*",
+        "**/*Activity*.*",
+        "**/*Theme*.*",
+        "**/*Navigation*.*",
+        "**/*BottomNav*.*",
+        "**/*Action*.*",
+        "**/*Factory*.*",
+        // Exclude entire packages
+        "**/ui/shared/**",
+        "**/ui/stopwatch/**",
+        "**/ui/auth/**",
+        "**/ui/exercises/**",
+        "**/ui/exercise_details/**",
+        "**/ui/theme/**",
+        "**/data/model/**",
+        "**/data/local/**",
+        "**/data/network/**",
+    )
+
+    val debugTree = fileTree("${project.buildDir}/intermediates/built_in_kotlinc/debug/compileDebugKotlin/classes") {
+        exclude(excludes)
+    }
+
+    sourceDirectories.setFrom(files("${project.projectDir}/src/main/java"))
+    classDirectories.setFrom(files(debugTree))
+    executionData.setFrom(fileTree(project.buildDir) {
+        include("jacoco/testDebugUnitTest.exec")
+    })
+}
+
 
 dependencies {
     implementation(libs.androidx.core.ktx)
@@ -70,6 +132,12 @@ dependencies {
 
     // Security - Encrypted SharedPreferences for secure token storage
     implementation("androidx.security:security-crypto:1.1.0-alpha06")
+
+    // Unit Testing
+    testImplementation("junit:junit:4.13.2")
+    testImplementation("io.mockk:mockk:1.13.8")
+    testImplementation("org.jetbrains.kotlinx:kotlinx-coroutines-test:1.7.3")
+    testImplementation("androidx.arch.core:core-testing:2.2.0")
 
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
