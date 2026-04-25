@@ -4,6 +4,7 @@ import com.example.fitjournal_capstone_leandro.data.local.TokenManager
 import com.example.fitjournal_capstone_leandro.data.model.LoginRequest
 import com.example.fitjournal_capstone_leandro.data.model.RegisterRequest
 import com.example.fitjournal_capstone_leandro.data.model.User
+import com.example.fitjournal_capstone_leandro.data.model.UserProfile
 import com.example.fitjournal_capstone_leandro.data.network.RetrofitClient
 
 /**
@@ -90,6 +91,25 @@ class AuthRepository(
             Result.failure(e)
         }
     }
+
+
+    /**
+     * Fetch user profile from backend
+     *
+     * @return Result.success(UserProfile) or Result.failure(exception)
+     */
+    suspend fun getProfile(): Result<UserProfile> {
+        return try {
+            val userId = tokenManager.getUserId()
+            if (userId == -1) return Result.failure(Exception("No user logged in"))
+
+            val profile = apiService.getProfile(userId)
+            Result.success(profile)
+        } catch (e: Exception) {
+            Result.failure(e)
+        }
+    }
+
 
     /**
      * Logout

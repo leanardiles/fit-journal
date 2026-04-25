@@ -5,11 +5,14 @@ import com.example.fitjournal_capstone_leandro.data.model.LoginRequest
 import com.example.fitjournal_capstone_leandro.data.model.LoginResponse
 import com.example.fitjournal_capstone_leandro.data.model.RegisterRequest
 import com.example.fitjournal_capstone_leandro.data.model.RegisterResponse
+import com.example.fitjournal_capstone_leandro.data.model.UserProfile
 import retrofit2.Retrofit
 import okhttp3.OkHttpClient
 import retrofit2.converter.gson.GsonConverterFactory
 import retrofit2.http.Body
+import retrofit2.http.GET
 import retrofit2.http.POST
+import retrofit2.http.Path
 
 
 /**
@@ -49,8 +52,12 @@ interface FitJournalApiService {
         @Body registerRequest: RegisterRequest
     ): RegisterResponse
 
+    @GET("profile/{user_id}")
+    suspend fun getProfile(
+        @Path("user_id") userId: Int
+    ): UserProfile
+
     // TODO: Add more endpoints as we build features
-    // - GET /profile/{user_id}
     // - GET /exercises?user_id={user_id}
     // - POST /routines
     // - etc.

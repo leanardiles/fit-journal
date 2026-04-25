@@ -14,6 +14,8 @@ import androidx.activity.enableEdgeToEdge
 import androidx.activity.viewModels
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Scaffold
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -22,10 +24,10 @@ import androidx.compose.ui.Modifier
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import com.example.fitjournal_capstone_leandro.data.local.FitJournalDatabase
+import com.example.fitjournal_capstone_leandro.data.local.TokenManager
 import com.example.fitjournal_capstone_leandro.data.network.service
 import com.example.fitjournal_capstone_leandro.data.repository.ExerciseRepository
 import com.example.fitjournal_capstone_leandro.navigation.AppNavigation
-import com.example.fitjournal_capstone_leandro.data.local.TokenManager
 import com.example.fitjournal_capstone_leandro.ui.auth.AuthViewModel
 import com.example.fitjournal_capstone_leandro.ui.auth.AuthViewModelFactory
 import com.example.fitjournal_capstone_leandro.ui.shared.BottomNavBar
@@ -91,6 +93,14 @@ class MainActivity : ComponentActivity() {
                 val navBackStackEntry by navController.currentBackStackEntryAsState()
                 val currentRoute = navBackStackEntry?.destination?.route
 
+                val userProfile by authViewModel.userProfile.collectAsState()
+
+                LaunchedEffect(currentRoute) {
+                    if (currentRoute != Routes.LOGIN) {
+                        authViewModel.fetchProfile()
+                    }
+                }
+
                 var showStopwatch by remember { mutableStateOf(false) }
 
                 val bottomNavItems = listOf(
@@ -109,7 +119,7 @@ class MainActivity : ComponentActivity() {
                             val showBackButton = currentRoute !in listOf(Routes.HOME, Routes.CALENDAR, Routes.EXERCISES)
 
                             ProfileTopBar(
-                                userName = "User Name",
+                                userName = userProfile?.user_first_name ?: "User",
                                 showBackButton = showBackButton,
                                 onBackClick = { navController.popBackStack() },
                                 onAccountClick = { navController.navigate(Routes.ACCOUNT) },

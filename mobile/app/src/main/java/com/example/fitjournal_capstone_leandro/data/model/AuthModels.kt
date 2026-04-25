@@ -62,3 +62,17 @@ data class User(
     val userId: Int,
     val email: String
 )
+
+/**
+ * User profile from backend
+ */
+data class UserProfile(
+    val user_id: Int,
+    val user_email: String,
+    val user_first_name: String?,
+    val user_sex: String?,
+    val user_age: Int?,
+    val user_unit_preference: String?,
+    val user_height: Float?,
+    val user_weight: Float?
+)

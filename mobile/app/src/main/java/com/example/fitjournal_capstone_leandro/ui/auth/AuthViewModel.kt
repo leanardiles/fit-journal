@@ -4,6 +4,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
 import com.example.fitjournal_capstone_leandro.data.local.TokenManager
+import com.example.fitjournal_capstone_leandro.data.model.UserProfile
 import com.example.fitjournal_capstone_leandro.data.repository.AuthRepository
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -80,6 +81,20 @@ class AuthViewModel(
             }
         }
     }
+
+
+    private val _userProfile = MutableStateFlow<UserProfile?>(null)
+    val userProfile: StateFlow<UserProfile?> = _userProfile
+
+    fun fetchProfile() {
+        viewModelScope.launch {
+            val result = authRepository.getProfile()
+            if (result.isSuccess) {
+                _userProfile.value = result.getOrNull()
+            }
+        }
+    }
+
 
     /**
      * Reset state back to Idle
