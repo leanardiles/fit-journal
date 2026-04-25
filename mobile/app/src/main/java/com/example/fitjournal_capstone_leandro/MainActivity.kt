@@ -154,6 +154,7 @@ class MainActivity : ComponentActivity() {
                         exerciseDetailsViewModel = exerciseDetailsViewModel,
                         authViewModel = authViewModel,
                         navController = navController,
+                        tokenManager = tokenManager,
                         modifier = Modifier.padding(innerPadding)
                     )
 

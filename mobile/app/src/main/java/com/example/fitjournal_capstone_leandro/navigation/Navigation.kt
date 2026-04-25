@@ -17,15 +17,17 @@ import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
+import com.example.fitjournal_capstone_leandro.data.local.TokenManager
 import com.example.fitjournal_capstone_leandro.ui.auth.AuthViewModel
 import com.example.fitjournal_capstone_leandro.ui.auth.LoginScreen
+import com.example.fitjournal_capstone_leandro.ui.calendar.CalendarScreen
 import com.example.fitjournal_capstone_leandro.ui.exercise_details.ExerciseDetailsViewModel
 import com.example.fitjournal_capstone_leandro.ui.exercise_details.ExerciseDetailsScreen
 import com.example.fitjournal_capstone_leandro.ui.exercises.ExercisesScreen
 import com.example.fitjournal_capstone_leandro.ui.exercises.ExercisesViewModel
 import com.example.fitjournal_capstone_leandro.ui.home.HomeScreen
 import com.example.fitjournal_capstone_leandro.ui.home.HomeViewModel
-import com.example.fitjournal_capstone_leandro.ui.calendar.CalendarScreen
+
 
 
 @Composable
@@ -35,11 +37,14 @@ fun AppNavigation(
     exerciseDetailsViewModel: ExerciseDetailsViewModel,
     authViewModel: AuthViewModel,
     navController: NavHostController,
+    tokenManager: TokenManager,
     modifier: Modifier = Modifier
 ) {
+    val startDestination = if (tokenManager.isLoggedIn()) Routes.HOME else Routes.LOGIN
+
     NavHost(
         navController = navController,
-        startDestination = Routes.LOGIN,
+        startDestination = startDestination,
         modifier = modifier
     ) {
         // Login / Register screen
