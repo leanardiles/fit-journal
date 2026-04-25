@@ -1,4 +1,4 @@
-package com.example.fitjournal_capstone_leandro.ui
+package com.example.fitjournal_capstone_leandro.ui.shared
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -26,6 +26,7 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.example.fitjournal_capstone_leandro.navigation.Routes
 import com.example.fitjournal_capstone_leandro.R
 
 
@@ -36,11 +37,11 @@ sealed class BottomNavItem(
     val logoRes: Int? = null,
     val title: String
 ) {
-    object Timer : BottomNavItem("timer", Icons.Filled.Timer, null, "Timer")
-    object Calendar : BottomNavItem("calendar", Icons.Filled.DateRange, null, "Calendar")
-    object Home : BottomNavItem("home", null, R.drawable.logo_alone, "Home")
-    object Exercises : BottomNavItem("exercises", Icons.Filled.FitnessCenter, null, "Exercises")
-    object Workout : BottomNavItem("workout", null, null, "Workout")
+    object Timer : BottomNavItem(Routes.TIMER, Icons.Filled.Timer, null, "Timer")
+    object Calendar : BottomNavItem(Routes.CALENDAR, Icons.Filled.DateRange, null, "Calendar")
+    object Home : BottomNavItem(Routes.HOME, null, R.drawable.logo_alone, "Home")
+    object Exercises : BottomNavItem(Routes.EXERCISES, Icons.Filled.FitnessCenter, null, "Exercises")
+    object Workout : BottomNavItem(Routes.WORKOUT, null, null, "Workout")
 }
 
 @Composable
@@ -91,7 +92,7 @@ fun BottomNavItemView(
                 modifier = Modifier.size(45.dp)
             )
         }
-    } else if (item.route == "workout") {
+    } else if (item.route == Routes.WORKOUT) {
         // WOD text badge
         Column(
             modifier = Modifier

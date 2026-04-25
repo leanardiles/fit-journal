@@ -28,14 +28,15 @@ import com.example.fitjournal_capstone_leandro.navigation.AppNavigation
 import com.example.fitjournal_capstone_leandro.data.local.TokenManager
 import com.example.fitjournal_capstone_leandro.ui.auth.AuthViewModel
 import com.example.fitjournal_capstone_leandro.ui.auth.AuthViewModelFactory
-import com.example.fitjournal_capstone_leandro.ui.BottomNavBar
-import com.example.fitjournal_capstone_leandro.ui.BottomNavItem
+import com.example.fitjournal_capstone_leandro.ui.shared.BottomNavBar
+import com.example.fitjournal_capstone_leandro.ui.shared.BottomNavItem
 import com.example.fitjournal_capstone_leandro.ui.shared.ProfileTopBar
 import com.example.fitjournal_capstone_leandro.ui.stopwatch.StopwatchBottomSheet
 import com.example.fitjournal_capstone_leandro.ui.stopwatch.StopwatchViewModel
 import androidx.compose.foundation.layout.navigationBarsPadding
 import com.example.fitjournal_capstone_leandro.data.network.RetrofitClient
-import com.example.fitjournal_capstone_leandro.ui.theme.FitJournal_Capstone_LeandroTheme
+import com.example.fitjournal_capstone_leandro.navigation.Routes
+import com.example.fitjournal_capstone_leandro.ui.theme.fitJournalCapstoneLeandroTheme
 
 class MainActivity : ComponentActivity() {
 
@@ -85,7 +86,7 @@ class MainActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
         setContent {
-            FitJournal_Capstone_LeandroTheme {
+            fitJournalCapstoneLeandroTheme {
                 val navController = rememberNavController()
                 val navBackStackEntry by navController.currentBackStackEntryAsState()
                 val currentRoute = navBackStackEntry?.destination?.route
@@ -103,18 +104,18 @@ class MainActivity : ComponentActivity() {
                 Scaffold(
                     topBar = {
                         // Hide top bar entirely on login screen
-                        if (currentRoute != "login") {
+                        if (currentRoute != Routes.LOGIN) {
                             // Show back button on all screens except main tabs
-                            val showBackButton = currentRoute !in listOf("home", "calendar", "exercises")
+                            val showBackButton = currentRoute !in listOf(Routes.HOME, Routes.CALENDAR, Routes.EXERCISES)
 
                             ProfileTopBar(
                                 userName = "User Name",
                                 showBackButton = showBackButton,
                                 onBackClick = { navController.popBackStack() },
-                                onAccountClick = { navController.navigate("account") },
-                                onSettingsClick = { navController.navigate("settings") },
+                                onAccountClick = { navController.navigate(Routes.ACCOUNT) },
+                                onSettingsClick = { navController.navigate(Routes.SETTINGS) },
                                 onLogoutClick = {
-                                    navController.navigate("home") {
+                                    navController.navigate(Routes.HOME) {
                                         popUpTo(navController.graph.startDestinationId) {
                                             inclusive = true
                                         }
@@ -125,12 +126,12 @@ class MainActivity : ComponentActivity() {
                     },
                     bottomBar = {
                         // Hide bottom nav on login screen
-                        if (currentRoute != "login") {
+                        if (currentRoute != Routes.LOGIN) {
                             BottomNavBar(
                                 items = bottomNavItems,
                                 currentRoute = currentRoute,
                                 onItemClick = { item ->
-                                    if (item.route == "timer") {
+                                    if (item.route == Routes.TIMER) {
                                         showStopwatch = true
                                     } else {
                                         navController.navigate(item.route) {
@@ -138,7 +139,7 @@ class MainActivity : ComponentActivity() {
                                                 saveState = true
                                             }
                                             launchSingleTop = true
-                                            restoreState = (item.route != "home")
+                                            restoreState = (item.route != Routes.HOME)
                                         }
                                     }
                                 },
