@@ -26,6 +26,7 @@ data class LoginResponse(
     val user_email: String
 )
 
+
 /**
  * Register request body
  *
@@ -35,6 +36,7 @@ data class RegisterRequest(
     val user_email: String,
     val user_password: String
 )
+
 
 /**
  * Register response
@@ -53,6 +55,7 @@ data class RegisterResponse(
     val user_weight: Float?
 )
 
+
 /**
  * User model (simplified)
  *
@@ -62,6 +65,7 @@ data class User(
     val userId: Int,
     val email: String
 )
+
 
 /**
  * User profile from backend
@@ -75,4 +79,35 @@ data class UserProfile(
     val user_unit_preference: String?,
     val user_height: Float?,
     val user_weight: Float?
+)
+
+
+/**
+ * User exercise from backend
+ *
+ * What we receive from: GET /exercises?user_id={id}
+ */
+data class UserExercise(
+    val exercise_id: Int,
+    val user_id: Int,
+    val exercise_name: String,
+    val exercise_muscle_group: String,
+    val exercise_user_current_weight: Float?,
+    val exercise_is_in_routine: Boolean,
+    val exercise_times_performed: Int,
+    val exercise_link: String?,
+    val comments: String?
+)
+
+/**
+ * Create exercise request body
+ *
+ * What we send to: POST /exercises?user_id={id}
+ */
+data class CreateExerciseRequest(
+    val exercise_name: String,
+    val exercise_muscle_group: String,
+    val exercise_user_current_weight: Float? = null,
+    val exercise_link: String? = null,
+    val comments: String? = null
 )

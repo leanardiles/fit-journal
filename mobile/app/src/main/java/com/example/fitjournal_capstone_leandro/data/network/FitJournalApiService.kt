@@ -1,18 +1,26 @@
 package com.example.fitjournal_capstone_leandro.data.network
 
 import com.example.fitjournal_capstone_leandro.data.local.TokenManager
+import com.example.fitjournal_capstone_leandro.data.model.CreateExerciseRequest
 import com.example.fitjournal_capstone_leandro.data.model.LoginRequest
 import com.example.fitjournal_capstone_leandro.data.model.LoginResponse
 import com.example.fitjournal_capstone_leandro.data.model.RegisterRequest
 import com.example.fitjournal_capstone_leandro.data.model.RegisterResponse
+import com.example.fitjournal_capstone_leandro.data.model.UserExercise
 import com.example.fitjournal_capstone_leandro.data.model.UserProfile
 import retrofit2.Retrofit
 import okhttp3.OkHttpClient
 import retrofit2.converter.gson.GsonConverterFactory
 import retrofit2.http.Body
+import retrofit2.http.DELETE
 import retrofit2.http.GET
+import retrofit2.http.Query
 import retrofit2.http.POST
+import retrofit2.http.PUT
 import retrofit2.http.Path
+import retrofit2.Response
+
+
 
 
 /**
@@ -56,6 +64,40 @@ interface FitJournalApiService {
     suspend fun getProfile(
         @Path("user_id") userId: Int
     ): UserProfile
+
+
+    /**
+     * Get all exercises for a user
+     *
+     * GET /exercises?user_id={id}
+     */
+    @GET("exercises")
+    suspend fun getExercises(
+        @Query("user_id") userId: Int
+    ): List<UserExercise>
+
+    /**
+     * Create a new exercise
+     *
+     * POST /exercises?user_id={id}
+     */
+    @POST("exercises")
+    suspend fun createExercise(
+        @Query("user_id") userId: Int,
+        @Body exercise: CreateExerciseRequest
+    ): UserExercise
+
+    /**
+     * Delete an exercise
+     *
+     * DELETE /exercises/{exercise_id}?user_id={id}
+     */
+    @DELETE("exercises/{exercise_id}")
+    suspend fun deleteExercise(
+        @Path("exercise_id") exerciseId: Int,
+        @Query("user_id") userId: Int
+    ): Response<Unit>
+
 
     // TODO: Add more endpoints as we build features
     // - GET /exercises?user_id={user_id}

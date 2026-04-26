@@ -2,10 +2,8 @@ package com.example.fitjournal_capstone_leandro
 
 import com.example.fitjournal_capstone_leandro.ui.home.HomeViewModel
 import com.example.fitjournal_capstone_leandro.ui.home.HomeViewModelFactory
-import com.example.fitjournal_capstone_leandro.ui.exercises.ExercisesViewModel
-import com.example.fitjournal_capstone_leandro.ui.exercises.ExercisesViewModelFactory
-import com.example.fitjournal_capstone_leandro.ui.exercise_details.ExerciseDetailsViewModel  // ← CHANGED
-import com.example.fitjournal_capstone_leandro.ui.exercise_details.ExerciseDetailsViewModelFactory  // ← CHANGED
+import com.example.fitjournal_capstone_leandro.ui.exercise_details.ExerciseDetailsViewModel
+import com.example.fitjournal_capstone_leandro.ui.exercise_details.ExerciseDetailsViewModelFactory
 import android.os.Bundle
 import android.util.Log
 import androidx.activity.ComponentActivity
@@ -27,9 +25,12 @@ import com.example.fitjournal_capstone_leandro.data.local.FitJournalDatabase
 import com.example.fitjournal_capstone_leandro.data.local.TokenManager
 import com.example.fitjournal_capstone_leandro.data.network.service
 import com.example.fitjournal_capstone_leandro.data.repository.ExerciseRepository
+import com.example.fitjournal_capstone_leandro.data.repository.UserExercisesRepository
 import com.example.fitjournal_capstone_leandro.navigation.AppNavigation
 import com.example.fitjournal_capstone_leandro.ui.auth.AuthViewModel
 import com.example.fitjournal_capstone_leandro.ui.auth.AuthViewModelFactory
+import com.example.fitjournal_capstone_leandro.ui.exercises.UserExercisesViewModel
+import com.example.fitjournal_capstone_leandro.ui.exercises.UserExercisesViewModelFactory
 import com.example.fitjournal_capstone_leandro.ui.shared.BottomNavBar
 import com.example.fitjournal_capstone_leandro.ui.shared.BottomNavItem
 import com.example.fitjournal_capstone_leandro.ui.shared.ProfileTopBar
@@ -39,6 +40,7 @@ import androidx.compose.foundation.layout.navigationBarsPadding
 import com.example.fitjournal_capstone_leandro.data.network.RetrofitClient
 import com.example.fitjournal_capstone_leandro.navigation.Routes
 import com.example.fitjournal_capstone_leandro.ui.theme.fitJournalCapstoneLeandroTheme
+
 
 class MainActivity : ComponentActivity() {
 
@@ -72,14 +74,17 @@ class MainActivity : ComponentActivity() {
         HomeViewModelFactory(repository)
     }
 
-    private val exercisesViewModel: ExercisesViewModel by viewModels {
-        Log.d("FitJournal", "Creating ExercisesViewModel with repository")
-        ExercisesViewModelFactory(repository)
-    }
-
     private val exerciseDetailsViewModel: ExerciseDetailsViewModel by viewModels {
         Log.d("FitJournal", "Creating ExerciseDetailsViewModel with repository")
         ExerciseDetailsViewModelFactory(repository)
+    }
+
+    private val userExercisesRepository by lazy {
+        UserExercisesRepository(tokenManager)
+    }
+
+    private val userExercisesViewModel: UserExercisesViewModel by viewModels {
+        UserExercisesViewModelFactory(userExercisesRepository)
     }
 
     private val stopwatchViewModel: StopwatchViewModel by viewModels()
@@ -159,8 +164,8 @@ class MainActivity : ComponentActivity() {
                 ) { innerPadding ->
                     AppNavigation(
                         homeViewModel = homeViewModel,
-                        exercisesViewModel = exercisesViewModel,
                         exerciseDetailsViewModel = exerciseDetailsViewModel,
+                        userExercisesViewModel = userExercisesViewModel,
                         authViewModel = authViewModel,
                         navController = navController,
                         tokenManager = tokenManager,

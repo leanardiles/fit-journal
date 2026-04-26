@@ -23,8 +23,8 @@ import com.example.fitjournal_capstone_leandro.ui.auth.LoginScreen
 import com.example.fitjournal_capstone_leandro.ui.calendar.CalendarScreen
 import com.example.fitjournal_capstone_leandro.ui.exercise_details.ExerciseDetailsViewModel
 import com.example.fitjournal_capstone_leandro.ui.exercise_details.ExerciseDetailsScreen
-import com.example.fitjournal_capstone_leandro.ui.exercises.ExercisesScreen
-import com.example.fitjournal_capstone_leandro.ui.exercises.ExercisesViewModel
+import com.example.fitjournal_capstone_leandro.ui.exercises.UserExercisesViewModel
+import com.example.fitjournal_capstone_leandro.ui.exercises.UserExercisesScreen
 import com.example.fitjournal_capstone_leandro.ui.home.HomeScreen
 import com.example.fitjournal_capstone_leandro.ui.home.HomeViewModel
 
@@ -33,7 +33,7 @@ import com.example.fitjournal_capstone_leandro.ui.home.HomeViewModel
 @Composable
 fun AppNavigation(
     homeViewModel: HomeViewModel,
-    exercisesViewModel: ExercisesViewModel,
+    userExercisesViewModel: UserExercisesViewModel,
     exerciseDetailsViewModel: ExerciseDetailsViewModel,
     authViewModel: AuthViewModel,
     navController: NavHostController,
@@ -79,13 +79,7 @@ fun AppNavigation(
 
         // Exercises tab
         composable(Routes.EXERCISES) {
-            ExercisesScreen(
-                viewModel = exercisesViewModel,
-                onExerciseClick = { exercise ->
-                    exerciseDetailsViewModel.selectExercise(exercise)
-                    navController.navigate(Routes.EXERCISE_DETAILS)
-                },
-            )
+            UserExercisesScreen(viewModel = userExercisesViewModel)
         }
 
         // Exercise details
