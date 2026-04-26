@@ -9,7 +9,7 @@ FitJournal is a comprehensive fitness tracking application that provides a compl
 ## Features
 
 ### Web App
-- ✅ User registration and authentication
+- ✅ User registration and authentication (JWT)
 - ✅ User profile management (age, weight, height, unit preferences)
 - ✅ 101 default exercises (copied to each user on registration)
 - ✅ Exercise management with muscle group organization
@@ -20,15 +20,20 @@ FitJournal is a comprehensive fitness tracking application that provides a compl
 - ✅ Automatic exercise weight tracking and updates
 - ✅ Session-based workout logging
 - ✅ Progress tracking by exercise frequency
+
 ### Android Mobile App
-- ✅ Exercise browsing by muscle group (ExerciseDB API)
-- ✅ Exercise details with instructions
-- ✅ Offline-first caching (Room database)
-- ✅ Calendar UI with DatePicker
-- ✅ Stopwatch timer
-- ✅ MVI architecture (Home & Exercises screens)
 - ✅ JWT authentication (login + register)
 - ✅ Secure token storage (Android Keystore / EncryptedSharedPreferences)
+- ✅ Auto-login on app startup using stored JWT
+- ✅ Logout with token clearing and navigation reset
+- ✅ User profile display in top bar (fetched from backend)
+- ✅ OkHttp AuthInterceptor — automatic Bearer token injection on all API calls
+- ✅ User exercises from backend (browse by muscle group, add, delete)
+- ✅ Duplicate exercise name prevention
+- ✅ Alphabetical exercise sorting
+- ✅ Calendar UI with DatePicker
+- ✅ Stopwatch timer
+- ✅ MVI architecture
 - ✅ Bottom navigation + profile menu
 - 🚧 Workout logging
 - 🚧 Routine builder
@@ -41,7 +46,7 @@ FitJournal is a comprehensive fitness tracking application that provides a compl
 - **Framework:** FastAPI (Python)
 - **ORM:** SQLAlchemy 2.0
 - **Database:** MySQL (hosted on Aiven)
-- **Authentication:** Bcrypt password hashing + JWT tokens (mobile)
+- **Authentication:** Bcrypt password hashing + JWT tokens (web + mobile)
 - **Database Driver:** PyMySQL
 
 ### Web Frontend
@@ -55,7 +60,7 @@ FitJournal is a comprehensive fitness tracking application that provides a compl
 - **UI:** Jetpack Compose + Material Design 3
 - **Architecture:** MVI (Model-View-Intent)
 - **Database:** Room (SQLite)
-- **Networking:** Retrofit 2 + Gson
+- **Networking:** Retrofit 2 + Gson + OkHttp (AuthInterceptor)
 - **Auth Storage:** EncryptedSharedPreferences (Android Keystore)
 - **State:** StateFlow + Coroutines
 
@@ -91,18 +96,18 @@ FitJournal/
 │   └── app/src/main/java/.../
 │       ├── data/
 │       │   ├── local/            # Room DB, TokenManager
-│       │   ├── model/            # Data classes incl. AuthModels
-│       │   ├── network/          # Retrofit, ApiConfig, FitJournalApiService
-│       │   └── repository/       # AuthRepository, ExerciseRepository
+│       │   ├── model/            # Data classes incl. AuthModels, UserExercise
+│       │   ├── network/          # Retrofit, ApiConfig, FitJournalApiService, AuthInterceptor
+│       │   └── repository/       # AuthRepository, UserExercisesRepository
 │       ├── ui/
 │       │   ├── auth/             # LoginScreen, AuthViewModel
 │       │   ├── home/
-│       │   ├── exercises/
+│       │   ├── exercises/        # UserExercisesScreen, UserExercisesViewModel
 │       │   ├── exercise_details/
 │       │   ├── calendar/
 │       │   ├── stopwatch/
-│       │   └── shared/
-│       ├── navigation/
+│       │   └── shared/           # ProfileTopBar, BottomNavBar
+│       ├── navigation/           # Navigation.kt, Routes.kt
 │       └── MainActivity.kt
 ├── docs/
 │   └── ER_diagram.png
@@ -131,13 +136,13 @@ cd FitJournal
 2. Create and activate virtual environment:
 ```bash
 python -m venv venv
- 
+
 # Git Bash / Linux / Mac
 source venv/Scripts/activate
- 
+
 # Windows PowerShell
 venv\Scripts\Activate.ps1
- 
+
 # Windows CMD
 venv\Scripts\activate.bat
 ```
@@ -182,13 +187,14 @@ python -m http.server 8080
 2. Access the application at: `http://localhost:8080/login.html`
 
 ### Mobile App Setup
- 
+
 See **README_mobile.md** for full Android setup instructions.
- 
+
 **Quick start:**
 1. Open the `mobile/` folder in Android Studio
 2. Start the FastAPI backend: `uvicorn main:app --reload --host 0.0.0.0`
 3. Run on a virtual emulator (Pixel 9, API 37 recommended)
+
 > **Note:** The mobile app connects to the backend via `10.0.2.2:8000` on the emulator. Physical devices require the machine's local IP address instead.
 
 ### Test User
@@ -198,42 +204,42 @@ You can use the following test user credentials:
 
 
 ## API Endpoints
- 
+
 ### Authentication
 - `POST /register` — Register new user
-- `POST /login` — Web login (returns user_id and email)
+- `POST /login` — Web login (returns JWT access token + user info)
 - `POST /login/mobile` — Mobile login (returns JWT access token)
 
 ### Profile
-- `GET /profile/{user_id}` — Get user profile
-- `PUT /profile/{user_id}` — Update user profile
+- `GET /profile/{user_id}` — Get user profile *(JWT required)*
+- `PUT /profile/{user_id}` — Update user profile *(JWT required)*
 
 ### Exercises
-- `GET /exercises?user_id={id}` — Get all exercises for user
-- `POST /exercises?user_id={id}` — Create new exercise
-- `PUT /exercises/{exercise_id}?user_id={id}` — Update exercise
-- `DELETE /exercises/{exercise_id}?user_id={id}` — Delete exercise
-- `PATCH /exercises/{exercise_id}/weight` — Update exercise weight
+- `GET /exercises?user_id={id}` — Get all exercises for user *(JWT required)*
+- `POST /exercises?user_id={id}` — Create new exercise *(JWT required)*
+- `PUT /exercises/{exercise_id}?user_id={id}` — Update exercise *(JWT required)*
+- `DELETE /exercises/{exercise_id}?user_id={id}` — Delete exercise *(JWT required)*
+- `PATCH /exercises/{exercise_id}/weight` — Update exercise weight *(JWT required)*
 
 ### Routines
-- `GET /routine/{user_id}` — Get user's routine
-- `POST /routine/{user_id}` — Create/update routine
-- `DELETE /routine/{user_id}` — Delete routine
+- `GET /routine/{user_id}` — Get user's routine *(JWT required)*
+- `POST /routine/{user_id}` — Create/update routine *(JWT required)*
+- `DELETE /routine/{user_id}` — Delete routine *(JWT required)*
 
 ### Workout State
-- `GET /workout/state/{user_id}` — Get current workout state
+- `GET /workout/state/{user_id}` — Get current workout state *(JWT required)*
 
 ### Workout Sessions & Logs
-- `POST /workout/complete/{user_id}` — Complete workout
-- `GET /workout/sessions/{user_id}?limit={n}` — Get last N sessions
-- `POST /workout/logs-by-sessions/{user_id}` — Get logs for specific sessions
-- `GET /workout/logs/{user_id}?limit={n}` — Get workout logs
+- `POST /workout/complete/{user_id}` — Complete workout *(JWT required)*
+- `GET /workout/sessions/{user_id}?limit={n}` — Get last N sessions *(JWT required)*
+- `POST /workout/logs-by-sessions/{user_id}` — Get logs for specific sessions *(JWT required)*
+- `GET /workout/logs/{user_id}?limit={n}` — Get workout logs *(JWT required)*
 
 ### Next Workout Management
-- `GET /next-workout/selections/{user_id}` — Get selected exercises
-- `POST /next-workout/toggle` — Toggle exercise selection
-- `POST /next-workout/generate/{user_id}?day_number={n}` — Auto-generate workout
-- `DELETE /next-workout/clear/{user_id}?day_number={n}` — Clear selections
+- `GET /next-workout/selections/{user_id}` — Get selected exercises *(JWT required)*
+- `POST /next-workout/toggle` — Toggle exercise selection *(JWT required)*
+- `POST /next-workout/generate/{user_id}?day_number={n}` — Auto-generate workout *(JWT required)*
+- `DELETE /next-workout/clear/{user_id}?day_number={n}` — Clear selections *(JWT required)*
 
 ### Default Exercises
 - `GET /default-exercises` — Get all 101 default exercises
@@ -324,43 +330,48 @@ You can use the following test user credentials:
 
 
 ## Design Philosophy
- 
+
 ### Two-Table Exercise Approach
 FitJournal uses a **copy-on-registration** approach:
 1. **`default_exercises`** — Template catalog (101 exercises)
 2. **`exercises`** — User's personal copy (linked by `user_id`)
+
 Each user has full control over their exercises without affecting others.
- 
+
 ### Workout Algorithm
 1. Gets muscle groups for the current routine day
 2. Selects 4 exercises per muscle group
 3. Prioritizes exercises with lowest `exercise_times_performed` count
 4. Ensures variety and prevents overtraining specific exercises
 
-### Mobile JWT Authentication
-The mobile app uses stateless JWT authentication:
+### JWT Authentication (Web + Mobile)
+FitJournal uses stateless JWT authentication across both platforms:
 1. Login → FastAPI issues a JWT access token
-2. Token encrypted and stored on-device via Android Keystore
-3. Token attached to all subsequent API requests
-4. Logout clears local storage only (no server-side session to invalidate)
+2. **Web:** Token stored in `localStorage`, attached to all API calls via `authHeaders()` in `api.js`
+3. **Mobile:** Token encrypted on-device via Android Keystore, auto-injected into all requests via OkHttp `AuthInterceptor`
+4. Logout clears token locally — no server-side session to invalidate
+5. All protected endpoints require a valid Bearer token (`401` returned otherwise)
+
+
 ## Current Status
- 
+
 ### Web App ✅
-- Complete backend API (20+ endpoints)
-- Full user authentication system
+- Complete backend API (20+ endpoints), all protected with JWT
+- Full user authentication system with JWT
 - Exercise, routine, workout, and calendar management
 - Dark theme UI/UX
 
 ### Mobile App ✅ / 🚧
-- ✅ JWT authentication (login + register)
-- ✅ Exercise browsing with offline caching
+- ✅ JWT authentication (login + register + auto-login + logout)
+- ✅ Secure token storage and automatic injection via AuthInterceptor
+- ✅ User profile display fetched from backend
+- ✅ User exercises — browse by muscle group, add, delete (backend-synced)
 - ✅ Stopwatch, calendar UI, bottom navigation
 - 🚧 Workout logging
 - 🚧 Routine builder
 - 🚧 Offline sync
 
 ### Known Limitations
-- Web app uses localStorage for session (no JWT — planned)
 - No password reset functionality
 - No data export feature
 - Physical device testing requires local IP configuration
@@ -368,9 +379,8 @@ The mobile app uses stateless JWT authentication:
 
 ### To-Do (High Priority) 🔧
 - [ ] Fix ADD/EDIT/DELETE modal on Exercises page (CSS z-index issue)
-- [ ] Mobile: auto-login on app startup using stored JWT
-- [ ] Mobile: wire logout button to clear token and return to login screen
-- [ ] Mobile: OkHttp interceptor to attach Bearer token to all API calls
+- [ ] Mobile: edit exercise name/muscle group
+- [ ] Mobile: update exercise weight from the exercises screen
 
 ### Future Enhancements 📋
 - [ ] Analytics dashboard (charts, progress graphs)
@@ -382,18 +392,20 @@ The mobile app uses stateless JWT authentication:
 - [ ] Deployment (Vercel frontend + Railway backend)
 - [ ] Rate limiting on API endpoints
 - [ ] HTTPS for production
+
+
 ## Development Workflow
- 
+
 ```bash
 # Terminal 1: Backend
 cd FitJournal/src
 source ../venv/Scripts/activate
 uvicorn main:app --reload --host 0.0.0.0
- 
+
 # Terminal 2: Web frontend
 cd FitJournal/frontend
 python -m http.server 8080
- 
+
 # Terminal 3: Git
 cd FitJournal
 git status
@@ -401,75 +413,32 @@ git add .
 git commit -m "your message"
 git push
 ```
- 
+
 ## Security Notes
- 
+
 - ✅ Passwords hashed with bcrypt
 - ✅ `.env` excluded from Git
 - ✅ SQL injection protection (SQLAlchemy ORM)
 - ✅ Input validation (Pydantic schemas)
-- ✅ JWT tokens for mobile authentication
-- ✅ Tokens encrypted on-device via Android Keystore
-- ⚠️ TODO: JWT for web app (currently localStorage)
+- ✅ JWT tokens for both web and mobile authentication
+- ✅ All backend endpoints protected with JWT (`get_current_user` dependency)
+- ✅ Tokens encrypted on-device via Android Keystore (mobile)
+- ✅ AuthInterceptor auto-injects Bearer token on all mobile API calls
 - ⚠️ TODO: Rate limiting on API endpoints
 - ⚠️ TODO: HTTPS for production
 - ⚠️ TODO: CSRF protection
 
- 
+
 ## Author
- 
+
 **Leandro Ardiles**
 - MS Computer Science, Yeshiva University (Katz School)
 
 ## Repository
- 
+
 GitHub: [https://github.com/leanardiles/FitJournal](https://github.com/leanardiles/FitJournal)
- 
-## License
- 
-This project is for educational purposes.
- 
+
+
 ---
- 
+
 *Last Updated: April 2026*
-
-
-
-
-OLD
-## Core Workflows
-
-### 1. Registration & Profile Setup
-1. Register new account with email/password
-2. Set up profile (name, age, weight, height, unit preference)
-3. 101 default exercises automatically copied to user account
-
-### 2. Exercise Management
-1. View exercises organized by 9 muscle groups (tabs)
-2. Update current weight for each exercise
-3. Toggle exercises in/out of routine
-4. Track exercise performance count
-
-### 3. Routine Creation
-1. Select training days per week (1-7)
-2. Assign muscle groups to each day
-3. System stores routine structure for workout generation
-
-### 4. Workout Selection (Calendar)
-1. View calendar with multi-day filtering (Current Day, All Days, Day 1, Day 2, etc.)
-2. Manually select exercises or auto-generate based on algorithm
-3. Algorithm selects 4 exercises per muscle group (prioritizes least-performed)
-4. View workout history with sessions displayed by date
-
-### 5. Workout Execution (Get WOD)
-1. Generate Workout of the Day based on current routine day
-2. Pre-filled weights from exercise database
-3. Enter sets/reps for each exercise
-4. Mark as complete to log workout and advance to next day
-5. Completed exercises automatically deselected for next planning cycle
-
-### 6. Progress Tracking
-1. Calendar displays workout history (last 10 sessions)
-2. Track sets completed per exercise per session
-3. Exercise performance count auto-increments
-4. Weight progression tracked automatically
