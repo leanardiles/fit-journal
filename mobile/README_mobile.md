@@ -4,29 +4,32 @@ Native Android application for FitJournal fitness tracking.
 
 ## Current Status
 
-**Version:** 0.6 (April 2026 - Student Project)
-**Status:** Development — JWT authentication complete, backend integration in progress
+**Version:** 0.7 (April 2026 - Student Project)
+**Status:** Development — JWT authentication and exercises backend integration complete
 
 ## Features
 
 ### Implemented ✅
 - JWT authentication (login + register)
 - Secure token storage (Android Keystore / EncryptedSharedPreferences)
-- Exercise browsing by muscle group (ExerciseDB API)
-- Exercise details with instructions and GIFs
-- Offline-first caching (Room database)
+- Auto-login on app startup using stored JWT
+- Logout with token clearing and navigation reset
+- User profile display in top bar (fetched from backend)
+- OkHttp AuthInterceptor — automatic Bearer token injection on all API calls
+- User exercises from backend (browse by muscle group, add, delete)
+- Duplicate exercise name prevention
+- Alphabetical exercise sorting
+- Snackbar notifications for add/delete actions
 - Calendar UI with DatePicker
 - Stopwatch timer
-- MVI architecture (Home & Exercises screens)
+- MVI architecture
 - Profile menu with dropdown
-- Bottom navigation
+- Bottom navigation (Calendar, Exercises, Home, Timer, WOD)
 
 ### In Development 🚧
-- Auto-login on app startup (check stored token)
-- Logout wired to ProfileTopBar button
-- OkHttp interceptor for Bearer token injection
 - Workout logging
 - Routine builder
+- WOD (Workout of the Day) screen
 - Offline sync with backend
 
 ## Tech Stack
@@ -35,7 +38,7 @@ Native Android application for FitJournal fitness tracking.
 - **UI:** Jetpack Compose + Material Design 3
 - **Architecture:** MVI (Model-View-Intent)
 - **Database:** Room (SQLite)
-- **Networking:** Retrofit 2 + Gson
+- **Networking:** Retrofit 2 + Gson + OkHttp (AuthInterceptor)
 - **Auth Storage:** EncryptedSharedPreferences (Android Keystore)
 - **State:** StateFlow + Coroutines
 
@@ -51,10 +54,10 @@ Native Android application for FitJournal fitness tracking.
 ### Setup
 
 1. **Open in Android Studio:**
-   - File → Open → Select the `mobile` folder
-   - Wait for Gradle sync to complete
+    - File → Open → Select the `mobile` folder
+    - Wait for Gradle sync to complete
 
-2. **Start the FastAPI backend** (required for login/register):
+2. **Start the FastAPI backend** (required for all features):
 ```bash
 cd ../src
 source ../venv/Scripts/activate
@@ -62,8 +65,8 @@ uvicorn main:app --reload --host 0.0.0.0 --port 8000
 ```
 
 3. **Run the app:**
-   - Select a virtual emulator (Pixel 9, API 37 recommended)
-   - Click Run (green play button)
+    - Select a virtual emulator (Pixel 9, API 37 recommended)
+    - Click Run (green play button)
 
 > **Important:** Use a virtual emulator, not a physical device. The app connects to the backend via `10.0.2.2:8000`, which is the emulator's alias for your machine's localhost. Physical devices cannot use this address.
 
@@ -78,15 +81,31 @@ The app uses JWT (JSON Web Token) authentication against the FastAPI backend.
 4. Token is encrypted and stored via `TokenManager` (Android Keystore)
 5. App navigates to HomeScreen
 
+### Auto-Login
+- On app startup, `TokenManager.isLoggedIn()` is checked
+- If a token exists, the app skips the login screen and goes directly to HomeScreen
+
 ### Register
 1. User switches to Register tab on the LoginScreen
 2. App calls `POST /register`
 3. On success, user is prompted to log in with their new credentials
 
-### Logout *(coming soon)*
-- Calls `TokenManager.clearAll()` to remove token, userId, and email
-- Navigates back to LoginScreen
+### Logout
+- User taps Log out from the profile dropdown in the top bar
+- `TokenManager.clearAll()` removes token, userId, and email
+- App navigates back to LoginScreen with full back stack cleared
 - No API call needed — JWT is stateless
+
+## Exercises Flow
+
+1. User navigates to the Exercises tab
+2. App fetches user's exercises from `GET /exercises?user_id={id}`
+3. Muscle groups are derived from the user's exercise list
+4. User selects a muscle group from the dropdown
+5. Exercises for that group are displayed alphabetically
+6. User can add a new exercise (duplicate names blocked)
+7. User can delete an exercise with confirmation dialog
+8. Snackbar confirms add/delete actions
 
 ## Project Structure
 
@@ -94,35 +113,40 @@ The app uses JWT (JSON Web Token) authentication against the FastAPI backend.
 app/src/main/java/com/example/fitjournal_capstone_leandro/
 ├── data/
 │   ├── local/
-│   │   ├── TokenManager.kt          # Encrypted JWT storage
-│   │   ├── FitJournalDatabase.kt    # Room database
+│   │   ├── TokenManager.kt              # Encrypted JWT storage
+│   │   ├── FitJournalDatabase.kt        # Room database
 │   │   ├── ExerciseDao.kt
 │   │   ├── MuscleDao.kt
 │   │   ├── ExerciseEntity.kt
 │   │   ├── MuscleEntity.kt
 │   │   └── Converters.kt
 │   ├── model/
-│   │   ├── AuthModels.kt            # LoginRequest/Response, RegisterRequest/Response, User
+│   │   ├── AuthModels.kt                # Login/Register models, UserProfile, UserExercise
 │   │   └── Exercise.kt
 │   ├── network/
-│   │   ├── ApiConfig.kt             # Dev/prod URL switching
-│   │   ├── FitJournalApiService.kt  # Retrofit interface + client
-│   │   └── ApiService.kt            # ExerciseDB API service
+│   │   ├── ApiConfig.kt                 # Dev/prod URL switching
+│   │   ├── FitJournalApiService.kt      # Retrofit interface + RetrofitClient
+│   │   └── AuthInterceptor.kt           # OkHttp interceptor for Bearer token
 │   └── repository/
-│       ├── AuthRepository.kt        # Auth data layer
-│       └── ExerciseRepository.kt
+│       ├── AuthRepository.kt            # Auth + profile data layer
+│       └── UserExercisesRepository.kt   # Exercises CRUD data layer
 ├── ui/
 │   ├── auth/
-│   │   ├── LoginScreen.kt           # Login + Register Compose screen
-│   │   └── AuthViewModel.kt         # Auth state management
+│   │   ├── LoginScreen.kt               # Login + Register Compose screen
+│   │   └── AuthViewModel.kt             # Auth + profile state management
 │   ├── home/
 │   ├── exercises/
+│   │   ├── UserExercisesScreen.kt       # Exercises screen with CRUD
+│   │   └── UserExercisesViewModel.kt    # Exercises state management
 │   ├── exercise_details/
 │   ├── calendar/
 │   ├── stopwatch/
 │   └── shared/
+│       ├── ProfileTopBar.kt             # Top bar with user name + dropdown
+│       └── BottomNavBar.kt              # Bottom navigation bar
 ├── navigation/
-│   └── navigation.kt                # NavHost with login as start destination
+│   ├── Navigation.kt                    # NavHost with auto-login routing
+│   └── Routes.kt                        # Route string constants
 └── MainActivity.kt
 ```
 
@@ -156,16 +180,21 @@ Android blocks cleartext HTTP by default. A security config at
 
 This is development-only. Production deployment with HTTPS requires no special config.
 
-## Key Files — Authentication
+## Key Files
 
 | File | Purpose |
 |------|---------|
-| `TokenManager.kt` | Encrypts/decrypts token using Android Keystore (AES256-GCM) |
+| `TokenManager.kt` | Encrypts/decrypts JWT using Android Keystore (AES256-GCM) |
+| `AuthInterceptor.kt` | Attaches `Authorization: Bearer {token}` to every API request |
 | `AuthModels.kt` | Data classes matching the FastAPI JSON contract |
-| `FitJournalApiService.kt` | Retrofit interface with `login()` and `register()` endpoints |
-| `AuthRepository.kt` | Coordinates API calls and token storage, returns `Result<T>` |
-| `AuthViewModel.kt` | Exposes `AuthUiState` (Idle/Loading/Success/Error) to the UI |
+| `FitJournalApiService.kt` | Retrofit interface — all backend endpoints |
+| `AuthRepository.kt` | Auth operations and profile fetch, returns `Result<T>` |
+| `UserExercisesRepository.kt` | Exercise CRUD operations against backend |
+| `AuthViewModel.kt` | Exposes `AuthUiState` and `userProfile` to the UI |
+| `UserExercisesViewModel.kt` | Exercises state — fetch, add, delete, sort |
 | `LoginScreen.kt` | Compose screen with Login/Register tab toggle |
+| `UserExercisesScreen.kt` | Exercises screen with dropdown, list, add/delete dialogs |
+| `Routes.kt` | Centralized route string constants |
 
 ## Troubleshooting
 
@@ -183,6 +212,10 @@ This is development-only. Production deployment with HTTPS requires no special c
 **"Out of date" warning after changing package names**
 - Build → Rebuild Project to clear the incremental build cache
 
+**API returns 401 Unauthorized**
+- Token may have expired — log out and log back in
+- Verify `RetrofitClient.initialize(tokenManager)` is called in `MainActivity`
+
 ## Author
 
 **Leandro Ardiles**
@@ -194,9 +227,10 @@ This is development-only. Production deployment with HTTPS requires no special c
 This mobile app was developed with the assistance of Claude.ai (Anthropic) for:
 - Android architecture guidance (MVI, Jetpack Compose)
 - JWT authentication implementation
-- Room database and offline-first caching
+- Backend integration (exercises CRUD, profile fetch)
+- OkHttp interceptor for automatic token injection
 - Bug fixing and debugging
 
 ---
 
-*Last Updated: April 2026*
+*Last Updated: 26 April 2026*
