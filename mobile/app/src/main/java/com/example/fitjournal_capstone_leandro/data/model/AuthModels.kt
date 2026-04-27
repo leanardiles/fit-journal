@@ -111,3 +111,32 @@ data class CreateExerciseRequest(
     val exercise_link: String? = null,
     val comments: String? = null
 )
+
+
+/**
+ * A single day in the routine setup request
+ */
+data class RoutineDay(
+    val day_number: Int,
+    val muscle_groups: List<String>
+)
+
+/**
+ * Routine setup request body
+ *
+ * What we send to: POST /routine/{user_id}
+ */
+data class RoutineSetupRequest(
+    val days_per_week: Int,
+    val routine_days: List<RoutineDay>
+)
+
+/**
+ * Routine response from backend
+ *
+ * What we receive from: GET /routine/{user_id}
+ */
+data class RoutineResponse(
+    val days_per_week: Int,
+    val routine_days: Map<String, List<String>>  // "1" -> ["Legs", "Back"]
+)

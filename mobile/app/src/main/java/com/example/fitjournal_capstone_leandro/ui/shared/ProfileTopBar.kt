@@ -19,10 +19,10 @@ import androidx.compose.material3.OutlinedButton
 
 @Composable
 fun ProfileTopBar(
-    userName: String = "User Name",  // Default, will be replaced with actual user later
+    userName: String = "User Name",  // Passed from MainActivity via userProfile
     showBackButton: Boolean = false,
     onBackClick: () -> Unit = {},
-    onAccountClick: () -> Unit = {},
+    onRoutineClick: () -> Unit = {},
     onSettingsClick: () -> Unit = {},
     onLogoutClick: () -> Unit = {}
 ) {
@@ -89,11 +89,11 @@ fun ProfileTopBar(
                         .background(Color(0xFF2A2A2E))
                         .width(180.dp)
                 ) {
-                    // Account option
+                    // Routine option
                     DropdownMenuItem(
                         text = {
                             Text(
-                                text = "Account",
+                                text = "Routine",
                                 color = Color.White,
                                 fontFamily = myCustomFont,
                                 fontSize = 16.sp
@@ -101,18 +101,18 @@ fun ProfileTopBar(
                         },
                         onClick = {
                             expanded = false
-                            onAccountClick()
+                            onRoutineClick()
                         },
                         modifier = Modifier.background(Color(0xFF2A2A2E))
                     )
 
                     Divider(color = Color.Gray.copy(alpha = 0.3f))
 
-                    // Settings option
+                    // Profile Settings option
                     DropdownMenuItem(
                         text = {
                             Text(
-                                text = "Settings",
+                                text = "Profile Settings",
                                 color = Color.White,
                                 fontFamily = myCustomFont,
                                 fontSize = 16.sp

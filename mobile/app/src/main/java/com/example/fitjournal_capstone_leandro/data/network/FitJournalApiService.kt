@@ -6,6 +6,8 @@ import com.example.fitjournal_capstone_leandro.data.model.LoginRequest
 import com.example.fitjournal_capstone_leandro.data.model.LoginResponse
 import com.example.fitjournal_capstone_leandro.data.model.RegisterRequest
 import com.example.fitjournal_capstone_leandro.data.model.RegisterResponse
+import com.example.fitjournal_capstone_leandro.data.model.RoutineResponse
+import com.example.fitjournal_capstone_leandro.data.model.RoutineSetupRequest
 import com.example.fitjournal_capstone_leandro.data.model.UserExercise
 import com.example.fitjournal_capstone_leandro.data.model.UserProfile
 import retrofit2.Retrofit
@@ -87,6 +89,7 @@ interface FitJournalApiService {
         @Body exercise: CreateExerciseRequest
     ): UserExercise
 
+
     /**
      * Delete an exercise
      *
@@ -98,6 +101,37 @@ interface FitJournalApiService {
         @Query("user_id") userId: Int
     ): Response<Unit>
 
+
+    /**
+     * Get user's routine
+     *
+     * GET /routine/{user_id}
+     */
+    @GET("routine/{user_id}")
+    suspend fun getRoutine(
+        @Path("user_id") userId: Int
+    ): RoutineResponse
+
+    /**
+     * Save user's routine
+     *
+     * POST /routine/{user_id}
+     */
+    @POST("routine/{user_id}")
+    suspend fun saveRoutine(
+        @Path("user_id") userId: Int,
+        @Body routine: RoutineSetupRequest
+    ): Any
+
+    /**
+     * Delete user's routine
+     *
+     * DELETE /routine/{user_id}
+     */
+    @DELETE("routine/{user_id}")
+    suspend fun deleteRoutine(
+        @Path("user_id") userId: Int
+    ): Response<Unit>
 
     // TODO: Add more endpoints as we build features
     // - GET /exercises?user_id={user_id}

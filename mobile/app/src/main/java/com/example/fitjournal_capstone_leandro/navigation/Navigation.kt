@@ -27,6 +27,8 @@ import com.example.fitjournal_capstone_leandro.ui.exercises.UserExercisesViewMod
 import com.example.fitjournal_capstone_leandro.ui.exercises.UserExercisesScreen
 import com.example.fitjournal_capstone_leandro.ui.home.HomeScreen
 import com.example.fitjournal_capstone_leandro.ui.home.HomeViewModel
+import com.example.fitjournal_capstone_leandro.ui.routine.RoutineScreen
+import com.example.fitjournal_capstone_leandro.ui.routine.RoutineViewModel
 
 
 
@@ -35,6 +37,7 @@ fun AppNavigation(
     homeViewModel: HomeViewModel,
     userExercisesViewModel: UserExercisesViewModel,
     exerciseDetailsViewModel: ExerciseDetailsViewModel,
+    routineViewModel: RoutineViewModel,
     authViewModel: AuthViewModel,
     navController: NavHostController,
     tokenManager: TokenManager,
@@ -87,6 +90,11 @@ fun AppNavigation(
             ExerciseDetailsScreen(
                 viewModel = exerciseDetailsViewModel
             )
+        }
+
+        // Routine
+        composable(Routes.ROUTINE) {
+            RoutineScreen(viewModel = routineViewModel)
         }
 
         // Workout tab (placeholder)

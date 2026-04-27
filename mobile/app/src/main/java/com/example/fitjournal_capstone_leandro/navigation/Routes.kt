@@ -12,6 +12,7 @@ object Routes {
     const val CALENDAR = "calendar"
     const val EXERCISES = "exercises"
     const val EXERCISE_DETAILS = "exerciseDetails"
+    const val ROUTINE = "routine"
     const val WORKOUT = "workout"
     const val SETTINGS = "settings"
     const val PROFILE = "profile"

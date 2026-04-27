@@ -26,11 +26,13 @@ import com.example.fitjournal_capstone_leandro.data.local.TokenManager
 import com.example.fitjournal_capstone_leandro.data.network.service
 import com.example.fitjournal_capstone_leandro.data.repository.ExerciseRepository
 import com.example.fitjournal_capstone_leandro.data.repository.UserExercisesRepository
+import com.example.fitjournal_capstone_leandro.data.repository.UserRoutineRepository
 import com.example.fitjournal_capstone_leandro.navigation.AppNavigation
 import com.example.fitjournal_capstone_leandro.ui.auth.AuthViewModel
 import com.example.fitjournal_capstone_leandro.ui.auth.AuthViewModelFactory
 import com.example.fitjournal_capstone_leandro.ui.exercises.UserExercisesViewModel
 import com.example.fitjournal_capstone_leandro.ui.exercises.UserExercisesViewModelFactory
+import com.example.fitjournal_capstone_leandro.ui.routine.RoutineViewModelFactory
 import com.example.fitjournal_capstone_leandro.ui.shared.BottomNavBar
 import com.example.fitjournal_capstone_leandro.ui.shared.BottomNavItem
 import com.example.fitjournal_capstone_leandro.ui.shared.ProfileTopBar
@@ -39,7 +41,10 @@ import com.example.fitjournal_capstone_leandro.ui.stopwatch.StopwatchViewModel
 import androidx.compose.foundation.layout.navigationBarsPadding
 import com.example.fitjournal_capstone_leandro.data.network.RetrofitClient
 import com.example.fitjournal_capstone_leandro.navigation.Routes
+import com.example.fitjournal_capstone_leandro.ui.routine.RoutineViewModel
 import com.example.fitjournal_capstone_leandro.ui.theme.fitJournalCapstoneLeandroTheme
+import kotlin.getValue
+
 
 
 class MainActivity : ComponentActivity() {
@@ -87,6 +92,14 @@ class MainActivity : ComponentActivity() {
         UserExercisesViewModelFactory(userExercisesRepository)
     }
 
+    private val userRoutineRepository by lazy {
+        UserRoutineRepository(tokenManager)
+    }
+
+    private val routineViewModel: RoutineViewModel by viewModels {
+        RoutineViewModelFactory(userRoutineRepository)
+    }
+
     private val stopwatchViewModel: StopwatchViewModel by viewModels()
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -127,7 +140,7 @@ class MainActivity : ComponentActivity() {
                                 userName = userProfile?.user_first_name ?: "User",
                                 showBackButton = showBackButton,
                                 onBackClick = { navController.popBackStack() },
-                                onAccountClick = { navController.navigate(Routes.ACCOUNT) },
+                                onRoutineClick = { navController.navigate(Routes.ROUTINE) },
                                 onSettingsClick = { navController.navigate(Routes.SETTINGS) },
                                 onLogoutClick = {
                                     tokenManager.clearAll()
@@ -166,6 +179,7 @@ class MainActivity : ComponentActivity() {
                         homeViewModel = homeViewModel,
                         exerciseDetailsViewModel = exerciseDetailsViewModel,
                         userExercisesViewModel = userExercisesViewModel,
+                        routineViewModel = routineViewModel,
                         authViewModel = authViewModel,
                         navController = navController,
                         tokenManager = tokenManager,
