@@ -170,6 +170,40 @@ class UserExercisesViewModel(
             }
         }
     }
+
+
+    /**
+     * Update the weight of an exercise
+     */
+    fun updateExerciseWeight(exerciseId: Int, weight: Float?) {
+        viewModelScope.launch {
+            val result = repository.updateExerciseWeight(exerciseId, weight)
+            if (result.isSuccess) {
+                // Update local cache
+                allExercises = allExercises.map {
+                    if (it.exercise_id == exerciseId) it.copy(exercise_user_current_weight = weight)
+                    else it
+                }
+                val currentMuscle = _state.value.selectedMuscleGroup
+                _state.value = UserExercisesScreenState(
+                    uiState = UserExercisesUiState.Success,
+                    muscleGroups = _state.value.muscleGroups,
+                    selectedMuscleGroup = currentMuscle,
+                    exercises = if (currentMuscle != null) {
+                        allExercises.filter { it.exercise_muscle_group == currentMuscle }
+                            .sortedBy { it.exercise_name }
+                    } else emptyList(),
+                    updateTick = _state.value.updateTick + 1
+                )
+            } else {
+                _state.value = _state.value.copy(
+                    uiState = UserExercisesUiState.Error(
+                        result.exceptionOrNull()?.message ?: "Failed to update weight"
+                    )
+                )
+            }
+        }
+    }
 }
 
 class UserExercisesViewModelFactory(

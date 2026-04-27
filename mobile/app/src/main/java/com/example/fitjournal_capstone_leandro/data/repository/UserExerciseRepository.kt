@@ -2,6 +2,7 @@ package com.example.fitjournal_capstone_leandro.data.repository
 
 import com.example.fitjournal_capstone_leandro.data.local.TokenManager
 import com.example.fitjournal_capstone_leandro.data.model.CreateExerciseRequest
+import com.example.fitjournal_capstone_leandro.data.model.UpdateExerciseRequest
 import com.example.fitjournal_capstone_leandro.data.model.UserExercise
 import com.example.fitjournal_capstone_leandro.data.network.RetrofitClient
 
@@ -99,6 +100,24 @@ class UserExercisesRepository(
             } else {
                 Result.failure(Exception("Delete failed: ${response.code()}"))
             }
+        } catch (e: Exception) {
+            Result.failure(e)
+        }
+    }
+
+    /**
+     * Update the weight of an exercise
+     */
+    suspend fun updateExerciseWeight(exerciseId: Int, weight: Float?): Result<UserExercise> {
+        return try {
+            val userId = tokenManager.getUserId()
+            if (userId == -1) return Result.failure(Exception("No user logged in"))
+            val result = apiService.updateExercise(
+                exerciseId,
+                userId,
+                UpdateExerciseRequest(exercise_user_current_weight = weight)
+            )
+            Result.success(result)
         } catch (e: Exception) {
             Result.failure(e)
         }

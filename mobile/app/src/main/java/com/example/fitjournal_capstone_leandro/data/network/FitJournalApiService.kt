@@ -8,6 +8,7 @@ import com.example.fitjournal_capstone_leandro.data.model.RegisterRequest
 import com.example.fitjournal_capstone_leandro.data.model.RegisterResponse
 import com.example.fitjournal_capstone_leandro.data.model.RoutineResponse
 import com.example.fitjournal_capstone_leandro.data.model.RoutineSetupRequest
+import com.example.fitjournal_capstone_leandro.data.model.UpdateExerciseRequest
 import com.example.fitjournal_capstone_leandro.data.model.UserExercise
 import com.example.fitjournal_capstone_leandro.data.model.UserProfile
 import com.example.fitjournal_capstone_leandro.data.model.UserProfileUpdate
@@ -22,8 +23,6 @@ import retrofit2.http.POST
 import retrofit2.http.PUT
 import retrofit2.http.Path
 import retrofit2.Response
-
-
 
 
 /**
@@ -145,6 +144,20 @@ interface FitJournalApiService {
     suspend fun deleteRoutine(
         @Path("user_id") userId: Int
     ): Response<Unit>
+
+
+    /**
+     * Update an exercise
+     *
+     * PUT /exercises/{exercise_id}?user_id={id}
+     */
+    @PUT("exercises/{exercise_id}")
+    suspend fun updateExercise(
+        @Path("exercise_id") exerciseId: Int,
+        @Query("user_id") userId: Int,
+        @Body exercise: UpdateExerciseRequest
+    ): UserExercise
+
 
     // TODO: Add more endpoints as we build features
     // - GET /exercises?user_id={user_id}

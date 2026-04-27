@@ -5,9 +5,11 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.Delete
+import androidx.compose.material.icons.filled.Edit
 import androidx.compose.material3.*
 import androidx.compose.material3.SnackbarHost
 import androidx.compose.material3.SnackbarHostState
@@ -16,15 +18,17 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.Dialog
+import com.example.fitjournal_capstone_leandro.data.model.UserExercise
 import com.example.fitjournal_capstone_leandro.ui.theme.myCustomFont
 import kotlinx.coroutines.launch
 
-private val AccentYellow = Color(0xFFFFEB3B)
+private val AccentYellow = Color(0xFFFFFFFF)
 private val BackgroundDark = Color(0xFF1B1B1E)
 private val SurfaceDark = Color(0xFF2C2C2E)
 private val TextGray = Color(0xFF8E8E93)
@@ -33,11 +37,13 @@ private val TextGray = Color(0xFF8E8E93)
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun UserExercisesScreen(
-    viewModel: UserExercisesViewModel
+    viewModel: UserExercisesViewModel,
+    unitPreference: String = "metric"
 ) {
     val state by viewModel.state.collectAsState()
     var dropdownExpanded by remember { mutableStateOf(false) }
     var showAddDialog by remember { mutableStateOf(false) }
+    var exerciseToEdit by remember { mutableStateOf<UserExercise?>(null) }
     var exerciseToDelete by remember { mutableStateOf<Int?>(null) }
 
     val errorMessage = if (state.uiState is UserExercisesUiState.Error) {
@@ -181,6 +187,7 @@ fun UserExercisesScreen(
                                 horizontalArrangement = Arrangement.SpaceBetween,
                                 verticalAlignment = Alignment.CenterVertically
                             ) {
+                                // Name + weight
                                 Column(modifier = Modifier.weight(1f)) {
                                     Text(
                                         text = exercise.exercise_name,
@@ -188,22 +195,41 @@ fun UserExercisesScreen(
                                         color = Color.White,
                                         fontFamily = myCustomFont
                                     )
-                                    if (exercise.exercise_user_current_weight != null) {
-                                        Text(
-                                            text = "${exercise.exercise_user_current_weight} kg",
-                                            fontSize = 12.sp,
-                                            color = TextGray,
-                                            fontFamily = myCustomFont
-                                        )
+                                    // Weight display
+                                    val weightDisplay = if (exercise.exercise_user_current_weight != null) {
+                                        if (unitPreference == "imperial") {
+                                            val lbs = exercise.exercise_user_current_weight * 2.20462f
+                                            "${"%.1f".format(lbs)} lbs"
+                                        } else {
+                                            "${exercise.exercise_user_current_weight} kg"
+                                        }
+                                    } else {
+                                        if (unitPreference == "imperial") "0.0 lbs" else "0.0 kg"
                                     }
+                                    Text(
+                                        text = weightDisplay,
+                                        fontSize = 12.sp,
+                                        color = TextGray,
+                                        fontFamily = myCustomFont
+                                    )
                                 }
-                                IconButton(onClick = {
-                                    exerciseToDelete = exercise.exercise_id
-                                }) {
+
+                                // Edit icon
+                                IconButton(onClick = { exerciseToEdit = exercise }) {
+                                    Icon(
+                                        imageVector = Icons.Default.Edit,
+                                        contentDescription = "Edit weight",
+                                        tint = AccentYellow,
+                                        modifier = Modifier.size(20.dp)
+                                    )
+                                }
+
+                                // Delete icon
+                                IconButton(onClick = { exerciseToDelete = exercise.exercise_id }) {
                                     Icon(
                                         imageVector = Icons.Default.Delete,
                                         contentDescription = "Delete",
-                                        tint = Color(0xFF8E8E93)
+                                        tint = Color(0xFFFFFFFF)
                                     )
                                 }
                             }
@@ -289,6 +315,22 @@ fun UserExercisesScreen(
                     Text("Cancel", color = Color.White, fontFamily = myCustomFont)
                 }
             }
+        )
+    }
+    // Edit weight dialog
+    exerciseToEdit?.let { exercise ->
+        EditWeightDialog(
+            exerciseName = exercise.exercise_name,
+            currentWeight = exercise.exercise_user_current_weight,
+            unitPreference = unitPreference,
+            onConfirm = { weightKg ->
+                viewModel.updateExerciseWeight(exercise.exercise_id, weightKg)
+                exerciseToEdit = null
+                scope.launch {
+                    snackbarHostState.showSnackbar("Weight updated")
+                }
+            },
+            onDismiss = { exerciseToEdit = null }
         )
     }
 }
@@ -419,6 +461,94 @@ private fun AddExerciseDialog(
                         colors = ButtonDefaults.buttonColors(containerColor = AccentYellow)
                     ) {
                         Text("Add", color = Color.Black, fontFamily = myCustomFont)
+                    }
+                }
+            }
+        }
+    }
+}
+
+@Composable
+private fun EditWeightDialog(
+    exerciseName: String,
+    currentWeight: Float?,
+    unitPreference: String,
+    onConfirm: (Float?) -> Unit,
+    onDismiss: () -> Unit
+) {
+    // Convert current weight for display
+    val displayWeight = if (currentWeight != null && currentWeight > 0) {
+        if (unitPreference == "imperial") {
+            "%.1f".format(currentWeight * 2.20462f)
+        } else {
+            "$currentWeight"
+        }
+    } else ""
+
+    var weightInput by remember { mutableStateOf(displayWeight) }
+    val unit = if (unitPreference == "imperial") "lbs" else "kg"
+
+    Dialog(onDismissRequest = onDismiss) {
+        Card(
+            shape = RoundedCornerShape(12.dp),
+            colors = CardDefaults.cardColors(containerColor = SurfaceDark)
+        ) {
+            Column(modifier = Modifier.padding(20.dp)) {
+                Text(
+                    text = "Edit Weight",
+                    fontSize = 20.sp,
+                    color = Color.White,
+                    fontWeight = FontWeight.Bold,
+                    fontFamily = myCustomFont
+                )
+                Spacer(modifier = Modifier.height(4.dp))
+                Text(
+                    text = exerciseName,
+                    fontSize = 13.sp,
+                    color = TextGray,
+                    fontFamily = myCustomFont
+                )
+                Spacer(modifier = Modifier.height(16.dp))
+
+                OutlinedTextField(
+                    value = weightInput,
+                    onValueChange = { weightInput = it },
+                    label = { Text("Weight ($unit)", color = TextGray) },
+                    singleLine = true,
+                    keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Decimal),
+                    modifier = Modifier.fillMaxWidth(),
+                    colors = OutlinedTextFieldDefaults.colors(
+                        focusedTextColor = Color.White,
+                        unfocusedTextColor = Color.White,
+                        focusedBorderColor = AccentYellow,
+                        unfocusedBorderColor = TextGray,
+                        focusedContainerColor = BackgroundDark,
+                        unfocusedContainerColor = BackgroundDark,
+                    )
+                )
+
+                Spacer(modifier = Modifier.height(20.dp))
+
+                Row(
+                    modifier = Modifier.fillMaxWidth(),
+                    horizontalArrangement = Arrangement.End
+                ) {
+                    TextButton(onClick = onDismiss) {
+                        Text("Cancel", color = TextGray, fontFamily = myCustomFont)
+                    }
+                    Spacer(modifier = Modifier.width(8.dp))
+                    Button(
+                        onClick = {
+                            val input = weightInput.toFloatOrNull()
+                            // Convert back to kg if imperial
+                            val weightKg = if (unitPreference == "imperial" && input != null) {
+                                input / 2.20462f
+                            } else input
+                            onConfirm(weightKg)
+                        },
+                        colors = ButtonDefaults.buttonColors(containerColor = AccentYellow)
+                    ) {
+                        Text("Save", color = Color.Black, fontFamily = myCustomFont)
                     }
                 }
             }

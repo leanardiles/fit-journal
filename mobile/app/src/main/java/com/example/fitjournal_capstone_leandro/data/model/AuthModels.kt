@@ -127,6 +127,9 @@ data class CreateExerciseRequest(
     val comments: String? = null
 )
 
+data class UpdateExerciseRequest(
+    val exercise_user_current_weight: Float?
+)
 
 /**
  * A single day in the routine setup request
@@ -155,3 +158,4 @@ data class RoutineResponse(
     val days_per_week: Int,
     val routine_days: Map<String, List<String>>  // "1" -> ["Legs", "Back"]
 )
+
