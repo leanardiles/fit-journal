@@ -130,16 +130,18 @@ def register(user: schemas.UserCreate, db: Session = Depends(get_db)):
     db.commit()
     db.refresh(new_user)
     
-    # Copy all default exercises to user's exercises table
+    # Copy all default exercises to user's exercises table (bulk insert)
     default_exercises = db.query(models.DefaultExercise).all()
-    for default_ex in default_exercises:
-        user_exercise = models.Exercise(
+    user_exercises = [
+        models.Exercise(
             exercise_name=default_ex.exercise_name,
             exercise_muscle_group=default_ex.exercise_muscle_group,
             exercise_link=default_ex.exercise_link,
             user_id=new_user.user_id
         )
-        db.add(user_exercise)
+        for default_ex in default_exercises
+    ]
+    db.bulk_save_objects(user_exercises)
     
     db.commit()
     
