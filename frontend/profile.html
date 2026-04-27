@@ -79,7 +79,7 @@
             <!-- Height -->
             <div class="form-group">
                 <label for="height">Height (cm)</label>
-                <input type="number" id="height" class="input-block" placeholder="170" step="0.01" min="0">
+                <input type="text" id="height" class="input-block" placeholder="170" min="0">
             </div>
             
             <!-- Weight -->
@@ -112,8 +112,23 @@
                 document.getElementById('email').value = profile.user_email;
                 document.getElementById('name').value = profile.user_first_name || '';
                 document.getElementById('age').value = profile.user_age || '';
-                document.getElementById('height').value = profile.user_height || '';
-                document.getElementById('weight').value = profile.user_weight || '';
+                // Height display
+                if (profile.user_height) {
+                    if (profile.user_unit_preference === 'imperial') {
+                        document.getElementById('height').value = cmToFeetInches(profile.user_height).display;
+                    } else {
+                        document.getElementById('height').value = profile.user_height;
+                    }
+                }
+
+                // Weight display
+                if (profile.user_weight) {
+                    if (profile.user_unit_preference === 'imperial') {
+                        document.getElementById('weight').value = kgToLbs(profile.user_weight);
+                    } else {
+                        document.getElementById('weight').value = profile.user_weight;
+                    }
+                }
                 
                 // Set sex
                 if (profile.user_sex) {
@@ -175,16 +190,75 @@
         function updateUnitLabels(unit) {
             const heightLabel = document.querySelector('label[for="height"]');
             const weightLabel = document.querySelector('label[for="weight"]');
-            
-            if (unit === 'metric') {
+            const heightInput = document.getElementById('height');
+            const weightInput = document.getElementById('weight');
+
+            const currentHeight = heightInput.value;
+            const currentWeight = parseFloat(weightInput.value);
+
+            if (unit === 'imperial') {
+                heightLabel.textContent = "Height (ft'in\")";
+                weightLabel.textContent = 'Weight (lbs)';
+
+                // Convert height cm → feet'inches"
+                const cm = parseFloat(currentHeight);
+                if (!isNaN(cm) && cm > 0) {
+                    heightInput.value = cmToFeetInches(cm).display;
+                }
+                heightInput.placeholder = "5'11\"";
+
+                // Convert weight kg → lbs
+                if (!isNaN(currentWeight) && currentWeight > 0) {
+                    weightInput.value = kgToLbs(currentWeight);
+                }
+                weightInput.placeholder = '155';
+
+            } else {
                 heightLabel.textContent = 'Height (cm)';
                 weightLabel.textContent = 'Weight (kg)';
-            } else {
-                heightLabel.textContent = 'Height (feet)';
-                weightLabel.textContent = 'Weight (lbs)';
+
+                // Convert height feet'inches" → cm
+                const parsed = parseFeetInches(currentHeight);
+                if (parsed) {
+                    heightInput.value = feetInchesToCm(parsed.feet, parsed.inches);
+                }
+                heightInput.placeholder = '170';
+
+                // Convert weight lbs → kg
+                if (!isNaN(currentWeight) && currentWeight > 0) {
+                    weightInput.value = lbsToKg(currentWeight);
+                }
+                weightInput.placeholder = '70.5';
             }
         }    
 
+        // ========== UNIT CONVERSION HELPERS ==========
+        function cmToFeetInches(cm) {
+            const totalInches = cm / 2.54;
+            const feet = Math.floor(totalInches / 12);
+            const inches = Math.round(totalInches % 12);
+            return { feet, inches, display: `${feet}'${inches}"` };
+        }
+
+        function feetInchesToCm(feet, inches) {
+            return Math.round((feet * 12 + inches) * 2.54);
+        }
+
+        function kgToLbs(kg) {
+            return (kg * 2.20462).toFixed(1);
+        }
+
+        function lbsToKg(lbs) {
+            return (lbs / 2.20462).toFixed(1);
+        }
+
+        function parseFeetInches(str) {
+            const match = str.match(/(\d+)'(\d+)"/);
+            if (match) {
+                return { feet: parseInt(match[1]), inches: parseInt(match[2]) };
+            }
+            return null;
+        }
         // Form submission
         document.getElementById('profile-form').addEventListener('submit', async (e) => {
             e.preventDefault();
@@ -194,17 +268,32 @@
             const sex = document.getElementById('sex').value;
             const age = parseInt(document.getElementById('age').value) || null;
             const unit = document.getElementById('unit').value;
-            const height = parseFloat(document.getElementById('height').value) || null;
-            const weight = parseFloat(document.getElementById('weight').value) || null;
-            
+            // Convert values back to metric before saving
+            let heightToSave = null;
+            let weightToSave = null;
+
+            if (selectedUnit === 'imperial') {
+                const parsed = parseFeetInches(document.getElementById('height').value);
+                if (parsed) {
+                    heightToSave = feetInchesToCm(parsed.feet, parsed.inches);
+                }
+                const lbs = parseFloat(document.getElementById('weight').value);
+                if (!isNaN(lbs)) {
+                    weightToSave = parseFloat(lbsToKg(lbs));
+                }
+            } else {
+                heightToSave = parseFloat(document.getElementById('height').value) || null;
+                weightToSave = parseFloat(document.getElementById('weight').value) || null;
+            }
+
             // Prepare data
             const profileData = {
                 user_first_name: name || null,
                 user_sex: sex || null,
-                user_age: age,  // ✅ ADD THIS
+                user_age: age,
                 user_unit_preference: unit || 'metric',
-                user_height: height,
-                user_weight: weight
+                user_height: heightToSave,
+                user_weight: weightToSave
             };
             
             // Update profile
