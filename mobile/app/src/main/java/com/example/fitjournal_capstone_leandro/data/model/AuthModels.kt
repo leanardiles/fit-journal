@@ -76,6 +76,7 @@ data class UserProfile(
     val user_first_name: String?,
     val user_sex: String?,
     val user_age: Int?,
+    val user_timezone: String? = "America/New_York",
     val user_unit_preference: String?,
     val user_height: Float?,
     val user_weight: Float?
@@ -91,6 +92,7 @@ data class UserProfileUpdate(
     val user_first_name: String? = null,
     val user_sex: String? = null,
     val user_age: Int? = null,
+    val user_timezone: String? = null,
     val user_unit_preference: String? = null,
     val user_height: Float? = null,
     val user_weight: Float? = null

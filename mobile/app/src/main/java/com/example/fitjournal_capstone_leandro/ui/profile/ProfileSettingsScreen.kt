@@ -9,6 +9,8 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.*
+import androidx.compose.material3.ExposedDropdownMenuBox
+import androidx.compose.material3.ExposedDropdownMenuDefaults
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -24,6 +26,41 @@ private val BackgroundDark = Color(0xFF1B1B1E)
 private val SurfaceDark = Color(0xFF2C2C2E)
 private val TextGray = Color(0xFF8E8E93)
 
+private val timezones = listOf(
+    // Americas
+    "America/New_York" to "New York (UTC-5)",
+    "America/Chicago" to "Chicago (UTC-6)",
+    "America/Denver" to "Denver (UTC-7)",
+    "America/Los_Angeles" to "Los Angeles (UTC-8)",
+    "America/Toronto" to "Toronto (UTC-5)",
+    "America/Vancouver" to "Vancouver (UTC-8)",
+    "America/Sao_Paulo" to "São Paulo (UTC-3)",
+    "America/Argentina/Buenos_Aires" to "Buenos Aires (UTC-3)",
+    "America/Bogota" to "Bogotá (UTC-5)",
+    "America/Mexico_City" to "Mexico City (UTC-6)",
+    // Europe
+    "Europe/London" to "London (UTC+0)",
+    "Europe/Amsterdam" to "Amsterdam (UTC+1)",
+    "Europe/Paris" to "Paris (UTC+1)",
+    "Europe/Berlin" to "Berlin (UTC+1)",
+    "Europe/Madrid" to "Madrid (UTC+1)",
+    "Europe/Rome" to "Rome (UTC+1)",
+    "Europe/Moscow" to "Moscow (UTC+3)",
+    // Asia / Pacific
+    "Asia/Dubai" to "Dubai (UTC+4)",
+    "Asia/Kolkata" to "Kolkata (UTC+5:30)",
+    "Asia/Singapore" to "Singapore (UTC+8)",
+    "Asia/Tokyo" to "Tokyo (UTC+9)",
+    "Asia/Shanghai" to "Shanghai (UTC+8)",
+    "Australia/Sydney" to "Sydney (UTC+11)",
+    "Pacific/Auckland" to "Auckland (UTC+13)",
+    // Africa
+    "Africa/Cairo" to "Cairo (UTC+2)",
+    "Africa/Johannesburg" to "Johannesburg (UTC+2)",
+    "Africa/Lagos" to "Lagos (UTC+1)"
+)
+
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun ProfileSettingsScreen(
     viewModel: ProfileSettingsViewModel,
@@ -146,6 +183,56 @@ fun ProfileSettingsScreen(
                         colors = outlinedColors(),
                         shape = RoundedCornerShape(10.dp)
                     )
+
+                    Spacer(modifier = Modifier.height(16.dp))
+
+// Timezone
+                    var timezoneExpanded by remember { mutableStateOf(false) }
+                    val selectedTimezoneLabel = timezones.find { it.first == state.timezone }?.second ?: state.timezone
+
+                    ProfileLabel("Timezone")
+                    ExposedDropdownMenuBox(
+                        expanded = timezoneExpanded,
+                        onExpandedChange = { timezoneExpanded = it }
+                    ) {
+                        OutlinedTextField(
+                            value = selectedTimezoneLabel,
+                            onValueChange = {},
+                            readOnly = true,
+                            trailingIcon = {
+                                ExposedDropdownMenuDefaults.TrailingIcon(expanded = timezoneExpanded)
+                            },
+                            modifier = Modifier
+                                .menuAnchor()
+                                .fillMaxWidth(),
+                            colors = outlinedColors(),
+                            shape = RoundedCornerShape(10.dp)
+                        )
+
+                        ExposedDropdownMenu(
+                            expanded = timezoneExpanded,
+                            onDismissRequest = { timezoneExpanded = false },
+                            modifier = Modifier.background(SurfaceDark)
+                        ) {
+                            timezones.forEach { (value, label) ->
+                                DropdownMenuItem(
+                                    text = {
+                                        Text(
+                                            text = label,
+                                            color = Color.White,
+                                            fontFamily = myCustomFont,
+                                            fontSize = 14.sp
+                                        )
+                                    },
+                                    onClick = {
+                                        viewModel.updateTimezone(value)
+                                        timezoneExpanded = false
+                                    },
+                                    modifier = Modifier.background(SurfaceDark)
+                                )
+                            }
+                        }
+                    }
 
                     Spacer(modifier = Modifier.height(16.dp))
 

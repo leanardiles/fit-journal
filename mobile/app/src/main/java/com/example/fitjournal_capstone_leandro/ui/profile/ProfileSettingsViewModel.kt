@@ -25,6 +25,7 @@ data class ProfileSettingsScreenState(
     val name: String = "",
     val sex: String? = null,
     val age: String = "",
+    val timezone: String = "America/New_York",
     val unitPreference: String = "metric",
     val height: String = "",
     val weight: String = ""
@@ -55,6 +56,7 @@ class ProfileSettingsViewModel(
                     name = profile.user_first_name ?: "",
                     sex = profile.user_sex,
                     age = profile.user_age?.toString() ?: "",
+                    timezone = profile.user_timezone ?: "America/New_York",
                     unitPreference = profile.user_unit_preference ?: "metric",
                     height = profile.user_height?.toString() ?: "",
                     weight = profile.user_weight?.toString() ?: ""
@@ -79,6 +81,10 @@ class ProfileSettingsViewModel(
 
     fun updateAge(age: String) {
         _state.value = _state.value.copy(age = age)
+    }
+
+    fun updateTimezone(timezone: String) {
+        _state.value = _state.value.copy(timezone = timezone)
     }
 
     fun updateUnitPreference(unit: String) {
@@ -154,6 +160,7 @@ class ProfileSettingsViewModel(
                     user_first_name = s.name.ifBlank { null },
                     user_sex = s.sex,
                     user_age = s.age.toIntOrNull(),
+                    user_timezone = s.timezone,
                     user_unit_preference = s.unitPreference,
                     user_height = heightToSave,
                     user_weight = weightToSave
