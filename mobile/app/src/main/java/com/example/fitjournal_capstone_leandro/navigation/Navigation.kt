@@ -64,15 +64,6 @@ fun AppNavigation(
                 }
             )
         }
-        // Profile tab (placeholder)
-        composable(Routes.PROFILE) {
-            PlaceholderScreen(title = "Profile")
-        }
-
-        // Calendar tab (placeholder)
-        composable(Routes.CALENDAR) {
-            CalendarScreen()
-        }
 
         // Home tab
         composable(Routes.HOME) {
@@ -100,16 +91,24 @@ fun AppNavigation(
             RoutineScreen(viewModel = routineViewModel)
         }
 
+        composable(Routes.PROFILE_SETTINGS) {
+            ProfileSettingsScreen(
+                viewModel = profileSettingsViewModel,
+                onSaved = {
+                    authViewModel.fetchProfile()
+                    navController.popBackStack()
+                }
+            )
+        }
+
         // Workout tab (placeholder)
         composable(Routes.WORKOUT) {
             PlaceholderScreen(title = "Workout")
         }
 
-        composable(Routes.PROFILE_SETTINGS) {
-            ProfileSettingsScreen(
-                viewModel = profileSettingsViewModel,
-                onSaved = { navController.popBackStack() }
-            )
+        // Calendar tab (placeholder)
+        composable(Routes.CALENDAR) {
+            CalendarScreen()
         }
     }
 }
