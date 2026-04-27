@@ -247,11 +247,22 @@ fun UserExercisesScreen(
                     }
                 }
                 is UserExercisesUiState.Error -> {
-                    Text(
-                        text = uiState.message,
-                        color = Color(0xFFFF453A),
-                        fontFamily = myCustomFont
-                    )
+                    Column(
+                        horizontalAlignment = Alignment.CenterHorizontally
+                    ) {
+                        Text(
+                            text = uiState.message,
+                            color = Color(0xFFFF453A),
+                            fontFamily = myCustomFont
+                        )
+                        Spacer(modifier = Modifier.height(16.dp))
+                        Button(
+                            onClick = { viewModel.fetchMuscleGroups() },
+                            colors = ButtonDefaults.buttonColors(containerColor = AccentYellow)
+                        ) {
+                            Text("Retry", color = Color.Black, fontFamily = myCustomFont)
+                        }
+                    }
                 }
                 else -> {}
             }
