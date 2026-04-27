@@ -324,9 +324,7 @@
                 for (const [exerciseId, exerciseData] of exercisesToUpdate) {
                     const response = await fetch(`${API_URL}/exercises/${exerciseId}?user_id=${userId}`, {
                         method: 'PUT',
-                        headers: {
-                            'Content-Type': 'application/json',
-                        },
+                        headers: authHeaders(),
                         body: JSON.stringify({
                             exercise_name: exerciseData.exercise_name,
                             exercise_muscle_group: exerciseData.exercise_muscle_group,

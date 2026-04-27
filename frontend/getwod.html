@@ -149,16 +149,22 @@
                 document.getElementById('generate-wod-btn').disabled = true;
                 
                 // Get workout state (which day user is on)
-                const stateResponse = await fetch(`${API_URL}/workout/state/${userId}`);
+                const stateResponse = await fetch(`${API_URL}/workout/state/${userId}`, {
+                    headers: authHeaders()
+                });
                 const state = await stateResponse.json();
                 
                 // Get routine to know muscle groups for current day
-                const routineResponse = await fetch(`${API_URL}/routine/${userId}`);
+                const routineResponse = await fetch(`${API_URL}/routine/${userId}`, {
+                    headers: authHeaders()
+                });
                 const routine = await routineResponse.json();
                 const muscleGroupsForCurrentDay = routine.routine_days[state.current_day_number] || [];
                 
                 // Get selected exercises from calendar
-                const selectionsResponse = await fetch(`${API_URL}/next-workout/selections/${userId}`);
+                const selectionsResponse = await fetch(`${API_URL}/next-workout/selections/${userId}`, {
+                    headers: authHeaders()
+                });
                 const selections = await selectionsResponse.json();
                 
                 // Filter only selected exercises
@@ -385,9 +391,7 @@
                 
                 const response = await fetch(`${API_URL}/workout/complete/${userId}`, {
                     method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                    },
+                    headers: authHeaders(),
                     body: JSON.stringify({
                         day_number: currentWorkoutData.day_number,
                         exercises: exercises

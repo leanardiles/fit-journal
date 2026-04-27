@@ -99,7 +99,9 @@
             userRoutine = await getUserRoutine();
             
             // Get user's current workout state
-            const stateResponse = await fetch(`${API_URL}/workout/state/${userId}`);
+            const stateResponse = await fetch(`${API_URL}/workout/state/${userId}`, {
+                headers: authHeaders()
+            });
             const state = await stateResponse.json();
             currentUserDay = state.current_day_number;
             
@@ -403,7 +405,7 @@
             try {
                 const response = await fetch(`${API_URL}/next-workout/toggle`, {
                     method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
+                    headers: authHeaders(),
                     body: JSON.stringify({
                         user_id: userId,
                         exercise_id: exerciseId,
@@ -429,7 +431,8 @@
                 let totalSelected = 0;
                 for (const day of activeDays) {
                     const response = await fetch(`${API_URL}/next-workout/generate/${userId}?day_number=${day}`, {
-                        method: 'POST'
+                        method: 'POST',
+                        headers: authHeaders()
                     });
                     
                     if (response.ok) {
@@ -455,7 +458,8 @@
                 // Clear for all active days
                 for (const day of activeDays) {
                     await fetch(`${API_URL}/next-workout/clear/${userId}?day_number=${day}`, {
-                        method: 'DELETE'
+                        method: 'DELETE',
+                        headers: authHeaders()
                     });
                 }
                 

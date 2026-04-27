@@ -1,6 +1,7 @@
 # Standard library imports
 from datetime import date, datetime, timedelta
 from typing import List
+import pytz
 
 # Third-party imports
 from fastapi import FastAPI, Depends, HTTPException, status
@@ -245,7 +246,9 @@ def update_profile(user_id: int, profile: schemas.UserProfileUpdate, db: Session
     if profile.user_sex is not None:
         user.user_sex = profile.user_sex
     if profile.user_age is not None:
-        user.user_age = profile.user_age    
+        user.user_age = profile.user_age
+    if profile.user_timezone is not None:
+        user.user_timezone = profile.user_timezone        
     if profile.user_unit_preference is not None:
         user.user_unit_preference = profile.user_unit_preference
     if profile.user_height is not None:
@@ -332,16 +335,6 @@ def get_default_exercises(db: Session = Depends(get_db)):
     exercises = db.query(models.DefaultExercise).all()
     return exercises
 
-
-# ========== ROUTINE ROUTES (PLACEHOLDER) ==========
-
-@app.get("/routines")
-def get_routines(user_id: int, db: Session = Depends(get_db), current_user: models.User = Depends(get_current_user)):
-    """
-    Get all routines for a user (to be implemented)
-    """
-    routines = db.query(models.Routine).filter(models.Routine.user_id == user_id).all()
-    return routines
 
 
 # ========== ROUTINE ROUTES ==========
@@ -499,6 +492,15 @@ def validate_user_and_routine(user_id: int, db: Session):
     return user, routine
 
 
+def get_user_date(user_id: int, db: Session) -> date:
+    """Get current date in user's timezone"""
+    user = db.query(models.User).filter(models.User.user_id == user_id).first()
+    tz_str = user.user_timezone if user and user.user_timezone else 'America/New_York'
+    tz = pytz.timezone(tz_str)
+    result = datetime.now(tz).date()
+    print(f"DEBUG get_user_date: user_id={user_id}, tz={tz_str}, date={result}")
+    return result
+
 def create_workout_session(user_id: int, day_number: int, db: Session):
     """Create a new workout session with incremented order"""
     from datetime import date
@@ -514,7 +516,7 @@ def create_workout_session(user_id: int, day_number: int, db: Session):
     session = models.WorkoutSession(
         user_id=user_id,
         routine_day_number=day_number,
-        workout_date=date.today(),
+        workout_date=get_user_date(user_id, db),
         session_order=next_session_order
     )
     db.add(session)
@@ -540,7 +542,7 @@ def log_workout_exercises(session, exercises_data, user_id: int, day_number: int
             sets_completed=exercise_data.sets_completed,
             reps_completed=exercise_data.reps_completed,
             weight_used=exercise_data.weight_used,
-            workout_date=date.today(),
+            workout_date=get_user_date(user_id, db),
             session_id=session.session_id
         )
         db.add(log)
@@ -585,7 +587,7 @@ def cleanup_after_workout(user_id: int, completed_exercise_ids: list, current_da
     # Advance to next day
     next_day = (current_day % days_per_week) + 1
     state.current_day_number = next_day
-    state.last_workout_date = date.today()
+    state.last_workout_date = get_user_date(user_id, db)
 
 @app.get("/workout/logs/{user_id}")
 def get_workout_logs(user_id: int, limit: int = 30, db: Session = Depends(get_db), current_user: models.User = Depends(get_current_user)):

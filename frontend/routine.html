@@ -85,28 +85,23 @@
         
         // Load page data on DOMContentLoaded
         document.addEventListener('DOMContentLoaded', async () => {
-            // Load weight unit
-            await setWeightUnit();
-            
-            // Load exercises
-            await loadExercises();
-            displayExercises(currentMuscleGroup);
-            
+            // Load existing routine and display if it exists
+            const routine = await getUserRoutine();
+            if (routine && routine.days_per_week > 0) {
+                displayCurrentRoutine(routine);
+            }
+
             // Load user first name
             let userName = getCurrentUserFirstName();
-            
-            // If first name not in localStorage, fetch from profile
             if (!userName) {
-                const userId = getCurrentUserId();
                 const profile = await getUserProfile();
                 if (profile && profile.user_first_name) {
                     userName = profile.user_first_name;
                     localStorage.setItem('user_first_name', userName);
                 } else {
-                    userName = getCurrentUserEmail(); // Fallback to email if no first name
+                    userName = getCurrentUserEmail();
                 }
             }
-            
             if (userName) {
                 document.getElementById('user-email').textContent = userName;
             }

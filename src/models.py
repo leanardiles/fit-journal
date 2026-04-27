@@ -41,7 +41,8 @@ class User(Base):
     user_unit_preference = Column(Enum(UnitPreferenceEnum), default="metric")
     user_weight = Column(DECIMAL(5, 2), default=None)
     user_height = Column(Integer, default=None)
-    user_subscription = Column(Integer, default=0)  # TINYINT in MySQL
+    user_timezone = Column(String(50), default='America/New_York')
+    user_subscription = Column(Integer, default=0)  # TINYINT in MySQL, this is not being used for the time being
     user_is_active = Column(Boolean, default=True)
     user_created_at = Column(TIMESTAMP, server_default=func.current_timestamp())
     user_updated_at = Column(TIMESTAMP, server_default=func.current_timestamp(), onupdate=func.current_timestamp())

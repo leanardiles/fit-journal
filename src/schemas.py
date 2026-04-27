@@ -34,6 +34,7 @@ class UserProfileResponse(BaseModel):
     user_unit_preference: Optional[str] = "metric"
     user_height: Optional[float] = None
     user_weight: Optional[float] = None
+    user_timezone: Optional[str] = "America/New_York"
 
     class Config:
         from_attributes = True
@@ -45,6 +46,7 @@ class UserProfileUpdate(BaseModel):
     user_unit_preference: Optional[str] = None  # 'metric', 'imperial'
     user_height: Optional[float] = None
     user_weight: Optional[float] = None
+    user_timezone: Optional[str] = None
 
 # ========== EXERCISE SCHEMAS ==========
 
