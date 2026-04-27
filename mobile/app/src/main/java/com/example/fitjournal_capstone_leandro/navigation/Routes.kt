@@ -9,6 +9,7 @@ package com.example.fitjournal_capstone_leandro.navigation
 object Routes {
     const val LOGIN = "login"
     const val HOME = "home"
+    const val PROFILE_SETTINGS = "profile_settings"
     const val CALENDAR = "calendar"
     const val EXERCISES = "exercises"
     const val EXERCISE_DETAILS = "exerciseDetails"

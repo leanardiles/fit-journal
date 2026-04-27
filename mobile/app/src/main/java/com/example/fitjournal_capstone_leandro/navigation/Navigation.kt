@@ -27,6 +27,8 @@ import com.example.fitjournal_capstone_leandro.ui.exercises.UserExercisesViewMod
 import com.example.fitjournal_capstone_leandro.ui.exercises.UserExercisesScreen
 import com.example.fitjournal_capstone_leandro.ui.home.HomeScreen
 import com.example.fitjournal_capstone_leandro.ui.home.HomeViewModel
+import com.example.fitjournal_capstone_leandro.ui.profile.ProfileSettingsScreen
+import com.example.fitjournal_capstone_leandro.ui.profile.ProfileSettingsViewModel
 import com.example.fitjournal_capstone_leandro.ui.routine.RoutineScreen
 import com.example.fitjournal_capstone_leandro.ui.routine.RoutineViewModel
 
@@ -35,6 +37,7 @@ import com.example.fitjournal_capstone_leandro.ui.routine.RoutineViewModel
 @Composable
 fun AppNavigation(
     homeViewModel: HomeViewModel,
+    profileSettingsViewModel: ProfileSettingsViewModel,
     userExercisesViewModel: UserExercisesViewModel,
     exerciseDetailsViewModel: ExerciseDetailsViewModel,
     routineViewModel: RoutineViewModel,
@@ -102,9 +105,11 @@ fun AppNavigation(
             PlaceholderScreen(title = "Workout")
         }
 
-        // Settings tab (placeholder)
-        composable(Routes.SETTINGS) {
-            PlaceholderScreen(title = "Settings")
+        composable(Routes.PROFILE_SETTINGS) {
+            ProfileSettingsScreen(
+                viewModel = profileSettingsViewModel,
+                onSaved = { navController.popBackStack() }
+            )
         }
     }
 }

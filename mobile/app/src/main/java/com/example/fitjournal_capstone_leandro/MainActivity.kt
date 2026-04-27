@@ -41,6 +41,8 @@ import com.example.fitjournal_capstone_leandro.ui.stopwatch.StopwatchViewModel
 import androidx.compose.foundation.layout.navigationBarsPadding
 import com.example.fitjournal_capstone_leandro.data.network.RetrofitClient
 import com.example.fitjournal_capstone_leandro.navigation.Routes
+import com.example.fitjournal_capstone_leandro.ui.profile.ProfileSettingsViewModel
+import com.example.fitjournal_capstone_leandro.ui.profile.ProfileSettingsViewModelFactory
 import com.example.fitjournal_capstone_leandro.ui.routine.RoutineViewModel
 import com.example.fitjournal_capstone_leandro.ui.theme.fitJournalCapstoneLeandroTheme
 import kotlin.getValue
@@ -77,6 +79,10 @@ class MainActivity : ComponentActivity() {
     private val homeViewModel: HomeViewModel by viewModels {
         Log.d("FitJournal", "Creating HomeViewModel with repository")
         HomeViewModelFactory(repository)
+    }
+
+    private val profileSettingsViewModel: ProfileSettingsViewModel by viewModels {
+        ProfileSettingsViewModelFactory(tokenManager)
     }
 
     private val exerciseDetailsViewModel: ExerciseDetailsViewModel by viewModels {
@@ -141,7 +147,7 @@ class MainActivity : ComponentActivity() {
                                 showBackButton = showBackButton,
                                 onBackClick = { navController.popBackStack() },
                                 onRoutineClick = { navController.navigate(Routes.ROUTINE) },
-                                onSettingsClick = { navController.navigate(Routes.SETTINGS) },
+                                onSettingsClick = { navController.navigate(Routes.PROFILE_SETTINGS) },
                                 onLogoutClick = {
                                     tokenManager.clearAll()
                                     navController.navigate(Routes.LOGIN) {
@@ -177,6 +183,7 @@ class MainActivity : ComponentActivity() {
                 ) { innerPadding ->
                     AppNavigation(
                         homeViewModel = homeViewModel,
+                        profileSettingsViewModel = profileSettingsViewModel,
                         exerciseDetailsViewModel = exerciseDetailsViewModel,
                         userExercisesViewModel = userExercisesViewModel,
                         routineViewModel = routineViewModel,

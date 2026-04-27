@@ -83,6 +83,21 @@ data class UserProfile(
 
 
 /**
+ * Profile update request body
+ *
+ * What we send to: PUT /profile/{user_id}
+ */
+data class UserProfileUpdate(
+    val user_first_name: String? = null,
+    val user_sex: String? = null,
+    val user_age: Int? = null,
+    val user_unit_preference: String? = null,
+    val user_height: Float? = null,
+    val user_weight: Float? = null
+)
+
+
+/**
  * User exercise from backend
  *
  * What we receive from: GET /exercises?user_id={id}

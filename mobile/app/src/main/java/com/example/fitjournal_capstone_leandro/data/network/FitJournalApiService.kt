@@ -10,6 +10,7 @@ import com.example.fitjournal_capstone_leandro.data.model.RoutineResponse
 import com.example.fitjournal_capstone_leandro.data.model.RoutineSetupRequest
 import com.example.fitjournal_capstone_leandro.data.model.UserExercise
 import com.example.fitjournal_capstone_leandro.data.model.UserProfile
+import com.example.fitjournal_capstone_leandro.data.model.UserProfileUpdate
 import retrofit2.Retrofit
 import okhttp3.OkHttpClient
 import retrofit2.converter.gson.GsonConverterFactory
@@ -65,6 +66,18 @@ interface FitJournalApiService {
     @GET("profile/{user_id}")
     suspend fun getProfile(
         @Path("user_id") userId: Int
+    ): UserProfile
+
+
+    /**
+     * Update user profile
+     *
+     * PUT /profile/{user_id}
+     */
+    @PUT("profile/{user_id}")
+    suspend fun updateProfile(
+        @Path("user_id") userId: Int,
+        @Body profile: UserProfileUpdate
     ): UserProfile
 
 
