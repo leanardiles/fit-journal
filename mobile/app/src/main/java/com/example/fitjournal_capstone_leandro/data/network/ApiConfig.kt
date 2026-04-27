@@ -17,19 +17,38 @@ object ApiConfig {
     const val IS_DEVELOPMENT = true
 
     /**
+     * Physical device local IP
+     *
+     * Replace with your machine's IPv4 address when testing on a physical device
+     * Find it by running `ipconfig` in Git Bash and looking for IPv4 Address
+     */
+    private const val LOCAL_IP = "192.168.1.202"
+
+    /**
+     * Detects whether the app is running on an emulator or a physical device
+     */
+    fun isEmulator(): Boolean {
+        return (android.os.Build.FINGERPRINT.startsWith("generic")
+                || android.os.Build.FINGERPRINT.startsWith("unknown")
+                || android.os.Build.MODEL.contains("google_sdk")
+                || android.os.Build.MODEL.contains("Emulator")
+                || android.os.Build.MODEL.contains("Android SDK built for x86")
+                || android.os.Build.MANUFACTURER.contains("Genymotion")
+                || android.os.Build.BRAND.startsWith("generic")
+                || android.os.Build.DEVICE.startsWith("generic"))
+    }
+
+    /**
      * Base URL for API requests
      *
-     * Development: http://10.0.2.2:8000/
-     *   - 10.0.2.2 is Android emulator's way to access localhost
-     *   - Points to FastAPI running on your computer
-     *
-     * Production: https://api.fitjournal.com/
-     *   - Will point to deployed backend (AWS, Railway, etc.)
+     * Production:      https://api.fitjournal.com/
+     * Emulator:        http://10.0.2.2:8000/  (emulator alias for localhost)
+     * Physical device: http://<LOCAL_IP>:8000/ (your machine's local IP)
      */
-    val BASE_URL = if (IS_DEVELOPMENT) {
-        "http://10.0.2.2:8000/"  // Local development
-    } else {
-        "https://api.fitjournal.com/"  // Production (change when deployed)
+    val BASE_URL = when {
+        !IS_DEVELOPMENT -> "https://api.fitjournal.com/"
+        isEmulator() -> "http://10.0.2.2:8000/"
+        else -> "http://$LOCAL_IP:8000/"
     }
 
     /**
@@ -40,6 +59,5 @@ object ApiConfig {
         const val REGISTER = "register"
         const val GET_PROFILE = "profile/{user_id}"
         const val GET_EXERCISES = "exercises"
-        // Add more endpoints as we build them
     }
 }
