@@ -3,6 +3,7 @@ package com.example.fitjournal_capstone_leandro.ui.routine
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
+import com.example.fitjournal_capstone_leandro.data.repository.IUserRoutineRepository
 import com.example.fitjournal_capstone_leandro.data.repository.UserRoutineRepository
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -27,7 +28,7 @@ data class RoutineScreenState(
 )
 
 class RoutineViewModel(
-    private val repository: UserRoutineRepository
+    private val repository: IUserRoutineRepository
 ) : ViewModel() {
 
     private val _state = MutableStateFlow(RoutineScreenState())
@@ -157,7 +158,7 @@ class RoutineViewModel(
 }
 
 class RoutineViewModelFactory(
-    private val repository: UserRoutineRepository
+    private val repository: IUserRoutineRepository
 ) : ViewModelProvider.Factory {
     @Suppress("UNCHECKED_CAST")
     override fun <T : ViewModel> create(modelClass: Class<T>): T {

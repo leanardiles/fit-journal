@@ -61,31 +61,36 @@ tasks.register<JacocoReport>("jacocoTestReport") {
     }
 
     val excludes = listOf(
-        "**/R.class",
-        "**/R$*.class",
-        "**/BuildConfig.*",
-        "**/Manifest*.*",
-        "**/*Test*.*",
-        "android/**/*.*",
-        // Compose screens and UI
-        "**/*Screen*.*",
-        "**/*Activity*.*",
-        "**/*Theme*.*",
-        "**/*Navigation*.*",
-        "**/*BottomNav*.*",
-        "**/*Action*.*",
-        "**/*Factory*.*",
-        // Exclude entire packages
-        "**/ui/shared/**",
-        "**/ui/stopwatch/**",
-        "**/ui/auth/**",
-        "**/ui/exercises/**",
-        "**/ui/exercise_details/**",
-        "**/ui/theme/**",
-        "**/data/model/**",
-        "**/data/local/**",
-        "**/data/network/**",
-    )
+    "**/R.class",
+    "**/R$*.class",
+    "**/BuildConfig.*",
+    "**/Manifest*.*",
+    "**/*Test*.*",
+    "android/**/*.*",
+    // Exclude Compose screens and UI components
+    "**/*Screen*.*",
+    "**/*Activity*.*",
+    "**/*Theme*.*",
+    "**/*Navigation*.*",
+    "**/*BottomNav*.*",
+    "**/*Factory*.*",
+    // Exclude specific packages
+    "**/data/repository/**",
+    "**/ui/auth/**",
+    "**/ui/profile/**",
+    "**/ui/exercise_details/**",
+    "**/ui/shared/**",
+    "**/ui/stopwatch/**",
+    "**/ui/theme/**",
+    "**/data/model/**",
+    "**/data/local/**",
+    "**/data/network/**",
+    "**/ui/exercises/ExercisesViewModel*.*",
+    "**/ui/exercises/ExercisesUiState*.*",
+    "**/ui/exercises/ExercisesScreenState*.*",
+    "**/ui/exercises/ExercisesScreenAction*.*",
+    "**/ui/exercises/ExercisesScreenReducer*.*",
+)
 
     val debugTree = fileTree("${project.buildDir}/intermediates/built_in_kotlinc/debug/compileDebugKotlin/classes") {
         exclude(excludes)

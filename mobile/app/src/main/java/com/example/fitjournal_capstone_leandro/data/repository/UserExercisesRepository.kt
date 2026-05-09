@@ -11,13 +11,13 @@ import com.example.fitjournal_capstone_leandro.data.network.RetrofitClient
  */
 class UserExercisesRepository(
     private val tokenManager: TokenManager
-) {
+) : IUserExercisesRepository {
     private val apiService = RetrofitClient.apiService
 
     /**
      * Get all exercises for the logged-in user
      */
-    suspend fun getExercises(): Result<List<UserExercise>> {
+    override suspend fun getExercises(): Result<List<UserExercise>> {
         return try {
             val userId = tokenManager.getUserId()
             if (userId == -1) return Result.failure(Exception("No user logged in"))
@@ -31,7 +31,7 @@ class UserExercisesRepository(
     /**
      * Get distinct muscle groups from user's exercises
      */
-    suspend fun getMuscleGroups(): Result<List<String>> {
+    override suspend fun getMuscleGroups(): Result<List<String>> {
         return try {
             val result = getExercises()
             if (result.isFailure) return Result.failure(result.exceptionOrNull()!!)
@@ -48,7 +48,7 @@ class UserExercisesRepository(
     /**
      * Get exercises filtered by muscle group
      */
-    suspend fun getExercisesByMuscle(muscleGroup: String): Result<List<UserExercise>> {
+    override suspend fun getExercisesByMuscle(muscleGroup: String): Result<List<UserExercise>> {
         return try {
             val result = getExercises()
             if (result.isFailure) return Result.failure(result.exceptionOrNull()!!)
@@ -63,12 +63,12 @@ class UserExercisesRepository(
     /**
      * Create a new exercise
      */
-    suspend fun createExercise(
+    override suspend fun createExercise(
         name: String,
         muscleGroup: String,
-        weight: Float? = null,
-        link: String? = null,
-        comments: String? = null
+        weight: Float?,
+        link: String?,
+        comments: String?
     ): Result<UserExercise> {
         return try {
             val userId = tokenManager.getUserId()
@@ -90,7 +90,7 @@ class UserExercisesRepository(
     /**
      * Delete an exercise
      */
-    suspend fun deleteExercise(exerciseId: Int): Result<Unit> {
+    override suspend fun deleteExercise(exerciseId: Int): Result<Unit> {
         return try {
             val userId = tokenManager.getUserId()
             if (userId == -1) return Result.failure(Exception("No user logged in"))
@@ -108,7 +108,7 @@ class UserExercisesRepository(
     /**
      * Update the weight of an exercise
      */
-    suspend fun updateExerciseWeight(exerciseId: Int, weight: Float?): Result<UserExercise> {
+    override suspend fun updateExerciseWeight(exerciseId: Int, weight: Float?): Result<UserExercise> {
         return try {
             val userId = tokenManager.getUserId()
             if (userId == -1) return Result.failure(Exception("No user logged in"))

@@ -8,13 +8,13 @@ import com.example.fitjournal_capstone_leandro.data.network.RetrofitClient
 
 class UserRoutineRepository(
     private val tokenManager: TokenManager
-) {
+) : IUserRoutineRepository {
     private val apiService = RetrofitClient.apiService
 
     /**
      * Get user's current routine
      */
-    suspend fun getRoutine(): Result<RoutineResponse> {
+    override suspend fun getRoutine(): Result<RoutineResponse> {
         return try {
             val userId = tokenManager.getUserId()
             if (userId == -1) return Result.failure(Exception("No user logged in"))
@@ -28,7 +28,7 @@ class UserRoutineRepository(
     /**
      * Save user's routine
      */
-    suspend fun saveRoutine(daysPerWeek: Int, routineDays: Map<Int, List<String>>): Result<Unit> {
+    override suspend fun saveRoutine(daysPerWeek: Int, routineDays: Map<Int, List<String>>): Result<Unit> {
         return try {
             val userId = tokenManager.getUserId()
             if (userId == -1) return Result.failure(Exception("No user logged in"))
@@ -52,7 +52,7 @@ class UserRoutineRepository(
     /**
      * Delete user's routine
      */
-    suspend fun deleteRoutine(): Result<Unit> {
+    override suspend fun deleteRoutine(): Result<Unit> {
         return try {
             val userId = tokenManager.getUserId()
             if (userId == -1) return Result.failure(Exception("No user logged in"))

@@ -16,6 +16,9 @@ python-dotenv==1.0.1
 passlib[bcrypt]==1.7.4
 cryptography==43.0.3
 
+# Timezone Support
+pytz==2026.1.post1
+
 # Data Validation
 pydantic[email]==2.10.3
 pydantic-settings==2.6.1

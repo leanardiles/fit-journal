@@ -4,6 +4,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
 import com.example.fitjournal_capstone_leandro.data.model.UserExercise
+import com.example.fitjournal_capstone_leandro.data.repository.IUserExercisesRepository
 import com.example.fitjournal_capstone_leandro.data.repository.UserExercisesRepository
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -26,7 +27,7 @@ data class UserExercisesScreenState(
 )
 
 class UserExercisesViewModel(
-    private val repository: UserExercisesRepository
+    private val repository: IUserExercisesRepository
 ) : ViewModel() {
 
     private val _state = MutableStateFlow(UserExercisesScreenState())
