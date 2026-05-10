@@ -35,7 +35,11 @@ object ApiConfig {
                 || android.os.Build.MODEL.contains("Android SDK built for x86")
                 || android.os.Build.MANUFACTURER.contains("Genymotion")
                 || android.os.Build.BRAND.startsWith("generic")
-                || android.os.Build.DEVICE.startsWith("generic"))
+                || android.os.Build.DEVICE.startsWith("generic")
+                || android.os.Build.PRODUCT.contains("sdk")
+                || android.os.Build.PRODUCT.contains("emulator")
+                || android.os.Build.HARDWARE.contains("goldfish")
+                || android.os.Build.HARDWARE.contains("ranchu"))
     }
 
     /**
@@ -49,6 +53,8 @@ object ApiConfig {
         !IS_DEVELOPMENT -> "https://api.fitjournal.com/"
         isEmulator() -> "http://10.0.2.2:8000/"
         else -> "http://$LOCAL_IP:8000/"
+    }.also {
+        android.util.Log.d("ApiConfig", "isEmulator=${isEmulator()}, BASE_URL=$it")
     }
 
     /**

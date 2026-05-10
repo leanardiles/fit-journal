@@ -83,7 +83,7 @@ fun LoginScreen(
         Spacer(modifier = Modifier.height(8.dp))
 
         Text(
-            text = "The easiest way to log your workouts.",
+            text = "The easiest way to log your workouts",
             fontSize = 14.sp,
             color = TextGray
         )
