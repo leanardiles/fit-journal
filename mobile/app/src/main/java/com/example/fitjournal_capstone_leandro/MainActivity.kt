@@ -24,6 +24,7 @@ import androidx.navigation.compose.rememberNavController
 import com.example.fitjournal_capstone_leandro.data.local.FitJournalDatabase
 import com.example.fitjournal_capstone_leandro.data.local.TokenManager
 import com.example.fitjournal_capstone_leandro.data.network.service
+import com.example.fitjournal_capstone_leandro.data.repository.DashboardRepository
 import com.example.fitjournal_capstone_leandro.data.repository.ExerciseRepository
 import com.example.fitjournal_capstone_leandro.data.repository.UserExercisesRepository
 import com.example.fitjournal_capstone_leandro.data.repository.UserRoutineRepository
@@ -32,6 +33,8 @@ import com.example.fitjournal_capstone_leandro.ui.auth.AuthViewModel
 import com.example.fitjournal_capstone_leandro.ui.auth.AuthViewModelFactory
 import com.example.fitjournal_capstone_leandro.ui.exercises.UserExercisesViewModel
 import com.example.fitjournal_capstone_leandro.ui.exercises.UserExercisesViewModelFactory
+import com.example.fitjournal_capstone_leandro.ui.home.DashboardViewModel
+import com.example.fitjournal_capstone_leandro.ui.home.DashboardViewModelFactory
 import com.example.fitjournal_capstone_leandro.ui.routine.RoutineViewModelFactory
 import com.example.fitjournal_capstone_leandro.ui.shared.BottomNavBar
 import com.example.fitjournal_capstone_leandro.ui.shared.BottomNavItem
@@ -46,7 +49,6 @@ import com.example.fitjournal_capstone_leandro.ui.profile.ProfileSettingsViewMod
 import com.example.fitjournal_capstone_leandro.ui.routine.RoutineViewModel
 import com.example.fitjournal_capstone_leandro.ui.theme.fitJournalCapstoneLeandroTheme
 import kotlin.getValue
-
 
 
 class MainActivity : ComponentActivity() {
@@ -104,6 +106,14 @@ class MainActivity : ComponentActivity() {
 
     private val routineViewModel: RoutineViewModel by viewModels {
         RoutineViewModelFactory(userRoutineRepository)
+    }
+
+    private val dashboardRepository by lazy {
+        DashboardRepository(tokenManager)
+    }
+
+    private val dashboardViewModel: DashboardViewModel by viewModels {
+        DashboardViewModelFactory(dashboardRepository)
     }
 
     private val stopwatchViewModel: StopwatchViewModel by viewModels()
@@ -183,6 +193,7 @@ class MainActivity : ComponentActivity() {
                 ) { innerPadding ->
                     AppNavigation(
                         homeViewModel = homeViewModel,
+                        dashboardViewModel = dashboardViewModel,
                         profileSettingsViewModel = profileSettingsViewModel,
                         exerciseDetailsViewModel = exerciseDetailsViewModel,
                         userExercisesViewModel = userExercisesViewModel,

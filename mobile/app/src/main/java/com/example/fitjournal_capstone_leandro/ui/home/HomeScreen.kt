@@ -1,10 +1,11 @@
 package com.example.fitjournal_capstone_leandro.ui.home
 
 import androidx.compose.foundation.background
-import androidx.compose.foundation.clickable
+import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
@@ -13,118 +14,196 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.example.fitjournal_capstone_leandro.data.model.RoutineResponse
 import com.example.fitjournal_capstone_leandro.ui.theme.myCustomFont
-import androidx.compose.foundation.Image
-import androidx.compose.ui.draw.alpha
-import androidx.compose.ui.res.painterResource
-import com.example.fitjournal_capstone_leandro.R
 
+private val BackgroundDark = Color(0xFF1B1B1E)
+private val SurfaceDark = Color(0xFF2C2C2E)
+private val AccentBlue = Color(0xFF5595CE)
+private val AccentYellow = Color(0xFFFFEB3B)
 
 @Composable
 fun HomeScreen(
     viewModel: HomeViewModel,
-    onMuscleGroupClick: ((String) -> Unit)? = null
+    dashboardViewModel: DashboardViewModel,
+    onMuscleGroupClick: ((String) -> Unit)? = null,
+    onEditRoutineClick: () -> Unit = {}
 ) {
-    // Observe the MVI state
-    val state by viewModel.state.collectAsState()
-
-    // Fetch muscle groups when screen loads
-    LaunchedEffect(Unit) {
-        viewModel.processAction(HomeScreenAction.FetchMuscleGroups)
-    }
+    val dashboardState by dashboardViewModel.state.collectAsState()
 
     Column(
         modifier = Modifier
             .fillMaxSize()
-            .background(Color(0xFF1B1B1E))
+            .background(BackgroundDark)
             .padding(16.dp)
+            .verticalScroll(rememberScrollState())
     ) {
-        Spacer(modifier = Modifier.height(32.dp))
+        Spacer(modifier = Modifier.height(16.dp))
 
-
-        // Placeholder for Dashboard - Future stats will go here
+        Text(
+            text = "Dashboard 💪",
+            fontSize = 28.sp,
+            fontWeight = FontWeight.Bold,
+            color = Color.White,
+            fontFamily = myCustomFont
+        )
 
         Spacer(modifier = Modifier.height(16.dp))
 
-        // Render UI based on current UiState
-        when (state.uiState) {
-            is HomeUiState.Loading -> {
-                Column(
-                    modifier = Modifier.fillMaxSize(),
-                    horizontalAlignment = Alignment.CenterHorizontally,
-                    verticalArrangement = Arrangement.Center
+        when (dashboardState.uiState) {
+            is DashboardUiState.Loading -> {
+                Box(
+                    modifier = Modifier.fillMaxWidth().padding(32.dp),
+                    contentAlignment = Alignment.Center
                 ) {
-                    CircularProgressIndicator(color = Color(0xFFFFEB3B))
-                    Spacer(modifier = Modifier.height(16.dp))
-                    Text("Loading muscle groups...", color = Color.White)
+                    CircularProgressIndicator(color = AccentYellow)
                 }
             }
 
-            is HomeUiState.Success -> {
-                Column(
-                    modifier = Modifier.fillMaxSize(),
-                    horizontalAlignment = Alignment.CenterHorizontally,
-                    verticalArrangement = Arrangement.Center
-                ) {
-                    Text(
-                        text = "Dashboard",
-                        fontSize = 28.sp,
-                        color = Color.White,
-                        fontWeight = FontWeight.Bold,
-                        fontFamily = myCustomFont
-                    )
-                    Spacer(modifier = Modifier.height(24.dp))
-                    Image(
-                        painter = painterResource(id = R.drawable.logo_alone),
-                        contentDescription = "FitJournal Logo",
-                        modifier = Modifier.size(200.dp).alpha(0.2f)
-                    )
+            is DashboardUiState.Error -> {
+                Text(
+                    text = (dashboardState.uiState as DashboardUiState.Error).message,
+                    color = Color.Red
+                )
+                Spacer(modifier = Modifier.height(8.dp))
+                Button(onClick = { dashboardViewModel.loadDashboard() }) {
+                    Text("Retry")
                 }
             }
 
-            is HomeUiState.Error -> {
-                Column(
-                    modifier = Modifier.fillMaxSize(),
-                    horizontalAlignment = Alignment.CenterHorizontally,
-                    verticalArrangement = Arrangement.Center
+            is DashboardUiState.Success -> {
+                // Module 1: Quick Stats
+                QuickStatsCard(workoutsThisWeek = dashboardState.workoutsThisWeek)
+
+                Spacer(modifier = Modifier.height(16.dp))
+
+                // Module 2: Current Routine
+                CurrentRoutineCard(
+                    routine = dashboardState.routine,
+                    currentDay = dashboardState.currentDay,
+                    onEditClick = onEditRoutineClick
+                )
+            }
+        }
+    }
+}
+
+// ========================================
+// MODULE 1: Quick Stats
+// ========================================
+
+@Composable
+fun QuickStatsCard(workoutsThisWeek: Int) {
+    Card(
+        modifier = Modifier.fillMaxWidth(),
+        shape = RoundedCornerShape(12.dp),
+        colors = CardDefaults.cardColors(containerColor = SurfaceDark)
+    ) {
+        Column(modifier = Modifier.padding(16.dp)) {
+            Text(
+                text = "Quick Stats",
+                fontSize = 18.sp,
+                fontWeight = FontWeight.Bold,
+                color = Color.White,
+                fontFamily = myCustomFont
+            )
+            Spacer(modifier = Modifier.height(8.dp))
+            Text(
+                text = "Workouts completed this week: $workoutsThisWeek",
+                fontSize = 14.sp,
+                color = Color.LightGray
+            )
+        }
+    }
+}
+
+// ========================================
+// MODULE 2: Current Routine
+// ========================================
+
+@Composable
+fun CurrentRoutineCard(
+    routine: RoutineResponse?,
+    currentDay: Int,
+    onEditClick: () -> Unit
+) {
+    Card(
+        modifier = Modifier.fillMaxWidth(),
+        shape = RoundedCornerShape(12.dp),
+        colors = CardDefaults.cardColors(containerColor = SurfaceDark)
+    ) {
+        Column(modifier = Modifier.padding(16.dp)) {
+            Text(
+                text = "Your Current Routine",
+                fontSize = 18.sp,
+                fontWeight = FontWeight.Bold,
+                color = Color.White,
+                fontFamily = myCustomFont
+            )
+
+            Spacer(modifier = Modifier.height(8.dp))
+
+            if (routine == null || routine.days_per_week == 0) {
+                Text(
+                    text = "No routine set up yet.",
+                    color = Color.Gray,
+                    fontSize = 14.sp
+                )
+                Spacer(modifier = Modifier.height(8.dp))
+                Button(
+                    onClick = onEditClick,
+                    colors = ButtonDefaults.buttonColors(containerColor = AccentBlue)
                 ) {
-                    Text(
-                        "Error",
-                        fontSize = 24.sp,
-                        color = Color.White,
-                        fontWeight = FontWeight.Bold
-                    )
-                    Spacer(modifier = Modifier.height(16.dp))
-                    Text(
-                        state.errorMessage ?: "Unknown error",
-                        color = Color.Gray
-                    )
-                    Spacer(modifier = Modifier.height(24.dp))
-                    Button(
-                        onClick = {
-                            // Trigger retry action
-                            viewModel.processAction(HomeScreenAction.FetchMuscleGroups)
-                        }
+                    Text("Create Routine", color = Color.White)
+                }
+            } else {
+                Text(
+                    text = "Training ${routine.days_per_week} ${if (routine.days_per_week == 1) "day" else "days"} per week",
+                    color = Color.LightGray,
+                    fontSize = 14.sp
+                )
+
+                Spacer(modifier = Modifier.height(12.dp))
+
+                // Day rows
+                routine.routine_days.entries.sortedBy { it.key }.forEach { (day, muscles) ->
+                    val isCurrentDay = day.toIntOrNull() == currentDay
+                    Row(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(vertical = 4.dp)
+                            .background(Color(0xFF3A3A3C), RoundedCornerShape(8.dp))
+                            .then(
+                                if (isCurrentDay) Modifier.border(
+                                    width = 2.dp,
+                                    color = Color.White,
+                                    shape = RoundedCornerShape(8.dp)
+                                ) else Modifier
+                            )
+                            .padding(horizontal = 12.dp, vertical = 8.dp)
                     ) {
-                        Text("Retry")
+                        Text(
+                            text = "Day $day: ",
+                            color = if (isCurrentDay) Color.White else Color.LightGray,
+                            fontWeight = if (isCurrentDay) FontWeight.Bold else FontWeight.Normal,
+                            fontSize = 14.sp
+                        )
+                        Text(
+                            text = muscles.joinToString(", "),
+                            color = if (isCurrentDay) Color.White else Color.LightGray,
+                            fontSize = 14.sp
+                        )
                     }
                 }
-            }
 
-            is HomeUiState.Empty -> {
-                Column(
-                    modifier = Modifier.fillMaxSize(),
-                    horizontalAlignment = Alignment.CenterHorizontally,
-                    verticalArrangement = Arrangement.Center
+                Spacer(modifier = Modifier.height(12.dp))
+
+                OutlinedButton(
+                    onClick = onEditClick,
+                    border = ButtonDefaults.outlinedButtonBorder,
+                    shape = RoundedCornerShape(8.dp)
                 ) {
-                    Text(
-                        "📭 No Muscle Groups",
-                        fontSize = 24.sp,
-                        color = Color.White,
-                        fontWeight = FontWeight.Bold
-                    )
-                    Spacer(modifier = Modifier.height(16.dp))
-                    Text("No muscle groups found", color = Color.Gray)
+                    Text("Edit Routine", color = Color.White)
                 }
             }
         }

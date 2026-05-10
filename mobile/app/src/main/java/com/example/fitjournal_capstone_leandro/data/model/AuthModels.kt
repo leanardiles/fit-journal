@@ -161,3 +161,18 @@ data class RoutineResponse(
     val routine_days: Map<String, List<String>>  // "1" -> ["Legs", "Back"]
 )
 
+data class WorkoutSession(
+    val session_id: Int,
+    val user_id: Int,
+    val routine_day_number: Int,
+    val workout_date: String,
+    val session_order: Int
+)
+
+data class WorkoutState(
+    val state_id: Int,
+    val user_id: Int,
+    val current_day_number: Int,
+    val last_workout_date: String?
+)
+

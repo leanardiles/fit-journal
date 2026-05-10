@@ -27,6 +27,7 @@ import com.example.fitjournal_capstone_leandro.ui.exercise_details.ExerciseDetai
 import com.example.fitjournal_capstone_leandro.ui.exercise_details.ExerciseDetailsScreen
 import com.example.fitjournal_capstone_leandro.ui.exercises.UserExercisesViewModel
 import com.example.fitjournal_capstone_leandro.ui.exercises.UserExercisesScreen
+import com.example.fitjournal_capstone_leandro.ui.home.DashboardViewModel
 import com.example.fitjournal_capstone_leandro.ui.home.HomeScreen
 import com.example.fitjournal_capstone_leandro.ui.home.HomeViewModel
 import com.example.fitjournal_capstone_leandro.ui.profile.ProfileSettingsScreen
@@ -39,6 +40,7 @@ import com.example.fitjournal_capstone_leandro.ui.routine.RoutineViewModel
 @Composable
 fun AppNavigation(
     homeViewModel: HomeViewModel,
+    dashboardViewModel: DashboardViewModel,
     profileSettingsViewModel: ProfileSettingsViewModel,
     userExercisesViewModel: UserExercisesViewModel,
     exerciseDetailsViewModel: ExerciseDetailsViewModel,
@@ -71,8 +73,8 @@ fun AppNavigation(
         composable(Routes.HOME) {
             HomeScreen(
                 viewModel = homeViewModel,
-                onMuscleGroupClick = { muscle ->
-                }
+                dashboardViewModel = dashboardViewModel,
+                onEditRoutineClick = { navController.navigate(Routes.ROUTINE) }
             )
         }
 

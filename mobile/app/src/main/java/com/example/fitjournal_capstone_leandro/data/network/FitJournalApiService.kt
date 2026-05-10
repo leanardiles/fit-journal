@@ -12,6 +12,8 @@ import com.example.fitjournal_capstone_leandro.data.model.UpdateExerciseRequest
 import com.example.fitjournal_capstone_leandro.data.model.UserExercise
 import com.example.fitjournal_capstone_leandro.data.model.UserProfile
 import com.example.fitjournal_capstone_leandro.data.model.UserProfileUpdate
+import com.example.fitjournal_capstone_leandro.data.model.WorkoutSession
+import com.example.fitjournal_capstone_leandro.data.model.WorkoutState
 import retrofit2.Retrofit
 import okhttp3.OkHttpClient
 import retrofit2.converter.gson.GsonConverterFactory
@@ -158,11 +160,16 @@ interface FitJournalApiService {
         @Body exercise: UpdateExerciseRequest
     ): UserExercise
 
+    @GET("workout/sessions/{user_id}")
+    suspend fun getWorkoutSessions(
+        @Path("user_id") userId: Int,
+        @Query("limit") limit: Int
+    ): List<WorkoutSession>
 
-    // TODO: Add more endpoints as we build features
-    // - GET /exercises?user_id={user_id}
-    // - POST /routines
-    // - etc.
+    @GET("workout/state/{user_id}")
+    suspend fun getWorkoutState(
+        @Path("user_id") userId: Int
+    ): WorkoutState
 }
 
 
