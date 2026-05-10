@@ -10,6 +10,15 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
 
+interface IAuthViewModel {
+    val uiState: StateFlow<AuthUiState>
+    val userProfile: StateFlow<UserProfile?>
+    fun login(email: String, password: String)
+    fun register(email: String, password: String)
+    fun resetState()
+    fun fetchProfile()
+}
+
 /**
  * UI state for the Login/Register screen
  */
@@ -28,15 +37,15 @@ sealed class AuthUiState {
  */
 class AuthViewModel(
     private val authRepository: AuthRepository
-) : ViewModel() {
+) : ViewModel(), IAuthViewModel {
 
     private val _uiState = MutableStateFlow<AuthUiState>(AuthUiState.Idle)
-    val uiState: StateFlow<AuthUiState> = _uiState
+    override val uiState: StateFlow<AuthUiState> = _uiState
 
     /**
      * Login with email and password
      */
-    fun login(email: String, password: String) {
+    override fun login(email: String, password: String) {
         // Basic validation before hitting the network
         if (email.isBlank() || password.isBlank()) {
             _uiState.value = AuthUiState.Error("Email and password are required")
@@ -61,7 +70,7 @@ class AuthViewModel(
     /**
      * Register with email and password
      */
-    fun register(email: String, password: String) {
+    override fun register(email: String, password: String) {
         if (email.isBlank() || password.isBlank()) {
             _uiState.value = AuthUiState.Error("Email and password are required")
             return
@@ -84,9 +93,9 @@ class AuthViewModel(
 
 
     private val _userProfile = MutableStateFlow<UserProfile?>(null)
-    val userProfile: StateFlow<UserProfile?> = _userProfile
+    override val userProfile: StateFlow<UserProfile?> = _userProfile
 
-    fun fetchProfile() {
+    override fun fetchProfile() {
         viewModelScope.launch {
             val result = authRepository.getProfile()
             if (result.isSuccess) {
@@ -100,7 +109,7 @@ class AuthViewModel(
      * Reset state back to Idle
      * Call this when user dismisses an error
      */
-    fun resetState() {
+     override fun resetState() {
         _uiState.value = AuthUiState.Idle
     }
 }

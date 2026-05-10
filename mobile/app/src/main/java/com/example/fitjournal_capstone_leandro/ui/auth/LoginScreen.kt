@@ -35,7 +35,7 @@ private val TextGray = Color(0xFF8E8E93)
  */
 @Composable
 fun LoginScreen(
-    viewModel: AuthViewModel,
+    viewModel: IAuthViewModel,
     onAuthSuccess: () -> Unit
 ) {
     val uiState by viewModel.uiState.collectAsState()
@@ -83,7 +83,7 @@ fun LoginScreen(
         Spacer(modifier = Modifier.height(8.dp))
 
         Text(
-            text = "Track your workouts. No frills.",
+            text = "The easiest way to log your workouts.",
             fontSize = 14.sp,
             color = TextGray
         )
