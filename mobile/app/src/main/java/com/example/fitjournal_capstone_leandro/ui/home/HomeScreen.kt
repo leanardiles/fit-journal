@@ -176,7 +176,7 @@ fun CurrentRoutineCard(
                             .then(
                                 if (isCurrentDay) Modifier.border(
                                     width = 2.dp,
-                                    color = Color.White,
+                                    color = Color(0xFFFFEB3B),
                                     shape = RoundedCornerShape(8.dp)
                                 ) else Modifier
                             )

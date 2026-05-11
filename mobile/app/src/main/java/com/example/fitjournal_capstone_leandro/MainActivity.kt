@@ -10,6 +10,7 @@ import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.activity.viewModels
+import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.collectAsState
@@ -28,6 +29,7 @@ import com.example.fitjournal_capstone_leandro.data.repository.DashboardReposito
 import com.example.fitjournal_capstone_leandro.data.repository.ExerciseRepository
 import com.example.fitjournal_capstone_leandro.data.repository.UserExercisesRepository
 import com.example.fitjournal_capstone_leandro.data.repository.UserRoutineRepository
+import com.example.fitjournal_capstone_leandro.data.repository.WorkoutRepository
 import com.example.fitjournal_capstone_leandro.navigation.AppNavigation
 import com.example.fitjournal_capstone_leandro.ui.auth.AuthViewModel
 import com.example.fitjournal_capstone_leandro.ui.auth.AuthViewModelFactory
@@ -41,7 +43,8 @@ import com.example.fitjournal_capstone_leandro.ui.shared.BottomNavItem
 import com.example.fitjournal_capstone_leandro.ui.shared.ProfileTopBar
 import com.example.fitjournal_capstone_leandro.ui.stopwatch.StopwatchBottomSheet
 import com.example.fitjournal_capstone_leandro.ui.stopwatch.StopwatchViewModel
-import androidx.compose.foundation.layout.navigationBarsPadding
+import com.example.fitjournal_capstone_leandro.ui.workout.WorkoutViewModel
+import com.example.fitjournal_capstone_leandro.ui.workout.WorkoutViewModelFactory
 import com.example.fitjournal_capstone_leandro.data.network.RetrofitClient
 import com.example.fitjournal_capstone_leandro.navigation.Routes
 import com.example.fitjournal_capstone_leandro.ui.profile.ProfileSettingsViewModel
@@ -49,6 +52,7 @@ import com.example.fitjournal_capstone_leandro.ui.profile.ProfileSettingsViewMod
 import com.example.fitjournal_capstone_leandro.ui.routine.RoutineViewModel
 import com.example.fitjournal_capstone_leandro.ui.theme.fitJournalCapstoneLeandroTheme
 import kotlin.getValue
+
 
 
 class MainActivity : ComponentActivity() {
@@ -114,6 +118,14 @@ class MainActivity : ComponentActivity() {
 
     private val dashboardViewModel: DashboardViewModel by viewModels {
         DashboardViewModelFactory(dashboardRepository)
+    }
+
+    private val workoutRepository by lazy {
+        WorkoutRepository(tokenManager)
+    }
+
+    private val workoutViewModel: WorkoutViewModel by viewModels {
+        WorkoutViewModelFactory(workoutRepository)
     }
 
     private val stopwatchViewModel: StopwatchViewModel by viewModels()
@@ -199,6 +211,7 @@ class MainActivity : ComponentActivity() {
                         userExercisesViewModel = userExercisesViewModel,
                         routineViewModel = routineViewModel,
                         authViewModel = authViewModel,
+                        workoutViewModel = workoutViewModel,
                         navController = navController,
                         tokenManager = tokenManager,
                         modifier = Modifier.padding(innerPadding)

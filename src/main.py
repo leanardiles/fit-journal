@@ -8,6 +8,7 @@ from fastapi import FastAPI, Depends, HTTPException, status
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.security import HTTPBearer, HTTPAuthorizationCredentials
 from passlib.context import CryptContext
+from sqlalchemy import func
 from sqlalchemy.orm import Session
 from jose import JWTError, jwt
 
@@ -787,8 +788,9 @@ def get_exercises_for_muscle_group(user_id: int, muscle_group: str, db: Session)
         models.Exercise.exercise_muscle_group == muscle_group,
         models.Exercise.exercise_is_in_routine == True
     ).order_by(
-        models.Exercise.exercise_times_performed.asc()
-    ).limit(10).all()
+        models.Exercise.exercise_times_performed.asc(),
+        func.rand()
+    ).limit(3).all()
     
     return exercises
 

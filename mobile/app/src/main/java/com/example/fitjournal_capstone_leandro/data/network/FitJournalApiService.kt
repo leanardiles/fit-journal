@@ -4,6 +4,7 @@ import com.example.fitjournal_capstone_leandro.data.local.TokenManager
 import com.example.fitjournal_capstone_leandro.data.model.CreateExerciseRequest
 import com.example.fitjournal_capstone_leandro.data.model.LoginRequest
 import com.example.fitjournal_capstone_leandro.data.model.LoginResponse
+import com.example.fitjournal_capstone_leandro.data.model.NextWorkoutSelection
 import com.example.fitjournal_capstone_leandro.data.model.RegisterRequest
 import com.example.fitjournal_capstone_leandro.data.model.RegisterResponse
 import com.example.fitjournal_capstone_leandro.data.model.RoutineResponse
@@ -12,6 +13,7 @@ import com.example.fitjournal_capstone_leandro.data.model.UpdateExerciseRequest
 import com.example.fitjournal_capstone_leandro.data.model.UserExercise
 import com.example.fitjournal_capstone_leandro.data.model.UserProfile
 import com.example.fitjournal_capstone_leandro.data.model.UserProfileUpdate
+import com.example.fitjournal_capstone_leandro.data.model.WorkoutCompleteRequest
 import com.example.fitjournal_capstone_leandro.data.model.WorkoutSession
 import com.example.fitjournal_capstone_leandro.data.model.WorkoutState
 import retrofit2.Retrofit
@@ -170,6 +172,28 @@ interface FitJournalApiService {
     suspend fun getWorkoutState(
         @Path("user_id") userId: Int
     ): WorkoutState
+
+    @GET("next-workout/selections/{user_id}")
+    suspend fun getNextWorkoutSelections(
+        @Path("user_id") userId: Int
+    ): List<NextWorkoutSelection>
+
+    @POST("next-workout/generate/{user_id}")
+    suspend fun generateNextWorkout(
+        @Path("user_id") userId: Int,
+        @Query("day_number") dayNumber: Int
+    ): Any
+
+    @POST("workout/complete/{user_id}")
+    suspend fun completeWorkout(
+        @Path("user_id") userId: Int,
+        @Body workoutData: WorkoutCompleteRequest
+    ): Any
+
+    @DELETE("next-workout/clear/{user_id}")
+    suspend fun clearAllSelections(
+        @Path("user_id") userId: Int
+    ): Any
 }
 
 
@@ -201,6 +225,9 @@ object RetrofitClient {
 
         okhttp3.OkHttpClient.Builder()
             .addInterceptor(AuthInterceptor(tm))
+            .connectTimeout(60, java.util.concurrent.TimeUnit.SECONDS)
+            .readTimeout(60, java.util.concurrent.TimeUnit.SECONDS)
+            .writeTimeout(60, java.util.concurrent.TimeUnit.SECONDS)
             .build()
     }
 

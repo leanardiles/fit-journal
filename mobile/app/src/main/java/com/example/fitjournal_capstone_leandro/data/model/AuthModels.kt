@@ -176,3 +176,24 @@ data class WorkoutState(
     val last_workout_date: String?
 )
 
+// Next workout selection from backend
+data class NextWorkoutSelection(
+    val selection_id: Int,
+    val user_id: Int,
+    val exercise_id: Int,
+    val is_selected: Boolean
+)
+
+// Exercise log for completing a workout
+data class ExerciseLog(
+    val exercise_id: Int,
+    val sets_completed: Int,
+    val reps_completed: Int,
+    val weight_used: Float
+)
+
+// Workout complete request body
+data class WorkoutCompleteRequest(
+    val day_number: Int,
+    val exercises: List<ExerciseLog>
+)
