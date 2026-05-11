@@ -288,9 +288,6 @@ def create_exercise(user_id: int, exercise: schemas.ExerciseCreate, db: Session 
 
 @app.put("/exercises/{exercise_id}", response_model=schemas.ExerciseResponse)
 def update_exercise(exercise_id: int, user_id: int, exercise: schemas.ExerciseUpdate, db: Session = Depends(get_db), current_user: models.User = Depends(get_current_user)):
-    """
-    Update an existing exercise
-    """
     db_exercise = db.query(models.Exercise).filter(
         models.Exercise.exercise_id == exercise_id,
         models.Exercise.user_id == user_id
@@ -299,13 +296,15 @@ def update_exercise(exercise_id: int, user_id: int, exercise: schemas.ExerciseUp
     if not db_exercise:
         raise HTTPException(status_code=404, detail="Exercise not found")
     
-    # Update exercise fields
-    for key, value in exercise.dict().items():
+    # Only update fields that are not None
+    update_data = exercise.dict(exclude_none=True)
+    for key, value in update_data.items():
         setattr(db_exercise, key, value)
     
     db.commit()
     db.refresh(db_exercise)
     return db_exercise
+
 
 @app.delete("/exercises/{exercise_id}", status_code=status.HTTP_204_NO_CONTENT)
 def delete_exercise(exercise_id: int, user_id: int, db: Session = Depends(get_db), current_user: models.User = Depends(get_current_user)):
@@ -761,17 +760,24 @@ def clear_selections_for_day(user_id: int, muscle_groups: list, db: Session):
 
 
 def select_exercises_for_workout(user_id: int, muscle_groups: list, db: Session):
-    """Select 4 exercises per muscle group (lowest times_performed)"""
-    selected_count = 0
+    """Select exercises for workout using bulk insert"""
+    all_exercises = []
     
     for muscle_group in muscle_groups:
         exercises = get_exercises_for_muscle_group(user_id, muscle_group, db)
-        
-        for exercise in exercises:
-            create_exercise_selection(user_id, exercise.exercise_id, db)
-            selected_count += 1
+        all_exercises.extend(exercises)
     
-    return selected_count
+    selections = [
+        models.NextWorkoutSelection(
+            user_id=user_id,
+            exercise_id=exercise.exercise_id,
+            is_selected=True
+        )
+        for exercise in all_exercises
+    ]
+    
+    db.bulk_save_objects(selections)
+    return len(selections)
 
 
 def get_exercises_for_muscle_group(user_id: int, muscle_group: str, db: Session):
