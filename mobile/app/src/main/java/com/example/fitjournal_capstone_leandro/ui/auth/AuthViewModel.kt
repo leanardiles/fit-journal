@@ -3,6 +3,7 @@ package com.example.fitjournal_capstone_leandro.ui.auth
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
+import com.example.fitjournal_capstone_leandro.analytics.AnalyticsLogger
 import com.example.fitjournal_capstone_leandro.data.local.TokenManager
 import com.example.fitjournal_capstone_leandro.data.model.UserProfile
 import com.example.fitjournal_capstone_leandro.data.repository.AuthRepository
@@ -46,7 +47,6 @@ class AuthViewModel(
      * Login with email and password
      */
     override fun login(email: String, password: String) {
-        // Basic validation before hitting the network
         if (email.isBlank() || password.isBlank()) {
             _uiState.value = AuthUiState.Error("Email and password are required")
             return
@@ -57,12 +57,13 @@ class AuthViewModel(
 
             val result = authRepository.login(email, password)
 
-            _uiState.value = if (result.isSuccess) {
-                AuthUiState.Success
+            if (result.isSuccess) {
+                _uiState.value = AuthUiState.Success
+                AnalyticsLogger.logLoginSuccess()
             } else {
-                AuthUiState.Error(
-                    result.exceptionOrNull()?.message ?: "Login failed"
-                )
+                val error = result.exceptionOrNull()?.message ?: "Login failed"
+                _uiState.value = AuthUiState.Error(error)
+                AnalyticsLogger.logLoginFailure(error)
             }
         }
     }
@@ -81,12 +82,12 @@ class AuthViewModel(
 
             val result = authRepository.register(email, password)
 
-            _uiState.value = if (result.isSuccess) {
-                AuthUiState.Success
+            if (result.isSuccess) {
+                _uiState.value = AuthUiState.Success
+                AnalyticsLogger.logRegisterSuccess()
             } else {
-                AuthUiState.Error(
-                    result.exceptionOrNull()?.message ?: "Registration failed"
-                )
+                val error = result.exceptionOrNull()?.message ?: "Registration failed"
+                _uiState.value = AuthUiState.Error(error)
             }
         }
     }

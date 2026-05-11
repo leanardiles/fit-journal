@@ -3,6 +3,7 @@ package com.example.fitjournal_capstone_leandro.ui.routine
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
+import com.example.fitjournal_capstone_leandro.analytics.AnalyticsLogger
 import com.example.fitjournal_capstone_leandro.data.repository.IUserRoutineRepository
 import com.example.fitjournal_capstone_leandro.data.repository.UserRoutineRepository
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -117,6 +118,7 @@ class RoutineViewModel(
 
             val result = repository.saveRoutine(days, editingDays)
             if (result.isSuccess) {
+                AnalyticsLogger.logRoutineSaved(days)
                 loadRoutine()
             } else {
                 _state.value = _state.value.copy(

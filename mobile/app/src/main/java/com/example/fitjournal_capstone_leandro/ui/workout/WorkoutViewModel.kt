@@ -3,6 +3,7 @@ package com.example.fitjournal_capstone_leandro.ui.workout
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
+import com.example.fitjournal_capstone_leandro.analytics.AnalyticsLogger
 import com.example.fitjournal_capstone_leandro.data.model.UserExercise
 import com.example.fitjournal_capstone_leandro.data.repository.WorkoutRepository
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -109,8 +110,13 @@ class WorkoutViewModel(
                 _state.value.exercises
             )
             if (result.isSuccess) {
+                AnalyticsLogger.logWorkoutCompleted(
+                    _state.value.currentDay,
+                    _state.value.checkedExerciseIds.size
+                )
                 _state.value = _state.value.copy(uiState = WorkoutUiState.WorkoutComplete)
             } else {
+                AnalyticsLogger.logWorkoutError("Failed to complete workout")
                 _state.value = _state.value.copy(
                     uiState = WorkoutUiState.Error("Failed to complete workout")
                 )

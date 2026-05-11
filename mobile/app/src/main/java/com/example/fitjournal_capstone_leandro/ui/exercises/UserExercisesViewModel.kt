@@ -3,6 +3,7 @@ package com.example.fitjournal_capstone_leandro.ui.exercises
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
+import com.example.fitjournal_capstone_leandro.analytics.AnalyticsLogger
 import com.example.fitjournal_capstone_leandro.data.model.UserExercise
 import com.example.fitjournal_capstone_leandro.data.repository.IUserExercisesRepository
 import com.example.fitjournal_capstone_leandro.data.repository.UserExercisesRepository
@@ -180,6 +181,7 @@ class UserExercisesViewModel(
         viewModelScope.launch {
             val result = repository.updateExerciseWeight(exerciseId, weight)
             if (result.isSuccess) {
+                AnalyticsLogger.logExerciseWeightUpdated(exerciseId, weight)
                 // Update local cache
                 allExercises = allExercises.map {
                     if (it.exercise_id == exerciseId) it.copy(exercise_user_current_weight = weight)
