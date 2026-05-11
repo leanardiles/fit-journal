@@ -147,7 +147,7 @@ dependencies {
     implementation("androidx.security:security-crypto:1.1.0-alpha06")
 
     // Reorderable Lists
-    implementation("sh.calvin.reorderable:reorderable:1.3.3")
+    implementation("sh.calvin.reorderable:reorderable:2.4.0")
 
     // Unit Testing
     testImplementation("junit:junit:4.13.2")
