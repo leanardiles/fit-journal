@@ -1,6 +1,6 @@
 # FitJournal
 
-A no-frills fitness tracker — web application + native Android mobile app - that feels like your paper notebook.
+A no-frills fitness tracker — web application + native Android mobile app — that feels like your paper notebook.
 
 ## Project Overview
 
@@ -10,16 +10,17 @@ FitJournal is a comprehensive fitness tracking application that provides a compl
 
 ### Web App
 - ✅ User registration and authentication (JWT)
-- ✅ User profile management (age, weight, height, unit preferences)
-- ✅ 101 default exercises (copied to each user on registration)
+- ✅ User profile management (age, weight, height, unit preferences, timezone)
+- ✅ 101 default exercises (copied to each user on registration via bulk insert)
 - ✅ Exercise management with muscle group organization
 - ✅ Custom routine builder (1-7 days per week, multiple muscle groups per day)
-- ✅ Intelligent workout generation algorithm
+- ✅ Intelligent workout generation algorithm (3 exercises per muscle group, random tiebreaker)
 - ✅ Daily workout tracking (Get WOD - Workout of the Day)
 - ✅ Workout history calendar with multi-day filtering
 - ✅ Automatic exercise weight tracking and updates
 - ✅ Session-based workout logging
 - ✅ Progress tracking by exercise frequency
+- ✅ Timezone-aware workout date logging (per user timezone)
 
 ### Android Mobile App
 - ✅ JWT authentication (login + register)
@@ -28,16 +29,29 @@ FitJournal is a comprehensive fitness tracking application that provides a compl
 - ✅ Logout with token clearing and navigation reset
 - ✅ User profile display in top bar (fetched from backend)
 - ✅ OkHttp AuthInterceptor — automatic Bearer token injection on all API calls
-- ✅ User exercises from backend (browse by muscle group, add, delete)
+- ✅ Auto-detection of emulator vs physical device for API URL
+- ✅ Dashboard with Quick Stats (workouts this week) and Current Routine modules
+- ✅ Current routine day highlighted in yellow on Dashboard
+- ✅ User exercises — browse by muscle group, add, delete, edit weight
 - ✅ Duplicate exercise name prevention
 - ✅ Alphabetical exercise sorting
+- ✅ Routine builder (1-7 days, multiple muscle groups per day)
+- ✅ Workout screen — auto-generates workout for current day
+- ✅ Drag-to-reorder exercises in workout list
+- ✅ Inline weight editing from workout screen (popup dialog)
+- ✅ Exercise completion tracking (tap to check off, strikethrough)
+- ✅ Mark workout as complete — logs to backend, advances routine day
+- ✅ Profile settings (name, sex, age, timezone, unit preference, height, weight)
+- ✅ Timezone selector (28 common timezones)
+- ✅ Unit preference (metric/imperial) with height/weight conversion
 - ✅ Calendar UI with DatePicker
 - ✅ Stopwatch timer
 - ✅ MVI architecture
 - ✅ Bottom navigation + profile menu
-- 🚧 Workout logging
-- 🚧 Routine builder
-- 🚧 Offline sync with backend
+- ✅ Custom app launcher icon (kettlebell logo)
+- ✅ AnalyticsLogger — 12+ event tracking (auth, workout, exercise, routine)
+- ✅ Unit tests — 83% coverage (JaCoCo)
+- ✅ UI tests — 2 instrumented tests (login sad path + happy path navigation)
 
 
 ## Tech Stack
@@ -48,6 +62,7 @@ FitJournal is a comprehensive fitness tracking application that provides a compl
 - **Database:** MySQL (hosted on Aiven)
 - **Authentication:** Bcrypt password hashing + JWT tokens (web + mobile)
 - **Database Driver:** PyMySQL
+- **Timezone:** pytz
 
 ### Web Frontend
 - **CSS Framework:** PaperCSS (dark mode)
@@ -63,6 +78,9 @@ FitJournal is a comprehensive fitness tracking application that provides a compl
 - **Networking:** Retrofit 2 + Gson + OkHttp (AuthInterceptor)
 - **Auth Storage:** EncryptedSharedPreferences (Android Keystore)
 - **State:** StateFlow + Coroutines
+- **Image Loading:** Coil (with GIF support)
+- **Drag & Drop:** sh.calvin.reorderable 2.4.0
+- **Testing:** JUnit4, MockK, JaCoCo, Compose UI Testing
 
 
 ## Project Structure
@@ -94,18 +112,24 @@ FitJournal/
 │       └── logo_only.png
 ├── mobile/                       # Android mobile app
 │   └── app/src/main/java/.../
+│       ├── analytics/            # AnalyticsLogger
 │       ├── data/
 │       │   ├── local/            # Room DB, TokenManager
 │       │   ├── model/            # Data classes incl. AuthModels, UserExercise
 │       │   ├── network/          # Retrofit, ApiConfig, FitJournalApiService, AuthInterceptor
-│       │   └── repository/       # AuthRepository, UserExercisesRepository
+│       │   └── repository/       # AuthRepository, UserExercisesRepository,
+│       │                         # UserRoutineRepository, DashboardRepository,
+│       │                         # WorkoutRepository, IUserExercisesRepository,
+│       │                         # IUserRoutineRepository
 │       ├── ui/
-│       │   ├── auth/             # LoginScreen, AuthViewModel
-│       │   ├── home/
+│       │   ├── auth/             # LoginScreen, AuthViewModel, IAuthViewModel
+│       │   ├── home/             # HomeScreen, HomeViewModel, DashboardViewModel
 │       │   ├── exercises/        # UserExercisesScreen, UserExercisesViewModel
-│       │   ├── exercise_details/
-│       │   ├── calendar/
-│       │   ├── stopwatch/
+│       │   ├── workout/          # WorkoutScreen, WorkoutViewModel
+│       │   ├── routine/          # RoutineScreen, RoutineViewModel
+│       │   ├── profile/          # ProfileSettingsScreen, ProfileSettingsViewModel
+│       │   ├── calendar/         # CalendarScreen
+│       │   ├── stopwatch/        # StopwatchViewModel, StopwatchBottomSheet
 │       │   └── shared/           # ProfileTopBar, BottomNavBar
 │       ├── navigation/           # Navigation.kt, Routes.kt
 │       └── MainActivity.kt
@@ -195,7 +219,7 @@ See **README_mobile.md** for full Android setup instructions.
 2. Start the FastAPI backend: `uvicorn main:app --reload --host 0.0.0.0`
 3. Run on a virtual emulator (Pixel 9, API 37 recommended)
 
-> **Note:** The mobile app connects to the backend via `10.0.2.2:8000` on the emulator. Physical devices require the machine's local IP address instead.
+> **Note:** The mobile app auto-detects emulator vs physical device. Emulator uses `10.0.2.2:8000`. Physical devices require the machine's local IP address set in `ApiConfig.kt`.
 
 ### Test User
 You can use the following test user credentials:
@@ -219,7 +243,6 @@ You can use the following test user credentials:
 - `POST /exercises?user_id={id}` — Create new exercise *(JWT required)*
 - `PUT /exercises/{exercise_id}?user_id={id}` — Update exercise *(JWT required)*
 - `DELETE /exercises/{exercise_id}?user_id={id}` — Delete exercise *(JWT required)*
-- `PATCH /exercises/{exercise_id}/weight` — Update exercise weight *(JWT required)*
 
 ### Routines
 - `GET /routine/{user_id}` — Get user's routine *(JWT required)*
@@ -239,7 +262,8 @@ You can use the following test user credentials:
 - `GET /next-workout/selections/{user_id}` — Get selected exercises *(JWT required)*
 - `POST /next-workout/toggle` — Toggle exercise selection *(JWT required)*
 - `POST /next-workout/generate/{user_id}?day_number={n}` — Auto-generate workout *(JWT required)*
-- `DELETE /next-workout/clear/{user_id}?day_number={n}` — Clear selections *(JWT required)*
+- `DELETE /next-workout/clear/{user_id}` — Clear all selections *(JWT required)*
+- `DELETE /next-workout/clear/{user_id}?day_number={n}` — Clear selections for a day *(JWT required)*
 
 ### Default Exercises
 - `GET /default-exercises` — Get all 101 default exercises
@@ -255,9 +279,10 @@ You can use the following test user credentials:
 - `user_password` - Bcrypt hashed password
 - `user_first_name`, `user_last_name` - Optional profile fields
 - `user_sex` - ENUM('M', 'F', 'NB')
-- `user_age` - Integer (0-100)
+- `user_age` - Integer (0-120)
 - `user_unit_preference` - ENUM('metric', 'imperial')
-- `user_weight`, `user_height` - Decimal/Integer
+- `user_weight`, `user_height` - Decimal/Integer (always stored in metric)
+- `user_timezone` - VARCHAR(50), default 'America/New_York'
 - `user_subscription` - TINYINT (0 or 1)
 - `user_is_active` - Boolean
 - `user_created_at`, `user_updated_at` - Timestamps
@@ -304,7 +329,7 @@ You can use the following test user credentials:
 - `session_id` (PK)
 - `user_id` (FK → users.user_id)
 - `routine_day_number` - Integer
-- `workout_date` - DATE
+- `workout_date` - DATE (stored in user's timezone)
 - `session_order` - Integer (1, 2, 3... incrementing order)
 - `created_at` - Timestamp
 
@@ -336,62 +361,116 @@ FitJournal uses a **copy-on-registration** approach:
 1. **`default_exercises`** — Template catalog (101 exercises)
 2. **`exercises`** — User's personal copy (linked by `user_id`)
 
-Each user has full control over their exercises without affecting others.
+Each user has full control over their exercises without affecting others. Registration uses a bulk insert for performance.
 
 ### Workout Algorithm
 1. Gets muscle groups for the current routine day
-2. Selects 4 exercises per muscle group
+2. Selects **3 exercises per muscle group** (configurable in future)
 3. Prioritizes exercises with lowest `exercise_times_performed` count
-4. Ensures variety and prevents overtraining specific exercises
+4. Uses `func.rand()` as tiebreaker for exercises with equal counts — ensures workout variety
+5. Ensures progressive overload by rotating through least-performed exercises
 
 ### JWT Authentication (Web + Mobile)
 FitJournal uses stateless JWT authentication across both platforms:
-1. Login → FastAPI issues a JWT access token
+1. Login → FastAPI issues a JWT access token (30-day expiry)
 2. **Web:** Token stored in `localStorage`, attached to all API calls via `authHeaders()` in `api.js`
 3. **Mobile:** Token encrypted on-device via Android Keystore, auto-injected into all requests via OkHttp `AuthInterceptor`
 4. Logout clears token locally — no server-side session to invalidate
-5. All protected endpoints require a valid Bearer token (`401` returned otherwise)
+5. All protected endpoints require a valid Bearer token (`403` returned otherwise)
+
+### Timezone Support
+Workout dates are stored in the user's local timezone (not UTC), preventing off-by-one date issues for users in non-UTC timezones. The backend uses `pytz` to convert UTC to the user's stored timezone before recording dates.
+
+### MVI Architecture (Mobile)
+The mobile app follows strict MVI (Model-View-Intent) pattern:
+- **Model:** `ScreenState` data classes hold all UI state
+- **View:** Compose screens observe state via `collectAsState()`
+- **Intent:** Actions dispatched to ViewModels via sealed classes
+- **Reducer:** Pure functions transform state deterministically (e.g. `homeScreenReducer`)
+
+
+## Testing
+
+### Unit Tests (83% coverage)
+- `HomeViewModelTest` — 3 tests (muscle group fetching, success/error states)
+- `HomeScreenReducerTest` — 7 tests (all reducer actions)
+- `UserExercisesViewModelTest` — 11 tests (CRUD operations, error handling)
+- `RoutineViewModelTest` — 13 tests (load, edit, save, cancel flows)
+
+Repositories tested via interfaces (`IUserExercisesRepository`, `IUserRoutineRepository`) using fake implementations.
+
+### UI Tests
+- `loginScreen_showsErrorMessage_whenCredentialsAreInvalid` — sad path, 1 screen
+- `loginScreen_navigatesToHome_onSuccessfulLogin` — happy path, 2 screens
+
+### Running Tests
+```bash
+# Unit tests + coverage report
+cd mobile
+./gradlew testDebugUnitTest jacocoTestReport
+
+# View coverage report
+start app/build/reports/jacoco/jacocoTestReport/html/index.html
+
+# UI tests (requires running emulator)
+./gradlew connectedDebugAndroidTest
+```
+
+
+## Enhancements
+
+| Enhancement | Points | Details |
+|---|---|---|
+| Login flow with real data | 3 | JWT auth via FastAPI, EncryptedSharedPreferences |
+| Create/edit/delete data | 2 | Exercises CRUD + weight editing |
+| Image loading with caching | 2 | Coil + coil-gif for exercise GIFs |
+| Loading animations | 1 | CircularProgressIndicator on all loading states |
+| Analytics/logging | 1 | AnalyticsLogger with 12+ events (tag: FitJournalAnalytics) |
+| Custom app icon | 1 | Kettlebell logo in all mipmap densities |
+| **Total** | **10** | |
 
 
 ## Current Status
 
-### Web App ✅
-- Complete backend API (20+ endpoints), all protected with JWT
+### Web App ✅ Complete
+- Full backend API (20+ endpoints), all protected with JWT
 - Full user authentication system with JWT
 - Exercise, routine, workout, and calendar management
+- Timezone-aware workout date logging
 - Dark theme UI/UX
 
-### Mobile App ✅ / 🚧
+### Mobile App ✅ Complete
 - ✅ JWT authentication (login + register + auto-login + logout)
 - ✅ Secure token storage and automatic injection via AuthInterceptor
-- ✅ User profile display fetched from backend
-- ✅ User exercises — browse by muscle group, add, delete (backend-synced)
+- ✅ Dashboard with Quick Stats and Current Routine modules
+- ✅ User exercises — browse, add, delete, edit weight
+- ✅ Routine builder — full create/edit flow
+- ✅ Workout screen — auto-generation, checklist, drag-to-reorder, completion
+- ✅ Profile settings — timezone, units, personal info
 - ✅ Stopwatch, calendar UI, bottom navigation
-- 🚧 Workout logging
-- 🚧 Routine builder
-- 🚧 Offline sync
+- ✅ Unit tests (83% coverage) + UI tests
+
 
 ### Known Limitations
 - No password reset functionality
 - No data export feature
-- Physical device testing requires local IP configuration
+- Physical device testing requires local IP configuration in `ApiConfig.kt`
 - CORS allows all origins (development mode)
-
-### To-Do (High Priority) 🔧
-- [ ] Fix ADD/EDIT/DELETE modal on Exercises page (CSS z-index issue)
-- [ ] Mobile: edit exercise name/muscle group
-- [ ] Mobile: update exercise weight from the exercises screen
+- No offline support — requires active backend connection
 
 ### Future Enhancements 📋
+- [ ] ExerciseDB legacy code cleanup (ExerciseRepository, ExerciseDetailsViewModel)
+- [ ] User-configurable exercises per muscle group in routine setup
 - [ ] Analytics dashboard (charts, progress graphs)
 - [ ] Personal records (PR) tracking
 - [ ] REST timer between sets
 - [ ] Social features (share routines)
 - [ ] Password reset via email
 - [ ] Export workout data (CSV/PDF)
-- [ ] Deployment (Vercel frontend + Railway backend)
+- [ ] Deployment (cloud backend + web hosting)
 - [ ] Rate limiting on API endpoints
 - [ ] HTTPS for production
+- [ ] Offline sync with Room database
 
 
 ## Development Workflow
@@ -424,6 +503,7 @@ git push
 - ✅ All backend endpoints protected with JWT (`get_current_user` dependency)
 - ✅ Tokens encrypted on-device via Android Keystore (mobile)
 - ✅ AuthInterceptor auto-injects Bearer token on all mobile API calls
+- ✅ Exercise update uses `exclude_none=True` to prevent null overwrites
 - ⚠️ TODO: Rate limiting on API endpoints
 - ⚠️ TODO: HTTPS for production
 - ⚠️ TODO: CSRF protection
@@ -441,4 +521,4 @@ GitHub: [https://github.com/leanardiles/FitJournal](https://github.com/leanardil
 
 ---
 
-*Last Updated: April 2026*
+*Last Updated: May 2026*
