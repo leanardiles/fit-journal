@@ -1,6 +1,7 @@
 package com.example.fitjournal_capstone_leandro.ui.workout
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
@@ -150,7 +151,8 @@ fun WorkoutScreen(
                         ExerciseRow(
                             exercise = exercise,
                             isChecked = exercise.exercise_id in state.checkedExerciseIds,
-                            onToggle = { viewModel.toggleExerciseChecked(exercise.exercise_id) }
+                            onToggle = { viewModel.toggleExerciseChecked(exercise.exercise_id) },
+                            onWeightUpdate = { id, weight -> viewModel.updateExerciseWeight(id, weight) }
                         )
                     }
                 }
@@ -191,10 +193,25 @@ fun WorkoutScreen(
 fun ExerciseRow(
     exercise: UserExercise,
     isChecked: Boolean,
-    onToggle: () -> Unit
+    onToggle: () -> Unit,
+    onWeightUpdate: (Int, Float?) -> Unit
 ) {
     val textColor = if (isChecked) Color.Gray else Color.White
     val textDecoration = if (isChecked) TextDecoration.LineThrough else TextDecoration.None
+    var showWeightDialog by remember { mutableStateOf(false) }
+
+    // Weight edit dialog
+    if (showWeightDialog) {
+        WeightEditDialog(
+            exerciseId = exercise.exercise_id,
+            currentWeight = exercise.exercise_user_current_weight,
+            onConfirm = { newWeight ->
+                onWeightUpdate(exercise.exercise_id, newWeight)
+                showWeightDialog = false
+            },
+            onDismiss = { showWeightDialog = false }
+        )
+    }
 
     Card(
         modifier = Modifier.fillMaxWidth(),
@@ -207,9 +224,9 @@ fun ExerciseRow(
             modifier = Modifier
                 .fillMaxWidth()
                 .padding(horizontal = 12.dp, vertical = 12.dp),
-            verticalAlignment = Alignment.CenterVertically
+            verticalAlignment = Alignment.CenterVertically  // ← fixes alignment
         ) {
-            // Left: muscle group tag + exercise name
+            // Left: muscle group + exercise name
             Column(modifier = Modifier.weight(1f)) {
                 Text(
                     text = exercise.exercise_muscle_group,
@@ -226,15 +243,17 @@ fun ExerciseRow(
                 )
             }
 
-            // Center: weight
+            // Center: clickable weight
             Text(
                 text = if (exercise.exercise_user_current_weight != null &&
                     exercise.exercise_user_current_weight > 0)
                     "${exercise.exercise_user_current_weight} kg"
-                else "—",
-                color = textColor.copy(alpha = 0.7f),
+                else "— kg",
+                color = AccentYellow.copy(alpha = if (isChecked) 0.4f else 1f),
                 fontSize = 13.sp,
-                modifier = Modifier.padding(horizontal = 12.dp),
+                modifier = Modifier
+                    .padding(horizontal = 12.dp)
+                    .clickable(enabled = !isChecked) { showWeightDialog = true },
                 textDecoration = textDecoration
             )
 
@@ -244,9 +263,63 @@ fun ExerciseRow(
                     imageVector = if (isChecked) Icons.Filled.CheckCircle
                     else Icons.Outlined.Circle,
                     contentDescription = if (isChecked) "Done" else "Mark as done",
-                    tint = if (isChecked) Color(0xFFFFEB3B) else Color.Gray
+                    tint = if (isChecked) AccentYellow else Color.Gray
                 )
             }
         }
     }
+}
+
+// Weight edit dialog
+@Composable
+fun WeightEditDialog(
+    exerciseId: Int,
+    currentWeight: Float?,
+    onConfirm: (Float?) -> Unit,
+    onDismiss: () -> Unit
+) {
+    var weightText by remember {
+        mutableStateOf(
+            if (currentWeight != null && currentWeight > 0)
+                currentWeight.toString() else ""
+        )
+    }
+
+    AlertDialog(
+        onDismissRequest = onDismiss,
+        containerColor = Color(0xFF2C2C2E),
+        title = {
+            Text("Update Weight", color = Color.White, fontWeight = FontWeight.Bold)
+        },
+        text = {
+            OutlinedTextField(
+                value = weightText,
+                onValueChange = { weightText = it.filter { c -> c.isDigit() || c == '.' } },
+                label = { Text("Weight (kg)", color = Color.Gray) },
+                singleLine = true,
+                keyboardOptions = androidx.compose.foundation.text.KeyboardOptions(
+                    keyboardType = androidx.compose.ui.text.input.KeyboardType.Decimal
+                ),
+                colors = OutlinedTextFieldDefaults.colors(
+                    focusedBorderColor = AccentYellow,
+                    unfocusedBorderColor = Color(0xFF3A3A3C),
+                    focusedTextColor = Color.White,
+                    unfocusedTextColor = Color.White
+                )
+            )
+        },
+        confirmButton = {
+            TextButton(onClick = {
+                val newWeight = weightText.toFloatOrNull()
+                onConfirm(newWeight)
+            }) {
+                Text("Save", color = AccentYellow, fontWeight = FontWeight.Bold)
+            }
+        },
+        dismissButton = {
+            TextButton(onClick = onDismiss) {
+                Text("Cancel", color = Color.Gray)
+            }
+        }
+    )
 }

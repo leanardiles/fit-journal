@@ -3,6 +3,7 @@ package com.example.fitjournal_capstone_leandro.data.repository
 import com.example.fitjournal_capstone_leandro.data.local.TokenManager
 import com.example.fitjournal_capstone_leandro.data.model.ExerciseLog
 import com.example.fitjournal_capstone_leandro.data.model.NextWorkoutSelection
+import com.example.fitjournal_capstone_leandro.data.model.UpdateExerciseRequest
 import com.example.fitjournal_capstone_leandro.data.model.UserExercise
 import com.example.fitjournal_capstone_leandro.data.model.WorkoutCompleteRequest
 import com.example.fitjournal_capstone_leandro.data.model.WorkoutState
@@ -88,6 +89,21 @@ class WorkoutRepository(private val tokenManager: TokenManager) {
             val userId = tokenManager.getUserId()
             if (userId == -1) return Result.failure(Exception("No user logged in"))
             apiService.clearAllSelections(userId)
+            Result.success(Unit)
+        } catch (e: Exception) {
+            Result.failure(e)
+        }
+    }
+
+    suspend fun updateExerciseWeight(exerciseId: Int, weight: Float?): Result<Unit> {
+        return try {
+            val userId = tokenManager.getUserId()
+            if (userId == -1) return Result.failure(Exception("No user logged in"))
+            apiService.updateExercise(
+                exerciseId,
+                userId,
+                UpdateExerciseRequest(exercise_user_current_weight = weight)
+            )
             Result.success(Unit)
         } catch (e: Exception) {
             Result.failure(e)

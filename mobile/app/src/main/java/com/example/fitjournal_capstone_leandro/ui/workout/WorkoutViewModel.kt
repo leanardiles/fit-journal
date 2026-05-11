@@ -127,6 +127,18 @@ class WorkoutViewModel(
     fun reset() {
         _state.value = WorkoutScreenState()
     }
+
+    fun updateExerciseWeight(exerciseId: Int, weight: Float?) {
+        viewModelScope.launch {
+            repository.updateExerciseWeight(exerciseId, weight)
+            // Update local state
+            val updated = _state.value.exercises.map { ex ->
+                if (ex.exercise_id == exerciseId) ex.copy(exercise_user_current_weight = weight)
+                else ex
+            }
+            _state.value = _state.value.copy(exercises = updated)
+        }
+    }
 }
 
 class WorkoutViewModelFactory(
