@@ -39,12 +39,9 @@ class WorkoutViewModel(
     val state: StateFlow<WorkoutScreenState> = _state.asStateFlow()
 
     fun createWorkout() {
-        android.util.Log.d("WorkoutVM", "createWorkout called")
         viewModelScope.launch {
-            android.util.Log.d("WorkoutVM", "coroutine started")
 
             val stateResult = repository.getWorkoutState()
-            android.util.Log.d("WorkoutVM", "stateResult: success=${stateResult.isSuccess}, error=${stateResult.exceptionOrNull()?.message}")
 
             if (stateResult.isFailure) {
                 _state.value = _state.value.copy(
@@ -53,13 +50,10 @@ class WorkoutViewModel(
                 return@launch
             }
             val currentDay = stateResult.getOrNull()!!.current_day_number
-            android.util.Log.d("WorkoutVM", "currentDay=$currentDay")
 
             repository.clearAllSelections()
-            android.util.Log.d("WorkoutVM", "selections cleared")
 
             val generateResult = repository.generateWorkout(currentDay)
-            android.util.Log.d("WorkoutVM", "generateResult: success=${generateResult.isSuccess}, error=${generateResult.exceptionOrNull()?.message}")
 
             if (generateResult.isFailure) {
                 _state.value = _state.value.copy(

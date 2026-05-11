@@ -53,8 +53,6 @@ object ApiConfig {
         !IS_DEVELOPMENT -> "https://api.fitjournal.com/"
         isEmulator() -> "http://10.0.2.2:8000/"
         else -> "http://$LOCAL_IP:8000/"
-    }.also {
-        android.util.Log.d("ApiConfig", "isEmulator=${isEmulator()}, BASE_URL=$it")
     }
 
     /**

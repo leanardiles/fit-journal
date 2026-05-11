@@ -63,7 +63,6 @@ class WorkoutRepository(private val tokenManager: TokenManager) {
     ): Result<Unit> {
         return try {
             val userId = tokenManager.getUserId()
-            android.util.Log.d("WorkoutRepo", "completeWorkout: userId=$userId, day=$dayNumber, exercises=${exercises.size}")
             if (userId == -1) return Result.failure(Exception("No user logged in"))
             val logs = exercises.map { ex ->
                 ExerciseLog(
