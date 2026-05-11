@@ -146,6 +146,9 @@ dependencies {
     // Security - Encrypted SharedPreferences for secure token storage
     implementation("androidx.security:security-crypto:1.1.0-alpha06")
 
+    // Reorderable Lists
+    implementation("sh.calvin.reorderable:reorderable:1.3.3")
+
     // Unit Testing
     testImplementation("junit:junit:4.13.2")
     testImplementation("io.mockk:mockk:1.13.8")

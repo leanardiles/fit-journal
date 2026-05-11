@@ -128,6 +128,13 @@ class WorkoutViewModel(
         _state.value = WorkoutScreenState()
     }
 
+    fun reorderExercises(fromIndex: Int, toIndex: Int) {
+        val list = _state.value.exercises.toMutableList()
+        val item = list.removeAt(fromIndex)
+        list.add(toIndex, item)
+        _state.value = _state.value.copy(exercises = list)
+    }
+
     fun updateExerciseWeight(exerciseId: Int, weight: Float?) {
         viewModelScope.launch {
             repository.updateExerciseWeight(exerciseId, weight)

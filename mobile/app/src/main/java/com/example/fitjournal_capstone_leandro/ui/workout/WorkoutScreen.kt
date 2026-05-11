@@ -1,29 +1,40 @@
 package com.example.fitjournal_capstone_leandro.ui.workout
 
+import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.CheckCircle
+import androidx.compose.material.icons.filled.DragHandle
 import androidx.compose.material.icons.outlined.Circle
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
+import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.hapticfeedback.HapticFeedbackType
+import androidx.compose.ui.platform.LocalHapticFeedback
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.fitjournal_capstone_leandro.data.model.UserExercise
 import com.example.fitjournal_capstone_leandro.ui.theme.myCustomFont
+import sh.calvin.reorderable.ReorderableItem
+import sh.calvin.reorderable.ReorderableCollectionItemScope
+import sh.calvin.reorderable.rememberReorderableLazyListState
+
 
 private val BackgroundDark = Color(0xFF1B1B1E)
-private val SurfaceDark = Color(0xFF2C2C2E)
 private val AccentYellow = Color(0xFFFFEB3B)
+
+@OptIn(ExperimentalFoundationApi::class)
 
 @Composable
 fun WorkoutScreen(
@@ -32,7 +43,6 @@ fun WorkoutScreen(
 ) {
     val state by viewModel.state.collectAsState()
 
-    // Navigate away on completion
     LaunchedEffect(state.uiState) {
         if (state.uiState is WorkoutUiState.WorkoutComplete) {
             onWorkoutComplete()
@@ -60,18 +70,13 @@ fun WorkoutScreen(
 
         when (state.uiState) {
 
-            // ── Idle: show Create Workout button ──
             is WorkoutUiState.Idle -> {
                 Box(
                     modifier = Modifier.fillMaxSize(),
                     contentAlignment = Alignment.Center
                 ) {
                     Column(horizontalAlignment = Alignment.CenterHorizontally) {
-                        Text(
-                            text = "Ready to train?",
-                            color = Color.Gray,
-                            fontSize = 16.sp
-                        )
+                        Text(text = "Ready to train?", color = Color.Gray, fontSize = 16.sp)
                         Spacer(modifier = Modifier.height(24.dp))
                         Button(
                             onClick = { viewModel.createWorkout() },
@@ -80,9 +85,7 @@ fun WorkoutScreen(
                                 contentColor = Color.Black
                             ),
                             shape = RoundedCornerShape(12.dp),
-                            modifier = Modifier
-                                .fillMaxWidth(0.7f)
-                                .height(52.dp)
+                            modifier = Modifier.fillMaxWidth(0.7f).height(52.dp)
                         ) {
                             Text(
                                 text = "Create Workout",
@@ -94,22 +97,14 @@ fun WorkoutScreen(
                 }
             }
 
-            // ── Loading ──
             is WorkoutUiState.Loading -> {
-                Box(
-                    modifier = Modifier.fillMaxSize(),
-                    contentAlignment = Alignment.Center
-                ) {
+                Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
                     CircularProgressIndicator(color = AccentYellow)
                 }
             }
 
-            // ── Error ──
             is WorkoutUiState.Error -> {
-                Box(
-                    modifier = Modifier.fillMaxSize(),
-                    contentAlignment = Alignment.Center
-                ) {
+                Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
                     Column(horizontalAlignment = Alignment.CenterHorizontally) {
                         Text(
                             text = (state.uiState as WorkoutUiState.Error).message,
@@ -117,55 +112,56 @@ fun WorkoutScreen(
                             fontSize = 14.sp
                         )
                         Spacer(modifier = Modifier.height(16.dp))
-                        Button(onClick = { viewModel.reset() }) {
-                            Text("Try Again")
-                        }
+                        Button(onClick = { viewModel.reset() }) { Text("Try Again") }
                     }
                 }
             }
 
-            // ── Workout Ready: show exercise list ──
             is WorkoutUiState.WorkoutReady -> {
-                // Date header
                 Text(
                     text = state.todayDate,
                     color = AccentYellow,
                     fontSize = 14.sp,
                     fontWeight = FontWeight.SemiBold
                 )
-
-                Text(
-                    text = "Day ${state.currentDay}",
-                    color = Color.Gray,
-                    fontSize = 13.sp
-                )
-
+                Text(text = "Day ${state.currentDay}", color = Color.Gray, fontSize = 13.sp)
                 Spacer(modifier = Modifier.height(16.dp))
 
-                // Exercise list
+                // Reorderable list state — must be inside the composable
+                val lazyListState = rememberLazyListState()
+                val haptic = LocalHapticFeedback.current
+                val reorderableLazyListState = rememberReorderableLazyListState(lazyListState) { from, to ->
+                    viewModel.reorderExercises(from.index, to.index)
+                    haptic.performHapticFeedback(HapticFeedbackType.LongPress)
+                }
+
                 LazyColumn(
                     modifier = Modifier.weight(1f),
+                    state = lazyListState,
                     verticalArrangement = Arrangement.spacedBy(8.dp)
                 ) {
-                    items(state.exercises) { exercise ->
-                        ExerciseRow(
-                            exercise = exercise,
-                            isChecked = exercise.exercise_id in state.checkedExerciseIds,
-                            onToggle = { viewModel.toggleExerciseChecked(exercise.exercise_id) },
-                            onWeightUpdate = { id, weight -> viewModel.updateExerciseWeight(id, weight) }
-                        )
+                    items(state.exercises, key = { it.exercise_id }) { exercise ->
+                        ReorderableItem(reorderableLazyListState, key = exercise.exercise_id) { isDragging ->
+                            ExerciseRow(
+                                exercise = exercise,
+                                isChecked = exercise.exercise_id in state.checkedExerciseIds,
+                                onToggle = { viewModel.toggleExerciseChecked(exercise.exercise_id) },
+                                onWeightUpdate = { id, weight ->
+                                    viewModel.updateExerciseWeight(id, weight)
+                                },
+                                isDragging = isDragging,
+                                reorderableScope = this
+                            )
+                        }
                     }
                 }
 
                 Spacer(modifier = Modifier.height(16.dp))
 
-                // Mark as Complete button
                 Button(
                     onClick = { viewModel.completeWorkout() },
                     enabled = state.checkedExerciseIds.isNotEmpty(),
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .height(52.dp),
+                    modifier = Modifier.fillMaxWidth().height(52.dp),
                     colors = ButtonDefaults.buttonColors(
                         containerColor = AccentYellow,
                         contentColor = Color.Black,
@@ -188,19 +184,19 @@ fun WorkoutScreen(
     }
 }
 
-// ── Exercise Row ──
 @Composable
 fun ExerciseRow(
     exercise: UserExercise,
     isChecked: Boolean,
     onToggle: () -> Unit,
-    onWeightUpdate: (Int, Float?) -> Unit
+    onWeightUpdate: (Int, Float?) -> Unit,
+    isDragging: Boolean = false,
+    reorderableScope: ReorderableCollectionItemScope? = null
 ) {
     val textColor = if (isChecked) Color.Gray else Color.White
     val textDecoration = if (isChecked) TextDecoration.LineThrough else TextDecoration.None
     var showWeightDialog by remember { mutableStateOf(false) }
 
-    // Weight edit dialog
     if (showWeightDialog) {
         WeightEditDialog(
             exerciseId = exercise.exercise_id,
@@ -214,18 +210,37 @@ fun ExerciseRow(
     }
 
     Card(
-        modifier = Modifier.fillMaxWidth(),
+        modifier = Modifier
+            .fillMaxWidth()
+            .then(if (isDragging) Modifier.shadow(8.dp, RoundedCornerShape(10.dp)) else Modifier),
         shape = RoundedCornerShape(10.dp),
         colors = CardDefaults.cardColors(
-            containerColor = if (isChecked) Color(0xFF1E1E1E) else Color(0xFF2C2C2E)
+            containerColor = if (isDragging) Color(0xFF3A3A3C)
+            else if (isChecked) Color(0xFF1E1E1E)
+            else Color(0xFF2C2C2E)
         )
     ) {
         Row(
             modifier = Modifier
                 .fillMaxWidth()
                 .padding(horizontal = 12.dp, vertical = 12.dp),
-            verticalAlignment = Alignment.CenterVertically  // ← fixes alignment
+            verticalAlignment = Alignment.CenterVertically
         ) {
+            // Drag handle
+            if (reorderableScope != null) {
+                with(reorderableScope) {
+                    Icon(
+                        imageVector = Icons.Filled.DragHandle,
+                        contentDescription = "Drag to reorder",
+                        tint = Color.Gray,
+                        modifier = Modifier
+                            .draggableHandle()
+                            .padding(end = 8.dp)
+                            .size(20.dp)
+                    )
+                }
+            }
+
             // Left: muscle group + exercise name
             Column(modifier = Modifier.weight(1f)) {
                 Text(
@@ -243,7 +258,7 @@ fun ExerciseRow(
                 )
             }
 
-            // Center: clickable weight
+            // Weight
             Text(
                 text = if (exercise.exercise_user_current_weight != null &&
                     exercise.exercise_user_current_weight > 0)
@@ -257,7 +272,7 @@ fun ExerciseRow(
                 textDecoration = textDecoration
             )
 
-            // Right: check button
+            // Check button
             IconButton(onClick = onToggle) {
                 Icon(
                     imageVector = if (isChecked) Icons.Filled.CheckCircle
@@ -270,7 +285,6 @@ fun ExerciseRow(
     }
 }
 
-// Weight edit dialog
 @Composable
 fun WeightEditDialog(
     exerciseId: Int,
@@ -280,8 +294,7 @@ fun WeightEditDialog(
 ) {
     var weightText by remember {
         mutableStateOf(
-            if (currentWeight != null && currentWeight > 0)
-                currentWeight.toString() else ""
+            if (currentWeight != null && currentWeight > 0) currentWeight.toString() else ""
         )
     }
 
