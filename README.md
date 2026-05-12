@@ -161,8 +161,11 @@ cd FitJournal
 ```bash
 python -m venv venv
 
-# Git Bash / Linux / Mac
+# Git Bash
 source venv/Scripts/activate
+
+# Mac /Linux
+source venv/bin/activate
 
 # Windows PowerShell
 venv\Scripts\Activate.ps1
@@ -410,7 +413,11 @@ cd mobile
 ./gradlew testDebugUnitTest jacocoTestReport
 
 # View coverage report
+# Windows
 start app/build/reports/jacoco/jacocoTestReport/html/index.html
+
+# Mac
+source venv/bin/activate
 
 # UI tests (requires running emulator)
 ./gradlew connectedDebugAndroidTest
