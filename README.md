@@ -214,7 +214,7 @@ cd src
 uvicorn main:app --reload
 ```
 
-7. Open the web app at: `http://127.0.0.1:8000/login`
+7. Open the web app at: `http://127.0.0.1:8000/web/login`
 
 8. Access API documentation at: `http://127.0.0.1:8000/docs`
 
