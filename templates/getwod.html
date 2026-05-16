@@ -1,0 +1,350 @@
+{% extends 'base.html' %}
+
+{% block extra_css %}
+<style>
+    .nb-wod-table {
+        width: 100%;
+        border-collapse: collapse;
+    }
+
+    .nb-wod-table th {
+        height: var(--lh);
+        text-align: left;
+        padding-bottom: 4px;
+        font-size: 11px;
+        color: var(--muted);
+        text-transform: uppercase;
+        letter-spacing: 1.2px;
+        font-weight: normal;
+        vertical-align: bottom;
+    }
+
+    .nb-wod-table th.center { text-align: center; }
+
+    .nb-wod-table td {
+        height: var(--lh);
+        padding-bottom: 4px;
+        vertical-align: bottom;
+        font-size: var(--fs);
+        color: var(--text);
+    }
+
+    .nb-wod-table td.center { text-align: center; }
+
+    .nb-wod-muscle-row td {
+        color: var(--red);
+        font-size: 12px;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+        padding-bottom: 4px;
+    }
+
+    .nb-wod-input {
+        background: transparent;
+        border: none;
+        border-bottom: 1px solid rgba(255,255,255,0.1);
+        color: var(--text);
+        font-family: 'Patrick Hand', cursive;
+        font-size: var(--fs);
+        width: 60px;
+        padding: 0 4px 4px;
+        outline: none;
+        text-align: center;
+        transition: border-color 0.12s;
+    }
+
+    .nb-wod-input:focus { border-bottom-color: var(--red-border); }
+    .nb-wod-input:disabled { opacity: 0.4; cursor: not-allowed; }
+</style>
+{% endblock %}
+
+{% block content %}
+
+<!-- GENERATE SECTION -->
+<div id="generate-section">
+    <div class="nb-row" style="color: var(--muted);">Ready to train? Generate today's workout.</div>
+    <div class="nb-spacer"></div>
+    <div class="nb-row">
+        <button id="generate-wod-btn" class="nb-btn">🏋️ Generate WOD</button>
+    </div>
+</div>
+
+<!-- WORKOUT SECTION -->
+<div id="workout-section" style="display:none;">
+
+    <!-- Date + day info -->
+    <div class="nb-row">
+        <span style="color: var(--text);" id="workout-date-info"></span>
+        <span style="color: var(--muted); margin-left: 12px; font-size: 14px;" id="routine-day-info"></span>
+    </div>
+
+    <div class="nb-spacer"></div>
+
+    <!-- Exercise table -->
+    <table class="nb-wod-table" id="workout-table">
+        <thead>
+            <tr>
+                <th style="min-width: 200px;">Exercise</th>
+                <th class="center">Weight (<span id="unit-label">kg</span>)</th>
+                <th class="center">Sets</th>
+                <th class="center">Reps</th>
+            </tr>
+        </thead>
+        <tbody id="workout-table-body"></tbody>
+    </table>
+
+    <div class="nb-spacer"></div>
+
+    <div class="nb-row">
+        <button id="mark-complete-btn" class="nb-btn">✓ Mark as Complete</button>
+        <button id="cancel-btn" class="nb-btn" style="margin-left: 12px;">✕ Cancel</button>
+    </div>
+</div>
+
+<!-- SUCCESS SECTION -->
+<div id="success-section" style="display:none;">
+    <div class="nb-row" style="color: rgba(100,180,100,0.8);">🎉 Workout complete! Well done.</div>
+    <div class="nb-spacer"></div>
+    <div class="nb-row">
+        <a href="/dashboard" class="nb-btn">← Back to Dashboard</a>
+    </div>
+</div>
+
+<div id="message" class="nb-message" style="display:none;"></div>
+
+{% endblock %}
+
+{% block extra_js %}
+<script>
+    requireLogin();
+
+    let currentWorkoutData = null;
+    let isWorkoutCompleted = false;
+
+    document.getElementById('generate-wod-btn').addEventListener('click', async () => {
+        await generateWorkout();
+    });
+
+    document.getElementById('mark-complete-btn').addEventListener('click', async () => {
+        if (!isWorkoutCompleted) await completeWorkout();
+    });
+
+    document.getElementById('cancel-btn').addEventListener('click', () => {
+        document.getElementById('generate-section').style.display = 'block';
+        document.getElementById('workout-section').style.display = 'none';
+    });
+
+    async function generateWorkout() {
+        const userId = getCurrentUserId();
+        const btn = document.getElementById('generate-wod-btn');
+        btn.textContent = 'Loading...';
+        btn.disabled = true;
+
+        try {
+            const stateRes = await fetch(`${API_URL}/workout/state/${userId}`, { headers: authHeaders() });
+            const state = await stateRes.json();
+
+            const routineRes = await fetch(`${API_URL}/routine/${userId}`, { headers: authHeaders() });
+            const routine = await routineRes.json();
+            const muscleGroupsForCurrentDay = routine.routine_days[state.current_day_number] || [];
+
+            const selectionsRes = await fetch(`${API_URL}/next-workout/selections/${userId}`, { headers: authHeaders() });
+            const selections = await selectionsRes.json();
+            const selectedExercises = selections.filter(s => s.is_selected);
+
+            if (selectedExercises.length === 0) {
+                showMessage('No exercises selected! Please select exercises in the Calendar page.', 'error');
+                btn.textContent = '🏋️ Generate WOD';
+                btn.disabled = false;
+                return;
+            }
+
+            const allExercises = await getUserExercises();
+            const workoutExercises = selectedExercises
+                .map(sel => allExercises.find(ex => ex.exercise_id === sel.exercise_id))
+                .filter(ex => ex !== undefined);
+
+            const filteredWorkoutExercises = workoutExercises.filter(ex =>
+                muscleGroupsForCurrentDay.includes(ex.exercise_muscle_group)
+            );
+
+            if (filteredWorkoutExercises.length === 0) {
+                showMessage(`No exercises for Day ${state.current_day_number}. Select exercises for ${muscleGroupsForCurrentDay.join(', ')}.`, 'error');
+                btn.textContent = '🏋️ Generate WOD';
+                btn.disabled = false;
+                return;
+            }
+
+            currentWorkoutData = {
+                day_number: state.current_day_number,
+                muscle_groups: muscleGroupsForCurrentDay,
+                exercises: filteredWorkoutExercises
+            };
+
+            displayWorkout(currentWorkoutData);
+            document.getElementById('generate-section').style.display = 'none';
+            document.getElementById('workout-section').style.display = 'block';
+            btn.textContent = '🏋️ Generate WOD';
+            btn.disabled = false;
+
+        } catch (error) {
+            console.error('Error generating workout:', error);
+            showMessage('Error generating workout. Please try again.', 'error');
+            btn.textContent = '🏋️ Generate WOD';
+            btn.disabled = false;
+        }
+    }
+
+    function displayWorkout(workoutData) {
+        const today = new Date();
+        document.getElementById('workout-date-info').textContent = formatDateShort(today);
+        document.getElementById('routine-day-info').textContent = `Day ${workoutData.day_number} — ${workoutData.muscle_groups.join(', ')}`;
+
+        getUserProfile().then(profile => {
+            if (profile && profile.user_unit_preference === 'imperial') {
+                document.getElementById('unit-label').textContent = 'lbs';
+            }
+        });
+
+        const tbody = document.getElementById('workout-table-body');
+        tbody.innerHTML = '';
+
+        const exercisesByMuscle = {};
+        workoutData.exercises.forEach(ex => {
+            if (!exercisesByMuscle[ex.exercise_muscle_group]) exercisesByMuscle[ex.exercise_muscle_group] = [];
+            exercisesByMuscle[ex.exercise_muscle_group].push(ex);
+        });
+
+        let exerciseIndex = 0;
+        Object.keys(exercisesByMuscle).sort().forEach(muscleGroup => {
+            // Muscle group header row
+            const headerRow = document.createElement('tr');
+            headerRow.className = 'nb-wod-muscle-row';
+            const headerCell = document.createElement('td');
+            headerCell.colSpan = 4;
+            headerCell.textContent = muscleGroup;
+            headerRow.appendChild(headerCell);
+            tbody.appendChild(headerRow);
+
+            exercisesByMuscle[muscleGroup].forEach(exercise => {
+                const row = document.createElement('tr');
+
+                // Name
+                const nameCell = document.createElement('td');
+                nameCell.textContent = exercise.exercise_name;
+                row.appendChild(nameCell);
+
+                // Weight
+                const weightCell = document.createElement('td');
+                weightCell.className = 'center';
+                const weightInput = document.createElement('input');
+                weightInput.type = 'number';
+                weightInput.id = `weight-${exerciseIndex}`;
+                weightInput.className = 'nb-wod-input';
+                weightInput.value = exercise.exercise_user_current_weight || '';
+                weightInput.placeholder = '0';
+                weightInput.step = '0.5';
+                weightInput.min = '0';
+                weightCell.appendChild(weightInput);
+                row.appendChild(weightCell);
+
+                // Sets
+                const setsCell = document.createElement('td');
+                setsCell.className = 'center';
+                const setsInput = document.createElement('input');
+                setsInput.type = 'number';
+                setsInput.id = `sets-${exerciseIndex}`;
+                setsInput.className = 'nb-wod-input';
+                setsInput.placeholder = '3';
+                setsInput.min = '1';
+                setsInput.max = '10';
+                setsCell.appendChild(setsInput);
+                row.appendChild(setsCell);
+
+                // Reps
+                const repsCell = document.createElement('td');
+                repsCell.className = 'center';
+                const repsInput = document.createElement('input');
+                repsInput.type = 'number';
+                repsInput.id = `reps-${exerciseIndex}`;
+                repsInput.className = 'nb-wod-input';
+                repsInput.placeholder = '8';
+                repsInput.min = '1';
+                repsInput.max = '50';
+                repsCell.appendChild(repsInput);
+                row.appendChild(repsCell);
+
+                tbody.appendChild(row);
+                exerciseIndex++;
+            });
+        });
+    }
+
+    async function completeWorkout() {
+        const exercises = currentWorkoutData.exercises.map((exercise, index) => ({
+            exercise_id: exercise.exercise_id,
+            sets_completed: parseInt(document.getElementById(`sets-${index}`).value) || 0,
+            reps_completed: parseInt(document.getElementById(`reps-${index}`).value) || 0,
+            weight_used: parseFloat(document.getElementById(`weight-${index}`).value) || 0
+        }));
+
+        const userId = getCurrentUserId();
+        const btn = document.getElementById('mark-complete-btn');
+        btn.textContent = '💾 Saving...';
+        btn.disabled = true;
+
+        try {
+            const response = await fetch(`${API_URL}/workout/complete/${userId}`, {
+                method: 'POST',
+                headers: authHeaders(),
+                body: JSON.stringify({
+                    day_number: currentWorkoutData.day_number,
+                    exercises: exercises
+                })
+            });
+
+            if (response.ok) {
+                isWorkoutCompleted = true;
+                btn.textContent = '✅ Complete!';
+                btn.classList.add('nb-btn-saved');
+
+                currentWorkoutData.exercises.forEach((ex, index) => {
+                    ['weight', 'sets', 'reps'].forEach(field => {
+                        const el = document.getElementById(`${field}-${index}`);
+                        if (el) el.disabled = true;
+                    });
+                });
+
+                setTimeout(() => {
+                    document.getElementById('workout-section').style.display = 'none';
+                    document.getElementById('success-section').style.display = 'block';
+                }, 1500);
+
+            } else {
+                showMessage('Error saving workout. Please try again.', 'error');
+                btn.textContent = '✓ Mark as Complete';
+                btn.disabled = false;
+            }
+        } catch (error) {
+            console.error('Error:', error);
+            showMessage('Network error. Please try again.', 'error');
+            btn.textContent = '✓ Mark as Complete';
+            btn.disabled = false;
+        }
+    }
+
+    function showMessage(text, type) {
+        const message = document.getElementById('message');
+        message.textContent = text;
+        message.className = type === 'success' ? 'nb-message success' : 'nb-message error';
+        message.style.display = 'flex';
+        setTimeout(() => { message.style.display = 'none'; }, 3000);
+    }
+
+    function formatDateShort(date) {
+        const days = ['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday'];
+        const months = ['January','February','March','April','May','June','July','August','September','October','November','December'];
+        return `${days[date.getDay()]} ${date.getDate()} ${months[date.getMonth()]}`;
+    }
+</script>
+{% endblock %}

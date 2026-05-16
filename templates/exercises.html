@@ -1,0 +1,358 @@
+{% extends 'base.html' %}
+
+{% block extra_css %}
+<style>
+    /* Muscle group selector tabs */
+    .nb-muscle-tabs {
+        display: flex;
+        flex-direction: column;
+        padding-top: 0;
+    }
+
+    .nb-muscle-tab {
+        display: flex;
+        align-items: flex-end;
+        height: var(--lh);
+        padding: 0 12px 5px;
+        color: var(--muted);
+        font-family: 'Patrick Hand', cursive;
+        font-size: var(--fs);
+        cursor: pointer;
+        transition: color 0.1s;
+        border-left: 2px solid transparent;
+        user-select: none;
+    }
+
+    .nb-muscle-tab:hover { color: var(--text); }
+
+    .nb-muscle-tab.active {
+        color: #e0e0e0;
+        border-left-color: var(--red-border);
+    }
+
+    /* Exercise table */
+    .nb-ex-table {
+        width: 100%;
+        border-collapse: collapse;
+    }
+
+    .nb-ex-table th {
+        height: var(--lh);
+        text-align: left;
+        padding-bottom: 4px;
+        font-size: 11px;
+        color: var(--muted);
+        text-transform: uppercase;
+        letter-spacing: 1.2px;
+        font-weight: normal;
+        vertical-align: bottom;
+    }
+
+    .nb-ex-table th.center { text-align: center; }
+
+    .nb-ex-table td {
+        height: var(--lh);
+        padding-bottom: 4px;
+        vertical-align: bottom;
+        font-size: var(--fs);
+        color: var(--text);
+        border: none;
+    }
+
+    .nb-ex-table td.center { text-align: center; }
+
+    .nb-weight-input {
+        background: transparent;
+        border: none;
+        border-bottom: 1px solid rgba(255,255,255,0.1);
+        color: var(--text);
+        font-family: 'Patrick Hand', cursive;
+        font-size: var(--fs);
+        width: 70px;
+        padding: 0 4px 4px;
+        outline: none;
+        text-align: center;
+        transition: border-color 0.12s;
+    }
+
+    .nb-weight-input:focus { border-bottom-color: var(--red-border); }
+
+    .nb-checkbox {
+        width: 14px;
+        height: 14px;
+        accent-color: rgba(150,30,30,0.8);
+        cursor: pointer;
+        margin-bottom: 5px;
+    }
+
+    .nb-link {
+        color: var(--red);
+        font-size: 13px;
+        text-decoration: none;
+    }
+
+    .nb-link:hover { color: var(--text); }
+
+    /* Two column layout inside main */
+    .nb-exercises-layout {
+        display: flex;
+        height: 100%;
+        gap: 0;
+    }
+
+    .nb-muscle-col {
+        width: 120px;
+        min-width: 120px;
+        flex-shrink: 0;
+        border-right: 1px solid var(--border);
+        padding-right: 8px;
+    }
+
+    .nb-exercise-col {
+        flex: 1;
+        padding-left: 24px;
+        overflow-y: auto;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+
+<div class="nb-exercises-layout">
+
+    <!-- Left: Muscle group selector -->
+    <div class="nb-muscle-col">
+        <div class="nb-muscle-tabs" id="muscle-tabs">
+            <div class="nb-muscle-tab active" data-muscle="Legs">Legs</div>
+            <div class="nb-muscle-tab" data-muscle="Shoulders">Shoulders</div>
+            <div class="nb-muscle-tab" data-muscle="Chest">Chest</div>
+            <div class="nb-muscle-tab" data-muscle="Glutes">Glutes</div>
+            <div class="nb-muscle-tab" data-muscle="Biceps">Biceps</div>
+            <div class="nb-muscle-tab" data-muscle="Triceps">Triceps</div>
+            <div class="nb-muscle-tab" data-muscle="Back">Back</div>
+            <div class="nb-muscle-tab" data-muscle="Calves">Calves</div>
+            <div class="nb-muscle-tab" data-muscle="Abs">Abs</div>
+        </div>
+    </div>
+
+    <!-- Right: Exercise list -->
+    <div class="nb-exercise-col">
+
+        <div class="nb-row" style="justify-content: space-between; align-items: flex-end;">
+            <span id="muscle-group-title" style="color: var(--text); font-size: var(--fs);">Legs</span>
+            <button id="save-changes-btn" class="nb-btn">✓ Save</button>
+        </div>
+
+        <div class="nb-spacer"></div>
+
+        <div id="loading" style="display:none;">
+            <div class="nb-row" style="color: var(--muted);">Loading exercises...</div>
+        </div>
+
+        <div id="no-exercises" style="display:none;">
+            <div class="nb-row" style="color: var(--muted);">No exercises found for this muscle group.</div>
+        </div>
+
+        <table class="nb-ex-table" id="exercise-table">
+            <thead>
+                <tr>
+                    <th style="min-width: 200px;">Exercise</th>
+                    <th class="center" id="weight-header">Weight (kg)</th>
+                    <th class="center">Link</th>
+                    <th class="center">In Routine</th>
+                </tr>
+            </thead>
+            <tbody id="exercise-table-body"></tbody>
+        </table>
+
+        <div id="message" class="nb-message" style="display:none;"></div>
+
+    </div>
+</div>
+
+{% endblock %}
+
+{% block extra_js %}
+<script>
+    requireLogin();
+
+    let pendingChanges = { weights: {}, routineToggles: {} };
+    let hasUnsavedChanges = false;
+    let allExercises = [];
+    let currentMuscleGroup = 'Legs';
+
+    document.addEventListener('DOMContentLoaded', async () => {
+        await setWeightUnit();
+        await loadExercises();
+        displayExercises(currentMuscleGroup);
+    });
+
+    async function setWeightUnit() {
+        const profile = await getUserProfile();
+        if (profile && profile.user_unit_preference === 'imperial') {
+            document.getElementById('weight-header').textContent = 'Weight (lbs)';
+        }
+    }
+
+    async function loadExercises() {
+        document.getElementById('loading').style.display = 'block';
+        allExercises = await getUserExercises();
+        document.getElementById('loading').style.display = 'none';
+    }
+
+    function displayExercises(muscleGroup) {
+        const tbody = document.getElementById('exercise-table-body');
+        const title = document.getElementById('muscle-group-title');
+        const noExercises = document.getElementById('no-exercises');
+
+        title.textContent = muscleGroup;
+
+        const filtered = allExercises.filter(ex => ex.exercise_muscle_group === muscleGroup);
+
+        if (filtered.length === 0) {
+            tbody.innerHTML = '';
+            noExercises.style.display = 'block';
+            document.getElementById('exercise-table').style.display = 'none';
+            return;
+        }
+
+        noExercises.style.display = 'none';
+        document.getElementById('exercise-table').style.display = 'table';
+
+        tbody.innerHTML = filtered.map(exercise => `
+            <tr data-exercise-id="${exercise.exercise_id}">
+                <td>${exercise.exercise_name}</td>
+                <td class="center">
+                    <input type="number"
+                           class="nb-weight-input"
+                           value="${exercise.exercise_user_current_weight || ''}"
+                           placeholder="0.00"
+                           step="0.5"
+                           min="0"
+                           data-exercise-id="${exercise.exercise_id}">
+                </td>
+                <td class="center">
+                    ${exercise.exercise_link ?
+                        `<a href="${exercise.exercise_link}" target="_blank" class="nb-link">View</a>` :
+                        '<span style="color:var(--muted)">—</span>'}
+                </td>
+                <td class="center">
+                    <input type="checkbox"
+                           class="nb-checkbox include-checkbox"
+                           ${exercise.exercise_is_in_routine ? 'checked' : ''}
+                           data-exercise-id="${exercise.exercise_id}">
+                </td>
+            </tr>
+        `).join('');
+
+        document.querySelectorAll('.weight-input, .nb-weight-input').forEach(input => {
+            input.addEventListener('blur', (e) => {
+                updateExerciseWeight(e.target.dataset.exerciseId, parseFloat(e.target.value) || 0);
+            });
+        });
+
+        document.querySelectorAll('.include-checkbox').forEach(checkbox => {
+            checkbox.addEventListener('change', (e) => {
+                updateExerciseInclude(e.target.dataset.exerciseId, e.target.checked);
+            });
+        });
+    }
+
+    function updateExerciseWeight(exerciseId, weight) {
+        pendingChanges.weights[exerciseId] = weight;
+        hasUnsavedChanges = true;
+        const exercise = allExercises.find(ex => ex.exercise_id == exerciseId);
+        if (exercise) exercise.exercise_user_current_weight = weight;
+        updateSaveButton();
+    }
+
+    function updateExerciseInclude(exerciseId, isIncluded) {
+        pendingChanges.routineToggles[exerciseId] = isIncluded;
+        hasUnsavedChanges = true;
+        const exercise = allExercises.find(ex => ex.exercise_id == exerciseId);
+        if (exercise) exercise.exercise_is_in_routine = isIncluded;
+        updateSaveButton();
+    }
+
+    // Muscle tab switching
+    document.querySelectorAll('.nb-muscle-tab').forEach(tab => {
+        tab.addEventListener('click', (e) => {
+            document.querySelectorAll('.nb-muscle-tab').forEach(t => t.classList.remove('active'));
+            e.target.classList.add('active');
+            currentMuscleGroup = e.target.dataset.muscle;
+            displayExercises(currentMuscleGroup);
+        });
+    });
+
+    function updateSaveButton() {
+        const btn = document.getElementById('save-changes-btn');
+        if (hasUnsavedChanges) {
+            btn.textContent = '✓ Save *';
+            btn.style.borderColor = 'rgba(150,30,30,0.70)';
+            btn.style.color = '#ccc';
+        } else {
+            btn.textContent = '✓ Save';
+            btn.classList.remove('nb-btn-saved');
+        }
+    }
+
+    document.getElementById('save-changes-btn').addEventListener('click', async () => {
+        if (!hasUnsavedChanges) return;
+
+        const userId = getCurrentUserId();
+        const btn = document.getElementById('save-changes-btn');
+        btn.textContent = 'Saving...';
+        btn.disabled = true;
+
+        try {
+            const exercisesToUpdate = new Map();
+
+            for (const [exerciseId, weight] of Object.entries(pendingChanges.weights)) {
+                if (!exercisesToUpdate.has(exerciseId)) {
+                    exercisesToUpdate.set(exerciseId, { ...allExercises.find(ex => ex.exercise_id == exerciseId) });
+                }
+                exercisesToUpdate.get(exerciseId).exercise_user_current_weight = weight;
+            }
+
+            for (const [exerciseId, isInRoutine] of Object.entries(pendingChanges.routineToggles)) {
+                if (!exercisesToUpdate.has(exerciseId)) {
+                    exercisesToUpdate.set(exerciseId, { ...allExercises.find(ex => ex.exercise_id == exerciseId) });
+                }
+                exercisesToUpdate.get(exerciseId).exercise_is_in_routine = isInRoutine;
+            }
+
+            for (const [exerciseId, exerciseData] of exercisesToUpdate) {
+                await fetch(`${API_URL}/exercises/${exerciseId}?user_id=${userId}`, {
+                    method: 'PUT',
+                    headers: authHeaders(),
+                    body: JSON.stringify({
+                        exercise_name: exerciseData.exercise_name,
+                        exercise_muscle_group: exerciseData.exercise_muscle_group,
+                        exercise_user_current_weight: exerciseData.exercise_user_current_weight,
+                        exercise_is_in_routine: exerciseData.exercise_is_in_routine,
+                        exercise_link: exerciseData.exercise_link || null,
+                        comments: exerciseData.comments || null
+                    })
+                });
+            }
+
+            pendingChanges = { weights: {}, routineToggles: {} };
+            hasUnsavedChanges = false;
+            btn.disabled = false;
+            btn.classList.add('nb-btn-saved');
+            btn.textContent = '✓ Saved';
+
+            const message = document.getElementById('message');
+            message.textContent = 'Changes saved successfully!';
+            message.className = 'nb-message success';
+            message.style.display = 'flex';
+            setTimeout(() => { message.style.display = 'none'; }, 3000);
+
+        } catch (error) {
+            console.error('Error saving:', error);
+            btn.textContent = '✓ Save *';
+            btn.disabled = false;
+        }
+    });
+</script>
+{% endblock %}

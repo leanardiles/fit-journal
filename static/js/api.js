@@ -64,7 +64,7 @@ if (registrationForm) {
             if (response.ok) {
                 // Success!
                 alert('Account created successfully! Redirecting to login...');
-                window.location.href = '/login';
+                window.location.href = '/web/login';
             } else {
                 // Error from backend
                 alert(`Error: ${data.detail || 'Registration failed. Please try again.'}`);
@@ -141,7 +141,7 @@ if (loginForm) {
                         if (profile.user_first_name) {
                             localStorage.setItem('user_first_name', profile.user_first_name);
                         }
-                        window.location.href = '/dashboard';
+                        window.location.href = '/web/dashboard';
                     });
             } else {
                 // Error from backend
@@ -207,14 +207,14 @@ function logout() {
     localStorage.removeItem('user_email');
     localStorage.removeItem('user_first_name');
     localStorage.removeItem('access_token');
-    window.location.href = '/login';
+    window.location.href = '/web/login';
 }
 
 // Protect pages that require login
 function requireLogin() {
     if (!isLoggedIn()) {
         alert('Please log in to access this page');
-        window.location.href = '/login';
+        window.location.href = '/web/login';
     }
 }
 
@@ -228,7 +228,7 @@ async function getUserExercises() {
     
     if (!userId) {
         alert('Please log in first');
-        window.location.href = '/login';
+        window.location.href = '/web/login';
         return;
     }
     
@@ -256,7 +256,7 @@ async function createExercise(exerciseData) {
     
     if (!userId) {
         alert('Please log in first');
-        window.location.href = '/login';
+        window.location.href = '/web/login';
         return;
     }
     
@@ -288,7 +288,7 @@ async function deleteExercise(exerciseId) {
     
     if (!userId) {
         alert('Please log in first');
-        window.location.href = '/login';
+        window.location.href = '/web/login';
         return;
     }
     
@@ -322,7 +322,7 @@ async function getUserProfile() {
     
     if (!userId) {
         alert('Please log in first');
-        window.location.href = '/login';
+        window.location.href = '/web/login';
         return;
     }
     
@@ -350,7 +350,7 @@ async function updateUserProfile(profileData) {
     
     if (!userId) {
         alert('Please log in first');
-        window.location.href = '/login';
+        window.location.href = '/web/login';
         return;
     }
     
@@ -387,7 +387,7 @@ async function getUserRoutine() {
     
     if (!userId) {
         alert('Please log in first');
-        window.location.href = '/login';
+        window.location.href = '/web/login';
         return;
     }
     
@@ -415,7 +415,7 @@ async function saveUserRoutine(routineData) {
     
     if (!userId) {
         alert('Please log in first');
-        window.location.href = '/login';
+        window.location.href = '/web/login';
         return;
     }
     
@@ -447,7 +447,7 @@ async function deleteUserRoutine() {
     
     if (!userId) {
         alert('Please log in first');
-        window.location.href = '/login';
+        window.location.href = '/web/login';
         return;
     }
     

@@ -6,6 +6,7 @@ import pytz
 # Third-party imports
 from fastapi import FastAPI, Depends, HTTPException, status
 from fastapi.middleware.cors import CORSMiddleware
+from fastapi.responses import RedirectResponse
 from fastapi.security import HTTPBearer, HTTPAuthorizationCredentials
 from fastapi.templating import Jinja2Templates
 from fastapi.staticfiles import StaticFiles
@@ -116,22 +117,18 @@ def get_current_user(
 
 # ── HTML Routes ──
 @app.get("/")
-async def root(request: Request):
-    return templates.TemplateResponse("dashboard.html", {
-        "request": request,
-        "active_page": "dashboard",
-        "page_title": "Dashboard"
-    })
+async def root():
+    return RedirectResponse(url="/web/dashboard")
 
-@app.get("/login")
+@app.get("/web/login")
 async def login_page(request: Request):
     return templates.TemplateResponse("login.html", {"request": request})
 
-@app.get("/register")
+@app.get("/web/register")
 async def register_page(request: Request):
     return templates.TemplateResponse("register.html", {"request": request})
 
-@app.get("/dashboard")
+@app.get("/web/dashboard")
 async def dashboard(request: Request):
     return templates.TemplateResponse("dashboard.html", {
         "request": request,
@@ -139,7 +136,7 @@ async def dashboard(request: Request):
         "page_title": "Dashboard"
     })
 
-@app.get("/profile")
+@app.get("/web/profile")
 async def profile(request: Request):
     return templates.TemplateResponse("profile.html", {
         "request": request,
@@ -147,7 +144,7 @@ async def profile(request: Request):
         "page_title": "Profile"
     })
 
-@app.get("/routine")
+@app.get("/web/routine")
 async def routine(request: Request):
     return templates.TemplateResponse("routine.html", {
         "request": request,
@@ -155,6 +152,21 @@ async def routine(request: Request):
         "page_title": "Routine"
     })
 
+@app.get("/web/exercises")
+async def exercises_page(request: Request):
+    return templates.TemplateResponse("exercises.html", {
+        "request": request,
+        "active_page": "exercises",
+        "page_title": "Exercises"
+    })
+
+@app.get("/web/getwod")
+async def getwod_page(request: Request):
+    return templates.TemplateResponse("getwod.html", {
+        "request": request,
+        "active_page": "getwod",
+        "page_title": "Get WOD"
+    })
 
 # ========== USER AUTHENTICATION ROUTES ==========
 
