@@ -21,6 +21,9 @@ FitJournal is a comprehensive fitness tracking application that provides a compl
 - ✅ Session-based workout logging
 - ✅ Progress tracking by exercise frequency
 - ✅ Timezone-aware workout date logging (per user timezone)
+- ✅ Notebook-style UI — ruled lines, handwritten font, red margin line
+- ✅ Dark mode and light mode with persistent preference
+- ✅ Jinja2 server-side templating with shared sidebar partial
 
 ### Android Mobile App
 - ✅ JWT authentication (login + register)
@@ -63,12 +66,14 @@ FitJournal is a comprehensive fitness tracking application that provides a compl
 - **Authentication:** Bcrypt password hashing + JWT tokens (web + mobile)
 - **Database Driver:** PyMySQL
 - **Timezone:** pytz
+- **Templating:** Jinja2 (server-side HTML rendering)
 
 ### Web Frontend
-- **CSS Framework:** PaperCSS (dark mode)
+- **Templating:** Jinja2 (served by FastAPI)
+- **CSS:** Custom `notebook.css` — no CSS framework
 - **JavaScript:** Vanilla JS (ES6+)
-- **HTTP Server:** Python http.server (development)
-- **UI Design:** Custom dark theme (#171717 background)
+- **Font:** Patrick Hand (Google Fonts)
+- **UI Design:** Notebook-style design system — ruled lines, red margin line, baseline grid, dark/light mode
 
 ### Android Mobile App
 - **Language:** Kotlin
@@ -87,29 +92,31 @@ FitJournal is a comprehensive fitness tracking application that provides a compl
 ```
 FitJournal/
 ├── src/                          # Backend source code
-│   ├── main.py                   # FastAPI application & routes
+│   ├── main.py                   # FastAPI — API routes + HTML routes
 │   ├── database.py               # SQLAlchemy database connection
 │   ├── models.py                 # SQLAlchemy ORM models
 │   ├── schemas.py                # Pydantic validation schemas
 │   ├── .env                      # Environment variables (not in repo)
 │   └── venv/                     # Virtual environment (not in repo)
-├── frontend/                     # Web frontend
-│   ├── index.html
-│   ├── login.html
-│   ├── registration.html
+├── templates/                    # Jinja2 HTML templates (served by FastAPI)
+│   ├── base.html                 # Shared layout — header, sidebar, scripts
+│   ├── partials/
+│   │   └── sidebar.html          # Sidebar partial — single source of truth
 │   ├── dashboard.html
 │   ├── profile.html
-│   ├── exercises.html
 │   ├── routine.html
-│   ├── calendar.html
-│   ├── getwod.html
+│   ├── exercises.html            # (in progress)
+│   ├── getwod.html               # (in progress)
+│   ├── login.html                # Standalone — no sidebar
+│   └── register.html             # Standalone — no sidebar
+├── static/                       # Static assets served by FastAPI
 │   ├── css/
-│   │   ├── paper.css
-│   │   └── style.css
+│   │   └── notebook.css          # Full design system
 │   ├── js/
-│   │   └── api.js
+│   │   └── api.js                # API calls, auth helpers
 │   └── images/
 │       └── logo_only.png
+├── frontend/                     # Legacy static frontend (being migrated)
 ├── mobile/                       # Android mobile app
 │   └── app/src/main/java/.../
 │       ├── analytics/            # AnalyticsLogger
@@ -134,7 +141,8 @@ FitJournal/
 │       ├── navigation/           # Navigation.kt, Routes.kt
 │       └── MainActivity.kt
 ├── docs/
-│   └── ER_diagram.png
+│   ├── ER_diagram.png
+│   └── design-system.md          # Full design system documentation
 ├── requirements.txt
 ├── README.md
 └── README_mobile.md
@@ -149,7 +157,7 @@ FitJournal/
 - Modern web browser
 - Android Studio Hedgehog (2023.1.1) or later *(for mobile)*
 
-### Backend Setup
+### Backend + Web Setup
 
 1. Clone the repository:
 ```bash
@@ -161,11 +169,11 @@ cd FitJournal
 ```bash
 python -m venv venv
 
-# Git Bash
-source venv/Scripts/activate
-
-# Mac /Linux
+# Mac/Linux
 source venv/bin/activate
+
+# Git Bash (Windows)
+source venv/Scripts/activate
 
 # Windows PowerShell
 venv\Scripts\Activate.ps1
@@ -176,7 +184,11 @@ venv\Scripts\activate.bat
 
 3. Install dependencies:
 ```bash
+# Mac/Linux
 pip install -r requirements.txt
+
+# Windows (if pip not recognized)
+pip3 install -r requirements.txt
 ```
 
 4. Create `.env` file in `src/` folder:
@@ -187,6 +199,8 @@ DB_USER=avnadmin
 DB_PASSWORD=your-password
 DB_NAME=fitjournalDB
 ```
+
+> **Note:** The `.env` file is excluded from the repo. Contact the author for credentials if needed for evaluation.
 
 5. Test database connection:
 ```bash
@@ -200,18 +214,11 @@ cd src
 uvicorn main:app --reload
 ```
 
-7. Access API documentation at: `http://127.0.0.1:8000/docs`
+7. Open the web app at: `http://127.0.0.1:8000/login`
 
-### Web Frontend Setup
+8. Access API documentation at: `http://127.0.0.1:8000/docs`
 
-1. Open a **new terminal** (keep backend running in the first one)
-
-```bash
-cd frontend
-python -m http.server 8080
-```
-
-2. Access the application at: `http://localhost:8080/login.html`
+> **Note:** No separate frontend server is needed. FastAPI serves both the API and the web frontend via Jinja2 templates.
 
 ### Mobile App Setup
 
@@ -236,6 +243,16 @@ You can use the following test user credentials:
 - `POST /register` — Register new user
 - `POST /login` — Web login (returns JWT access token + user info)
 - `POST /login/mobile` — Mobile login (returns JWT access token)
+
+### HTML Pages (served by FastAPI)
+- `GET /` — Redirects to dashboard
+- `GET /login` — Login page
+- `GET /register` — Registration page
+- `GET /dashboard` — Dashboard page
+- `GET /profile` — Profile page
+- `GET /routine` — Routine page
+- `GET /exercises` — Exercises page *(in progress)*
+- `GET /getwod` — Get WOD page *(in progress)*
 
 ### Profile
 - `GET /profile/{user_id}` — Get user profile *(JWT required)*
@@ -359,6 +376,9 @@ You can use the following test user credentials:
 
 ## Design Philosophy
 
+### Notebook UI
+FitJournal's web interface is designed to look and feel like a physical workout notebook — ruled lines, a handwritten font (Patrick Hand), a red vertical margin line separating the sidebar, and a strict baseline grid that keeps all text aligned to the lines. Supports dark mode (near-black background) and light mode (cream background with blue-grey lines). Full details in `docs/design-system.md`.
+
 ### Two-Table Exercise Approach
 FitJournal uses a **copy-on-registration** approach:
 1. **`default_exercises`** — Template catalog (101 exercises)
@@ -391,6 +411,9 @@ The mobile app follows strict MVI (Model-View-Intent) pattern:
 - **Intent:** Actions dispatched to ViewModels via sealed classes
 - **Reducer:** Pure functions transform state deterministically (e.g. `homeScreenReducer`)
 
+### Jinja2 Templating (Web)
+The web frontend uses Jinja2 server-side templating served by FastAPI. All pages extend `base.html` which includes the shared header and sidebar partial (`partials/sidebar.html`). This means the sidebar is defined in one place and automatically included in all pages — no duplication. The active nav item is highlighted via a Jinja2 conditional passed from each route.
+
 
 ## Testing
 
@@ -412,19 +435,18 @@ Repositories tested via interfaces (`IUserExercisesRepository`, `IUserRoutineRep
 cd mobile
 ./gradlew testDebugUnitTest jacocoTestReport
 
-# View coverage report
-# Windows
+# View coverage report — Windows
 start app/build/reports/jacoco/jacocoTestReport/html/index.html
 
-# Mac
-source venv/bin/activate
+# View coverage report — Mac
+open app/build/reports/jacoco/jacocoTestReport/html/index.html
 
 # UI tests (requires running emulator)
 ./gradlew connectedDebugAndroidTest
 ```
 
 
-## Enhancements
+## Enhancements (Capstone — COM5210)
 
 | Enhancement | Points | Details |
 |---|---|---|
@@ -439,14 +461,16 @@ source venv/bin/activate
 
 ## Current Status
 
-### Web App ✅ Complete
-- Full backend API (20+ endpoints), all protected with JWT
-- Full user authentication system with JWT
-- Exercise, routine, workout, and calendar management
-- Timezone-aware workout date logging
-- Dark theme UI/UX
+### Web App
+- ✅ Full backend API (20+ endpoints), all protected with JWT
+- ✅ Jinja2 templating — FastAPI serves HTML and API from the same server
+- ✅ Notebook-style UI — Dashboard, Profile, Routine migrated
+- ✅ Dark mode + light mode with persistent preference
+- 🚧 Exercises, Get WOD pages — Jinja2 migration in progress
+- 🚧 Login/Register — functional placeholder, notebook redesign pending
+- 🚧 Calendar — Google Sheets integration planned
 
-### Mobile App ✅ Complete
+### Mobile App
 - ✅ JWT authentication (login + register + auto-login + logout)
 - ✅ Secure token storage and automatic injection via AuthInterceptor
 - ✅ Dashboard with Quick Stats and Current Routine modules
@@ -466,33 +490,35 @@ source venv/bin/activate
 - No offline support — requires active backend connection
 
 ### Future Enhancements 📋
+- [ ] Login and Register page notebook redesign
+- [ ] Exercises and Get WOD Jinja2 migration
+- [ ] Google Sheets integration for Calendar
+- [ ] Google Cloud deployment (Cloud Run + Cloud SQL)
 - [ ] ExerciseDB legacy code cleanup (ExerciseRepository, ExerciseDetailsViewModel)
 - [ ] User-configurable exercises per muscle group in routine setup
 - [ ] Analytics dashboard (charts, progress graphs)
 - [ ] Personal records (PR) tracking
 - [ ] REST timer between sets
-- [ ] Social features (share routines)
 - [ ] Password reset via email
 - [ ] Export workout data (CSV/PDF)
-- [ ] Deployment (cloud backend + web hosting)
 - [ ] Rate limiting on API endpoints
 - [ ] HTTPS for production
 - [ ] Offline sync with Room database
+- [ ] Light mode for mobile
 
 
 ## Development Workflow
 
 ```bash
-# Terminal 1: Backend
+# Terminal 1: Backend + Web (single server)
 cd FitJournal/src
-source ../venv/Scripts/activate
+source ../venv/Scripts/activate   # Git Bash / Windows
+# source ../venv/bin/activate     # Mac/Linux
 uvicorn main:app --reload --host 0.0.0.0
 
-# Terminal 2: Web frontend
-cd FitJournal/frontend
-python -m http.server 8080
+# Open web app at: http://127.0.0.1:8000/login
 
-# Terminal 3: Git
+# Terminal 2: Git
 cd FitJournal
 git status
 git add .
@@ -525,6 +551,10 @@ git push
 
 GitHub: [https://github.com/leanardiles/FitJournal](https://github.com/leanardiles/FitJournal)
 
+## Documentation
+
+- `docs/design-system.md` — Full UI/UX design system documentation
+- `README_mobile.md` — Android app setup and architecture details
 
 ---
 
