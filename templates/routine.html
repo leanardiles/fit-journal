@@ -1,0 +1,264 @@
+{% extends 'base.html' %}
+
+{% block extra_css %}
+<style>
+    .nb-days-selector {
+        display: flex;
+        align-items: center;
+        height: var(--lh);
+        gap: 10px;
+        padding-bottom: 0;
+    }
+
+    .nb-day-num-btn {
+        background: transparent;
+        border: 1px solid var(--border);
+        color: var(--muted);
+        font-family: 'Patrick Hand', cursive;
+        font-size: var(--fs);
+        width: calc(var(--lh) - 6px);
+        height: calc(var(--lh) - 6px);
+        cursor: pointer;
+        border-radius: 8px;
+        transition: all 0.12s;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+
+    .nb-day-num-btn:hover { color: var(--text); border-color: var(--red-border); }
+    .nb-day-num-btn.nb-selected {
+        border-color: var(--red-border);
+        color: #ccc;
+        background: var(--active-bg);
+    }
+
+    .nb-muscle-group {
+        display: flex;
+        flex-wrap: wrap;
+        align-items: flex-end;
+        min-height: var(--lh);
+        padding-bottom: 4px;
+        gap: 8px;
+    }
+
+    .nb-muscle-btn {
+        background: transparent;
+        border: 1px solid var(--border);
+        color: var(--muted);
+        font-family: 'Patrick Hand', cursive;
+        font-size: 14px;
+        padding: 0 12px;
+        height: calc(var(--lh) - 10px);
+        cursor: pointer;
+        border-radius: 8px;
+        transition: all 0.12s;
+    }
+
+    .nb-muscle-btn:hover { color: var(--text); }
+    .nb-muscle-btn.nb-selected {
+        border-color: var(--red-border);
+        color: #ccc;
+        background: var(--active-bg);
+    }
+
+    .nb-day-heading {
+        height: var(--lh);
+        display: flex;
+        align-items: flex-end;
+        padding-bottom: 4px;
+        font-size: 15px;
+        color: var(--red);
+    }
+
+    .nb-selected-tag {
+        font-size: 12px;
+        color: var(--muted);
+        height: var(--lh);
+        display: flex;
+        align-items: flex-end;
+        padding-bottom: 4px;
+    }
+
+    .nb-selected-tag span { color: var(--text); margin-left: 4px; }
+</style>
+{% endblock %}
+
+{% block content %}
+
+<!-- STEP 1: Days per week -->
+<div id="step-1">
+    <div class="nb-row" style="color:var(--text);font-size:var(--fs);">Your new routine</div>
+    <div class="nb-row" style="color:var(--text);font-size:var(--fs);">How many days per week?</div>
+    <div class="nb-days-selector">
+        <button type="button" class="nb-day-num-btn" data-days="1">1</button>
+        <button type="button" class="nb-day-num-btn" data-days="2">2</button>
+        <button type="button" class="nb-day-num-btn" data-days="3">3</button>
+        <button type="button" class="nb-day-num-btn" data-days="4">4</button>
+        <button type="button" class="nb-day-num-btn" data-days="5">5</button>
+        <button type="button" class="nb-day-num-btn" data-days="6">6</button>
+        <button type="button" class="nb-day-num-btn" data-days="7">7</button>
+    </div>
+</div>
+
+<!-- STEP 2: Muscle groups per day -->
+<div id="step-2" style="display:none;">
+    <div class="nb-spacer"></div>
+    <div class="nb-row" style="color:var(--text);font-size:var(--fs);">Select muscle groups for each day</div>
+    <div id="days-container"></div>
+    <div class="nb-spacer"></div>
+    <div class="nb-row">
+        <button id="save-routine-btn" class="nb-btn">✓ Save Routine</button>
+        <button id="cancel-btn" class="nb-btn" style="margin-left:12px;">✕ Cancel</button>
+    </div>
+</div>
+
+<!-- CURRENT ROUTINE DISPLAY -->
+<div id="current-routine" style="display:none;">
+    <div id="routine-display"></div>
+    <div class="nb-spacer"></div>
+    <div class="nb-row">
+        <button id="edit-routine-btn" class="nb-btn">✎ Edit Routine</button>
+    </div>
+</div>
+
+<div id="message" class="nb-message" style="display:none;"></div>
+
+{% endblock %}
+
+{% block extra_js %}
+<script>
+    requireLogin();
+
+    let selectedDays = 0;
+    let routineData = {};
+    const muscleGroups = ['Legs', 'Shoulders', 'Chest', 'Glutes', 'Biceps', 'Triceps', 'Back', 'Calves', 'Abs'];
+
+    document.addEventListener('DOMContentLoaded', async () => {
+        const routine = await getUserRoutine();
+        if (routine && routine.days_per_week > 0) {
+            displayCurrentRoutine(routine);
+        }
+    });
+
+    function displayCurrentRoutine(routine) {
+        document.getElementById('step-1').style.display = 'none';
+        document.getElementById('step-2').style.display = 'none';
+        document.getElementById('current-routine').style.display = 'block';
+
+        const display = document.getElementById('routine-display');
+        let html = `
+            <div class="nb-row" style="color:var(--text);font-size:var(--fs);">Your current routine</div>
+            <div class="nb-row" style="color:var(--text);font-size:var(--fs);">
+                Training <u style="text-decoration-color:var(--red-border);text-underline-offset:3px;margin:0 4px;">${routine.days_per_week}</u> ${routine.days_per_week === 1 ? 'day' : 'days'} per week
+            </div>`;
+
+        for (let day = 1; day <= routine.days_per_week; day++) {
+            const muscles = routine.routine_days[day] || [];
+            html += `
+                <div class="nb-day-row">
+                    <span class="nb-day-label nb-other">Day ${day} —</span>
+                    <span class="nb-day-muscles">${muscles.length > 0 ? muscles.join(', ') : 'Rest day'}</span>
+                </div>`;
+        }
+
+        display.innerHTML = html;
+    }
+
+    document.querySelectorAll('.nb-day-num-btn').forEach(btn => {
+        btn.addEventListener('click', (e) => {
+            selectedDays = parseInt(e.target.dataset.days);
+            document.querySelectorAll('.nb-day-num-btn').forEach(b => b.classList.remove('nb-selected'));
+            e.target.classList.add('nb-selected');
+            document.getElementById('step-2').style.display = 'block';
+            generateDaySelectors(selectedDays);
+        });
+    });
+
+    function generateDaySelectors(numDays) {
+        const container = document.getElementById('days-container');
+        container.innerHTML = '';
+        routineData = {};
+
+        for (let day = 1; day <= numDays; day++) {
+            routineData[day] = [];
+            const dayDiv = document.createElement('div');
+            dayDiv.innerHTML = `
+                <div class="nb-day-heading">Day ${day}</div>
+                <div class="nb-muscle-group" data-day="${day}">
+                    ${muscleGroups.map(m => `
+                        <button type="button" class="nb-muscle-btn" data-day="${day}" data-muscle="${m}">${m}</button>
+                    `).join('')}
+                </div>
+                <div class="nb-selected-tag" data-day="${day}">
+                    Selected: <span class="muscle-list">None</span>
+                </div>`;
+            container.appendChild(dayDiv);
+        }
+
+        document.querySelectorAll('.nb-muscle-btn').forEach(btn => {
+            btn.addEventListener('click', toggleMuscleGroup);
+        });
+    }
+
+    function toggleMuscleGroup(e) {
+        const day = parseInt(e.target.dataset.day);
+        const muscle = e.target.dataset.muscle;
+        if (routineData[day].includes(muscle)) {
+            routineData[day] = routineData[day].filter(m => m !== muscle);
+            e.target.classList.remove('nb-selected');
+        } else {
+            routineData[day].push(muscle);
+            e.target.classList.add('nb-selected');
+        }
+        const tag = document.querySelector(`.nb-selected-tag[data-day="${day}"] .muscle-list`);
+        tag.textContent = routineData[day].length > 0 ? routineData[day].join(', ') : 'None';
+    }
+
+    document.getElementById('save-routine-btn').addEventListener('click', async () => {
+        const hasSelection = Object.values(routineData).some(m => m.length > 0);
+        if (!hasSelection) {
+            alert('Please select at least one muscle group for at least one day');
+            return;
+        }
+
+        const apiData = {
+            days_per_week: selectedDays,
+            routine_days: Object.entries(routineData).map(([day, muscles]) => ({
+                day_number: parseInt(day),
+                muscle_groups: muscles
+            }))
+        };
+
+        const result = await saveUserRoutine(apiData);
+        const message = document.getElementById('message');
+        if (result) {
+            document.getElementById('save-routine-btn').classList.add('nb-btn-saved');
+            message.textContent = 'Routine saved!';
+            message.className = 'nb-message success';
+            message.style.display = 'flex';
+            setTimeout(async () => {
+                const routine = await getUserRoutine();
+                displayCurrentRoutine(routine);
+                message.style.display = 'none';
+            }, 1500);
+        }
+    });
+
+    document.getElementById('cancel-btn').addEventListener('click', async () => {
+        const routine = await getUserRoutine();
+        if (routine && routine.days_per_week > 0) {
+            displayCurrentRoutine(routine);
+        } else {
+            document.getElementById('step-1').style.display = 'block';
+            document.getElementById('step-2').style.display = 'none';
+        }
+    });
+
+    document.getElementById('edit-routine-btn').addEventListener('click', () => {
+        document.getElementById('current-routine').style.display = 'none';
+        document.getElementById('step-1').style.display = 'block';
+        document.getElementById('step-2').style.display = 'none';
+    });
+</script>
+{% endblock %}

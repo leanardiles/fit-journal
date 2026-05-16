@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en" class="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FitJournal - Login</title>
+    <link rel="stylesheet" href="/static/css/notebook.css">
+</head>
+<body>
+    <div style="display: flex; flex-direction: column; align-items: center; justify-content: center; min-height: 100vh; padding: 2rem;">
+        
+        <div style="margin-bottom: 0.5rem;">
+            <img src="/static/images/logo_only.png" alt="FitJournal logo" style="max-width: 300px; width: 90%; border: none; box-shadow: none; background: transparent;">
+        </div>
+        
+        <h2 style="margin-bottom: 0.5rem; margin-top: 0; color: #fff;">Welcome back</h2>
+        
+        <div style="width: 100%; max-width: 400px;">
+            <form id="login-form">
+                <div class="nb-row">
+                    <span class="nb-label">Email</span>
+                    <input type="email" id="email" name="email" class="nb-input" placeholder="your@email.com" required>
+                </div>
+                <div class="nb-row">
+                    <span class="nb-label">Password</span>
+                    <input type="password" id="password" name="password" class="nb-input" placeholder="Your password" required>
+                </div>
+                <div style="margin-top: 1rem;">
+                    <button type="submit" class="nb-btn">Sign In</button>
+                </div>
+            </form>
+            <p style="margin-top: 1rem; color: var(--muted);">
+                Don't have an account? <a href="/register" style="color: var(--text);">Register here</a>
+            </p>
+            <div id="error-msg" style="color: rgba(192,57,43,0.85); margin-top: 0.5rem; display:none;"></div>
+        </div>
+    </div>
+
+    <script src="/static/js/api.js"></script>
+
+</body>
+</html>

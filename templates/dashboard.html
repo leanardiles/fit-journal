@@ -1,0 +1,105 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+<div class="nb-section-label">quick stats</div>
+<div class="nb-stat-row">
+    <div class="nb-stat-item">
+        This week: <span class="nb-val" id="workouts-this-week">—</span>
+    </div>
+    <div class="nb-stat-item">
+        Current day: <span class="nb-val" id="current-day">—</span>
+    </div>
+</div>
+
+<div class="nb-spacer"></div>
+
+<div class="nb-section-label">your routine</div>
+<div id="routine-container">
+    <div class="nb-row">
+        <span style="color: var(--muted);">Loading...</span>
+    </div>
+</div>
+
+<div id="message" class="nb-message" style="display:none;"></div>
+
+{% endblock %}
+
+{% block extra_js %}
+<script>
+    requireLogin();
+
+    document.addEventListener('DOMContentLoaded', async () => {
+        await Promise.all([loadRoutine(), loadStats()]);
+    });
+
+    async function loadStats() {
+        try {
+            const userId = getCurrentUserId();
+            const res = await fetch(`${API_URL}/workout/state/${userId}`, { headers: authHeaders() });
+            const stateData = await res.json();
+            document.getElementById('current-day').textContent = `Day ${stateData.current_day_number}`;
+
+            const sessions = await getWorkoutSessions(userId, 20);
+            const now = new Date();
+            const day = now.getDay();
+            const diff = now.getDate() - day + (day === 0 ? -6 : 1);
+            const monday = new Date(now.setDate(diff));
+            monday.setHours(0,0,0,0);
+            const thisWeek = sessions.filter(s => new Date(s.workout_date) >= monday).length;
+            document.getElementById('workouts-this-week').textContent = thisWeek;
+        } catch(e) {
+            document.getElementById('current-day').textContent = '—';
+        }
+    }
+
+    async function loadRoutine() {
+        const container = document.getElementById('routine-container');
+        const routine = await getUserRoutine();
+
+        if (!routine || routine.days_per_week === 0) {
+            container.innerHTML = `
+                <div class="nb-row">
+                    <span style="color: var(--muted);">No routine set up yet.</span>
+                    <a href="/routine" class="nb-btn" style="margin-left:16px;">Create Routine</a>
+                </div>`;
+            return;
+        }
+
+        let currentDay = 1;
+        try {
+            const userId = getCurrentUserId();
+            const res = await fetch(`${API_URL}/workout/state/${userId}`, { headers: authHeaders() });
+            const data = await res.json();
+            currentDay = data.current_day_number;
+        } catch(e) {}
+
+        let html = `
+            <div class="nb-row" style="color:var(--text);font-size:var(--fs);">Your current routine</div>
+            <div class="nb-row" style="color:var(--text);font-size:var(--fs);">
+                Training <u style="text-decoration-color:var(--red-border);text-underline-offset:3px;margin:0 4px;">${routine.days_per_week}</u> ${routine.days_per_week === 1 ? 'day' : 'days'} per week
+            </div>`;
+
+        for (let day = 1; day <= routine.days_per_week; day++) {
+            const muscles = routine.routine_days[day] || [];
+            const isToday = day === currentDay;
+            html += `
+                <div class="nb-day-row">
+                    <span class="nb-day-label ${isToday ? 'nb-today' : 'nb-other'}">Day ${day} —</span>
+                    <span class="nb-day-muscles ${isToday ? 'nb-today' : ''}">
+                        ${muscles.length > 0 ? muscles.join(', ') : 'Rest day'}
+                    </span>
+                    ${isToday ? '<span class="nb-today-tag">← today</span>' : ''}
+                </div>`;
+        }
+
+        html += `
+            <div class="nb-spacer"></div>
+            <div class="nb-row">
+                <a href="/routine" class="nb-btn">✎ Edit Routine</a>
+            </div>`;
+
+        container.innerHTML = html;
+    }
+</script>
+{% endblock %}

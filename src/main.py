@@ -7,6 +7,9 @@ import pytz
 from fastapi import FastAPI, Depends, HTTPException, status
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.security import HTTPBearer, HTTPAuthorizationCredentials
+from fastapi.templating import Jinja2Templates
+from fastapi.staticfiles import StaticFiles
+from fastapi import Request
 from passlib.context import CryptContext
 from sqlalchemy import func
 from sqlalchemy.orm import Session
@@ -18,11 +21,18 @@ import schemas
 from database import engine, get_db
 
 
-
 # Create database tables (if they don't exist)
 models.Base.metadata.create_all(bind=engine)
 
+
 app = FastAPI(title="FitJournal API")
+
+
+# Mount static files
+app.mount("/static", StaticFiles(directory="../static"), name="static")
+
+# Jinja2 templates
+templates = Jinja2Templates(directory="../templates")
 
 
 # ========== CORS CONFIGURATION ==========
@@ -104,9 +114,46 @@ def get_current_user(
 
 # ========== ROUTES ==========
 
+# ── HTML Routes ──
 @app.get("/")
-def index():
-    return {"message": "Welcome to FitJournal API"}
+async def root(request: Request):
+    return templates.TemplateResponse("dashboard.html", {
+        "request": request,
+        "active_page": "dashboard",
+        "page_title": "Dashboard"
+    })
+
+@app.get("/login")
+async def login_page(request: Request):
+    return templates.TemplateResponse("login.html", {"request": request})
+
+@app.get("/register")
+async def register_page(request: Request):
+    return templates.TemplateResponse("register.html", {"request": request})
+
+@app.get("/dashboard")
+async def dashboard(request: Request):
+    return templates.TemplateResponse("dashboard.html", {
+        "request": request,
+        "active_page": "dashboard",
+        "page_title": "Dashboard"
+    })
+
+@app.get("/profile")
+async def profile(request: Request):
+    return templates.TemplateResponse("profile.html", {
+        "request": request,
+        "active_page": "profile",
+        "page_title": "Profile"
+    })
+
+@app.get("/routine")
+async def routine(request: Request):
+    return templates.TemplateResponse("routine.html", {
+        "request": request,
+        "active_page": "routine",
+        "page_title": "Routine"
+    })
 
 
 # ========== USER AUTHENTICATION ROUTES ==========

@@ -1,137 +1,179 @@
 <!DOCTYPE html>
-<html lang="en" class="dark">
+<html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>FitJournal - Dashboard</title>
-    <link rel="stylesheet" href="css/paper.css">
-    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="css/notebook.css">
 </head>
 <body>
-    <!-- Navigation Header -->
-    <header class="text-center">
-        <div class="margin-top">
-            <img src="images/logo_only.png" alt="FitJournal Logo" style="max-width: 80px;">
+
+<div id="nb-app">
+
+    <!-- HEADER — blank top area, logo left, user right -->
+    <header id="nb-header">
+        <div style="width: var(--sw); flex-shrink: 0;"></div>
+        <div class="nb-logo">
+            <img src="images/logo_only.png" alt="FitJournal">
+            <div class="nb-logo-text">FitJournal</div>
         </div>
-        
-        <nav class="margin-top">
-            <button onclick="window.location.href='dashboard.html'">Dashboard</button>
-            <button onclick="window.location.href='profile.html'">Profile</button>
-            <button onclick="window.location.href='exercises.html'">Exercises</button>
-            <button onclick="window.location.href='routine.html'">Routine</button>
-            <button onclick="window.location.href='calendar.html'">Calendar</button>
-            <button onclick="window.location.href='getwod.html'">Get WOD</button>
-        </nav>
-        
-        <!-- User Info & Logout -->
-        <div style="position: absolute; top: 1rem; right: 2rem; display: flex; align-items: center; gap: 1rem;">
-            <span id="user-email" style="color: #ffffff; font-size: 0.9rem;"></span>
-            <button onclick="logout()" style="padding: 0.4rem 1rem; font-size: 0.85rem;">
-                Logout
-            </button>
+        <div class="nb-user">
+            <span class="nb-user-name" id="user-name"></span>
+            <button class="nb-logout-btn" onclick="logout()">Logout</button>
         </div>
     </header>
 
-    <!-- Dashboard Content -->
-    <main class="container margin-top">
-        <h3 class="text-center">The Dashboard of a CHAMPION 💪</h3>
-        
-        <div class="row">
-            <!-- Left: Routine Display -->
-            <div class="col-6">
-                <div class="card">
-                    <div class="card-body">
-                        <h4 class="card-title">Your Current Routine</h4>
-                        <div id="routine-container">
-                            <p style="color: #888;">Loading...</p>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            
-            <!-- Right: Quick Stats -->
-            <div class="col-6">
-                <div class="card">
-                    <div class="card-body">
-                        <h4 class="card-title">Quick Stats</h4>
-                        <p class="card-text">Workouts completed this week: 0</p>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </main>
+    <!-- BODY — ruled lines start here -->
+    <div id="nb-body">
 
-    <script src="js/api.js"></script>
-    <script>
-        // Protect page - redirect to login if not authenticated
-        requireLogin();
-        
-        // Load routine on page load
-        document.addEventListener('DOMContentLoaded', async () => {
-            await loadRoutineOnDashboard();
-        });
-        
-        // Load and display routine
-        async function loadRoutineOnDashboard() {
-            const routineContainer = document.getElementById('routine-container');
-            const routine = await getUserRoutine();
-            
-            // Check if user has a routine
-            if (!routine || routine.days_per_week === 0) {
-                // No routine - show empty state
-                routineContainer.innerHTML = `
-                    <p style="color: #888; font-style: italic;">
-                        No routine set up yet.
-                    </p>
-                    <button onclick="window.location.href='routine.html'" style="margin-top: 1rem;">
-                        Create Routine
-                    </button>
-                `;
-                return;
+        <!-- SIDEBAR -->
+        <aside id="nb-sidebar">
+            <nav>
+                <a href="dashboard.html" class="nb-active"><span class="nb-dot"></span> Dashboard</a>
+                <a href="profile.html"><span class="nb-dot"></span> Profile</a>
+                <a href="routine.html"><span class="nb-dot"></span> Routine</a>
+                <a href="exercises.html"><span class="nb-dot"></span> Exercises</a>
+                <a href="calendar.html"><span class="nb-dot"></span> Calendar</a>
+                <a href="getwod.html"><span class="nb-dot"></span> Get WOD</a>
+            </nav>
+            <button id="nb-mode-toggle" title="Toggle light/dark mode"></button>
+        </aside>
+
+        <!-- MAIN -->
+        <main id="nb-main">
+
+            <div class="nb-page-title">Dashboard</div>
+
+            <div class="nb-section-label">quick stats</div>
+            <div class="nb-stat-row">
+                <div class="nb-stat-item">
+                    This week: <span class="nb-val" id="workouts-this-week">—</span>
+                </div>
+                <div class="nb-stat-item">
+                    Current day: <span class="nb-val" id="current-day">—</span>
+                </div>
+            </div>
+
+            <div class="nb-spacer"></div>
+
+            <div class="nb-section-label">your routine</div>
+            <div id="routine-container">
+                <div class="nb-row">
+                    <span style="color: var(--muted);">Loading...</span>
+                </div>
+            </div>
+
+            <div id="message" class="nb-message" style="display:none;"></div>
+
+        </main>
+    </div>
+</div>
+
+<script src="js/api.js"></script>
+<script>
+    // Restore light/dark mode preference
+    if (localStorage.getItem('nb-mode') === 'light') {
+        document.body.classList.add('light');
+    }
+    
+    requireLogin();
+
+    document.addEventListener('DOMContentLoaded', async () => {
+        let userName = getCurrentUserFirstName();
+        if (!userName) {
+            const profile = await getUserProfile();
+            if (profile && profile.user_first_name) {
+                userName = profile.user_first_name;
+                localStorage.setItem('user_first_name', userName);
+            } else {
+                userName = getCurrentUserEmail();
             }
-            
-            // User has a routine - display it
-            let html = `<p><strong>Training ${routine.days_per_week} ${routine.days_per_week === 1 ? 'day' : 'days'} per week</strong></p>`;
-            html += '<div style="margin-top: 1rem;">';
-            
-            for (let day = 1; day <= routine.days_per_week; day++) {
-                const muscles = routine.routine_days[day] || [];
-                html += `
-                    <div class="routine-day-display" style="padding: 0.5rem; margin-bottom: 0.5rem; background-color: #2a2a2a; border-left: 3px solid #5595ce;">
-                        <strong>Day ${day}:</strong> ${muscles.length > 0 ? muscles.join(', ') : 'Rest day'}
-                    </div>
-                `;
-            }
-            
-            html += '</div>';
-            html += `
-                <button onclick="window.location.href='routine.html'" style="margin-top: 1rem;">
-                    Edit Routine
-                </button>
-            `;
-            
-            routineContainer.innerHTML = html;
         }
-        // Load user first name on page load
-        document.addEventListener('DOMContentLoaded', async () => {
-            let userName = getCurrentUserFirstName();
-            
-            // If first name not in localStorage, fetch from profile
-            if (!userName) {
-                const userId = getCurrentUserId();
-                const profile = await getUserProfile();
-                if (profile && profile.user_first_name) {
-                    userName = profile.user_first_name;
-                    localStorage.setItem('user_first_name', userName);
-                } else {
-                    userName = getCurrentUserEmail(); // Fallback to email if no first name
-                }
-            }
-            
-            if (userName) {
-                document.getElementById('user-email').textContent = userName;
-            }
-        });
-    </script>
+        if (userName) document.getElementById('user-name').textContent = userName;
+
+        await Promise.all([loadRoutine(), loadStats()]);
+    });
+
+    async function loadStats() {
+        try {
+            const userId = getCurrentUserId();
+            const res = await fetch(`${API_URL}/workout/state/${userId}`, { headers: authHeaders() });
+            const stateData = await res.json();
+            document.getElementById('current-day').textContent = `Day ${stateData.current_day_number}`;
+
+            const sessions = await getWorkoutSessions(userId, 20);
+            const now = new Date();
+            const day = now.getDay();
+            const diff = now.getDate() - day + (day === 0 ? -6 : 1);
+            const monday = new Date(now.setDate(diff));
+            monday.setHours(0,0,0,0);
+            const thisWeek = sessions.filter(s => new Date(s.workout_date) >= monday).length;
+            document.getElementById('workouts-this-week').textContent = thisWeek;
+        } catch(e) {
+            document.getElementById('current-day').textContent = '—';
+        }
+    }
+
+    async function loadRoutine() {
+        const container = document.getElementById('routine-container');
+        const routine = await getUserRoutine();
+
+        if (!routine || routine.days_per_week === 0) {
+            container.innerHTML = `
+                <div class="nb-row">
+                    <span style="color: var(--muted);">No routine set up yet.</span>
+                    <a href="routine.html" class="nb-btn" style="margin-left:16px;">Create Routine</a>
+                </div>`;
+            return;
+        }
+
+        let currentDay = 1;
+        try {
+            const userId = getCurrentUserId();
+            const res = await fetch(`${API_URL}/workout/state/${userId}`, { headers: authHeaders() });
+            const data = await res.json();
+            currentDay = data.current_day_number;
+        } catch(e) {}
+
+        let html = `<div class="nb-row" style="color:var(--muted);font-size:14px;">
+            Training ${routine.days_per_week} ${routine.days_per_week === 1 ? 'day' : 'days'} per week
+        </div>`;
+
+        for (let day = 1; day <= routine.days_per_week; day++) {
+            const muscles = routine.routine_days[day] || [];
+            const isToday = day === currentDay;
+            html += `
+                <div class="nb-day-row">
+                    <span class="nb-day-label ${isToday ? 'nb-today' : 'nb-other'}">Day ${day} —</span>
+                    <span class="nb-day-muscles ${isToday ? 'nb-today' : ''}">
+                        ${muscles.length > 0 ? muscles.join(', ') : 'Rest day'}
+                    </span>
+                    ${isToday ? '<span class="nb-today-tag">← today</span>' : ''}
+                </div>`;
+        }
+
+        html += `
+            <div class="nb-spacer"></div>
+            <div class="nb-row">
+                <a href="routine.html" class="nb-btn">✎ Edit Routine</a>
+            </div>`;
+
+        container.innerHTML = html;
+    }
+</script>
+<script>
+  const toggle = document.getElementById('nb-mode-toggle');
+  // Restore saved preference
+  if (localStorage.getItem('nb-mode') === 'light') {
+    document.body.classList.add('light');
+  }
+  toggle.addEventListener('click', () => {
+    document.body.classList.toggle('light');
+    localStorage.setItem('nb-mode',
+      document.body.classList.contains('light') ? 'light' : 'dark'
+    );
+  });
+</script>
+
 </body>
 </html>

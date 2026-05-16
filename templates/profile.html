@@ -1,0 +1,263 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+<!-- Email -->
+<div class="nb-row">
+    <span class="nb-label">Email</span>
+    <input type="email" id="email" class="nb-input" readonly>
+</div>
+
+<!-- Name -->
+<div class="nb-row">
+    <span class="nb-label">Name</span>
+    <input type="text" id="name" class="nb-input" placeholder="Your name">
+</div>
+
+<!-- Sex -->
+<div class="nb-row">
+    <span class="nb-label">Sex</span>
+    <div class="nb-toggle-group">
+        <button type="button" class="nb-toggle-btn sex-btn" data-value="M">M</button>
+        <button type="button" class="nb-toggle-btn sex-btn" data-value="F">W</button>
+        <button type="button" class="nb-toggle-btn sex-btn" data-value="NB">NB</button>
+    </div>
+    <input type="hidden" id="sex" name="sex">
+</div>
+
+<!-- Age -->
+<div class="nb-row">
+    <span class="nb-label">Age</span>
+    <input type="number" id="age" class="nb-input" placeholder="25" style="width:80px" step="1" min="0" max="120">
+</div>
+
+<!-- Timezone -->
+<div class="nb-row">
+    <span class="nb-label">Timezone</span>
+    <select id="timezone" class="nb-select">
+        <optgroup label="Americas">
+            <option value="America/New_York">America/New_York (UTC-5)</option>
+            <option value="America/Chicago">America/Chicago (UTC-6)</option>
+            <option value="America/Denver">America/Denver (UTC-7)</option>
+            <option value="America/Los_Angeles">America/Los_Angeles (UTC-8)</option>
+            <option value="America/Toronto">America/Toronto (UTC-5)</option>
+            <option value="America/Vancouver">America/Vancouver (UTC-8)</option>
+            <option value="America/Sao_Paulo">America/Sao_Paulo (UTC-3)</option>
+            <option value="America/Argentina/Buenos_Aires">America/Buenos_Aires (UTC-3)</option>
+            <option value="America/Bogota">America/Bogota (UTC-5)</option>
+            <option value="America/Mexico_City">America/Mexico_City (UTC-6)</option>
+        </optgroup>
+        <optgroup label="Europe">
+            <option value="Europe/London">Europe/London (UTC+0)</option>
+            <option value="Europe/Amsterdam">Europe/Amsterdam (UTC+1)</option>
+            <option value="Europe/Paris">Europe/Paris (UTC+1)</option>
+            <option value="Europe/Berlin">Europe/Berlin (UTC+1)</option>
+            <option value="Europe/Madrid">Europe/Madrid (UTC+1)</option>
+            <option value="Europe/Rome">Europe/Rome (UTC+1)</option>
+            <option value="Europe/Moscow">Europe/Moscow (UTC+3)</option>
+        </optgroup>
+        <optgroup label="Asia / Pacific">
+            <option value="Asia/Dubai">Asia/Dubai (UTC+4)</option>
+            <option value="Asia/Kolkata">Asia/Kolkata (UTC+5:30)</option>
+            <option value="Asia/Singapore">Asia/Singapore (UTC+8)</option>
+            <option value="Asia/Tokyo">Asia/Tokyo (UTC+9)</option>
+            <option value="Asia/Shanghai">Asia/Shanghai (UTC+8)</option>
+            <option value="Australia/Sydney">Australia/Sydney (UTC+11)</option>
+            <option value="Pacific/Auckland">Pacific/Auckland (UTC+13)</option>
+        </optgroup>
+        <optgroup label="Africa">
+            <option value="Africa/Cairo">Africa/Cairo (UTC+2)</option>
+            <option value="Africa/Johannesburg">Africa/Johannesburg (UTC+2)</option>
+            <option value="Africa/Lagos">Africa/Lagos (UTC+1)</option>
+        </optgroup>
+    </select>
+</div>
+
+<!-- Preferred Unit -->
+<div class="nb-row">
+    <span class="nb-label">Unit</span>
+    <div class="nb-toggle-group">
+        <button type="button" class="nb-toggle-btn unit-btn" data-value="metric">Metric</button>
+        <button type="button" class="nb-toggle-btn unit-btn" data-value="imperial">Imperial</button>
+    </div>
+    <input type="hidden" id="unit" name="unit">
+</div>
+
+<!-- Height -->
+<div class="nb-row">
+    <span class="nb-label" id="height-label">Height (cm)</span>
+    <input type="text" id="height" class="nb-input" placeholder="170" style="width:120px">
+</div>
+
+<!-- Weight -->
+<div class="nb-row">
+    <span class="nb-label" id="weight-label">Weight (kg)</span>
+    <input type="number" id="weight" class="nb-input" placeholder="70.5" style="width:120px" step="0.01" min="0">
+</div>
+
+<div class="nb-spacer"></div>
+
+<div class="nb-row">
+    <button type="button" id="save-btn" class="nb-btn">✓ Save</button>
+</div>
+
+<div id="message" class="nb-message" style="display:none;"></div>
+
+{% endblock %}
+
+{% block extra_js %}
+<script>
+    requireLogin();
+
+    let selectedSex = null;
+    let selectedUnit = 'metric';
+
+    document.addEventListener('DOMContentLoaded', async () => {
+        const profile = await getUserProfile();
+        if (profile) {
+            document.getElementById('email').value = profile.user_email;
+            document.getElementById('name').value = profile.user_first_name || '';
+            document.getElementById('age').value = profile.user_age || '';
+
+            if (profile.user_height) {
+                document.getElementById('height').value = profile.user_unit_preference === 'imperial'
+                    ? cmToFeetInches(profile.user_height).display
+                    : profile.user_height;
+            }
+            if (profile.user_weight) {
+                document.getElementById('weight').value = profile.user_unit_preference === 'imperial'
+                    ? kgToLbs(profile.user_weight)
+                    : profile.user_weight;
+            }
+            if (profile.user_sex) {
+                selectedSex = profile.user_sex;
+                document.getElementById('sex').value = selectedSex;
+                highlightSexButton(selectedSex);
+            }
+            if (profile.user_unit_preference) {
+                selectedUnit = profile.user_unit_preference;
+                document.getElementById('unit').value = selectedUnit;
+                highlightUnitButton(selectedUnit);
+                updateUnitLabels(selectedUnit);
+            }
+            if (profile.user_timezone) {
+                document.getElementById('timezone').value = profile.user_timezone;
+            }
+        }
+    });
+
+    document.querySelectorAll('.sex-btn').forEach(btn => {
+        btn.addEventListener('click', (e) => {
+            selectedSex = e.target.dataset.value;
+            document.getElementById('sex').value = selectedSex;
+            highlightSexButton(selectedSex);
+        });
+    });
+
+    function highlightSexButton(value) {
+        document.querySelectorAll('.sex-btn').forEach(btn => {
+            btn.classList.toggle('nb-selected', btn.dataset.value === value);
+        });
+    }
+
+    document.querySelectorAll('.unit-btn').forEach(btn => {
+        btn.addEventListener('click', (e) => {
+            selectedUnit = e.target.dataset.value;
+            document.getElementById('unit').value = selectedUnit;
+            highlightUnitButton(selectedUnit);
+            updateUnitLabels(selectedUnit);
+        });
+    });
+
+    function highlightUnitButton(value) {
+        document.querySelectorAll('.unit-btn').forEach(btn => {
+            btn.classList.toggle('nb-selected', btn.dataset.value === value);
+        });
+    }
+
+    function updateUnitLabels(unit) {
+        const heightLabel = document.getElementById('height-label');
+        const weightLabel = document.getElementById('weight-label');
+        const heightInput = document.getElementById('height');
+        const weightInput = document.getElementById('weight');
+        const currentHeight = heightInput.value;
+        const currentWeight = parseFloat(weightInput.value);
+
+        if (unit === 'imperial') {
+            heightLabel.textContent = "Height (ft'in\")";
+            weightLabel.textContent = 'Weight (lbs)';
+            const cm = parseFloat(currentHeight);
+            if (!isNaN(cm) && cm > 0) heightInput.value = cmToFeetInches(cm).display;
+            heightInput.placeholder = "5'11\"";
+            if (!isNaN(currentWeight) && currentWeight > 0) weightInput.value = kgToLbs(currentWeight);
+            weightInput.placeholder = '155';
+        } else {
+            heightLabel.textContent = 'Height (cm)';
+            weightLabel.textContent = 'Weight (kg)';
+            const parsed = parseFeetInches(currentHeight);
+            if (parsed) heightInput.value = feetInchesToCm(parsed.feet, parsed.inches);
+            heightInput.placeholder = '170';
+            if (!isNaN(currentWeight) && currentWeight > 0) weightInput.value = lbsToKg(currentWeight);
+            weightInput.placeholder = '70.5';
+        }
+    }
+
+    function cmToFeetInches(cm) {
+        const totalInches = cm / 2.54;
+        const feet = Math.floor(totalInches / 12);
+        const inches = Math.round(totalInches % 12);
+        return { feet, inches, display: `${feet}'${inches}"` };
+    }
+    function feetInchesToCm(feet, inches) { return Math.round((feet * 12 + inches) * 2.54); }
+    function kgToLbs(kg) { return (kg * 2.20462).toFixed(1); }
+    function lbsToKg(lbs) { return (lbs / 2.20462).toFixed(1); }
+    function parseFeetInches(str) {
+        const match = str.match(/(\d+)'(\d+)"/);
+        return match ? { feet: parseInt(match[1]), inches: parseInt(match[2]) } : null;
+    }
+
+    document.getElementById('save-btn').addEventListener('click', async () => {
+        const name = document.getElementById('name').value.trim();
+        const sex = document.getElementById('sex').value;
+        const age = parseInt(document.getElementById('age').value) || null;
+        const unit = document.getElementById('unit').value;
+
+        let heightToSave = null;
+        let weightToSave = null;
+
+        if (selectedUnit === 'imperial') {
+            const parsed = parseFeetInches(document.getElementById('height').value);
+            if (parsed) heightToSave = feetInchesToCm(parsed.feet, parsed.inches);
+            const lbs = parseFloat(document.getElementById('weight').value);
+            if (!isNaN(lbs)) weightToSave = parseFloat(lbsToKg(lbs));
+        } else {
+            heightToSave = parseFloat(document.getElementById('height').value) || null;
+            weightToSave = parseFloat(document.getElementById('weight').value) || null;
+        }
+
+        const profileData = {
+            user_first_name: name || null,
+            user_sex: sex || null,
+            user_age: age,
+            user_timezone: document.getElementById('timezone').value || 'America/New_York',
+            user_unit_preference: unit || 'metric',
+            user_height: heightToSave,
+            user_weight: weightToSave
+        };
+
+        const result = await updateUserProfile(profileData);
+        const message = document.getElementById('message');
+        if (result) {
+            document.getElementById('save-btn').classList.add('nb-btn-saved');
+            message.textContent = 'Profile updated successfully!';
+            message.className = 'nb-message success';
+            message.style.display = 'flex';
+            setTimeout(() => { message.style.display = 'none'; }, 3000);
+        } else {
+            message.textContent = 'Failed to update profile.';
+            message.className = 'nb-message error';
+            message.style.display = 'flex';
+        }
+    });
+</script>
+{% endblock %}

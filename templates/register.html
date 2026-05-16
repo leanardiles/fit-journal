@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en" class="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FitJournal - Register</title>
+    <link rel="stylesheet" href="/static/css/notebook.css">
+</head>
+<body>
+    <div style="display: flex; flex-direction: column; align-items: center; justify-content: center; min-height: 100vh; padding: 2rem;">
+        
+        <div style="margin-bottom: 0.5rem;">
+            <img src="/static/images/logo_only.png" alt="FitJournal logo" style="max-width: 300px; width: 90%; border: none; box-shadow: none; background: transparent;">
+        </div>
+
+        <h2 style="margin-bottom: 0.5rem; margin-top: 0; color: #fff;">Start your fitness journey</h2>
+
+        <div style="width: 100%; max-width: 400px;">
+            <div class="nb-row">
+                <span class="nb-label">Email</span>
+                <input type="email" id="email" class="nb-input" placeholder="your@email.com" required>
+            </div>
+            <div class="nb-row">
+                <span class="nb-label">Password</span>
+                <input type="password" id="password" class="nb-input" placeholder="Your password" required>
+            </div>
+            <div class="nb-row">
+                <span class="nb-label">Repeat</span>
+                <input type="password" id="confirm-password" class="nb-input" placeholder="Repeat your password" required>
+            </div>
+            <div style="margin-top: 1rem;">
+                <button id="register-btn" class="nb-btn">Create Account</button>
+            </div>
+            <p style="margin-top: 1rem; color: var(--muted);">
+                Already have an account? <a href="/login" style="color: var(--text);">Log in here</a>
+            </p>
+            <div id="error-msg" style="color: rgba(192,57,43,0.85); margin-top: 0.5rem; display:none;"></div>
+            <div id="success-msg" style="color: rgba(100,180,100,0.8); margin-top: 0.5rem; display:none;"></div>
+        </div>
+    </div>
+
+    <script src="/static/js/api.js"></script>
+    <script>
+        document.getElementById('register-btn').addEventListener('click', async () => {
+            const email = document.getElementById('email').value.trim();
+            const password = document.getElementById('password').value;
+            const confirm = document.getElementById('confirm-password').value;
+            const err = document.getElementById('error-msg');
+            const success = document.getElementById('success-msg');
+
+            if (password !== confirm) {
+                err.textContent = 'Passwords do not match.';
+                err.style.display = 'block';
+                return;
+            }
+            const result = await registerUser(email, password);
+            if (result) {
+                success.textContent = 'Account created! Redirecting to login...';
+                success.style.display = 'block';
+                setTimeout(() => window.location.href = '/login', 1500);
+            } else {
+                err.textContent = 'Registration failed. Email may already be in use.';
+                err.style.display = 'block';
+            }
+        });
+    </script>
+</body>
+</html>
