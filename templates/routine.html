@@ -88,7 +88,7 @@
 
 <!-- STEP 1: Days per week -->
 <div id="step-1">
-    <div class="nb-row" style="color:var(--text);font-size:var(--fs);">Your new routine</div>
+    <div class="nb-section-label" style="color: var(--text);">Your new routine</div>
     <div class="nb-row" style="color:var(--text);font-size:var(--fs);">How many days per week?</div>
     <div class="nb-days-selector">
         <button type="button" class="nb-day-num-btn" data-days="1">1</button>
@@ -148,7 +148,7 @@
 
         const display = document.getElementById('routine-display');
         let html = `
-            <div class="nb-row" style="color:var(--text);font-size:var(--fs);">Your current routine</div>
+            <div class="nb-section-label" style="color: var(--text);">Your current routine</div>
             <div class="nb-row" style="color:var(--text);font-size:var(--fs);">
                 Training <u style="text-decoration-color:var(--red-border);text-underline-offset:3px;margin:0 4px;">${routine.days_per_week}</u> ${routine.days_per_week === 1 ? 'day' : 'days'} per week
             </div>`;

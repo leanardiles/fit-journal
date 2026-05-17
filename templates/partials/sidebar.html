@@ -1,4 +1,8 @@
 <aside id="nb-sidebar">
+    
+    <!-- Top hole punch -->
+        <button class="nb-hole" title="Toggle light/dark mode" id="nb-mode-toggle-top"></button>
+
     <nav>
         <a href="/web/dashboard" class="{{ 'nb-active' if active_page == 'dashboard' else '' }}">
             <span class="nb-dot"></span> Dashboard
@@ -18,6 +22,8 @@
         <a href="/web/getwod" class="{{ 'nb-active' if active_page == 'getwod' else '' }}">
             <span class="nb-dot"></span> Get WOD
         </a>
-        <button id="nb-mode-toggle" title="Toggle light/dark mode"></button>
+
+        <!-- Bottom hole punch -->
+        <button class="nb-hole" title="Toggle light/dark mode" id="nb-mode-toggle-bottom"></button>
     </nav>
 </aside>

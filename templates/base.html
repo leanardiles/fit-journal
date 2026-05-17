@@ -46,12 +46,14 @@
     }
 
     // Mode toggle
-    const toggle = document.getElementById('nb-mode-toggle');
-    toggle.addEventListener('click', () => {
-        document.body.classList.toggle('light');
-        localStorage.setItem('nb-mode',
-            document.body.classList.contains('light') ? 'light' : 'dark'
-        );
+    const toggles = document.querySelectorAll('.nb-hole');
+    toggles.forEach(toggle => {
+        toggle.addEventListener('click', () => {
+            document.body.classList.toggle('light');
+            localStorage.setItem('nb-mode',
+                document.body.classList.contains('light') ? 'light' : 'dark'
+            );
+        });
     });
 
     // Load user name

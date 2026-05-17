@@ -140,7 +140,6 @@ html, body {
   display: flex;
   flex-direction: column;
   padding: 4px 0;
-  padding-top: calc(var(--lh) * 1);
 }
 
 #nb-sidebar nav a {
@@ -213,8 +212,8 @@ html, body {
   display: flex;
   align-items: flex-end;
   padding-bottom: 4px;
-  font-size: 11px;
-  color: var(--muted);
+  font-size: 20px;
+  color: var(--text);
   text-transform: uppercase;
   letter-spacing: 1.5px;
 }
@@ -442,6 +441,79 @@ body.light .nb-day-label.nb-today { color: #1a1a1a; }
 body.light .nb-day-muscles.nb-today { color: #1a1a1a; }
 
 /* Mode toggle circle */
+.nb-hole {
+  width: 22px;
+  height: 22px;
+  border-radius: 50%;
+  border: 1px solid rgba(255,255,255,0.25);
+  background: rgba(255,255,255,0.12);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0 auto;
+  transition: all 0.2s;
+  flex-shrink: 0;
+}
+
+/* Top hole — sits on first line */
+#nb-mode-toggle-top {
+  height: var(--lh);
+  width: 100%;
+  background: transparent;
+  border: none;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  padding: 0;
+}
+
+#nb-mode-toggle-top::after {
+  content: '';
+  width: 22px;
+  height: 22px;
+  border-radius: 50%;
+  border: 1px solid rgba(255,255,255,0.25);
+  background: rgba(255,255,255,0.12);
+  display: block;
+  transition: all 0.2s;
+}
+
+/* Bottom hole — pushed to bottom */
+#nb-mode-toggle-bottom {
+  margin-top: auto;
+  height: var(--lh);
+  width: 100%;
+  background: transparent;
+  border: none;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  padding: 0;
+}
+
+#nb-mode-toggle-bottom::after {
+  content: '';
+  width: 22px;
+  height: 22px;
+  border-radius: 50%;
+  border: 1px solid rgba(255,255,255,0.25);
+  background: rgba(255,255,255,0.12);
+  display: block;
+  transition: all 0.2s;
+}
+
+body.light #nb-mode-toggle-top::after,
+body.light #nb-mode-toggle-bottom::after {
+  background: #171717;
+  border-color: rgba(0,0,0,0.25);
+}
+
+
+/*
+OLD TOGGLE CIRCE
 #nb-mode-toggle {
   width: 18px;
   height: 18px;
@@ -467,3 +539,4 @@ body.light #nb-mode-toggle {
 body.light #nb-mode-toggle:hover {
   background: #222222;
 }
+  */
