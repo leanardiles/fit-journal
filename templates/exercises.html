@@ -2,7 +2,6 @@
 
 {% block extra_css %}
 <style>
-    /* Muscle group selector tabs */
     .nb-muscle-tabs {
         display: flex;
         flex-direction: column;
@@ -30,7 +29,6 @@
         border-left-color: var(--red-border);
     }
 
-    /* Exercise table */
     .nb-ex-table {
         width: auto;
         border-collapse: collapse;
@@ -59,7 +57,8 @@
         border: none;
     }
 
-    .nb-ex-table td.center { text-align: center; }
+    .nb-ex-table th.center { text-align: center; padding-left: 24px; }
+    .nb-ex-table td.center { text-align: center; padding-left: 24px; }
 
     .nb-weight-input {
         background: transparent;
@@ -93,7 +92,8 @@
 
     .nb-link:hover { color: var(--text); }
 
-    /* Two column layout inside main */
+    .nb-delete-btn:hover { color: var(--red) !important; }
+
     .nb-exercises-layout {
         display: flex;
         height: 100%;
@@ -119,7 +119,10 @@
 
 <div class="nb-row" style="justify-content: space-between;">
     <div class="nb-section-label" style="color: var(--text);">Your exercises</div>
-    <button id="save-changes-btn" class="nb-btn">✓ Save</button>
+    <div style="display: flex; gap: 12px; align-items: flex-end; padding-bottom: 4px;">
+        <button id="add-new-btn" class="nb-btn">⊕ Add New</button>
+        <button id="save-changes-btn" class="nb-btn">✓ Save</button>
+    </div>
 </div>
 
 <div class="nb-exercises-layout">
@@ -142,9 +145,6 @@
     <!-- Right: Exercise list -->
     <div class="nb-exercise-col">
 
-        <div class="nb-row" style="justify-content: flex-end;">
-        </div>
-
         <div id="loading" style="display:none;">
             <div class="nb-row" style="color: var(--muted);">Loading exercises...</div>
         </div>
@@ -160,12 +160,82 @@
                     <th class="center" id="weight-header">Weight (kg)</th>
                     <th class="center">Link</th>
                     <th class="center">In Routine</th>
+                    <th class="center">Delete</th>
                 </tr>
             </thead>
             <tbody id="exercise-table-body"></tbody>
         </table>
 
         <div id="message" class="nb-message" style="display:none;"></div>
+
+    </div>
+
+</div>
+
+<!-- ADD NEW EXERCISE MODAL — outside layout div -->
+<div id="add-modal-overlay" style="
+    display: none;
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,0.75);
+    z-index: 100;
+    align-items: center;
+    justify-content: center;
+">
+    <div style="
+        width: 100%;
+        max-width: 420px;
+        background-color: #1f1f1f;
+        background-image: linear-gradient(var(--line-color) 1px, transparent 1px);
+        background-size: 100% var(--lh);
+        background-position: 0 calc(var(--lh) - 1px);
+        padding: 0 40px calc(var(--lh));
+    ">
+        <div class="nb-section-label" style="color: var(--text);">New exercise</div>
+
+        <div class="nb-row">
+            <span class="nb-label">Muscle group</span>
+            <select id="new-muscle" class="nb-select">
+                <option value="Legs">Legs</option>
+                <option value="Shoulders">Shoulders</option>
+                <option value="Chest">Chest</option>
+                <option value="Glutes">Glutes</option>
+                <option value="Biceps">Biceps</option>
+                <option value="Triceps">Triceps</option>
+                <option value="Back">Back</option>
+                <option value="Calves">Calves</option>
+                <option value="Abs">Abs</option>
+            </select>
+        </div>
+
+        <div class="nb-row">
+            <span class="nb-label">Name</span>
+            <input type="text" id="new-name" class="nb-input" placeholder="Exercise name">
+        </div>
+
+        <div class="nb-row">
+            <span class="nb-label">Weight (optional)</span>
+            <input type="number" id="new-weight" class="nb-input" placeholder="0.00" step="0.5" min="0" style="width:100px;">
+        </div>
+
+        <div class="nb-row">
+            <span class="nb-label">Link (optional)</span>
+            <input type="text" id="new-link" class="nb-input" placeholder="https://...">
+        </div>
+
+        <div class="nb-row">
+            <span class="nb-label">Notes (optional)</span>
+            <input type="text" id="new-comments" class="nb-input" placeholder="Any notes...">
+        </div>
+
+        <div class="nb-spacer"></div>
+
+        <div class="nb-row" style="gap: 12px;">
+            <button id="save-new-btn" class="nb-btn">✓ Save</button>
+            <button id="cancel-new-btn" class="nb-btn">✕ Cancel</button>
+        </div>
+
+        <div id="modal-error" class="nb-message error" style="display:none;"></div>
 
     </div>
 </div>
@@ -239,10 +309,17 @@
                            ${exercise.exercise_is_in_routine ? 'checked' : ''}
                            data-exercise-id="${exercise.exercise_id}">
                 </td>
+                <td class="center">
+                    <span class="nb-delete-btn" 
+                        data-exercise-id="${exercise.exercise_id}"
+                        data-exercise-name="${exercise.exercise_name}"
+                        title="Delete exercise"
+                        style="cursor:pointer; color:var(--muted); font-size:15px;">🗑</span>
+                </td>
             </tr>
         `).join('');
 
-        document.querySelectorAll('.weight-input, .nb-weight-input').forEach(input => {
+        document.querySelectorAll('.nb-weight-input').forEach(input => {
             input.addEventListener('blur', (e) => {
                 updateExerciseWeight(e.target.dataset.exerciseId, parseFloat(e.target.value) || 0);
             });
@@ -251,6 +328,22 @@
         document.querySelectorAll('.include-checkbox').forEach(checkbox => {
             checkbox.addEventListener('change', (e) => {
                 updateExerciseInclude(e.target.dataset.exerciseId, e.target.checked);
+            });
+        });
+
+        document.querySelectorAll('.nb-delete-btn').forEach(btn => {
+            btn.addEventListener('click', async (e) => {
+                const exerciseId = e.target.dataset.exerciseId;
+                const exerciseName = e.target.dataset.exerciseName;
+
+                const confirmed = confirm(`Are you sure you want to delete "${exerciseName}" from your list?`);
+                if (!confirmed) return;
+
+                const success = await deleteExercise(exerciseId);
+                if (success) {
+                    allExercises = allExercises.filter(ex => ex.exercise_id != exerciseId);
+                    displayExercises(currentMuscleGroup);
+                }
             });
         });
     }
@@ -349,6 +442,73 @@
             console.error('Error saving:', error);
             btn.textContent = '✓ Save *';
             btn.disabled = false;
+        }
+    });
+
+    // ── Add New modal ──
+    const overlay = document.getElementById('add-modal-overlay');
+
+    document.getElementById('add-new-btn').addEventListener('click', () => {
+        document.getElementById('new-muscle').value = currentMuscleGroup;
+        document.getElementById('new-name').value = '';
+        document.getElementById('new-weight').value = '';
+        document.getElementById('new-link').value = '';
+        document.getElementById('new-comments').value = '';
+        document.getElementById('modal-error').style.display = 'none';
+        overlay.style.display = 'flex';
+    });
+
+    document.getElementById('cancel-new-btn').addEventListener('click', () => {
+        overlay.style.display = 'none';
+    });
+
+    overlay.addEventListener('click', (e) => {
+        if (e.target === overlay) overlay.style.display = 'none';
+    });
+
+    document.getElementById('save-new-btn').addEventListener('click', async () => {
+        const name = document.getElementById('new-name').value.trim();
+        const muscle = document.getElementById('new-muscle').value;
+        const weight = parseFloat(document.getElementById('new-weight').value) || null;
+        const link = document.getElementById('new-link').value.trim() || null;
+        const comments = document.getElementById('new-comments').value.trim() || null;
+        const modalError = document.getElementById('modal-error');
+
+        if (!name) {
+            modalError.textContent = 'Exercise name is required.';
+            modalError.style.display = 'flex';
+            return;
+        }
+
+        const duplicate = allExercises.find(ex =>
+            ex.exercise_name.toLowerCase() === name.toLowerCase()
+        );
+        if (duplicate) {
+            modalError.textContent = 'An exercise with this name already exists.';
+            modalError.style.display = 'flex';
+            return;
+        }
+
+        const newExercise = await createExercise({
+            exercise_name: name,
+            exercise_muscle_group: muscle,
+            exercise_user_current_weight: weight,
+            exercise_link: link,
+            comments: comments,
+            exercise_is_in_routine: true
+        });
+
+        if (newExercise) {
+            allExercises.push(newExercise);
+            overlay.style.display = 'none';
+            currentMuscleGroup = muscle;
+            document.querySelectorAll('.nb-muscle-tab').forEach(t => {
+                t.classList.toggle('active', t.dataset.muscle === muscle);
+            });
+            displayExercises(muscle);
+        } else {
+            modalError.textContent = 'Failed to save exercise. Please try again.';
+            modalError.style.display = 'flex';
         }
     });
 </script>
