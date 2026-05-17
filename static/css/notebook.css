@@ -66,7 +66,7 @@ html, body {
 }
 
 #nb-header .nb-logo img {
-  height: calc(var(--lh) * 1.6);
+  height: calc(var(--lh) * 2.5);
   width: auto;
   opacity: 0.88;
 }
