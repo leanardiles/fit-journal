@@ -1,42 +1,206 @@
 <!DOCTYPE html>
-<html lang="en" class="dark">
+<html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>FitJournal - Login</title>
-    <link rel="stylesheet" href="/static/css/notebook.css">
+    <link href="https://fonts.googleapis.com/css2?family=Patrick+Hand&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --fs: 17px;
+            --lh: 34px;
+            --bg: #171717;
+            --line-color: rgba(255,255,255,0.05);
+            --text: #cccccc;
+            --muted: #555555;
+            --red-border: rgba(150, 30, 30, 0.40);
+        }
+
+        *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+        html, body {
+            height: 100%;
+            font-family: 'Patrick Hand', cursive;
+            font-size: var(--fs);
+            color: var(--text);
+            background: var(--bg);
+        }
+
+        /* Full page — logo top center, card bottom third */
+        .nb-login-page {
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: flex-end;
+            padding-bottom: calc(6vh + calc(var(--lh) * 2));
+            padding-bottom: 14vh;
+        }
+
+        /* Logo + tagline floating above card */
+        .nb-login-logo-wrap {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            margin-bottom: var(--lh);
+        }
+
+        .nb-login-logo-wrap img {
+            height: calc(var(--lh) * 3.2);
+            width: auto;
+            opacity: 0.85;
+        }
+
+        .nb-login-tagline {
+            font-size: 13px;
+            color: var(--muted);
+            margin-top: 6px;
+            letter-spacing: 0.5px;
+        }
+
+        /* Card — only ruled lines define it, no border */
+        .nb-login-card {
+            width: 100%;
+            max-width: 380px;
+            background-image: linear-gradient(var(--line-color) 1px, transparent 1px);
+            background-size: 100% var(--lh);
+            background-position: 0 calc(var(--lh) - 1px);
+            padding: 0 48px calc(var(--lh) * 0.5);
+        }
+
+        /* Label sits at bottom of its line */
+        .nb-login-label {
+            height: var(--lh);
+            display: flex;
+            align-items: flex-start;
+            padding-top: 4px;
+            padding-bottom: 0;
+            font-size: 16px;
+            color: var(--text);
+            text-transform: uppercase;
+            letter-spacing: 1.5px;
+            justify-content: center;
+        }
+
+        /* Input sits on the next line */
+        .nb-login-input {
+            width: 100%;
+            background: transparent;
+            border: none;
+            border-bottom: 1px solid rgba(255,255,255,0.08);
+            color: var(--text);
+            font-family: 'Patrick Hand', cursive;
+            font-size: var(--fs);
+            height: var(--lh);
+            padding: calc(var(--lh) - 22px) 4px 4px;
+            outline: none;
+            transition: border-color 0.12s;
+            cursor: text;
+            text-align: center;
+            margin-bottom: 4px;
+            border-bottom: 1px solid rgba(255,255,255,0.15);  
+        }
+
+        .nb-login-input:focus { border-bottom-color: var(--red-border); }
+        .nb-login-input:hover { border-bottom-color: rgba(255,255,255,0.18); }
+
+        /* One blank line before button */
+        .nb-spacer { height: var(--lh); }
+
+        /* Button — full width, sits on its line */
+        .nb-login-btn {
+            width: 160px;
+            padding: 0;
+            height: calc(var(--lh) - 6px);
+            background: transparent;
+            border: 1px solid var(--red-border);
+            color: #888;
+            font-family: 'Patrick Hand', cursive;
+            font-size: var(--fs);
+            cursor: pointer;
+            border-radius: 8px;
+            transition: all 0.12s;
+            letter-spacing: 0.5px;
+            margin: 0 auto;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .nb-login-btn:hover { border-color: rgba(150,30,30,0.70); color: #ccc; }
+        .nb-login-btn:active { transform: scale(0.98); }
+
+        /* Register link row */
+        .nb-login-link-row {
+            height: var(--lh);
+            display: flex;
+            align-items: flex-end;
+            padding-bottom: 4px;
+            font-size: 14px;
+            color: var(--muted);
+            justify-content: center;
+        }
+
+        .nb-login-link-row a {
+            color: var(--text);
+            text-decoration: underline;
+            text-decoration-color: var(--red-border);
+            text-underline-offset: 3px;
+            margin-left: 4px;
+        }
+
+        /* Error message */
+        .nb-login-error {
+            height: var(--lh);
+            display: none;
+            align-items: flex-end;
+            padding-bottom: 4px;
+            font-size: 13px;
+            color: rgba(192,57,43,0.85);
+        }
+    </style>
 </head>
 <body>
-    <div style="display: flex; flex-direction: column; align-items: center; justify-content: center; min-height: 100vh; padding: 2rem;">
-        
-        <div style="margin-bottom: 0.5rem;">
-            <img src="/static/images/logo_only.png" alt="FitJournal logo" style="max-width: 300px; width: 90%; border: none; box-shadow: none; background: transparent;">
-        </div>
-        
-        <h2 style="margin-bottom: 0.5rem; margin-top: 0; color: #fff;">Welcome back</h2>
-        
-        <div style="width: 100%; max-width: 400px;">
-            <form id="login-form">
-                <div class="nb-row">
-                    <span class="nb-label">Email</span>
-                    <input type="email" id="email" name="email" class="nb-input" placeholder="your@email.com" required>
-                </div>
-                <div class="nb-row">
-                    <span class="nb-label">Password</span>
-                    <input type="password" id="password" name="password" class="nb-input" placeholder="Your password" required>
-                </div>
-                <div style="margin-top: 1rem;">
-                    <button type="submit" class="nb-btn">Sign In</button>
-                </div>
-            </form>
-            <p style="margin-top: 1rem; color: var(--muted);">
-                Don't have an account? <a href="/web/register" style="color: var(--text);">Register here</a>
-            </p>
-            <div id="error-msg" style="color: rgba(192,57,43,0.85); margin-top: 0.5rem; display:none;"></div>
-        </div>
+
+<div class="nb-login-page">
+
+    <div class="nb-login-logo-wrap">
+        <img src="/static/images/logo-drawn-both.png" alt="FitJournal">
     </div>
 
-    <script src="/static/js/api.js"></script>
+    <div class="nb-login-card">
+        <form id="login-form">
+
+            <div class="nb-login-label">Email</div>
+            <input type="email" id="email" name="email"
+                   class="nb-login-input"
+                   placeholder="your@email.com"
+                   autocomplete="email" required>
+
+            <div class="nb-login-label">Password</div>
+            <input type="password" id="password" name="password"
+                   class="nb-login-input"
+                   placeholder="your password"
+                   autocomplete="current-password" required>
+
+            <div class="nb-spacer"></div>
+
+            <div style="height: var(--lh); display: flex; align-items: center; justify-content: center;">
+                <button type="submit" class="nb-login-btn">Sign In</button>
+            </div>
+
+        </form>
+
+        <div id="error-msg" class="nb-login-error"></div>
+
+        <div class="nb-login-link-row">
+            No account? <a href="/web/register">Register here</a>
+        </div>
+
+    </div>
+</div>
+
+<script src="/static/js/api.js"></script>
 
 </body>
 </html>
