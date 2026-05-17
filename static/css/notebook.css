@@ -297,7 +297,7 @@ html, body {
 .nb-btn.nb-btn-saved:hover {
   background: rgba(139, 32, 32, 0.20);
   border-color: rgba(150, 30, 30, 0.70);
-  color: #ccc;
+  color: var(--text);
 }
 
 
@@ -415,7 +415,7 @@ html, body {
 
 .nb-toggle-btn.nb-selected {
   border-color: var(--red-border);
-  color: #ccc;
+  color: var(--text);
   background: var(--active-bg);
 }
 
