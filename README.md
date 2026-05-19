@@ -6,18 +6,23 @@ A no-frills fitness tracker — web application + native Android mobile app — 
 
 FitJournal is a comprehensive fitness tracking application that provides a complete workout management system with routine planning, exercise tracking, and workout history visualization — available both as a web app and a native Android app.
 
+## Roadmap
+
+See [ROADMAP.md](./ROADMAP.md) for planned features, technical debt, and the path to AWS production deployment.
+
 ## Features
 
 ### Web App
 - ✅ User registration and authentication (JWT)
 - ✅ User profile management (age, weight, height, unit preferences, timezone)
 - ✅ 101 default exercises (copied to each user on registration via bulk insert)
-- ✅ Exercise management with muscle group organization
+- ✅ Exercise management with muscle group organization (10 muscle groups including Forearms)
 - ✅ Custom routine builder (1-7 days per week, multiple muscle groups per day)
 - ✅ Intelligent workout generation algorithm (3 exercises per muscle group, random tiebreaker)
-- ✅ Daily workout tracking (Get WOD - Workout of the Day)
-- ✅ Workout history calendar with multi-day filtering
+- ✅ Daily workout tracking (Get WOD - Workout of the Day) with per-exercise checkoff
+- ✅ Workout history calendar with multi-day filtering, current-day indicator, and 10-session history
 - ✅ Automatic exercise weight tracking and updates
+- ✅ Modified-weight visual indicator (muted by default, highlighted once edited)
 - ✅ Session-based workout logging
 - ✅ Progress tracking by exercise frequency
 - ✅ Timezone-aware workout date logging (per user timezone)
@@ -105,8 +110,9 @@ FitJournal/
 │   ├── dashboard.html
 │   ├── profile.html
 │   ├── routine.html
-│   ├── exercises.html            # (in progress)
-│   ├── getwod.html               # (in progress)
+│   ├── exercises.html
+│   ├── calendar.html
+│   ├── getwod.html
 │   ├── login.html                # Standalone — no sidebar
 │   └── register.html             # Standalone — no sidebar
 ├── static/                       # Static assets served by FastAPI
@@ -116,7 +122,6 @@ FitJournal/
 │   │   └── api.js                # API calls, auth helpers
 │   └── images/
 │       └── logo_only.png
-├── frontend/                     # Legacy static frontend (being migrated)
 ├── mobile/                       # Android mobile app
 │   └── app/src/main/java/.../
 │       ├── analytics/            # AnalyticsLogger
@@ -144,6 +149,7 @@ FitJournal/
 │   ├── ER_diagram.png
 │   └── design-system.md          # Full design system documentation
 ├── requirements.txt
+├── ROADMAP.md
 ├── README.md
 └── README_mobile.md
 ```
@@ -246,13 +252,14 @@ You can use the following test user credentials:
 
 ### HTML Pages (served by FastAPI)
 - `GET /` — Redirects to dashboard
-- `GET /login` — Login page
-- `GET /register` — Registration page
-- `GET /dashboard` — Dashboard page
-- `GET /profile` — Profile page
-- `GET /routine` — Routine page
-- `GET /exercises` — Exercises page *(in progress)*
-- `GET /getwod` — Get WOD page *(in progress)*
+- `GET /web/login` — Login page
+- `GET /web/register` — Registration page
+- `GET /web/dashboard` — Dashboard page
+- `GET /web/profile` — Profile page
+- `GET /web/routine` — Routine page
+- `GET /web/exercises` — Exercises page
+- `GET /web/calendar` — Calendar page
+- `GET /web/getwod` — Get WOD page
 
 ### Profile
 - `GET /profile/{user_id}` — Get user profile *(JWT required)*
@@ -310,13 +317,13 @@ You can use the following test user credentials:
 #### `default_exercises`
 - `default_exercise_id` (PK)
 - `exercise_name` - VARCHAR(50)
-- `exercise_muscle_group` - ENUM (9 muscle groups)
+- `exercise_muscle_group` - ENUM (10 muscle groups)
 - `exercise_link` - VARCHAR(500) - URL to exercise demo
 
 #### `exercises`
 - `exercise_id` (PK)
 - `exercise_name` - VARCHAR(50)
-- `exercise_muscle_group` - ENUM (9 muscle groups)
+- `exercise_muscle_group` - ENUM (10 muscle groups)
 - `exercise_user_current_weight` - DECIMAL(5,2)
 - `user_id` (FK → users.user_id)
 - `exercise_is_in_routine` - Boolean
@@ -335,7 +342,7 @@ You can use the following test user credentials:
 - `routine_day_id` (PK)
 - `user_id` (FK → users.user_id)
 - `day_number` - Integer (1-7)
-- `muscle_group` - ENUM (Biceps, Back, Triceps, Shoulders, Legs, Glutes, Chest, Calves, Abs)
+- `muscle_group` - ENUM (Biceps, Back, Triceps, Shoulders, Legs, Glutes, Chest, Calves, Abs, Forearms)
 - `created_at`, `updated_at` - Timestamps
 
 #### `workout_state`
@@ -392,6 +399,9 @@ Each user has full control over their exercises without affecting others. Regist
 3. Prioritizes exercises with lowest `exercise_times_performed` count
 4. Uses `func.rand()` as tiebreaker for exercises with equal counts — ensures workout variety
 5. Ensures progressive overload by rotating through least-performed exercises
+
+### Per-Exercise Checkoff (Get WOD)
+Users explicitly mark which exercises they completed during a workout session. Only checked exercises are POSTed to the backend, so partial workouts (e.g., 6 of 8 planned exercises) are logged faithfully without polluting history with zero-value rows.
 
 ### JWT Authentication (Web + Mobile)
 FitJournal uses stateless JWT authentication across both platforms:
@@ -464,11 +474,12 @@ open app/build/reports/jacoco/jacocoTestReport/html/index.html
 ### Web App
 - ✅ Full backend API (20+ endpoints), all protected with JWT
 - ✅ Jinja2 templating — FastAPI serves HTML and API from the same server
-- ✅ Notebook-style UI — Dashboard, Profile, Routine migrated
+- ✅ Notebook-style UI across all pages (Dashboard, Profile, Routine, Exercises, Calendar, Get WOD)
 - ✅ Dark mode + light mode with persistent preference
-- 🚧 Exercises, Get WOD pages — Jinja2 migration in progress
+- ✅ Per-exercise checkoff in Get WOD with sets validation
+- ✅ Calendar with current-day indicator, multi-day filter, 10-session history
+- ✅ Legacy `frontend/` folder removed
 - 🚧 Login/Register — functional placeholder, notebook redesign pending
-- 🚧 Calendar — Google Sheets integration planned
 
 ### Mobile App
 - ✅ JWT authentication (login + register + auto-login + logout)
@@ -489,23 +500,6 @@ open app/build/reports/jacoco/jacocoTestReport/html/index.html
 - CORS allows all origins (development mode)
 - No offline support — requires active backend connection
 
-### Future Enhancements 📋
-- [ ] Login and Register page notebook redesign
-- [ ] Exercises and Get WOD Jinja2 migration
-- [ ] Google Sheets integration for Calendar
-- [ ] Google Cloud deployment (Cloud Run + Cloud SQL)
-- [ ] ExerciseDB legacy code cleanup (ExerciseRepository, ExerciseDetailsViewModel)
-- [ ] User-configurable exercises per muscle group in routine setup
-- [ ] Analytics dashboard (charts, progress graphs)
-- [ ] Personal records (PR) tracking
-- [ ] REST timer between sets
-- [ ] Password reset via email
-- [ ] Export workout data (CSV/PDF)
-- [ ] Rate limiting on API endpoints
-- [ ] HTTPS for production
-- [ ] Offline sync with Room database
-- [ ] Light mode for mobile
-
 
 ## Development Workflow
 
@@ -516,7 +510,7 @@ source ../venv/Scripts/activate   # Git Bash / Windows
 # source ../venv/bin/activate     # Mac/Linux
 uvicorn main:app --reload --host 0.0.0.0
 
-# Open web app at: http://127.0.0.1:8000/login
+# Open web app at: http://127.0.0.1:8000/web/login
 
 # Terminal 2: Git
 cd FitJournal
@@ -537,9 +531,6 @@ git push
 - ✅ Tokens encrypted on-device via Android Keystore (mobile)
 - ✅ AuthInterceptor auto-injects Bearer token on all mobile API calls
 - ✅ Exercise update uses `exclude_none=True` to prevent null overwrites
-- ⚠️ TODO: Rate limiting on API endpoints
-- ⚠️ TODO: HTTPS for production
-- ⚠️ TODO: CSRF protection
 
 
 ## Author
@@ -553,6 +544,7 @@ GitHub: [https://github.com/leanardiles/FitJournal](https://github.com/leanardil
 
 ## Documentation
 
+- [ROADMAP.md](./ROADMAP.md) — Planned features, technical debt, and deployment path
 - `docs/design-system.md` — Full UI/UX design system documentation
 - `README_mobile.md` — Android app setup and architecture details
 
