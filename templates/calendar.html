@@ -1,0 +1,560 @@
+{% extends 'base.html' %}
+
+{% block extra_css %}
+<style>
+    /* Day filter buttons row */
+    .nb-day-filter {
+        display: flex;
+        align-items: flex-end;
+        height: var(--lh);
+        gap: 10px;
+        padding-bottom: 4px;
+        flex-wrap: wrap;
+    }
+
+    .nb-day-filter-btn {
+        background: transparent;
+        border: 1px solid var(--border);
+        color: var(--muted);
+        font-family: 'Patrick Hand', cursive;
+        font-size: 14px;
+        padding: 0 14px;
+        height: calc(var(--lh) - 10px);
+        cursor: pointer;
+        border-radius: 8px;
+        transition: all 0.12s;
+    }
+
+    .nb-day-filter-btn:hover { color: var(--text); }
+
+    .nb-day-filter-btn.active {
+        border-color: var(--red-border);
+        color: var(--text);
+        background: var(--active-bg);
+    }
+
+    .nb-current-day-marker {
+        display: inline-flex;
+        align-items: center;
+        gap: 4px;
+        color: var(--red);
+        font-size: 12px;
+        margin-left: 8px;
+        padding-bottom: 4px;
+        align-self: flex-end;
+        white-space: nowrap;
+    }
+
+
+    /* Current view info line */
+    .nb-view-info {
+        height: var(--lh);
+        display: flex;
+        align-items: flex-end;
+        padding-bottom: 4px;
+        font-size: 14px;
+        color: var(--text);
+    }
+
+    /* Calendar table wrapper */
+    .nb-cal-wrapper {
+        overflow-x: auto;
+        margin-top: var(--lh);
+    }
+
+    .nb-cal-table {
+        border-collapse: collapse;
+        min-width: 100%;
+    }
+
+    .nb-cal-table th {
+        height: var(--lh);
+        text-align: center;
+        padding-bottom: 4px;
+        font-size: 11px;
+        color: var(--muted);
+        text-transform: uppercase;
+        letter-spacing: 1.2px;
+        font-weight: normal;
+        vertical-align: bottom;
+        white-space: nowrap;
+        padding-left: 12px;
+        padding-right: 12px;
+    }
+
+    .nb-cal-table th.left {
+        text-align: left;
+        padding-left: 0;
+    }
+
+    .nb-cal-table th .nb-wod-day {
+        font-size: 11px;
+        color: var(--muted);
+        text-transform: none;
+        letter-spacing: 0;
+    }
+
+    .nb-cal-table th .nb-wod-date {
+        font-size: 12px;
+        color: var(--text);
+        text-transform: none;
+        letter-spacing: 0;
+        margin-top: 2px;
+    }
+
+    .nb-cal-table td {
+        height: var(--lh);
+        padding-bottom: 4px;
+        vertical-align: bottom;
+        font-size: 13px;
+        color: var(--text);
+        border: none;
+        padding-left: 12px;
+        padding-right: 12px;
+        white-space: nowrap;
+    }
+
+    .nb-cal-table td.left { padding-left: 0; }
+    .nb-cal-table td.center { text-align: center; }
+
+    /* Muscle group section header row */
+    .nb-cal-muscle-row td {
+        color: var(--red);
+        font-size: 13px;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+        padding-top: 6px;
+    }
+
+    .nb-cal-exname { min-width: 180px; }
+
+    /* Next workout button */
+    .nb-next-btn {
+        background: transparent;
+        border: 1px solid var(--border);
+        color: var(--text);
+        font-family: 'Patrick Hand', cursive;
+        font-size: 13px;
+        padding: 0 12px;
+        height: calc(var(--lh) - 12px);
+        cursor: pointer;
+        border-radius: 6px;
+        transition: all 0.12s;
+        letter-spacing: 0.5px;
+    }
+
+    .nb-next-btn:hover {
+        color: var(--text);
+        border-color: var(--red-border);
+    }
+
+    .nb-next-btn.selected {
+        border-color: var(--red-border);
+        color: var(--text);
+        background: var(--active-bg);
+    }
+
+    /* WOD cells */
+    .nb-wod-cell {
+        font-size: 11px;
+        text-align: center;
+        min-width: 50px;
+    }
+
+    .nb-wod-cell.completed { color: var(--text); }
+    .nb-wod-cell.empty     { color: var(--muted); }
+
+    /* Empty state */
+    .nb-cal-empty {
+        height: calc(var(--lh) * 4);
+        text-align: center;
+        color: var(--muted);
+        font-size: 14px;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+
+<div class="nb-row" style="justify-content: space-between;">
+    <div class="nb-section-label" style="color: var(--text);">Your Calendar</div>
+    <div style="display: flex; gap: 12px; align-items: flex-end; padding-bottom: 4px;">
+        <button id="generate-next-workout-btn" class="nb-btn">🤖 Automatic Selection</button>
+        <button id="clear-selections-btn" class="nb-btn">Clear Selection</button>
+    </div>
+</div>
+
+<!-- Day filter -->
+<div class="nb-day-filter" id="day-filter-container">
+    <!-- Buttons injected by JS -->
+</div>
+
+<!-- Current view info -->
+<div class="nb-view-info" id="current-view-info"></div>
+
+<!-- Calendar table -->
+<div class="nb-cal-wrapper">
+    <table class="nb-cal-table" id="calendar-table">
+        <thead>
+            <tr id="header-row">
+                <!-- Headers injected by JS -->
+            </tr>
+        </thead>
+        <tbody id="calendar-body">
+            <tr>
+                <td colspan="12" class="nb-cal-empty">Loading calendar...</td>
+            </tr>
+        </tbody>
+    </table>
+</div>
+
+<div id="message" class="nb-message" style="display:none;"></div>
+
+{% endblock %}
+
+{% block extra_js %}
+<script>
+    // State
+    let allExercises = [];
+    let workoutSessions = [];
+    let workoutLogs = [];
+    let nextWorkoutSelections = {};
+    let userRoutine = null;
+    let selectedDays = [];
+    let filterMode = 'specific';   // 'all' | 'specific'
+    let currentUserDay = 1;
+    const columnsToShow = 10;
+
+    document.addEventListener('DOMContentLoaded', async () => {
+        await loadCalendar();
+
+        document.getElementById('generate-next-workout-btn').addEventListener('click', autoGenerateNext);
+        document.getElementById('clear-selections-btn').addEventListener('click', clearSelections);
+    });
+
+    async function loadCalendar() {
+        const userId = getCurrentUserId();
+
+        try {
+            userRoutine = await getUserRoutine();
+
+            // Get user's current workout state
+            const stateRes = await fetch(`${API_URL}/workout/state/${userId}`, {
+                headers: authHeaders()
+            });
+            const state = await stateRes.json();
+            currentUserDay = state.current_day_number;
+            // On first load, select the current day by default
+            if (selectedDays.length === 0 && filterMode === 'specific') {
+                selectedDays = [currentUserDay];
+            }
+
+            // Exercises in routine
+            allExercises = await getUserExercises();
+            allExercises = allExercises.filter(ex => ex.exercise_is_in_routine);
+
+            // Last 10 workout sessions
+            workoutSessions = await getWorkoutSessions(userId, columnsToShow);
+
+            // Logs for those sessions
+            if (workoutSessions.length > 0) {
+                const sessionIds = workoutSessions.map(s => s.session_id);
+                workoutLogs = await getWorkoutLogsBySessions(userId, sessionIds);
+            }
+
+            // Next workout selections
+            nextWorkoutSelections = await getNextWorkoutSelections(userId);
+
+            buildDayFilterButtons();
+            buildCalendarTable();
+        } catch (err) {
+            console.error('Calendar load error:', err);
+            showMessage('Error loading calendar: ' + err.message, 'error');
+        }
+    }
+
+    function buildDayFilterButtons() {
+        const container = document.getElementById('day-filter-container');
+        container.innerHTML = '';
+
+        if (!userRoutine || !userRoutine.days_per_week) return;
+
+        // All Days
+        const allBtn = document.createElement('button');
+        allBtn.className = 'nb-day-filter-btn' + (filterMode === 'all' ? ' active' : '');
+        allBtn.textContent = 'All Days';
+        allBtn.addEventListener('click', () => {
+            filterMode = 'all';
+            selectedDays = [];
+            buildDayFilterButtons();
+            buildCalendarTable();
+        });
+        container.appendChild(allBtn);
+
+        // Day buttons + current-day marker
+        for (let day = 1; day <= userRoutine.days_per_week; day++) {
+            const dayBtn = document.createElement('button');
+            const isSelected = filterMode === 'specific' && selectedDays.includes(day);
+            dayBtn.className = 'nb-day-filter-btn' + (isSelected ? ' active' : '');
+            dayBtn.textContent = `Day ${day}`;
+            dayBtn.addEventListener('click', () => toggleDaySelection(day));
+            container.appendChild(dayBtn);
+
+            // Add the "← current day" marker after the current day button
+            if (day === currentUserDay) {
+                const marker = document.createElement('span');
+                marker.className = 'nb-current-day-marker';
+                marker.innerHTML = '← current day';
+                container.appendChild(marker);
+            }
+        }
+    }
+
+    function toggleDaySelection(day) {
+        filterMode = 'specific';
+        if (selectedDays.includes(day)) {
+            selectedDays = selectedDays.filter(d => d !== day);
+            if (selectedDays.length === 0) filterMode = 'all';
+        } else {
+            selectedDays.push(day);
+            selectedDays.sort();
+        }
+        buildDayFilterButtons();
+        buildCalendarTable();
+    }
+
+    function getActiveDays() {
+        if (filterMode === 'specific') return selectedDays;
+        // all
+        const all = [];
+        for (let i = 1; i <= userRoutine.days_per_week; i++) all.push(i);
+        return all;
+    }
+
+    function updateViewInfo() {
+        const el = document.getElementById('current-view-info');
+        if (filterMode === 'all') {
+            el.textContent = 'Showing: All Days';
+        } else {
+            const muscleSet = new Set();
+            selectedDays.forEach(d => {
+                ((userRoutine.routine_days || {})[d] || []).forEach(g => muscleSet.add(g));
+            });
+            const daysList = selectedDays.map(d => `Day ${d}`).join(', ');
+            el.textContent = `${daysList} — ${Array.from(muscleSet).join(', ')}`;
+        }
+    }
+
+    function getFilteredExercises() {
+        const activeDays = getActiveDays();
+        const muscleSet = new Set();
+        activeDays.forEach(d => {
+            ((userRoutine.routine_days || {})[d] || []).forEach(g => muscleSet.add(g));
+        });
+        return allExercises.filter(ex => muscleSet.has(ex.exercise_muscle_group));
+    }
+
+    function getFilteredSessions() {
+        const activeDays = getActiveDays();
+        return workoutSessions.filter(s => activeDays.includes(s.routine_day_number));
+    }
+
+    function buildCalendarTable() {
+        const headerRow = document.getElementById('header-row');
+        const tbody = document.getElementById('calendar-body');
+
+        updateViewInfo();
+
+        const filteredExercises = getFilteredExercises();
+        const filteredSessions = getFilteredSessions();
+        filteredSessions.sort((a, b) => new Date(b.workout_date) - new Date(a.workout_date));
+
+        // Headers
+        headerRow.innerHTML = '';
+
+        const thName = document.createElement('th');
+        thName.className = 'left';
+        thName.textContent = 'Exercise';
+        headerRow.appendChild(thName);
+
+        const thNext = document.createElement('th');
+        thNext.textContent = 'Select';
+        headerRow.appendChild(thNext);
+
+        for (let i = 0; i < columnsToShow; i++) {
+            const th = document.createElement('th');
+            if (i < filteredSessions.length) {
+                const session = filteredSessions[i];
+                const date = new Date(session.workout_date);
+                th.innerHTML = `
+                    <div class="nb-wod-day">${getDayName(date)}</div>
+                    <div class="nb-wod-date">${formatDateShort(date)}</div>
+                `;
+            } else {
+                th.innerHTML = `<div class="nb-wod-day">—</div>`;
+            }
+            headerRow.appendChild(th);
+        }
+
+        // Sort
+        filteredExercises.sort((a, b) => {
+            if (a.exercise_muscle_group !== b.exercise_muscle_group) {
+                return a.exercise_muscle_group.localeCompare(b.exercise_muscle_group);
+            }
+            return a.exercise_name.localeCompare(b.exercise_name);
+        });
+
+        tbody.innerHTML = '';
+
+        if (filteredExercises.length === 0) {
+            const tr = document.createElement('tr');
+            const td = document.createElement('td');
+            td.colSpan = 2 + columnsToShow;
+            td.className = 'nb-cal-empty';
+            td.textContent = 'No exercises for selected day(s). Add some on the Exercises page.';
+            tr.appendChild(td);
+            tbody.appendChild(tr);
+            return;
+        }
+
+        // Rows with muscle group section breaks
+        let currentMuscle = null;
+        filteredExercises.forEach(ex => {
+            if (ex.exercise_muscle_group !== currentMuscle) {
+                currentMuscle = ex.exercise_muscle_group;
+                const headRow = document.createElement('tr');
+                headRow.className = 'nb-cal-muscle-row';
+                const headCell = document.createElement('td');
+                headCell.colSpan = 2 + columnsToShow;
+                headCell.textContent = currentMuscle;
+                headRow.appendChild(headCell);
+                tbody.appendChild(headRow);
+            }
+
+            const row = document.createElement('tr');
+
+            // Exercise name
+            const nameCell = document.createElement('td');
+            nameCell.className = 'left nb-cal-exname';
+            nameCell.textContent = ex.exercise_name;
+            row.appendChild(nameCell);
+
+            // Next workout button
+            const nextCell = document.createElement('td');
+            nextCell.className = 'center';
+            const isSelected = !!nextWorkoutSelections[ex.exercise_id];
+            const btn = document.createElement('button');
+            btn.className = 'nb-next-btn' + (isSelected ? ' selected' : '');
+            btn.textContent = isSelected ? '✓' : '';
+            btn.addEventListener('click', async () => {
+                await toggleNextWorkoutSelection(ex.exercise_id, !isSelected);
+                await loadCalendar();
+            });
+            nextCell.appendChild(btn);
+            row.appendChild(nextCell);
+
+            // WOD cells
+            for (let i = 0; i < columnsToShow; i++) {
+                const cell = document.createElement('td');
+                cell.className = 'nb-wod-cell';
+                if (i < filteredSessions.length) {
+                    const session = filteredSessions[i];
+                    const log = workoutLogs.find(l =>
+                        l.exercise_id === ex.exercise_id &&
+                        l.session_id === session.session_id
+                    );
+                    if (log) {
+                        cell.textContent = log.sets_completed || '—';
+                        cell.classList.add('completed');
+                    } else {
+                        cell.textContent = '—';
+                        cell.classList.add('empty');
+                    }
+                } else {
+                    cell.textContent = '—';
+                    cell.classList.add('empty');
+                }
+                row.appendChild(cell);
+            }
+
+            tbody.appendChild(row);
+        });
+    }
+
+    async function toggleNextWorkoutSelection(exerciseId, isSelected) {
+        const userId = getCurrentUserId();
+        try {
+            const res = await fetch(`${API_URL}/next-workout/toggle`, {
+                method: 'POST',
+                headers: authHeaders(),
+                body: JSON.stringify({
+                    user_id: userId,
+                    exercise_id: exerciseId,
+                    is_selected: isSelected
+                })
+            });
+            if (res.ok) nextWorkoutSelections[exerciseId] = isSelected;
+        } catch (err) {
+            console.error('Toggle error:', err);
+        }
+    }
+
+    async function autoGenerateNext() {
+        const userId = getCurrentUserId();
+        const activeDays = getActiveDays();
+        try {
+            let totalSelected = 0;
+            for (const day of activeDays) {
+                const res = await fetch(`${API_URL}/next-workout/generate/${userId}?day_number=${day}`, {
+                    method: 'POST',
+                    headers: authHeaders()
+                });
+                if (res.ok) {
+                    const result = await res.json();
+                    totalSelected += result.exercises_selected;
+                }
+            }
+            showMessage(`Next workout generated — ${totalSelected} exercises selected.`, 'success');
+            await loadCalendar();
+        } catch (err) {
+            console.error('Auto-generate error:', err);
+            showMessage('Failed to generate workout', 'error');
+        }
+    }
+
+    async function clearSelections() {
+        const userId = getCurrentUserId();
+        const activeDays = getActiveDays();
+        try {
+            for (const day of activeDays) {
+                await fetch(`${API_URL}/next-workout/clear/${userId}?day_number=${day}`, {
+                    method: 'DELETE',
+                    headers: authHeaders()
+                });
+            }
+            showMessage('Selections cleared', 'success');
+            await loadCalendar();
+        } catch (err) {
+            console.error('Clear error:', err);
+        }
+    }
+
+    function getDayName(date) {
+        const days = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
+        return days[date.getDay()];
+    }
+
+    function formatDateShort(date) {
+        const months = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+        return `${months[date.getMonth()]} ${date.getDate()}`;
+    }
+
+    function showMessage(text, type) {
+        const msg = document.getElementById('message');
+        msg.textContent = text;
+        msg.className = 'nb-message ' + type;
+        msg.style.display = 'flex';
+        setTimeout(() => { msg.style.display = 'none'; }, 3000);
+    }
+</script>
+{% endblock %}

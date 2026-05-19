@@ -160,6 +160,14 @@ async def exercises_page(request: Request):
         "page_title": "Exercises"
     })
 
+@app.get("/web/calendar")
+async def calendar_page(request: Request):
+    return templates.TemplateResponse("calendar.html", {
+        "request": request,
+        "active_page": "calendar",
+        "page_title": "Calendar"
+    })
+
 @app.get("/web/getwod")
 async def getwod_page(request: Request):
     return templates.TemplateResponse("getwod.html", {
