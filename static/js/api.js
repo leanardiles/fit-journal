@@ -7,160 +7,87 @@
 const API_URL = 'http://127.0.0.1:8000';
 
 // ========================================
-// REGISTRATION
+// AUTHENTICATION
 // ========================================
 
-const registrationForm = document.getElementById('registration-form');
+async function registerUser(email, password) {
+    try {
+        const response = await fetch(`${API_URL}/register`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+                user_email: email,
+                user_password: password
+            })
+        });
 
-if (registrationForm) {
-    registrationForm.addEventListener('submit', async (e) => {
-        e.preventDefault(); // Prevent page reload
-        
-        // Get form values
-        const email = document.getElementById('email').value.trim();
-        const password = document.getElementById('password').value;
-        const confirmPassword = document.getElementById('confirm-password').value;
-        
-        // Validate passwords match
-        if (password !== confirmPassword) {
-            alert('Passwords do not match!');
-            return;
+        const data = await response.json();
+
+        if (response.ok) {
+            return { success: true };
+        } else {
+            return {
+                success: false,
+                error: data.detail || 'Registration failed. Please try again.'
+            };
         }
-        
-        // Validate password length
-        if (password.length < 6) {
-            alert('Password must be at least 6 characters long');
-            return;
-        }
-        
-        // Validate email format
-        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-        if (!emailRegex.test(email)) {
-            alert('Please enter a valid email address');
-            return;
-        }
-        
-        try {
-            // Show loading state (optional)
-            const submitButton = registrationForm.querySelector('button[type="submit"]');
-            const originalText = submitButton.textContent;
-            submitButton.textContent = 'Creating Account...';
-            submitButton.disabled = true;
-            
-            // Send registration request to backend
-            const response = await fetch(`${API_URL}/register`, {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify({
-                    user_email: email,
-                    user_password: password
-                })
-            });
-            
-            const data = await response.json();
-            
-            if (response.ok) {
-                // Success!
-                alert('Account created successfully! Redirecting to login...');
-                window.location.href = '/web/login';
-            } else {
-                // Error from backend
-                alert(`Error: ${data.detail || 'Registration failed. Please try again.'}`);
-                
-                // Reset button
-                submitButton.textContent = originalText;
-                submitButton.disabled = false;
-            }
-        } catch (error) {
-            console.error('Registration error:', error);
-            alert('Network error. Please check if the backend is running and try again.');
-            
-            // Reset button
-            const submitButton = registrationForm.querySelector('button[type="submit"]');
-            submitButton.textContent = 'Create Account';
-            submitButton.disabled = false;
-        }
-    });
+    } catch (error) {
+        console.error('Register error:', error);
+        return {
+            success: false,
+            error: 'Network error. Please check if the backend is running.'
+        };
+    }
 }
 
-// ========================================
-// LOGIN
-// ========================================
+async function loginUser(email, password) {
+    try {
+        const response = await fetch(`${API_URL}/login`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+                user_email: email,
+                user_password: password
+            })
+        });
 
-const loginForm = document.getElementById('login-form');
+        const data = await response.json();
 
-if (loginForm) {
-    loginForm.addEventListener('submit', async (e) => {
-        e.preventDefault(); // Prevent page reload
-        
-        // Get form values
-        const email = document.getElementById('email').value.trim();
-        const password = document.getElementById('password').value;
-        
-        // Basic validation
-        if (!email || !password) {
-            alert('Please enter both email and password');
-            return;
-        }
-        
-        try {
-            // Show loading state
-            const submitButton = loginForm.querySelector('button[type="submit"]');
-            const originalText = submitButton.textContent;
-            submitButton.textContent = 'Signing In...';
-            submitButton.disabled = true;
-            
-            // Send login request to backend
-            const response = await fetch(`${API_URL}/login`, {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify({
-                    user_email: email,
-                    user_password: password
-                })
-            });
-            
-            const data = await response.json();
-            
-            if (response.ok) {
-                // Success! Store user info
-                localStorage.setItem('user_id', data.user_id);
-                localStorage.setItem('user_email', data.user_email);
-                localStorage.setItem('access_token', data.access_token);
-                
-                // Fetch and store user's first name
-                fetch(`${API_URL}/profile/${data.user_id}`, {
+        if (response.ok) {
+            localStorage.setItem('user_id', data.user_id);
+            localStorage.setItem('user_email', data.user_email);
+            localStorage.setItem('access_token', data.access_token);
+
+            // Fetch first name in the background (non-blocking)
+            try {
+                const profileRes = await fetch(`${API_URL}/profile/${data.user_id}`, {
                     headers: { 'Authorization': `Bearer ${data.access_token}` }
-                })
-                    .then(res => res.json())
-                    .then(profile => {
-                        if (profile.user_first_name) {
-                            localStorage.setItem('user_first_name', profile.user_first_name);
-                        }
-                        window.location.href = '/web/dashboard';
-                    });
-            } else {
-                // Error from backend
-                alert(`Error: ${data.detail || 'Login failed. Please check your credentials.'}`);
-                
-                // Reset button
-                submitButton.textContent = originalText;
-                submitButton.disabled = false;
+                });
+                if (profileRes.ok) {
+                    const profile = await profileRes.json();
+                    if (profile && profile.user_first_name) {
+                        localStorage.setItem('user_first_name', profile.user_first_name);
+                    }
+                }
+            } catch (e) {
+                // Profile fetch failure is non-fatal — login still succeeds
+                console.warn('Could not fetch user profile after login:', e);
             }
-        } catch (error) {
-            console.error('Login error:', error);
-            alert('Network error. Please check if the backend is running and try again.');
-            
-            // Reset button
-            const submitButton = loginForm.querySelector('button[type="submit"]');
-            submitButton.textContent = 'Sign In';
-            submitButton.disabled = false;
+
+            return { success: true, user_id: data.user_id };
+        } else {
+            return {
+                success: false,
+                error: data.detail || 'Invalid email or password.'
+            };
         }
-    });
+    } catch (error) {
+        console.error('Login error:', error);
+        return {
+            success: false,
+            error: 'Network error. Please check if the backend is running.'
+        };
+    }
 }
 
 // ========================================
