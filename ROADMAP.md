@@ -1,6 +1,6 @@
 # FitJournal Roadmap
 
-This document tracks planned enhancements, technical debt, and the path to production deployment.
+FitJournal is a personal fitness tracking application I'm building in parallel with my MS in Computer Science. This roadmap tracks planned features, technical debt, and the path from local development to AWS production deployment.
 
 **Last updated:** May 2026
 **Current branch:** `ui-redesign` (Jinja2 migration + notebook design system)
@@ -32,11 +32,10 @@ The short list — what's most likely to be worked on in the next session or two
 
 | Item | Priority | Effort | Notes |
 |---|---|---|---|
-| Fix BUG-001 (empty workout submissions) | 🟠 P1 | S | Creates blank calendar entries; visible on calendar page |
 | Migrate database from Aiven MySQL → AWS RDS MySQL | 🟠 P1 | M | Connection-string swap + `mysqldump` import |
 | Migrate FastAPI backend → Lambda + API Gateway | 🟠 P1 | L | Uses Mangum adapter; pairs with HTTPS |
 | Migrate HTTP → HTTPS | 🟠 P1 | M | ACM cert + custom domain; mostly bundled into Lambda + API Gateway work |
-| Switch RDS public access to NO | 🟠 P1 | XS | Post-deploy lockdown; private subnet only |
+| Network hardening: move RDS to private subnet | 🟠 P1 | XS | Post-deploy lockdown; accessed only from Lambda within the VPC |
 
 ---
 
@@ -48,8 +47,9 @@ Lower priority, but tracked so they're not forgotten.
 
 | Item | Priority | Effort | Notes |
 |---|---|---|---|
-| Reevaluate calendar display when routine changes | 🟡 P2 | L | Historical workouts hidden when routine restructured; consider per-session routine snapshot |
+| Calendar "All Days" — group exercises by day instead of flat list | 🟡 P2 | M | When user selects "All Days", display as Day 1 → muscle groups → exercises, then Day 2 → muscle groups → exercises, etc. Currently shows all exercises flat in one list |
 | Manual day override — train any day out of order | 🟡 P2 | M | Let user pick which routine day to do today (e.g. do Day 1 even though current is Day 3); workout is logged under the chosen day, and the `current_day_number` cursor advances correctly afterward |
+| Reevaluate calendar display when routine changes | 🟡 P2 | L | Historical workouts hidden when routine restructured; consider per-session routine snapshot |
 | Support user-defined / dynamic muscle groups | 🟢 P3 | L | Replace `MuscleGroupEnum` with a `muscle_groups` table; no more schema migrations to add groups |
 | "Always select" exercise flag in Calendar | 🟢 P3 | S | Pin/sticky-select an exercise so it's auto-selected every workout |
 
@@ -59,7 +59,7 @@ Lower priority, but tracked so they're not forgotten.
 |---|---|---|---|
 | Revamp login & register templates | 🟡 P2 | M | Bring into notebook design system (currently inconsistent) |
 | Re-evaluate modal visibility issue | 🟡 P2 | S | Deferred earlier; noted in code TODO |
-| Audit hardcoded greys (`#ccc`, `#aaa`, `#e0e0e0`) | 🟢 P3 | XS | Replace with `var(--text)` / `var(--muted)` for clean light/dark theming |
+| Audit hardcoded greys (`#ccc`, `#aaa`, `#e0e0e0`) | 🟢 P3 | XS | Replace with `var(--text)` / `var(--muted)` for proper light-mode adaptation |
 
 ### Deployment & Security
 
@@ -69,14 +69,21 @@ Lower priority, but tracked so they're not forgotten.
 
 ---
 
-## ✅ Done (recent)
+## ✅ Done
 
-For context — what's shipped recently.
+Recent shipped work, for context.
 
+### May 2026
+- Per-exercise checkoff in Get WOD (matches mobile UX, fixes BUG-001 by preventing empty workout submissions)
+- Get WOD table redesign — Muscle column, narrower Exercise column, tighter Weight/Sets/Reps spacing
+- Get WOD validation — sets required, reps optional, no exercises checked → error
+- Get WOD UX polish — modified-weight highlight, theme-aware check circle, removed misleading placeholders, light-mode underline fix
+- Add Forearms muscle group (extended `MuscleGroupEnum`, `ALTER TABLE` on three columns)
 - Calendar page rebuild with notebook design system
-- Add Forearms muscle group (DB enum + templates)
+- Calendar "Current Day" toggle replaced with red `← current day` marker; current day auto-selected on load
+- Calendar — reversed date columns (newest left), Select column label
 - Clean up legacy `frontend/` folder
-- Light-mode color fixes for active button states (saved button, selected toggle, active muscle tab, view info text)
+- Light-mode color fixes for active states (saved button, selected toggle, active muscle tab, view info text)
 - Jinja2 migration complete for all pages
 - Dark/light mode toggle
 
