@@ -34,7 +34,7 @@ The short list — what's most likely to be worked on in the next session or two
 |---|---|---|---|
 | Migrate database from Aiven MySQL → AWS RDS MySQL | 🟠 P1 | M | Connection-string swap + `mysqldump` import |
 | Migrate FastAPI backend → Lambda + API Gateway | 🟠 P1 | L | Uses Mangum adapter; pairs with HTTPS |
-| Migrate HTTP → HTTPS | 🟠 P1 | M | ACM cert + custom domain; mostly bundled into Lambda + API Gateway work |
+| Migrate HTTP → HTTPS with custom domain | 🟠 P1 | M | Domain fit-journal.com registered with Cloudflare. Path: ACM cert for fit-journal.com + *.fit-journal.com → API Gateway custom domain (e.g. app.fit-journal.com) → Cloudflare DNS CNAME record (DNS-only mode) |
 | Network hardening: move RDS to private subnet | 🟠 P1 | XS | Post-deploy lockdown; accessed only from Lambda within the VPC |
 
 ---
@@ -57,6 +57,7 @@ Lower priority, but tracked so they're not forgotten.
 
 | Item | Priority | Effort | Notes |
 |---|---|---|---|
+| Create a landing page for fit-journal.com | 🟡 P2 | M | Marketing page at the bare domain. Hero, features, screenshots, link to "Sign up" → app.fit-journal.com/web/register. Notebook aesthetic consistent with the app. Likely a single static HTML page hosted on S3 + CloudFront (cheap, fast, HTTPS-ready via ACM). Separate from the FastAPI app. |
 | Re-evaluate modal visibility issue | 🟡 P2 | S | Deferred earlier; noted in code TODO |
 | Audit hardcoded greys (`#ccc`, `#aaa`, `#e0e0e0`) | 🟢 P3 | XS | Replace with `var(--text)` / `var(--muted)` for proper light-mode adaptation |
 
