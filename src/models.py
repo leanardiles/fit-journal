@@ -16,15 +16,17 @@ class UnitPreferenceEnum(str, enum.Enum):
     imperial = "imperial"
 
 class MuscleGroupEnum(str, enum.Enum):
-    Biceps = "Biceps"
-    Back = "Back"
-    Triceps = "Triceps"
-    Shoulders = "Shoulders"
-    Legs = "Legs"
-    Glutes = "Glutes"
-    Chest = "Chest"
-    Calves = "Calves"
     Abs = "Abs"
+    Back = "Back"
+    Biceps = "Biceps"
+    Calves = "Calves"
+    Chest = "Chest"
+    Forearms = "Forearms"
+    Glutes = "Glutes"
+    Legs = "Legs"
+    Shoulders = "Shoulders"
+    Triceps = "Triceps"
+
 
 # ========== MODELS ==========
 
