@@ -57,7 +57,6 @@ Lower priority, but tracked so they're not forgotten.
 
 | Item | Priority | Effort | Notes |
 |---|---|---|---|
-| Revamp login & register templates | 🟡 P2 | M | Bring into notebook design system (currently inconsistent) |
 | Re-evaluate modal visibility issue | 🟡 P2 | S | Deferred earlier; noted in code TODO |
 | Audit hardcoded greys (`#ccc`, `#aaa`, `#e0e0e0`) | 🟢 P3 | XS | Replace with `var(--text)` / `var(--muted)` for proper light-mode adaptation |
 
