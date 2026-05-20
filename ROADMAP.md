@@ -32,7 +32,6 @@ The short list — what's most likely to be worked on in the next session or two
 
 | Item | Priority | Effort | Notes |
 |---|---|---|---|
-| Migrate database from Aiven MySQL → AWS RDS MySQL | 🟠 P1 | M | Connection-string swap + `mysqldump` import |
 | Migrate FastAPI backend → Lambda + API Gateway | 🟠 P1 | L | Uses Mangum adapter; pairs with HTTPS |
 | Migrate HTTP → HTTPS with custom domain | 🟠 P1 | M | Domain fit-journal.com registered with Cloudflare. Path: ACM cert for fit-journal.com + *.fit-journal.com → API Gateway custom domain (e.g. app.fit-journal.com) → Cloudflare DNS CNAME record (DNS-only mode) |
 | Network hardening: move RDS to private subnet | 🟠 P1 | XS | Post-deploy lockdown; accessed only from Lambda within the VPC |
@@ -47,6 +46,7 @@ Lower priority, but tracked so they're not forgotten.
 
 | Item | Priority | Effort | Notes |
 |---|---|---|---|
+| Bug fix — adding exercises for newly add forearms group muscle, adds it to glutes | 🟡 P2 | XS |
 | Calendar "All Days" — group exercises by day instead of flat list | 🟡 P2 | M | When user selects "All Days", display as Day 1 → muscle groups → exercises, then Day 2 → muscle groups → exercises, etc. Currently shows all exercises flat in one list |
 | Manual day override — train any day out of order | 🟡 P2 | M | Let user pick which routine day to do today (e.g. do Day 1 even though current is Day 3); workout is logged under the chosen day, and the `current_day_number` cursor advances correctly afterward |
 | Reevaluate calendar display when routine changes | 🟡 P2 | L | Historical workouts hidden when routine restructured; consider per-session routine snapshot |
@@ -74,7 +74,8 @@ Lower priority, but tracked so they're not forgotten.
 Recent shipped work, for context.
 
 ### May 2026
-- Per-exercise checkoff in Get WOD (matches mobile UX, fixes BUG-001 by preventing empty workout submissions)
+- Migrate database from Aiven MySQL to AWS RDS MySQL (MySQL 8.0.45, db.t4g.micro, free tier; Aiven retained as standby through early June)
+Per-exercise checkoff in Get WOD (matches mobile UX, fixes BUG-001 by preventing empty workout submissions)
 - Get WOD table redesign — Muscle column, narrower Exercise column, tighter Weight/Sets/Reps spacing
 - Get WOD validation — sets required, reps optional, no exercises checked → error
 - Get WOD UX polish — modified-weight highlight, theme-aware check circle, removed misleading placeholders, light-mode underline fix
