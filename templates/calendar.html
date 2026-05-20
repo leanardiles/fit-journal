@@ -128,6 +128,17 @@
 
     .nb-cal-exname { min-width: 180px; }
 
+    /* Day group header row (only used in All Days / multi-day mode) */
+    .nb-cal-day-row td {
+        color: var(--text);
+        font-size: 15px;
+        text-transform: uppercase;
+        letter-spacing: 1.5px;
+        padding-top: 12px;
+        padding-bottom: 4px;
+        border-bottom: 1px solid var(--red-border);
+        font-weight: normal;
+    }
     /* Next workout button */
     .nb-next-btn {
         background: transparent;
@@ -406,31 +417,8 @@
 
         tbody.innerHTML = '';
 
-        if (filteredExercises.length === 0) {
-            const tr = document.createElement('tr');
-            const td = document.createElement('td');
-            td.colSpan = 2 + columnsToShow;
-            td.className = 'nb-cal-empty';
-            td.textContent = 'No exercises for selected day(s). Add some on the Exercises page.';
-            tr.appendChild(td);
-            tbody.appendChild(tr);
-            return;
-        }
-
-        // Rows with muscle group section breaks
-        let currentMuscle = null;
-        filteredExercises.forEach(ex => {
-            if (ex.exercise_muscle_group !== currentMuscle) {
-                currentMuscle = ex.exercise_muscle_group;
-                const headRow = document.createElement('tr');
-                headRow.className = 'nb-cal-muscle-row';
-                const headCell = document.createElement('td');
-                headCell.colSpan = 2 + columnsToShow;
-                headCell.textContent = currentMuscle;
-                headRow.appendChild(headCell);
-                tbody.appendChild(headRow);
-            }
-
+        // Helper: render a single exercise row (uses outer scope's filteredSessions, workoutLogs, nextWorkoutSelections)
+        function renderExerciseRow(ex) {
             const row = document.createElement('tr');
 
             // Exercise name
@@ -477,8 +465,85 @@
                 row.appendChild(cell);
             }
 
-            tbody.appendChild(row);
-        });
+            return row;
+        }
+
+        // Helper: render a section header row spanning all columns
+        function renderSectionHeader(text, className) {
+            const tr = document.createElement('tr');
+            tr.className = className;
+            const td = document.createElement('td');
+            td.colSpan = 2 + columnsToShow;
+            td.textContent = text;
+            tr.appendChild(td);
+            return tr;
+        }
+
+        // Helper: get exercises for a single day, filtered and sorted
+        function getExercisesForDay(dayNumber) {
+            const muscles = (userRoutine.routine_days || {})[dayNumber] || [];
+            return allExercises
+                .filter(ex => muscles.includes(ex.exercise_muscle_group))
+                .sort((a, b) => {
+                    if (a.exercise_muscle_group !== b.exercise_muscle_group) {
+                        return a.exercise_muscle_group.localeCompare(b.exercise_muscle_group);
+                    }
+                    return a.exercise_name.localeCompare(b.exercise_name);
+                });
+        }
+
+        // Decide whether to group by day
+        const activeDays = getActiveDays();
+        const groupByDay = (filterMode === 'all' || (filterMode === 'specific' && selectedDays.length > 1));
+
+        if (groupByDay) {
+            // Day-grouped layout: Day N header → muscle headers → exercises
+            let anyExercises = false;
+
+            activeDays.forEach(dayNumber => {
+                const dayExercises = getExercisesForDay(dayNumber);
+                if (dayExercises.length === 0) return;
+                anyExercises = true;
+
+                // Day header
+                const muscleNames = ((userRoutine.routine_days || {})[dayNumber] || []).join(', ');
+                tbody.appendChild(renderSectionHeader(`Day ${dayNumber} — ${muscleNames}`, 'nb-cal-day-row'));
+
+                // Muscle subheaders + exercise rows
+                let currentMuscle = null;
+                dayExercises.forEach(ex => {
+                    if (ex.exercise_muscle_group !== currentMuscle) {
+                        currentMuscle = ex.exercise_muscle_group;
+                        tbody.appendChild(renderSectionHeader(currentMuscle, 'nb-cal-muscle-row'));
+                    }
+                    tbody.appendChild(renderExerciseRow(ex));
+                });
+            });
+
+            if (!anyExercises) {
+                tbody.appendChild(renderSectionHeader(
+                    'No exercises for selected day(s). Add some on the Exercises page.',
+                    'nb-cal-empty'
+                ));
+            }
+        } else {
+            // Single-day mode: flat list with only muscle section headers (existing behavior)
+            if (filteredExercises.length === 0) {
+                tbody.appendChild(renderSectionHeader(
+                    'No exercises for selected day(s). Add some on the Exercises page.',
+                    'nb-cal-empty'
+                ));
+            } else {
+                let currentMuscle = null;
+                filteredExercises.forEach(ex => {
+                    if (ex.exercise_muscle_group !== currentMuscle) {
+                        currentMuscle = ex.exercise_muscle_group;
+                        tbody.appendChild(renderSectionHeader(currentMuscle, 'nb-cal-muscle-row'));
+                    }
+                    tbody.appendChild(renderExerciseRow(ex));
+                });
+            }
+        }
     }
 
     async function toggleNextWorkoutSelection(exerciseId, isSelected) {
