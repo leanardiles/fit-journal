@@ -4,11 +4,20 @@ A no-frills fitness tracker — web application + native Android mobile app — 
 
 ## Project Overview
 
-FitJournal is a comprehensive fitness tracking application that provides a complete workout management system with routine planning, exercise tracking, and workout history visualization — available both as a web app and a native Android app.
+FitJournal is a full-stack fitness tracking application that provides a complete workout management system with routine planning, exercise tracking, and workout history visualization — available both as a web app and a native Android app.
 
-## Roadmap
+**Current deployment:** FastAPI backend + AWS RDS MySQL (us-east-1). Local development against the production database via JWT-authenticated API. Lambda + API Gateway migration planned next.
 
-See [ROADMAP.md](./ROADMAP.md) for planned features, technical debt, and the path to AWS production deployment.
+## Recent Updates
+
+- 🚀 **Database migrated from Aiven MySQL to AWS RDS MySQL** (db.t4g.micro, free tier)
+- ✨ Calendar redesign with multi-day filtering, current-day indicator, and grouped All-Days view
+- ✨ Get WOD per-exercise checkoff (matches mobile UX, fixes phantom-workout bug)
+- ✨ Login/Register pages redesigned with notebook-style card; auth helpers refactored into reusable API functions
+- ✨ Forearms added as a muscle group (10 total)
+- 🧹 Legacy frontend folder removed; full Jinja2 migration complete
+
+See [ROADMAP.md](./ROADMAP.md) for planned features and the path to full AWS production deployment.
 
 ## Features
 
@@ -20,7 +29,7 @@ See [ROADMAP.md](./ROADMAP.md) for planned features, technical debt, and the pat
 - ✅ Custom routine builder (1-7 days per week, multiple muscle groups per day)
 - ✅ Intelligent workout generation algorithm (3 exercises per muscle group, random tiebreaker)
 - ✅ Daily workout tracking (Get WOD - Workout of the Day) with per-exercise checkoff
-- ✅ Workout history calendar with multi-day filtering, current-day indicator, and 10-session history
+- ✅ Workout history calendar with multi-day filtering, current-day indicator, day-grouped All-Days view, and 10-session history
 - ✅ Automatic exercise weight tracking and updates
 - ✅ Modified-weight visual indicator (muted by default, highlighted once edited)
 - ✅ Session-based workout logging
@@ -67,7 +76,7 @@ See [ROADMAP.md](./ROADMAP.md) for planned features, technical debt, and the pat
 ### Backend
 - **Framework:** FastAPI (Python)
 - **ORM:** SQLAlchemy 2.0
-- **Database:** MySQL (hosted on Aiven)
+- **Database:** MySQL 8.0.45 on **AWS RDS** (db.t4g.micro, us-east-1, free tier)
 - **Authentication:** Bcrypt password hashing + JWT tokens (web + mobile)
 - **Database Driver:** PyMySQL
 - **Timezone:** pytz
@@ -91,6 +100,13 @@ See [ROADMAP.md](./ROADMAP.md) for planned features, technical debt, and the pat
 - **Image Loading:** Coil (with GIF support)
 - **Drag & Drop:** sh.calvin.reorderable 2.4.0
 - **Testing:** JUnit4, MockK, JaCoCo, Compose UI Testing
+
+### Cloud & Infrastructure
+- **Production database:** AWS RDS (MySQL 8.0.45)
+- **Region:** us-east-1
+- **Cost monitoring:** AWS Budgets (Zero Spend alert)
+- **Domain:** `fit-journal.com` (registered via Cloudflare, DNS pending HTTPS deployment)
+- **Coming soon:** AWS Lambda + API Gateway (serverless backend), AWS ACM (SSL certificates), S3 + CloudFront (static asset hosting)
 
 
 ## Project Structure
@@ -158,7 +174,7 @@ FitJournal/
 
 ### Prerequisites
 - Python 3.8+
-- MySQL database (or Aiven account)
+- AWS account (or MySQL server of your choice — see DB note below)
 - Git
 - Modern web browser
 - Android Studio Hedgehog (2023.1.1) or later *(for mobile)*
@@ -167,8 +183,8 @@ FitJournal/
 
 1. Clone the repository:
 ```bash
-git clone https://github.com/leanardiles/FitJournal.git
-cd FitJournal
+git clone https://github.com/leanardiles/fit-journal.git
+cd fit-journal
 ```
 
 2. Create and activate virtual environment:
@@ -199,14 +215,15 @@ pip3 install -r requirements.txt
 
 4. Create `.env` file in `src/` folder:
 ```env
-DB_HOST=your-aiven-host.aivencloud.com
-DB_PORT=12345
-DB_USER=avnadmin
-DB_PASSWORD=your-password
+DB_HOST=your-rds-endpoint.us-east-1.rds.amazonaws.com
+DB_PORT=3306
+DB_USER=your_db_admin
+DB_PASSWORD=your_db_password
 DB_NAME=fitjournalDB
+DB_SSL=true
 ```
 
-> **Note:** The `.env` file is excluded from the repo. Contact the author for credentials if needed for evaluation.
+> **Note on the database:** This project currently uses AWS RDS MySQL. Any MySQL 8.0+ instance will work — you can swap the credentials for a local MySQL, a managed provider, or any compatible host. The `.env` file is excluded from the repo; contact the author for evaluation credentials.
 
 5. Test database connection:
 ```bash
@@ -425,6 +442,24 @@ The mobile app follows strict MVI (Model-View-Intent) pattern:
 The web frontend uses Jinja2 server-side templating served by FastAPI. All pages extend `base.html` which includes the shared header and sidebar partial (`partials/sidebar.html`). This means the sidebar is defined in one place and automatically included in all pages — no duplication. The active nav item is highlighted via a Jinja2 conditional passed from each route.
 
 
+## Cloud Architecture
+
+### Current State
+- **Database:** AWS RDS MySQL 8.0.45 (db.t4g.micro, us-east-1)
+- **Backend:** Local FastAPI server (development) connected to RDS
+- **Cost monitoring:** AWS Budgets Zero-Spend alert active
+- **Free tier:** All current resources within free-tier limits
+
+### Migration Path
+1. ✅ **Database migration** — Aiven MySQL → AWS RDS MySQL (complete)
+2. ⏳ **Backend migration** — FastAPI → AWS Lambda + API Gateway (planned)
+3. ⏳ **HTTPS** — AWS Certificate Manager + custom domain (planned)
+4. ⏳ **Static assets** — Local → S3 + CloudFront (planned)
+5. ⏳ **Network hardening** — Move RDS to private subnet post-Lambda deployment
+
+The full migration plan is captured in [ROADMAP.md](./ROADMAP.md).
+
+
 ## Testing
 
 ### Unit Tests (83% coverage)
@@ -477,9 +512,11 @@ open app/build/reports/jacoco/jacocoTestReport/html/index.html
 - ✅ Notebook-style UI across all pages (Dashboard, Profile, Routine, Exercises, Calendar, Get WOD)
 - ✅ Dark mode + light mode with persistent preference
 - ✅ Per-exercise checkoff in Get WOD with sets validation
-- ✅ Calendar with current-day indicator, multi-day filter, 10-session history
+- ✅ Calendar with current-day indicator, multi-day filter, grouped All-Days view, 10-session history
+- ✅ Login/Register redesigned with notebook-style card
+- ✅ Database deployed on AWS RDS (production-grade managed service)
 - ✅ Legacy `frontend/` folder removed
-- 🚧 Login/Register — functional placeholder, notebook redesign pending
+- 🚧 Backend migration to Lambda + API Gateway pending
 
 ### Mobile App
 - ✅ JWT authentication (login + register + auto-login + logout)
@@ -504,7 +541,7 @@ open app/build/reports/jacoco/jacocoTestReport/html/index.html
 ## Development Workflow
 
 ```bash
-# Terminal 1: Backend + Web (single server)
+# Terminal 1: Backend + Web (single server, connects to AWS RDS via .env)
 cd FitJournal/src
 source ../venv/Scripts/activate   # Git Bash / Windows
 # source ../venv/bin/activate     # Mac/Linux
@@ -531,6 +568,8 @@ git push
 - ✅ Tokens encrypted on-device via Android Keystore (mobile)
 - ✅ AuthInterceptor auto-injects Bearer token on all mobile API calls
 - ✅ Exercise update uses `exclude_none=True` to prevent null overwrites
+- ✅ Database hosted on managed AWS RDS with encryption at rest enabled
+- ✅ SSL/TLS required for all database connections
 
 
 ## Author
@@ -540,7 +579,7 @@ git push
 
 ## Repository
 
-GitHub: [https://github.com/leanardiles/FitJournal](https://github.com/leanardiles/FitJournal)
+GitHub: [https://github.com/leanardiles/fit-journal](https://github.com/leanardiles/fit-journal)
 
 ## Documentation
 
