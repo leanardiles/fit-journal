@@ -71,4 +71,5 @@ mobile/*.keystore
 
 # Google Services
 mobile/google-services.json
-mobile/app/google-services.json
+mobile/app/google-services.json*.sql
+*.dump
