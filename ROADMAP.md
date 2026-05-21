@@ -46,12 +46,11 @@ Lower priority, but tracked so they're not forgotten.
 
 | Item | Priority | Effort | Notes |
 |---|---|---|---|
-| Bug fix — adding exercises for newly add forearms group muscle, adds it to glutes | 🟡 P2 | XS |
-| Calendar "All Days" — group exercises by day instead of flat list | 🟡 P2 | M | When user selects "All Days", display as Day 1 → muscle groups → exercises, then Day 2 → muscle groups → exercises, etc. Currently shows all exercises flat in one list |
 | Manual day override — train any day out of order | 🟡 P2 | M | Let user pick which routine day to do today (e.g. do Day 1 even though current is Day 3); workout is logged under the chosen day, and the `current_day_number` cursor advances correctly afterward |
 | Reevaluate calendar display when routine changes | 🟡 P2 | L | Historical workouts hidden when routine restructured; consider per-session routine snapshot |
 | Support user-defined / dynamic muscle groups | 🟢 P3 | L | Replace `MuscleGroupEnum` with a `muscle_groups` table; no more schema migrations to add groups |
 | "Always select" exercise flag in Calendar | 🟢 P3 | S | Pin/sticky-select an exercise so it's auto-selected every workout |
+| Calendar "All Days" — per-day WOD column strips | 🟢 P3 | M | Currently all days share the same set of 10 WOD column dates, so empty columns appear for days that weren't trained on those dates. Better: each day section shows the last 10 sessions *for that specific day*. Likely renders as multiple stacked tables under each Day header rather than one wide table. |
 
 ### UI / UX
 
@@ -74,6 +73,7 @@ Lower priority, but tracked so they're not forgotten.
 Recent shipped work, for context.
 
 ### May 2026
+- Calendar "All Days" and multi-day modes — exercises grouped by day with muscle subheaders
 - Migrate database from Aiven MySQL to AWS RDS MySQL (MySQL 8.0.45, db.t4g.micro, free tier; Aiven retained as standby through early June)
 Per-exercise checkoff in Get WOD (matches mobile UX, fixes BUG-001 by preventing empty workout submissions)
 - Get WOD table redesign — Muscle column, narrower Exercise column, tighter Weight/Sets/Reps spacing
