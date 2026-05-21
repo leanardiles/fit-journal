@@ -33,3 +33,6 @@ python-jose[cryptography]==3.3.0
 # Optional: Development/Testing
 # pytest==8.3.4
 # httpx==0.28.1
+
+# Lambda Deployment
+mangum==0.21.0

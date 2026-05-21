@@ -900,12 +900,5 @@ def get_workout_logs_by_sessions(user_id: int, data: dict, db: Session = Depends
     ).all()
     return logs
 
-'''
-@app.get("/workout/state/{user_id}")
-def get_workout_state(user_id: int, db: Session = Depends(get_db)):
-    """Get user's current routine day"""
-
-@app.get("/next-workout/selections/{user_id}")
-def get_next_workout_selections(user_id: int, db: Session = Depends(get_db)):
-    """Get exercises selected for next workout"""
-'''    
+from mangum import Mangum
+handler = Mangum(app)
