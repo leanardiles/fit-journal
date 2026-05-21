@@ -1,6 +1,7 @@
 # Standard library imports
 from datetime import date, datetime, timedelta
 from typing import List
+import os
 import pytz
 
 # Third-party imports
@@ -59,8 +60,11 @@ def verify_password(plain_password: str, hashed_password: str) -> bool:
 
 
 # ========== JWT CONFIGURATION ==========
-SECRET_KEY = "fitjournal-secret-key-change-this-in-production"  # TODO: Move to .env
+SECRET_KEY = os.getenv("SECRET_KEY")
+if not SECRET_KEY:
+    raise RuntimeError("SECRET_KEY environment variable not set")
 ALGORITHM = "HS256"
+
 ACCESS_TOKEN_EXPIRE_MINUTES = 43200  # 30 days
 
 def create_access_token(data: dict):
