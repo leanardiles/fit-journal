@@ -4,7 +4,7 @@
 // ========================================
 
 // API base URL - change this when you deploy
-const API_URL = 'http://127.0.0.1:8000';
+const API_URL = window.location.origin;
 
 // ========================================
 // AUTHENTICATION
