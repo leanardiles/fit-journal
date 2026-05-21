@@ -29,13 +29,25 @@ models.Base.metadata.create_all(bind=engine)
 
 app = FastAPI(title="FitJournal API")
 
+# Environment-aware Path
+# Resolve static and template directories — works in both local dev (src/ subfolder) 
+# and Lambda (/var/task/ root) environments
+BASE_DIR = os.path.dirname(os.path.abspath(__file__))
+
+# Try sibling first (local: src/main.py + ../static), then same dir (Lambda: /var/task/main.py + /var/task/static)
+def find_dir(name):
+    sibling = os.path.join(BASE_DIR, "..", name)
+    if os.path.isdir(sibling):
+        return sibling
+    return os.path.join(BASE_DIR, name)
+
+STATIC_DIR = find_dir("static")
+TEMPLATES_DIR = find_dir("templates")
 
 # Mount static files
-app.mount("/static", StaticFiles(directory="../static"), name="static")
-
+app.mount("/static", StaticFiles(directory=STATIC_DIR), name="static")
 # Jinja2 templates
-templates = Jinja2Templates(directory="../templates")
-
+templates = Jinja2Templates(directory=TEMPLATES_DIR)
 
 # ========== CORS CONFIGURATION ==========
 app.add_middleware(
