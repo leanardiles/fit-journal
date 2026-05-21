@@ -3,7 +3,6 @@
 FitJournal is a personal fitness tracking application I'm building in parallel with my MS in Computer Science. This roadmap tracks planned features, technical debt, and the path from local development to AWS production deployment.
 
 **Last updated:** May 2026
-**Current branch:** `ui-redesign` (Jinja2 migration + notebook design system)
 
 ---
 
@@ -32,9 +31,9 @@ The short list — what's most likely to be worked on in the next session or two
 
 | Item | Priority | Effort | Notes |
 |---|---|---|---|
-| Migrate FastAPI backend → Lambda + API Gateway | 🟠 P1 | L | Uses Mangum adapter; pairs with HTTPS |
-| Migrate HTTP → HTTPS with custom domain | 🟠 P1 | M | Domain fit-journal.com registered with Cloudflare. Path: ACM cert for fit-journal.com + *.fit-journal.com → API Gateway custom domain (e.g. app.fit-journal.com) → Cloudflare DNS CNAME record (DNS-only mode) |
-| Network hardening: move RDS to private subnet | 🟠 P1 | XS | Post-deploy lockdown; accessed only from Lambda within the VPC |
+| Migrate FastAPI backend → Lambda + API Gateway | 🟠 P1 | L | In progress. Done: Mangum adapter, deployment package, Lambda function tested. Remaining: API Gateway HTTP API, custom domain via Cloudflare DNS + ACM. |
+| Migrate HTTP → HTTPS with custom domain | 🟠 P1 | M | Bundled with Lambda deployment above. Path: ACM cert for fit-journal.com + *.fit-journal.com → API Gateway custom domain (app.fit-journal.com) → Cloudflare DNS CNAME (DNS-only mode) |
+| Network hardening: close RDS to internet, move Lambda inside VPC | 🟠 P1 | M | Currently RDS security group allows 0.0.0.0/0 on port 3306 (added for Lambda → RDS connectivity during initial deployment). Post-deployment: move Lambda inside the same VPC as RDS, remove the 0.0.0.0/0 rule, restrict RDS to VPC-internal traffic only. |
 
 ---
 
@@ -73,6 +72,8 @@ Lower priority, but tracked so they're not forgotten.
 Recent shipped work, for context.
 
 ### May 2026
+- Login/Register pages redesigned with notebook-style card; auth helpers refactored into reusable api.js functions
+- SECRET_KEY moved from hardcoded value to environment variable (eliminates JWT signing secret from public repo)
 - Calendar "All Days" and multi-day modes — exercises grouped by day with muscle subheaders
 - Migrate database from Aiven MySQL to AWS RDS MySQL (MySQL 8.0.45, db.t4g.micro, free tier; Aiven retained as standby through early June)
 Per-exercise checkoff in Get WOD (matches mobile UX, fixes BUG-001 by preventing empty workout submissions)
