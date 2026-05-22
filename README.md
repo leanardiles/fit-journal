@@ -6,7 +6,25 @@ A self-hosted fitness tracker with a paper-notebook aesthetic — available as a
 >
 > 🔗 **Live demo:** _(link coming soon)_
 
-<!-- Screenshots: add 1–3 images here once captured, e.g. ![Calendar](docs/images/calendar.png) -->
+<br>
+
+<p align="center" style="margin-top: 24px;">
+  <img src="static/images/dashboard.png" width="600" alt="Dashboard view">
+  <br>
+  <em>Dashboard — visualize your basic stats</em>
+</p>
+
+<p align="center" style="margin-top: 24px;">
+  <img src="static/images/calendar.png" width="600" alt="Calendar view">
+  <br>
+  <em>Calendar — workout history grouped by day</em>
+</p>
+
+<p align="center" style="margin-top: 24px;">
+  <img src="static/images/getwod.png" width="600" alt="Get workout functionality">
+  <br>
+  <em>Get workout — generate and log your daily workout</em>
+</p>
 
 ---
 
