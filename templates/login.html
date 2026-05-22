@@ -16,93 +16,149 @@
         .nb-auth-page {
             min-height: 100vh;
             display: flex;
-            align-items: center;
+            align-items: flex-start;
             justify-content: center;
-            padding: 24px;
+            padding: 80px 24px 24px;
             background: var(--bg);
         }
 
+        /* Contained notebook card — ruled lines across the whole card, on the --lh grid */
         .nb-auth-card {
+            position: relative;
             width: 100%;
-            max-width: 380px;
-            background: transparent;
+            max-width: 400px;
             border: 1px solid var(--border);
-            border-top: 2px solid var(--red-border);
-            border-radius: 10px;
-            padding: 32px 32px 28px;
+            border-radius: 14px;
+            overflow: hidden;
+            background-image: linear-gradient(var(--line-color) 1px, transparent 1px);
+            background-size: 100% var(--lh);
+            background-position: 0 0;
+            padding: var(--lh) 36px var(--lh);
+        }
+
+        /* Red margin line down the left, inside the card */
+        .nb-auth-card::before {
+            content: "";
+            position: absolute;
+            top: 0;
+            bottom: 0;
+            left: 26px;
+            width: 2px;
+            background: var(--margin);
+        }
+
+        /* Logo spans two ruled rows, rests on the lower line */
+        .nb-auth-logo-row {
+            height: calc(var(--lh) * 2);
+            display: flex;
+            align-items: flex-end;
+            justify-content: center;
+            padding-bottom: 2px;
         }
 
         .nb-auth-logo {
-            display: block;
-            margin: 0 auto 24px;
-            width: 96px;
-            height: auto;
-            opacity: 0.95;
+            height: calc(var(--lh) * 1.75);
+            width: auto;
+            opacity: 0.9;
         }
 
-        .nb-auth-field {
-            margin-bottom: 18px;
+        /* Every text row is one --lh tall; text rests on its line via flex-end + 4px gap */
+        .nb-auth-tagline {
+            height: var(--lh);
+            display: flex;
+            align-items: flex-end;
+            justify-content: center;
+            padding-bottom: 2px;
+            color: var(--text);
+            font-size: var(--fs);
         }
 
         .nb-auth-label {
-            display: block;
-            font-size: 13px;
-            color: var(--muted);
-            margin-bottom: 4px;
-            text-transform: uppercase;
-            letter-spacing: 1px;
+            height: var(--lh);
+            display: flex;
+            align-items: flex-end;
+            padding-bottom: 2px;
+            font-size: var(--fs);
+            color: var(--text);
+            letter-spacing: 0.5px;
+        }
+
+        .nb-auth-field {
+            position: relative;
         }
 
         .nb-auth-input {
             background: transparent;
             border: none;
-            border-bottom: 1px solid rgba(255,255,255,0.18);
             color: var(--text);
             font-family: 'Patrick Hand', cursive;
             font-size: var(--fs);
+            height: var(--lh);
             width: 100%;
-            padding: 4px 0;
+            padding: 0 2px 4px;
             outline: none;
-            transition: border-color 0.12s;
-        }
-
-        body.light .nb-auth-input {
-            border-bottom-color: rgba(0,0,0,0.18);
-        }
-
-        .nb-auth-input:focus {
-            border-bottom-color: var(--red-border);
-        }
-
-        .nb-auth-error {
-            display: none;
-            color: rgba(192,57,43,0.85);
-            font-size: 14px;
-            margin: 8px 0 4px;
-            min-height: var(--lh);
-        }
-
-        .nb-auth-error.visible {
             display: block;
         }
 
+        .nb-auth-input::placeholder {
+            color: var(--muted);
+        }
+
+        /* Focus: the ruled line under the active field turns red */
+        .nb-auth-field::after {
+            content: "";
+            position: absolute;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            height: 1.5px;
+            background: var(--red-border);
+            opacity: 0;
+            transition: opacity 0.12s;
+        }
+
+        .nb-auth-field:focus-within::after {
+            opacity: 1;
+        }
+
+        .nb-auth-error {
+            height: var(--lh);
+            display: none;
+            align-items: flex-end;
+            padding-bottom: 2px;
+            color: rgba(192,57,43,0.85);
+            font-size: 14px;
+        }
+
+        .nb-auth-error.visible {
+            display: flex;
+        }
+
+        /* Button spans two rows, sits on the lower line */
+        .nb-auth-btn-row {
+            height: calc(var(--lh) * 2);
+            display: flex;
+            align-items: flex-end;
+            justify-content: center;
+            padding-bottom: 2px;
+        }
+
         .nb-auth-btn {
-            width: 100%;
+            width: 62%;
             background: transparent;
-            border: 1px solid var(--red-border);
+            border: 2px solid var(--red-border);
             color: var(--text);
             font-family: 'Patrick Hand', cursive;
             font-size: var(--fs);
-            padding: 8px 20px;
+            height: calc(var(--lh) - 4px);
             cursor: pointer;
-            border-radius: 10px;
+            border-radius: 9px;
             transition: all 0.12s;
             letter-spacing: 0.5px;
-            margin-top: 8px;
         }
 
         .nb-auth-btn:hover {
-            border-color: rgba(150, 30, 30, 0.7);
+            border-color: rgba(150, 30, 30, 0.8);
             background: var(--active-bg);
         }
 
@@ -111,8 +167,11 @@
         }
 
         .nb-auth-link {
-            text-align: center;
-            margin-top: 22px;
+            height: var(--lh);
+            display: flex;
+            align-items: flex-end;
+            justify-content: center;
+            padding-bottom: 2px;
             font-size: 14px;
             color: var(--muted);
         }
@@ -122,6 +181,7 @@
             text-decoration: underline;
             text-decoration-color: var(--red-border);
             text-underline-offset: 3px;
+            margin-left: 5px;
         }
 
         .nb-auth-link a:hover {
@@ -133,21 +193,26 @@
 
 <div class="nb-auth-page">
     <div class="nb-auth-card">
-        <img src="/static/images/logo_only.png" alt="FitJournal" class="nb-auth-logo">
+        <div class="nb-auth-logo-row">
+            <img src="/static/images/logo-drawn-both-v4.3.png" alt="FitJournal" class="nb-auth-logo">
+        </div>
+        <div class="nb-auth-tagline">Welcome back — log your next session.</div>
 
+        <div class="nb-auth-label">Email</div>
         <div class="nb-auth-field">
-            <label class="nb-auth-label" for="email">Email</label>
-            <input type="email" id="email" class="nb-auth-input" autocomplete="email" autofocus>
+            <input type="email" id="email" class="nb-auth-input" placeholder="you@example.com" autocomplete="email" autofocus>
         </div>
 
+        <div class="nb-auth-label">Password</div>
         <div class="nb-auth-field">
-            <label class="nb-auth-label" for="password">Password</label>
-            <input type="password" id="password" class="nb-auth-input" autocomplete="current-password">
+            <input type="password" id="password" class="nb-auth-input" placeholder="••••••••" autocomplete="current-password">
         </div>
 
         <div id="error-msg" class="nb-auth-error"></div>
 
-        <button id="login-btn" class="nb-auth-btn">Sign In</button>
+        <div class="nb-auth-btn-row">
+            <button id="login-btn" class="nb-auth-btn">Sign In</button>
+        </div>
 
         <div class="nb-auth-link">
             Don't have an account? <a href="/web/register">Register here</a>
@@ -157,7 +222,6 @@
 
 <script src="/static/js/api.js"></script>
 <script>
-    // Respect saved theme preference
     if (localStorage.getItem('nb-mode') === 'light') {
         document.body.classList.add('light');
     }
