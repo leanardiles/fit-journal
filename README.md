@@ -6,11 +6,13 @@ A no-frills fitness tracker — web application + native Android mobile app — 
 
 FitJournal is a full-stack fitness tracking application that provides a complete workout management system with routine planning, exercise tracking, and workout history visualization — available both as a web app and a native Android app.
 
-**Current deployment:** FastAPI backend + AWS RDS MySQL (us-east-1). Local development against the production database via JWT-authenticated API. Lambda + API Gateway migration planned next.
+**Current deployment:** FastAPI backend on AWS Lambda + API Gateway (HTTP API), AWS RDS MySQL, all in us-east-1. Live at `https://app.fit-journal.com` over HTTPS (ACM certificate, Cloudflare DNS). Serverless — no servers to manage.
 
 ## Recent Updates
 
+- 🚀 **Deployed to AWS Lambda + API Gateway** — FastAPI runs serverless via Mangum, live at `https://app.fit-journal.com` over HTTPS (ACM + Cloudflare DNS)
 - 🚀 **Database migrated from Aiven MySQL to AWS RDS MySQL** (db.t4g.micro, free tier)
+- 🔒 SECRET_KEY moved from hardcoded value to environment variable
 - ✨ Calendar redesign with multi-day filtering, current-day indicator, and grouped All-Days view
 - ✨ Get WOD per-exercise checkoff (matches mobile UX, fixes phantom-workout bug)
 - ✨ Login/Register pages redesigned with notebook-style card; auth helpers refactored into reusable API functions
@@ -102,11 +104,14 @@ See [ROADMAP.md](./ROADMAP.md) for planned features and the path to full AWS pro
 - **Testing:** JUnit4, MockK, JaCoCo, Compose UI Testing
 
 ### Cloud & Infrastructure
-- **Production database:** AWS RDS (MySQL 8.0.45)
+- **Compute:** AWS Lambda (Python 3.11, x86_64) running FastAPI via the Mangum adapter
+- **API layer:** API Gateway HTTP API with a catch-all `ANY /{proxy+}` route → Lambda
+- **Production database:** AWS RDS (MySQL 8.0.45, db.t4g.micro)
 - **Region:** us-east-1
-- **Cost monitoring:** AWS Budgets (Zero Spend alert)
-- **Domain:** `fit-journal.com` (registered via Cloudflare, DNS pending HTTPS deployment)
-- **Coming soon:** AWS Lambda + API Gateway (serverless backend), AWS ACM (SSL certificates), S3 + CloudFront (static asset hosting)
+- **TLS / certificates:** AWS Certificate Manager (`*.fit-journal.com`)
+- **Domain & DNS:** `fit-journal.com` registered via Cloudflare; `app.fit-journal.com` (DNS-only CNAME) points to the API Gateway custom domain
+- **Deployment:** Dependencies built in a Lambda-compatible Docker image, zipped, and uploaded to Lambda
+- **Coming soon:** move RDS to a private subnet (network hardening), S3 + CloudFront for static assets, landing page on the bare domain
 
 
 ## Project Structure
@@ -445,17 +450,18 @@ The web frontend uses Jinja2 server-side templating served by FastAPI. All pages
 ## Cloud Architecture
 
 ### Current State
+- **Compute:** FastAPI on AWS Lambda (Python 3.11), invoked through API Gateway HTTP API
+- **Public endpoint:** `https://app.fit-journal.com` (HTTPS via ACM, Cloudflare DNS)
 - **Database:** AWS RDS MySQL 8.0.45 (db.t4g.micro, us-east-1)
-- **Backend:** Local FastAPI server (development) connected to RDS
 - **Cost monitoring:** AWS Budgets Zero-Spend alert active
 - **Free tier:** All current resources within free-tier limits
 
 ### Migration Path
 1. ✅ **Database migration** — Aiven MySQL → AWS RDS MySQL (complete)
-2. ⏳ **Backend migration** — FastAPI → AWS Lambda + API Gateway (planned)
-3. ⏳ **HTTPS** — AWS Certificate Manager + custom domain (planned)
-4. ⏳ **Static assets** — Local → S3 + CloudFront (planned)
-5. ⏳ **Network hardening** — Move RDS to private subnet post-Lambda deployment
+2. ✅ **Backend migration** — FastAPI → AWS Lambda + API Gateway via Mangum (complete)
+3. ✅ **HTTPS + custom domain** — ACM certificate + API Gateway custom domain + Cloudflare DNS (complete)
+4. ⏳ **Network hardening** — move RDS to a private subnet, close the temporary public ingress rule
+5. ⏳ **Static assets** — Lambda → S3 + CloudFront
 
 The full migration plan is captured in [ROADMAP.md](./ROADMAP.md).
 
@@ -491,19 +497,6 @@ open app/build/reports/jacoco/jacocoTestReport/html/index.html
 ```
 
 
-## Enhancements (Capstone — COM5210)
-
-| Enhancement | Points | Details |
-|---|---|---|
-| Login flow with real data | 3 | JWT auth via FastAPI, EncryptedSharedPreferences |
-| Create/edit/delete data | 2 | Exercises CRUD + weight editing |
-| Image loading with caching | 2 | Coil + coil-gif for exercise GIFs |
-| Loading animations | 1 | CircularProgressIndicator on all loading states |
-| Analytics/logging | 1 | AnalyticsLogger with 12+ events (tag: FitJournalAnalytics) |
-| Custom app icon | 1 | Kettlebell logo in all mipmap densities |
-| **Total** | **10** | |
-
-
 ## Current Status
 
 ### Web App
@@ -516,7 +509,7 @@ open app/build/reports/jacoco/jacocoTestReport/html/index.html
 - ✅ Login/Register redesigned with notebook-style card
 - ✅ Database deployed on AWS RDS (production-grade managed service)
 - ✅ Legacy `frontend/` folder removed
-- 🚧 Backend migration to Lambda + API Gateway pending
+- ✅ Deployed to AWS Lambda + API Gateway, live at `https://app.fit-journal.com` over HTTPS
 
 ### Mobile App
 - ✅ JWT authentication (login + register + auto-login + logout)
@@ -575,7 +568,6 @@ git push
 ## Author
 
 **Leandro Ardiles**
-- MS Computer Science, Yeshiva University (Katz School)
 
 ## Repository
 
@@ -589,4 +581,4 @@ GitHub: [https://github.com/leanardiles/fit-journal](https://github.com/leanardi
 
 ---
 
-*Last Updated: May 2026*
+*Last Updated: May 2026 — deployed to AWS Lambda + API Gateway at app.fit-journal.com*
