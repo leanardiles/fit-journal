@@ -1,6 +1,6 @@
 # Database Schema
 
-FitJournal uses MySQL (8.0.45 on AWS RDS in production). The schema is managed through SQLAlchemy ORM models defined in `src/models.py`.
+FitJournal uses MySQL (8.4.9 on AWS RDS in production). The schema is managed through SQLAlchemy ORM models defined in `src/models.py`.
 
 A core design choice is the **copy-on-registration** model for exercises: a shared `default_exercises` catalog is copied into a per-user `exercises` table when a user registers, so each user owns and can freely edit their own exercise list without affecting anyone else.
 

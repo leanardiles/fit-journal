@@ -72,6 +72,7 @@ Lower priority, but tracked so they're not forgotten.
 Recent shipped work, for context.
 
 ### May 2026
+- Upgraded RDS MySQL 8.0.45 → 8.4.9 (ahead of the 8.0 end-of-standard-support deadline; migrated fitjournal_admin from mysql_native_password to caching_sha2_password for 8.4 compatibility; snapshot taken pre-upgrade)
 - Login/Register pages redesigned with notebook-style card; auth helpers refactored into reusable api.js functions
 - SECRET_KEY moved from hardcoded value to environment variable (eliminates JWT signing secret from public repo)
 - Calendar "All Days" and multi-day modes — exercises grouped by day with muscle subheaders

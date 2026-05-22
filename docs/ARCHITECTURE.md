@@ -26,7 +26,7 @@ FitJournal is a single FastAPI backend that serves two clients — a server-rend
                   └─────────┬───────────┘
                             ▼
                   ┌────────────────────┐
-                  │  AWS RDS (MySQL)    │  MySQL 8.0.45, db.t4g.micro
+                  │  AWS RDS (MySQL)    │  MySQL 8.4.9, db.t4g.micro
                   └────────────────────┘
 ```
 
@@ -41,7 +41,7 @@ The backend is a FastAPI application that serves both JSON API endpoints (consum
 An API Gateway **HTTP API** (chosen over REST API for lower cost and simpler config) sits in front of Lambda. A single catch-all route — `ANY /{proxy+}` plus `ANY /` — forwards every request to Lambda, letting FastAPI handle all routing internally. The `$default` stage serves the API at the domain root.
 
 ### Database — AWS RDS MySQL
-A managed MySQL 8.0.45 instance (`db.t4g.micro`, single-AZ, free tier). The backend connects via SQLAlchemy + PyMySQL with SSL. See [SCHEMA.md](SCHEMA.md) for the data model.
+A managed MySQL 8.4.9 instance (`db.t4g.micro`, single-AZ, free tier). The backend connects via SQLAlchemy + PyMySQL with SSL. See [SCHEMA.md](SCHEMA.md) for the data model.
 
 ### Web client — server-rendered, no framework
 The web app is rendered server-side with Jinja2 and styled with a custom `notebook.css` (no CSS framework). Client-side logic is vanilla JavaScript. All pages extend a shared `base.html` with a single sidebar partial, so navigation is defined once. `API_URL` is derived from `window.location.origin`, so the same code works at `localhost`, the raw API Gateway URL, or the custom domain with no changes.
