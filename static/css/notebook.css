@@ -63,10 +63,12 @@ html, body {
   align-items: center;
   gap: 4px;
   flex: 1;
+  position: relative;
+  top: 14px;   
 }
 
 #nb-header .nb-logo img {
-  height: calc(var(--lh) * 2.5);
+  height: calc(var(--lh) * 1.75);
   width: auto;
   opacity: 0.88;
 }
