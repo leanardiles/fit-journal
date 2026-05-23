@@ -140,9 +140,10 @@ function logout() {
 // Protect pages that require login
 function requireLogin() {
     if (!isLoggedIn()) {
-        alert('Please log in to access this page');
         window.location.href = '/web/login';
+        return false;
     }
+    return true;
 }
 
 // ========================================

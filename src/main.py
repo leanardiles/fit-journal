@@ -134,7 +134,7 @@ def get_current_user(
 # ── HTML Routes ──
 @app.get("/")
 async def root():
-    return RedirectResponse(url="/web/dashboard")
+    return RedirectResponse(url="/web/login")
 
 @app.get("/web/login")
 async def login_page(request: Request):

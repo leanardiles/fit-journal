@@ -27,11 +27,11 @@
 
 {% block extra_js %}
 <script>
-    requireLogin();
-
-    document.addEventListener('DOMContentLoaded', async () => {
-        await Promise.all([loadRoutine(), loadStats()]);
-    });
+    if (requireLogin()) {
+        document.addEventListener('DOMContentLoaded', async () => {
+            await Promise.all([loadRoutine(), loadStats()]);
+        });
+    }
 
     async function loadStats() {
         try {

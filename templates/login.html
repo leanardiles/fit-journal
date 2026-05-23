@@ -226,6 +226,11 @@
         document.body.classList.add('light');
     }
 
+    // If already logged in, skip straight to dashboard
+    if (isLoggedIn()) {
+        window.location.href = '/web/dashboard';
+    }
+
     const errorMsg = document.getElementById('error-msg');
 
     async function attemptLogin() {
