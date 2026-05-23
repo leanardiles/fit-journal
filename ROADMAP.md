@@ -79,6 +79,8 @@ Lower priority, but tracked so they're not forgotten.
 Recent shipped work, for context.
 
 ### May 2026
+- **Fixed root routing + auth guards** — bare domain now redirects to `/web/login` (was sending everyone to `/web/dashboard`); `requireLogin()` redirects silently and gates page logic so unauthenticated visitors no longer get repeated "Please log in" alerts; login page redirects already-logged-in users straight to dashboard. Fixes the first impression for shared links.
+- **Redesigned login & register pages** — notebook-style contained card with ruled lines on the `--lh` grid, red margin line, hand-drawn logo, and text resting on the lines (matching the dashboard aesthetic). Replaced the generic dark-card look.
 - **Network hardening** — moved Lambda into the VPC; RDS now reachable *only* via Lambda's security group (removed the `0.0.0.0/0` internet rule and the stale home-IP rule). No NAT Gateway needed since Lambda only talks to RDS. Created `fitjournal-lambda-sg`, added VPC permissions to Lambda's execution role.
 - **Local MySQL dev environment** — set up local MySQL so development is location-independent (no longer dependent on whitelisting a home IP against RDS). Dedicated `fitjournal_local` user; schema built via the app; `default_exercises` seeded from RDS. Local `.env` points at `127.0.0.1`.
 - **Upgraded RDS MySQL 8.0.45 → 8.4.9** — ahead of the 8.0 end-of-standard-support deadline (31 Jul 2026); migrated `fitjournal_admin` from `mysql_native_password` to `caching_sha2_password` for 8.4 compatibility; snapshot taken pre-upgrade.
