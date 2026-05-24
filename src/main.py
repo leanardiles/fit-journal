@@ -140,6 +140,10 @@ async def root():
 async def login_page(request: Request):
     return templates.TemplateResponse("login.html", {"request": request})
 
+@app.get("/web/forgot-password")
+async def forgot_password_page(request: Request):
+    return templates.TemplateResponse("forgot-password.html", {"request": request})
+
 @app.get("/web/register")
 async def register_page(request: Request):
     return templates.TemplateResponse("register.html", {"request": request})
