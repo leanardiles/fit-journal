@@ -54,6 +54,8 @@ Lower priority, but tracked so they're not forgotten.
 | "Always select" exercise flag in Calendar | 🟢 P3 | S | Pin/sticky-select an exercise so it's auto-selected every workout |
 | Calendar "All Days" — per-day WOD column strips | 🟢 P3 | M | Currently all days share the same set of 10 WOD column dates, so empty columns appear for days that weren't trained on those dates. Better: each day section shows the last 10 sessions *for that specific day*. Likely renders as multiple stacked tables under each Day header rather than one wide table. |
 | Add Abs & Forearms exercises to `default_exercises` seed | 🟢 P3 | XS | The shared default exercise catalog has no Abs or Forearms entries (these muscle groups were added to the ENUM later, and exercises were only added to personal `exercises` tables, not the seed). New users therefore get no starter exercises for these two groups. Add a handful of each to `default_exercises` (on RDS prod + local dev) so new registrations include them. |
+| Add backend test gate to CI | 🟡 P2 | M | Write pytest tests for the FastAPI backend (auth, key endpoints), add a test step before deploy so broken code can't ship. Prerequisite for safely enabling auto-deploy on push. |
+| Enable auto-deploy on push to main | 🟢 P3 | XS | Uncomment the push: block in deploy.yml. Do after the test gate exists. |
 
 ### UI / UX
 
@@ -79,6 +81,8 @@ Lower priority, but tracked so they're not forgotten.
 Recent shipped work, for context.
 
 ### May 2026
+- **Set up CI/CD with GitHub Actions** — automated build + deploy to Lambda on manual trigger, authenticated via OIDC federation (no stored AWS credentials), using a least-privilege IAM role scoped to the repo's main branch and the single function. Replaces the manual Docker→zip→upload process.
+
 - **Fixed root routing + auth guards** — bare domain now redirects to `/web/login` (was sending everyone to `/web/dashboard`); `requireLogin()` redirects silently and gates page logic so unauthenticated visitors no longer get repeated "Please log in" alerts; login page redirects already-logged-in users straight to dashboard. Fixes the first impression for shared links.
 - **Redesigned login & register pages** — notebook-style contained card with ruled lines on the `--lh` grid, red margin line, hand-drawn logo, and text resting on the lines (matching the dashboard aesthetic). Replaced the generic dark-card look.
 - **Network hardening** — moved Lambda into the VPC; RDS now reachable *only* via Lambda's security group (removed the `0.0.0.0/0` internet rule and the stale home-IP rule). No NAT Gateway needed since Lambda only talks to RDS. Created `fitjournal-lambda-sg`, added VPC permissions to Lambda's execution role.
