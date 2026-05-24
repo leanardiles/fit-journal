@@ -30,6 +30,9 @@ jobs:
         with:
           python-version: "3.11"
 
+      # Lambda's Python 3.11 runtime is Amazon Linux 2 (glibc 2.26).
+      # Must force manylinux2014 wheels — plain pip grabs manylinux_2_28
+      # wheels (glibc 2.28+) that fail to load on Lambda (e.g. bcrypt).
       - name: Install dependencies into package/
         run: |
           pip install -r requirements.txt -t package/ \
