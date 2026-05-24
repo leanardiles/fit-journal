@@ -118,6 +118,40 @@
     .nb-wod-table tr.checked-row td:nth-child(6) {
         opacity: 1;
     }
+
+    /* Persistent reddish prompt — holds clickable links, does NOT auto-hide */
+    .nb-wod-prompt {
+        display: none;
+        color: rgba(192, 57, 43, 0.9);
+        font-size: var(--fs);
+        line-height: var(--lh);
+        padding: 4px 0;
+    }
+    .nb-wod-prompt.visible { display: block; }
+    .nb-wod-prompt a {
+        color: rgba(192, 57, 43, 0.95);
+        text-decoration: underline;
+        text-decoration-color: var(--red-border);
+        text-underline-offset: 3px;
+        cursor: pointer;
+    }
+    .nb-wod-prompt a:hover { text-decoration-color: var(--red); }
+
+    /* Red note shown with an auto-generated workout when a muscle group had no exercises */
+    .nb-wod-gap-note {
+        display: none;
+        color: rgba(192, 57, 43, 0.9);
+        font-size: 14px;
+        line-height: var(--lh);
+        padding-bottom: 4px;
+    }
+    .nb-wod-gap-note.visible { display: block; }
+    .nb-wod-gap-note a {
+        color: rgba(192, 57, 43, 0.95);
+        text-decoration: underline;
+        text-decoration-color: var(--red-border);
+        text-underline-offset: 3px;
+    }
 </style>
 {% endblock %}
 
@@ -132,6 +166,8 @@
     <div class="nb-row">
         <button id="generate-wod-btn" class="nb-btn">🏋️ Generate WOD</button>
     </div>
+    <div class="nb-spacer"></div>
+    <div id="wod-prompt" class="nb-wod-prompt"></div>
 </div>
 
 <!-- WORKOUT SECTION -->
@@ -142,6 +178,8 @@
         <span style="color: var(--text);" id="workout-date-info"></span>
         <span style="color: var(--muted); margin-left: 12px; font-size: 14px;" id="routine-day-info"></span>
     </div>
+
+    <div id="wod-gap-note" class="nb-wod-gap-note"></div>
 
     <div class="nb-spacer"></div>
 
@@ -173,7 +211,7 @@
     <div class="nb-row" style="color: rgba(100,180,100,0.8);">🎉 Workout complete! Well done.</div>
     <div class="nb-spacer"></div>
     <div class="nb-row">
-        <a href="/dashboard" class="nb-btn">← Back to Dashboard</a>
+        <a href="/web/dashboard" class="nb-btn">← Back to Dashboard</a>
     </div>
 </div>
 
@@ -199,32 +237,35 @@
     document.getElementById('cancel-btn').addEventListener('click', () => {
         document.getElementById('generate-section').style.display = 'block';
         document.getElementById('workout-section').style.display = 'none';
+        hidePrompt();
+        hideGapNote();
     });
 
-    async function generateWorkout() {
+    async function generateWorkout(afterAutoGenerate = false) {
         const userId = getCurrentUserId();
         const btn = document.getElementById('generate-wod-btn');
         btn.textContent = 'Loading...';
         btn.disabled = true;
+        hidePrompt();
+        hideGapNote();
 
         try {
+            // Must have a real routine first
+            const routine = await requireRoutine();
+            if (!routine) {
+                showPrompt(`You need to <a href="/web/routine">create your routine</a> before generating a workout.`);
+                resetGenerateBtn();
+                return;
+            }
+
             const stateRes = await fetch(`${API_URL}/workout/state/${userId}`, { headers: authHeaders() });
             const state = await stateRes.json();
-
-            const routineRes = await fetch(`${API_URL}/routine/${userId}`, { headers: authHeaders() });
-            const routine = await routineRes.json();
-            const muscleGroupsForCurrentDay = routine.routine_days[state.current_day_number] || [];
+            const currentDay = state.current_day_number;
+            const muscleGroupsForCurrentDay = routine.routine_days[currentDay] || [];
 
             const selectionsRes = await fetch(`${API_URL}/next-workout/selections/${userId}`, { headers: authHeaders() });
             const selections = await selectionsRes.json();
             const selectedExercises = selections.filter(s => s.is_selected);
-
-            if (selectedExercises.length === 0) {
-                showMessage('No exercises selected! Please select exercises in the Calendar page.', 'error');
-                btn.textContent = '🏋️ Generate WOD';
-                btn.disabled = false;
-                return;
-            }
 
             const allExercises = await getUserExercises();
             const workoutExercises = selectedExercises
@@ -235,31 +276,99 @@
                 muscleGroupsForCurrentDay.includes(ex.exercise_muscle_group)
             );
 
+            // Nothing usable for today (no selections at all, or none matching today's muscles)
             if (filteredWorkoutExercises.length === 0) {
-                showMessage(`No exercises for Day ${state.current_day_number}. Select exercises for ${muscleGroupsForCurrentDay.join(', ')}.`, 'error');
-                btn.textContent = '🏋️ Generate WOD';
-                btn.disabled = false;
+                if (afterAutoGenerate) {
+                    // Auto-generate ran but produced nothing for today's muscle groups
+                    showPrompt(`No exercises in your library for today's muscle groups (${muscleGroupsForCurrentDay.join(', ')}). <a href="/web/exercises">Add some on the Exercises page</a>.`);
+                } else {
+                    showPrompt(`No exercises selected for the current day. Please select them in the <a href="/web/calendar">Calendar</a> or do an <a id="wod-autogen-link">automatic selection</a>.`);
+                    const link = document.getElementById('wod-autogen-link');
+                    if (link) link.addEventListener('click', () => autoGenerateSelection(currentDay, muscleGroupsForCurrentDay));
+                }
+                resetGenerateBtn();
                 return;
             }
 
             currentWorkoutData = {
-                day_number: state.current_day_number,
+                day_number: currentDay,
                 muscle_groups: muscleGroupsForCurrentDay,
                 exercises: filteredWorkoutExercises
             };
 
             displayWorkout(currentWorkoutData);
+
+            // Red note for empty muscle groups ONLY when this came from auto-generation.
+            // Manual selections are deliberate — we respect them and show no note.
+            if (afterAutoGenerate) {
+                const coveredGroups = new Set(filteredWorkoutExercises.map(ex => ex.exercise_muscle_group));
+                const emptyGroups = muscleGroupsForCurrentDay.filter(mg => !coveredGroups.has(mg));
+                if (emptyGroups.length > 0) {
+                    showGapNote(`No exercises found for: ${emptyGroups.join(', ')}. <a href="/web/exercises">Add some on the Exercises page</a> to include them.`);
+                }
+            }
+
             document.getElementById('generate-section').style.display = 'none';
             document.getElementById('workout-section').style.display = 'block';
-            btn.textContent = '🏋️ Generate WOD';
-            btn.disabled = false;
+            resetGenerateBtn();
 
         } catch (error) {
             console.error('Error generating workout:', error);
             showMessage('Error generating workout. Please try again.', 'error');
-            btn.textContent = '🏋️ Generate WOD';
-            btn.disabled = false;
+            resetGenerateBtn();
         }
+    }
+
+    async function autoGenerateSelection(currentDay, muscleGroupsForCurrentDay) {
+        const userId = getCurrentUserId();
+        hidePrompt();
+        try {
+            const res = await fetch(`${API_URL}/next-workout/generate/${userId}?day_number=${currentDay}`, {
+                method: 'POST',
+                headers: authHeaders()
+            });
+            if (!res.ok) {
+                showMessage('Could not auto-generate a selection. Please try again.', 'error');
+                return;
+            }
+            const result = await res.json();
+            if (result.exercises_selected > 0) {
+                // Re-run generation; afterAutoGenerate=true enables the empty-group note
+                await generateWorkout(true);
+            } else {
+                showPrompt(`No exercises in your library for today's muscle groups (${muscleGroupsForCurrentDay.join(', ')}). <a href="/web/exercises">Add some on the Exercises page</a>.`);
+            }
+        } catch (err) {
+            console.error('Auto-generate error:', err);
+            showMessage('Could not auto-generate a selection. Please try again.', 'error');
+        }
+    }
+
+    function resetGenerateBtn() {
+        const btn = document.getElementById('generate-wod-btn');
+        btn.textContent = '🏋️ Generate WOD';
+        btn.disabled = false;
+    }
+
+    function showPrompt(html) {
+        const el = document.getElementById('wod-prompt');
+        el.innerHTML = html;
+        el.classList.add('visible');
+    }
+    function hidePrompt() {
+        const el = document.getElementById('wod-prompt');
+        el.classList.remove('visible');
+        el.innerHTML = '';
+    }
+    function showGapNote(html) {
+        const el = document.getElementById('wod-gap-note');
+        el.innerHTML = html;
+        el.classList.add('visible');
+    }
+    function hideGapNote() {
+        const el = document.getElementById('wod-gap-note');
+        el.classList.remove('visible');
+        el.innerHTML = '';
     }
 
     function displayWorkout(workoutData) {
