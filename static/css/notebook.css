@@ -442,6 +442,11 @@ body.light .nb-stat-item .nb-val { color: #333; }
 body.light .nb-day-label.nb-today { color: #1a1a1a; }
 body.light .nb-day-muscles.nb-today { color: #1a1a1a; }
 
+/* Logo theme swap */
+.logo-light-mode { display: none; }
+body.light .logo-dark-mode { display: none; }
+body.light .logo-light-mode { display: inline; }
+
 /* Mode toggle circle */
 .nb-hole {
   width: 22px;
