@@ -1,0 +1,70 @@
+name: Deploy to AWS Lambda
+
+# Trigger: manual only for now (a "Run workflow" button in the Actions tab).
+# To switch to auto-on-push later, add the `push:` block shown in the comment below.
+on:
+  workflow_dispatch:        # manual trigger
+  # push:                   # <-- uncomment these 3 lines later for auto-deploy
+  #   branches: [main]
+
+# OIDC requires id-token: write. contents: read lets the runner check out the repo.
+permissions:
+  id-token: write
+  contents: read
+
+env:
+  AWS_REGION: us-east-1
+  FUNCTION_NAME: fitjournal-api
+
+jobs:
+  deploy:
+    name: Build and deploy
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Check out the repository
+        uses: actions/checkout@v4
+
+      - name: Set up Python 3.11
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Install dependencies into package/
+        run: |
+          pip install -r requirements.txt -t package/
+
+      - name: Assemble the deployment package
+        run: |
+          cp src/*.py package/
+          cp -r templates package/
+          cp -r static package/
+          # remove caches to keep the zip lean
+          find package/ -name "__pycache__" -type d -exec rm -rf {} + || true
+
+      - name: Create the zip
+        run: |
+          cd package
+          zip -r ../deployment.zip . -q
+          cd ..
+          ls -lh deployment.zip
+
+      - name: Configure AWS credentials via OIDC
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          role-to-assume: arn:aws:iam::280946458595:role/fitjournal-github-actions-deploy
+          aws-region: ${{ env.AWS_REGION }}
+
+      - name: Deploy to Lambda
+        run: |
+          aws lambda update-function-code \
+            --function-name ${{ env.FUNCTION_NAME }} \
+            --zip-file fileb://deployment.zip \
+            --region ${{ env.AWS_REGION }}
+
+      - name: Wait for the update to finish
+        run: |
+          aws lambda wait function-updated \
+            --function-name ${{ env.FUNCTION_NAME }} \
+            --region ${{ env.AWS_REGION }}
+          echo "Deploy complete."
