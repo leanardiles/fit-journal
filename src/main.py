@@ -473,6 +473,23 @@ def create_or_update_routine(user_id: int, routine_data: schemas.RoutineSetup, d
     if routine_data.days_per_week < 1 or routine_data.days_per_week > 7:
         raise HTTPException(status_code=400, detail="days_per_week must be between 1 and 7")
     
+    # Every training day must have at least one muscle group — no rest days allowed.
+    # Validate before touching existing data so a rejected request doesn't wipe the routine.
+    muscles_by_day = {
+        d.day_number: [m for m in d.muscle_groups if m]
+        for d in routine_data.routine_days
+    }
+    empty_days = [
+        day for day in range(1, routine_data.days_per_week + 1)
+        if not muscles_by_day.get(day)
+    ]
+    if empty_days:
+        day_list = ", ".join(str(d) for d in empty_days)
+        raise HTTPException(
+            status_code=400,
+            detail=f"Each training day must have at least one muscle group. Missing for day(s): {day_list}."
+        )
+
     # Delete existing routine and routine_muscles_per_day (clean slate)
     db.query(models.RoutineMusclePerDay).filter(models.RoutineMusclePerDay.user_id == user_id).delete()
     db.query(models.Routine).filter(models.Routine.user_id == user_id).delete()

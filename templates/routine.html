@@ -81,6 +81,13 @@
     }
 
     .nb-selected-tag span { color: var(--text); margin-left: 4px; }
+
+    .nb-day-heading.nb-day-empty {
+        border-left: 2px solid var(--red);
+        padding-left: 6px;
+        background: var(--active-bg);
+    }
+    
 </style>
 {% endblock %}
 
@@ -184,7 +191,7 @@
             routineData[day] = [];
             const dayDiv = document.createElement('div');
             dayDiv.innerHTML = `
-                <div class="nb-day-heading">Day ${day}</div>
+                <div class="nb-day-heading" data-day="${day}">Day ${day}</div>
                 <div class="nb-muscle-group" data-day="${day}">
                     ${muscleGroups.map(m => `
                         <button type="button" class="nb-muscle-btn" data-day="${day}" data-muscle="${m}">${m}</button>
@@ -213,14 +220,43 @@
         }
         const tag = document.querySelector(`.nb-selected-tag[data-day="${day}"] .muscle-list`);
         tag.textContent = routineData[day].length > 0 ? routineData[day].join(', ') : 'None';
+
+        // If this day now has a selection, clear any "empty day" highlight on it.
+        if (routineData[day].length > 0) {
+            const heading = document.querySelector(`.nb-day-heading[data-day="${day}"]`);
+            if (heading) heading.classList.remove('nb-day-empty');
+        }
+    }
+
+    function highlightEmptyDays(emptyDays) {
+        // Clear any previous highlights first.
+        document.querySelectorAll('.nb-day-heading.nb-day-empty').forEach(h => h.classList.remove('nb-day-empty'));
+        emptyDays.forEach(day => {
+            const heading = document.querySelector(`.nb-day-heading[data-day="${day}"]`);
+            if (heading) heading.classList.add('nb-day-empty');
+        });
     }
 
     document.getElementById('save-routine-btn').addEventListener('click', async () => {
-        const hasSelection = Object.values(routineData).some(m => m.length > 0);
-        if (!hasSelection) {
-            alert('Please select at least one muscle group for at least one day');
-            return;
+        const message = document.getElementById('message');
+
+        // Every training day must have at least one muscle group — no rest days allowed.
+        const emptyDays = [];
+        for (let day = 1; day <= selectedDays; day++) {
+            if (!routineData[day] || routineData[day].length === 0) {
+                emptyDays.push(day);
+            }
         }
+
+        if (emptyDays.length > 0) {
+            const dayLabel = emptyDays.length === 1 ? 'day' : 'days';
+            const dayList = emptyDays.join(', ');
+            message.textContent = `Please choose at least one muscle group for ${dayLabel} ${dayList}.`;
+            message.className = 'nb-message error';
+            message.style.display = 'flex';
+            highlightEmptyDays(emptyDays);
+            return;
+        }    
 
         const apiData = {
             days_per_week: selectedDays,
@@ -231,7 +267,6 @@
         };
 
         const result = await saveUserRoutine(apiData);
-        const message = document.getElementById('message');
         if (result) {
             document.getElementById('save-routine-btn').classList.add('nb-btn-saved');
             message.textContent = 'Routine saved!';
