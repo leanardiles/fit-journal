@@ -337,6 +337,18 @@ async function getUserRoutine() {
     }
 }
 
+
+// Returns the routine only if the user has a real one (days_per_week > 0), else null.
+// Deliberately does NOT handle messaging/redirects — each page decides what to do.
+async function requireRoutine() {
+    const routine = await getUserRoutine();
+    if (routine && routine.days_per_week > 0) {
+        return routine;
+    }
+    return null;
+}
+
+
 // Save user routine
 async function saveUserRoutine(routineData) {
     const userId = getCurrentUserId();

@@ -55,13 +55,13 @@
 
     async function loadRoutine() {
         const container = document.getElementById('routine-container');
-        const routine = await getUserRoutine();
+        const routine = await requireRoutine();
 
-        if (!routine || routine.days_per_week === 0) {
+        if (!routine) {
             container.innerHTML = `
                 <div class="nb-row">
                     <span style="color: var(--muted);">No routine set up yet.</span>
-                    <a href="/routine" class="nb-btn" style="margin-left:16px;">Create Routine</a>
+                    <a href="/web/routine" class="nb-btn" style="margin-left:16px;">Create Routine</a>
                 </div>`;
             return;
         }
@@ -96,7 +96,7 @@
         html += `
             <div class="nb-spacer"></div>
             <div class="nb-row">
-                <a href="/routine" class="nb-btn">✎ Edit Routine</a>
+                <a href="/web/routine" class="nb-btn">✎ Edit Routine</a>
             </div>`;
 
         container.innerHTML = html;

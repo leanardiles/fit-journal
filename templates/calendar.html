@@ -247,7 +247,21 @@
         const userId = getCurrentUserId();
 
         try {
-            userRoutine = await getUserRoutine();
+            userRoutine = await requireRoutine();
+
+            // No routine yet — show an empty-state prompt instead of a half-rendered calendar
+            if (!userRoutine) {
+                document.getElementById('day-filter-container').innerHTML = '';
+                document.getElementById('current-view-info').textContent = '';
+                document.getElementById('calendar-body').innerHTML = `
+                    <tr>
+                        <td colspan="12" class="nb-cal-empty">
+                            No routine set up yet.
+                            <a href="/web/routine" class="nb-btn" style="margin-left:12px;">Create Routine</a>
+                        </td>
+                    </tr>`;
+                return;
+            }
 
             // Get user's current workout state
             const stateRes = await fetch(`${API_URL}/workout/state/${userId}`, {
