@@ -14,7 +14,7 @@ object ApiConfig {
      * true  = Use local FastAPI backend (for development)
      * false = Use production backend (after deployment)
      */
-    const val IS_DEVELOPMENT = true
+    const val IS_DEVELOPMENT = false
 
     /**
      * Physical device local IP
@@ -45,12 +45,12 @@ object ApiConfig {
     /**
      * Base URL for API requests
      *
-     * Production:      https://api.fitjournal.com/
+     * Production:      https://app.fit-journal.com/
      * Emulator:        http://10.0.2.2:8000/  (emulator alias for localhost)
      * Physical device: http://<LOCAL_IP>:8000/ (your machine's local IP)
      */
     val BASE_URL = when {
-        !IS_DEVELOPMENT -> "https://api.fitjournal.com/"
+        !IS_DEVELOPMENT -> "https://app.fit-journal.com/"
         isEmulator() -> "http://10.0.2.2:8000/"
         else -> "http://$LOCAL_IP:8000/"
     }
