@@ -31,6 +31,13 @@ fun HomeScreen(
 ) {
     val dashboardState by dashboardViewModel.state.collectAsState()
 
+    // Refresh dashboard data each time this screen is shown
+    // (e.g. after completing a workout and navigating back),
+    // so current day / stats reflect the latest backend state.
+    LaunchedEffect(Unit) {
+        dashboardViewModel.loadDashboard()
+    }
+
     Column(
         modifier = Modifier
             .fillMaxSize()

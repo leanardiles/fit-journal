@@ -41,6 +41,13 @@ fun UserExercisesScreen(
     unitPreference: String = "metric"
 ) {
     val state by viewModel.state.collectAsState()
+
+    // Refresh exercises each time this screen is shown, so weight changes made
+    // while logging a workout are reflected (the ViewModel caches on first load).
+    LaunchedEffect(Unit) {
+        viewModel.fetchMuscleGroups()
+    }
+
     var dropdownExpanded by remember { mutableStateOf(false) }
     var showAddDialog by remember { mutableStateOf(false) }
     var exerciseToEdit by remember { mutableStateOf<UserExercise?>(null) }
