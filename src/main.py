@@ -128,6 +128,19 @@ def get_current_user(
 
     return user
 
+def verify_user_access(
+    user_id: int,
+    current_user: models.User = Depends(get_current_user)
+):
+    """
+    Authorization guard. Ensures a user can only access their own data:
+    confirms the user_id in the request matches the authenticated user.
+    Returns current_user so endpoints using it keep working unchanged.
+    """
+    if current_user.user_id != user_id:
+        raise HTTPException(status_code=403, detail="Forbidden")
+    return current_user
+
 
 # ========== ROUTES ==========
 
@@ -307,7 +320,7 @@ def login_mobile(user: schemas.UserLogin, db: Session = Depends(get_db)):
 # ========== PROFILE ROUTES ==========
 
 @app.get("/profile/{user_id}", response_model=schemas.UserProfileResponse)
-def get_profile(user_id: int, db: Session = Depends(get_db), current_user: models.User = Depends(get_current_user)):
+def get_profile(user_id: int, db: Session = Depends(get_db), current_user: models.User = Depends(verify_user_access)):
     """
     Get user profile information
     """
@@ -319,7 +332,7 @@ def get_profile(user_id: int, db: Session = Depends(get_db), current_user: model
     return user
 
 @app.put("/profile/{user_id}", response_model=schemas.UserProfileResponse)
-def update_profile(user_id: int, profile: schemas.UserProfileUpdate, db: Session = Depends(get_db), current_user: models.User = Depends(get_current_user)):
+def update_profile(user_id: int, profile: schemas.UserProfileUpdate, db: Session = Depends(get_db), current_user: models.User = Depends(verify_user_access)):
     """
     Update user profile information
     """
@@ -353,7 +366,7 @@ def update_profile(user_id: int, profile: schemas.UserProfileUpdate, db: Session
 # ========== EXERCISE ROUTES ==========
 
 @app.get("/exercises", response_model=List[schemas.ExerciseResponse])
-def get_exercises(user_id: int, db: Session = Depends(get_db), current_user: models.User = Depends(get_current_user)):
+def get_exercises(user_id: int, db: Session = Depends(get_db), current_user: models.User = Depends(verify_user_access)):
     """
     Get all exercises for a specific user
     """
@@ -361,7 +374,7 @@ def get_exercises(user_id: int, db: Session = Depends(get_db), current_user: mod
     return exercises
 
 @app.post("/exercises", response_model=schemas.ExerciseResponse, status_code=status.HTTP_201_CREATED)
-def create_exercise(user_id: int, exercise: schemas.ExerciseCreate, db: Session = Depends(get_db), current_user: models.User = Depends(get_current_user)):
+def create_exercise(user_id: int, exercise: schemas.ExerciseCreate, db: Session = Depends(get_db), current_user: models.User = Depends(verify_user_access)):
     # Validate user exists
     user = db.query(models.User).filter(models.User.user_id == user_id).first()
     if not user:
@@ -375,7 +388,7 @@ def create_exercise(user_id: int, exercise: schemas.ExerciseCreate, db: Session 
 
 
 @app.put("/exercises/{exercise_id}", response_model=schemas.ExerciseResponse)
-def update_exercise(exercise_id: int, user_id: int, exercise: schemas.ExerciseUpdate, db: Session = Depends(get_db), current_user: models.User = Depends(get_current_user)):
+def update_exercise(exercise_id: int, user_id: int, exercise: schemas.ExerciseUpdate, db: Session = Depends(get_db), current_user: models.User = Depends(verify_user_access)):
     db_exercise = db.query(models.Exercise).filter(
         models.Exercise.exercise_id == exercise_id,
         models.Exercise.user_id == user_id
@@ -395,7 +408,7 @@ def update_exercise(exercise_id: int, user_id: int, exercise: schemas.ExerciseUp
 
 
 @app.delete("/exercises/{exercise_id}", status_code=status.HTTP_204_NO_CONTENT)
-def delete_exercise(exercise_id: int, user_id: int, db: Session = Depends(get_db), current_user: models.User = Depends(get_current_user)):
+def delete_exercise(exercise_id: int, user_id: int, db: Session = Depends(get_db), current_user: models.User = Depends(verify_user_access)):
     """
     Delete an exercise
     """
@@ -427,7 +440,7 @@ def get_default_exercises(db: Session = Depends(get_db)):
 # ========== ROUTINE ROUTES ==========
 
 @app.get("/routine/{user_id}")
-def get_routine(user_id: int, db: Session = Depends(get_db), current_user: models.User = Depends(get_current_user)):
+def get_routine(user_id: int, db: Session = Depends(get_db), current_user: models.User = Depends(verify_user_access)):
     """
     Get user's routine configuration
     Returns days_per_week and muscle groups per day
@@ -459,7 +472,7 @@ def get_routine(user_id: int, db: Session = Depends(get_db), current_user: model
     }
 
 @app.post("/routine/{user_id}")
-def create_or_update_routine(user_id: int, routine_data: schemas.RoutineSetup, db: Session = Depends(get_db), current_user: models.User = Depends(get_current_user)):
+def create_or_update_routine(user_id: int, routine_data: schemas.RoutineSetup, db: Session = Depends(get_db), current_user: models.User = Depends(verify_user_access)):
     """
     Create or update user's routine
     Allows multiple muscle groups per day
@@ -520,7 +533,7 @@ def create_or_update_routine(user_id: int, routine_data: schemas.RoutineSetup, d
     return {"message": "Routine saved successfully"}
 
 @app.delete("/routine/{user_id}")
-def delete_routine(user_id: int, db: Session = Depends(get_db), current_user: models.User = Depends(get_current_user)):
+def delete_routine(user_id: int, db: Session = Depends(get_db), current_user: models.User = Depends(verify_user_access)):
     """
     Delete user's routine
     """
@@ -534,7 +547,7 @@ def delete_routine(user_id: int, db: Session = Depends(get_db), current_user: mo
 # ========== WORKOUT ROUTES ==========
 
 @app.get("/workout/state/{user_id}", response_model=schemas.WorkoutStateResponse)
-def get_workout_state(user_id: int, db: Session = Depends(get_db), current_user: models.User = Depends(get_current_user)):
+def get_workout_state(user_id: int, db: Session = Depends(get_db), current_user: models.User = Depends(verify_user_access)):
     """
     Get user's current workout state (which day they're on)
     """
@@ -553,7 +566,7 @@ def get_workout_state(user_id: int, db: Session = Depends(get_db), current_user:
     return state
 
 @app.post("/workout/complete/{user_id}")
-def complete_workout(user_id: int, workout_data: schemas.WorkoutComplete, db: Session = Depends(get_db), current_user: models.User = Depends(get_current_user)):
+def complete_workout(user_id: int, workout_data: schemas.WorkoutComplete, db: Session = Depends(get_db), current_user: models.User = Depends(verify_user_access)):
     """
     Mark workout as complete
     Main orchestration function - delegates to helpers
@@ -694,7 +707,7 @@ def cleanup_after_workout(user_id: int, completed_exercise_ids: list, current_da
     state.last_workout_date = get_user_date(user_id, db)
 
 @app.get("/workout/logs/{user_id}")
-def get_workout_logs(user_id: int, limit: int = 30, db: Session = Depends(get_db), current_user: models.User = Depends(get_current_user)):
+def get_workout_logs(user_id: int, limit: int = 30, db: Session = Depends(get_db), current_user: models.User = Depends(verify_user_access)):
     """
     Get user's workout history (last 30 days by default)
     """
@@ -708,7 +721,7 @@ def get_workout_logs(user_id: int, limit: int = 30, db: Session = Depends(get_db
 # ========== NEXT WORKOUT SELECTION ROUTES ==========
 
 @app.get("/next-workout/selections/{user_id}")
-def get_next_workout_selections(user_id: int, db: Session = Depends(get_db), current_user: models.User = Depends(get_current_user)):
+def get_next_workout_selections(user_id: int, db: Session = Depends(get_db), current_user: models.User = Depends(verify_user_access)):
     """
     Get user's manually selected exercises for next workout
     """
@@ -726,6 +739,10 @@ def toggle_next_workout_selection(data: dict, db: Session = Depends(get_db), cur
     user_id = data['user_id']
     exercise_id = data['exercise_id']
     is_selected = data['is_selected']
+
+    # Authorization: the body's user_id must match the logged-in user
+    if current_user.user_id != user_id:
+        raise HTTPException(status_code=403, detail="Forbidden")
     
     # Check if selection exists
     selection = db.query(models.NextWorkoutSelection).filter(
@@ -747,7 +764,7 @@ def toggle_next_workout_selection(data: dict, db: Session = Depends(get_db), cur
     return {"message": "Selection updated"}
 
 @app.delete("/next-workout/clear/{user_id}")
-def clear_next_workout_selections(user_id: int, day_number: int = None, db: Session = Depends(get_db), current_user: models.User = Depends(get_current_user)):
+def clear_next_workout_selections(user_id: int, day_number: int = None, db: Session = Depends(get_db), current_user: models.User = Depends(verify_user_access)):
     """
     Clear next workout selections
     If day_number is specified, only clear exercises for that day's muscle groups
@@ -787,7 +804,7 @@ def clear_next_workout_selections(user_id: int, day_number: int = None, db: Sess
 
 
 @app.post("/next-workout/generate/{user_id}")
-def generate_next_workout(user_id: int, day_number: int = None, db: Session = Depends(get_db), current_user: models.User = Depends(get_current_user)):
+def generate_next_workout(user_id: int, day_number: int = None, db: Session = Depends(get_db), current_user: models.User = Depends(verify_user_access)):
     """
     Auto-generate next workout using algorithm
     Main orchestration function - delegates to helpers
@@ -912,7 +929,7 @@ def create_exercise_selection(user_id: int, exercise_id: int, db: Session):
 # ========== WORKOUT SESSION ROUTES ==========
 
 @app.get("/workout/sessions/{user_id}")
-def get_workout_sessions(user_id: int, limit: int = 10, db: Session = Depends(get_db), current_user: models.User = Depends(get_current_user)):
+def get_workout_sessions(user_id: int, limit: int = 10, db: Session = Depends(get_db), current_user: models.User = Depends(verify_user_access)):
     """
     Get user's last N workout sessions (most recent first)
     """
@@ -925,7 +942,7 @@ def get_workout_sessions(user_id: int, limit: int = 10, db: Session = Depends(ge
 
 
 @app.post("/workout/logs-by-sessions/{user_id}")
-def get_workout_logs_by_sessions(user_id: int, data: dict, db: Session = Depends(get_db), current_user: models.User = Depends(get_current_user)):
+def get_workout_logs_by_sessions(user_id: int, data: dict, db: Session = Depends(get_db), current_user: models.User = Depends(verify_user_access)):
     """
     Get workout logs for specific session IDs
     """
