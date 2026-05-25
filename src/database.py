@@ -21,7 +21,7 @@ engine = create_engine(
     DATABASE_URL,
     pool_pre_ping=True,
     pool_recycle=3600,
-    echo=True  # Set to False in production
+    echo=os.getenv("DB_ECHO", "false").lower() == "true"
 )
 
 # Create SessionLocal class for database sessions
