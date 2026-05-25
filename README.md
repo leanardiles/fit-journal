@@ -106,11 +106,18 @@ Web app: `http://127.0.0.1:8000/web/login` · API docs: `http://127.0.0.1:8000/d
 
 ## Deployment
 
-The backend runs on AWS Lambda behind API Gateway. Dependencies are built in a Lambda-compatible Docker image, zipped with the application code, and uploaded to Lambda. The full pipeline and the reasoning behind the architecture are documented in [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md).
+The backend runs on AWS Lambda behind API Gateway, deployed via a GitHub Actions pipeline: it builds the package (forcing Lambda-compatible `manylinux2014` wheels), runs the test suite, and — only if tests pass — deploys to Lambda using short-lived OIDC credentials (no stored AWS keys). The full pipeline and architecture reasoning are in [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md).
 
 ## Testing
 
-The Android app has **83% unit test coverage** (JaCoCo), covering ViewModels and repository logic through fake implementations, plus two instrumented UI tests (login happy path and error path).
+**Backend** — a pytest suite (21 tests) covers authentication, authorization, exercise/routine CRUD, profile, workout generation, and page loads, run against a disposable MySQL test database. The suite runs in CI (GitHub Actions) against a MySQL service container *before* every deploy — a failing test blocks the deploy.
+
+```bash
+pip install pytest httpx
+pytest -v        # run the backend suite locally (needs a MySQL test DB)
+```
+
+**Android** — 83% unit test coverage (JaCoCo), covering ViewModels and repository logic through fake implementations, plus two instrumented UI tests (login happy path and error path).
 
 ```bash
 cd mobile
@@ -128,7 +135,7 @@ cd mobile
 
 ## Status
 
-Actively developed. The web and Android apps are functional and deployed; current focus is network hardening (moving RDS into a private subnet) and a marketing landing page. See [ROADMAP.md](ROADMAP.md).
+Actively developed. The web and Android apps are functional and deployed, with a CI/CD pipeline (GitHub Actions) that runs a backend test suite before each deploy. Current focus is broadening test coverage, pointing the Android app at the production backend, and a marketing landing page. See [ROADMAP.md](ROADMAP.md).
 
 ## License
 
