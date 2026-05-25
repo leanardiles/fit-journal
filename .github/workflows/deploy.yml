@@ -1,13 +1,10 @@
 name: Deploy to AWS Lambda
 
-# Trigger: manual only for now (a "Run workflow" button in the Actions tab).
-# To switch to auto-on-push later, add the `push:` block shown in the comment below.
 on:
-  workflow_dispatch:        # manual trigger
-  # push:                   # <-- uncomment these 3 lines later for auto-deploy
+  workflow_dispatch:
+  # push:
   #   branches: [main]
 
-# OIDC requires id-token: write. contents: read lets the runner check out the repo.
 permissions:
   id-token: write
   contents: read
@@ -17,9 +14,68 @@ env:
   FUNCTION_NAME: fitjournal-api
 
 jobs:
+  # ===== TEST JOB — runs first; deploy is gated on it passing =====
+  test:
+    name: Run backend tests
+    runs-on: ubuntu-latest
+
+    # Throwaway MySQL for the test run
+    services:
+      mysql:
+        image: mysql:8.4
+        env:
+          MYSQL_ROOT_PASSWORD: rootpass
+          MYSQL_DATABASE: fitjournaldb_test
+          MYSQL_USER: fitjournal_local
+          MYSQL_PASSWORD: testpass
+        ports:
+          - 3306:3306
+        options: >-
+          --health-cmd="mysqladmin ping -h localhost"
+          --health-interval=10s
+          --health-timeout=5s
+          --health-retries=10
+
+    env:
+      # Test DB connection — points at the MySQL service above
+      DB_HOST: 127.0.0.1
+      DB_PORT: "3306"
+      DB_USER: fitjournal_local
+      DB_PASSWORD: testpass
+      DB_NAME: fitjournaldb_test
+      SECRET_KEY: test-secret-key-not-for-production
+
+    steps:
+      - name: Check out the repository
+        uses: actions/checkout@v4
+
+      - name: Set up Python 3.11
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Install dependencies
+        run: |
+          pip install -r requirements.txt
+          pip install pytest httpx
+
+      - name: Wait for MySQL to be ready
+        run: |
+          for i in {1..30}; do
+            if mysqladmin ping -h 127.0.0.1 -u fitjournal_local -ptestpass --silent; then
+              echo "MySQL is up"; break
+            fi
+            echo "Waiting for MySQL..."; sleep 2
+          done
+
+      - name: Run tests
+        run: pytest -v
+
+  # ===== DEPLOY JOB — only runs if `test` passed =====
   deploy:
     name: Build and deploy
     runs-on: ubuntu-latest
+    needs: test          # <-- the gate: deploy waits for test to succeed
 
     steps:
       - name: Check out the repository
@@ -39,14 +95,13 @@ jobs:
             --platform manylinux2014_x86_64 \
             --implementation cp \
             --python-version 3.11 \
-            --only-binary=:all:  
+            --only-binary=:all:
 
       - name: Assemble the deployment package
         run: |
           cp src/*.py package/
           cp -r templates package/
           cp -r static package/
-          # remove caches to keep the zip lean
           find package/ -name "__pycache__" -type d -exec rm -rf {} + || true
 
       - name: Create the zip
