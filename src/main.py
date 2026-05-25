@@ -52,7 +52,11 @@ templates = Jinja2Templates(directory=TEMPLATES_DIR)
 # ========== CORS CONFIGURATION ==========
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"],  # In production, specify your domain
+    allow_origins=[
+        "https://app.fit-journal.com",   # production (web app)
+        "http://localhost:8000",          # local dev
+        "http://127.0.0.1:8000",          # local dev
+    ],
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
