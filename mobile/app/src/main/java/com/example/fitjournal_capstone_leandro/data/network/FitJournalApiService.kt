@@ -43,7 +43,7 @@ interface FitJournalApiService {
     /**
      * Login endpoint for mobile
      *
-     * POST /login
+     * POST login
      *
      * @param loginRequest Email and password
      * @return LoginResponse with JWT token and user info

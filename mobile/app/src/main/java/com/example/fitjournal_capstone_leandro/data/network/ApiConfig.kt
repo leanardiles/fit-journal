@@ -45,21 +45,21 @@ object ApiConfig {
     /**
      * Base URL for API requests
      *
-     * Production:      https://app.fit-journal.com/
-     * Emulator:        http://10.0.2.2:8000/  (emulator alias for localhost)
-     * Physical device: http://<LOCAL_IP>:8000/ (your machine's local IP)
+     * Production:      https://app.fit-journal.com/v1/
+     * Emulator:        http://10.0.2.2:8000/v1/  (emulator alias for localhost)
+     * Physical device: http://<LOCAL_IP>:8000/v1/ (your machine's local IP)
      */
     val BASE_URL = when {
-        !IS_DEVELOPMENT -> "https://app.fit-journal.com/"
-        isEmulator() -> "http://10.0.2.2:8000/"
-        else -> "http://$LOCAL_IP:8000/"
+        !IS_DEVELOPMENT -> "https://app.fit-journal.com/v1/"
+        isEmulator() -> "http://10.0.2.2:8000/v1/"
+        else -> "http://$LOCAL_IP:8000/v1/"
     }
 
     /**
      * API endpoints
      */
     object Endpoints {
-        const val LOGIN = "login/mobile"
+        const val LOGIN = "login"
         const val REGISTER = "register"
         const val GET_PROFILE = "profile/{user_id}"
         const val GET_EXERCISES = "exercises"
