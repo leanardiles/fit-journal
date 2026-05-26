@@ -4,6 +4,7 @@ import com.example.fitjournal_capstone_leandro.ui.home.HomeViewModel
 import com.example.fitjournal_capstone_leandro.ui.home.HomeViewModelFactory
 import com.example.fitjournal_capstone_leandro.ui.exercise_details.ExerciseDetailsViewModel
 import com.example.fitjournal_capstone_leandro.ui.exercise_details.ExerciseDetailsViewModelFactory
+import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 import android.os.Bundle
 import android.util.Log
 import androidx.activity.ComponentActivity
@@ -132,6 +133,7 @@ class MainActivity : ComponentActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        installSplashScreen()
         enableEdgeToEdge()
         setContent {
             fitJournalCapstoneLeandroTheme {
