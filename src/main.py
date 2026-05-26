@@ -5,7 +5,7 @@ import os
 import pytz
 
 # Third-party imports
-from fastapi import FastAPI, Depends, HTTPException, status
+from fastapi import FastAPI, Depends, HTTPException, status, APIRouter
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import RedirectResponse
 from fastapi.security import HTTPBearer, HTTPAuthorizationCredentials
@@ -28,6 +28,9 @@ models.Base.metadata.create_all(bind=engine)
 
 
 app = FastAPI(title="FitJournal API")
+
+api_v1 = APIRouter(prefix="/v1")
+
 
 # Environment-aware Path
 # Resolve static and template directories — works in both local dev (src/ subfolder) 
@@ -215,7 +218,7 @@ async def getwod_page(request: Request):
 
 # ========== USER AUTHENTICATION ROUTES ==========
 
-@app.post("/register", response_model=schemas.UserResponse, status_code=status.HTTP_201_CREATED)
+@api_v1.post("/register", response_model=schemas.UserResponse, status_code=status.HTTP_201_CREATED)
 def register(user: schemas.UserCreate, db: Session = Depends(get_db)):
     """
     Register a new user and copy all default exercises to their account
@@ -253,7 +256,7 @@ def register(user: schemas.UserCreate, db: Session = Depends(get_db)):
     
     return new_user
 
-@app.post("/login")
+@api_v1.post("/login")
 def login(user: schemas.UserLogin, db: Session = Depends(get_db)):
     """
     Login user with email and password
@@ -286,45 +289,9 @@ def login(user: schemas.UserLogin, db: Session = Depends(get_db)):
     }
 
 
-@app.post("/login/mobile")
-def login_mobile(user: schemas.UserLogin, db: Session = Depends(get_db)):
-    """
-    Login endpoint for mobile app - returns JWT token
-    
-    Mobile apps use token-based auth instead of sessions
-    Token is included in Authorization header for all requests
-    """
-    # Find user by email (same as regular login)
-    db_user = db.query(models.User).filter(models.User.user_email == user.user_email).first()
-    
-    # Verify user exists and password is correct (same as regular login)
-    if not db_user or not verify_password(user.user_password, db_user.user_password):
-        raise HTTPException(status_code=401, detail="Invalid email or password")
-    
-    # Check if user is active (same as regular login)
-    if not db_user.user_is_active:
-        raise HTTPException(status_code=403, detail="Account is inactive")
-    
-    # Create JWT token
-    access_token = create_access_token(
-        data={
-            "sub": str(db_user.user_id),  # "sub" = subject (standard JWT field)
-            "email": db_user.user_email
-        }
-    )
-    
-    # Return token + user info
-    return {
-        "access_token": access_token,
-        "token_type": "bearer",
-        "user_id": db_user.user_id,
-        "user_email": db_user.user_email
-    }
-
-
 # ========== PROFILE ROUTES ==========
 
-@app.get("/profile/{user_id}", response_model=schemas.UserProfileResponse)
+@api_v1.get("/profile/{user_id}", response_model=schemas.UserProfileResponse)
 def get_profile(user_id: int, db: Session = Depends(get_db), current_user: models.User = Depends(verify_user_access)):
     """
     Get user profile information
@@ -336,7 +303,7 @@ def get_profile(user_id: int, db: Session = Depends(get_db), current_user: model
     
     return user
 
-@app.put("/profile/{user_id}", response_model=schemas.UserProfileResponse)
+@api_v1.put("/profile/{user_id}", response_model=schemas.UserProfileResponse)
 def update_profile(user_id: int, profile: schemas.UserProfileUpdate, db: Session = Depends(get_db), current_user: models.User = Depends(verify_user_access)):
     """
     Update user profile information
@@ -370,7 +337,7 @@ def update_profile(user_id: int, profile: schemas.UserProfileUpdate, db: Session
 
 # ========== EXERCISE ROUTES ==========
 
-@app.get("/exercises", response_model=List[schemas.ExerciseResponse])
+@api_v1.get("/exercises", response_model=List[schemas.ExerciseResponse])
 def get_exercises(user_id: int, db: Session = Depends(get_db), current_user: models.User = Depends(verify_user_access)):
     """
     Get all exercises for a specific user
@@ -378,7 +345,7 @@ def get_exercises(user_id: int, db: Session = Depends(get_db), current_user: mod
     exercises = db.query(models.Exercise).filter(models.Exercise.user_id == user_id).all()
     return exercises
 
-@app.post("/exercises", response_model=schemas.ExerciseResponse, status_code=status.HTTP_201_CREATED)
+@api_v1.post("/exercises", response_model=schemas.ExerciseResponse, status_code=status.HTTP_201_CREATED)
 def create_exercise(user_id: int, exercise: schemas.ExerciseCreate, db: Session = Depends(get_db), current_user: models.User = Depends(verify_user_access)):
     # Validate user exists
     user = db.query(models.User).filter(models.User.user_id == user_id).first()
@@ -392,7 +359,7 @@ def create_exercise(user_id: int, exercise: schemas.ExerciseCreate, db: Session 
     return new_exercise
 
 
-@app.put("/exercises/{exercise_id}", response_model=schemas.ExerciseResponse)
+@api_v1.put("/exercises/{exercise_id}", response_model=schemas.ExerciseResponse)
 def update_exercise(exercise_id: int, user_id: int, exercise: schemas.ExerciseUpdate, db: Session = Depends(get_db), current_user: models.User = Depends(verify_user_access)):
     db_exercise = db.query(models.Exercise).filter(
         models.Exercise.exercise_id == exercise_id,
@@ -412,7 +379,7 @@ def update_exercise(exercise_id: int, user_id: int, exercise: schemas.ExerciseUp
     return db_exercise
 
 
-@app.delete("/exercises/{exercise_id}", status_code=status.HTTP_204_NO_CONTENT)
+@api_v1.delete("/exercises/{exercise_id}", status_code=status.HTTP_204_NO_CONTENT)
 def delete_exercise(exercise_id: int, user_id: int, db: Session = Depends(get_db), current_user: models.User = Depends(verify_user_access)):
     """
     Delete an exercise
@@ -432,7 +399,7 @@ def delete_exercise(exercise_id: int, user_id: int, db: Session = Depends(get_db
 
 # ========== DEFAULT EXERCISES ROUTES ==========
 
-@app.get("/default-exercises")
+@api_v1.get("/default-exercises")
 def get_default_exercises(db: Session = Depends(get_db)):
     """
     Get all default exercises (template catalog)
@@ -444,7 +411,7 @@ def get_default_exercises(db: Session = Depends(get_db)):
 
 # ========== ROUTINE ROUTES ==========
 
-@app.get("/routine/{user_id}")
+@api_v1.get("/routine/{user_id}")
 def get_routine(user_id: int, db: Session = Depends(get_db), current_user: models.User = Depends(verify_user_access)):
     """
     Get user's routine configuration
@@ -476,7 +443,7 @@ def get_routine(user_id: int, db: Session = Depends(get_db), current_user: model
         "routine_days": days_dict
     }
 
-@app.post("/routine/{user_id}")
+@api_v1.post("/routine/{user_id}")
 def create_or_update_routine(user_id: int, routine_data: schemas.RoutineSetup, db: Session = Depends(get_db), current_user: models.User = Depends(verify_user_access)):
     """
     Create or update user's routine
@@ -537,7 +504,7 @@ def create_or_update_routine(user_id: int, routine_data: schemas.RoutineSetup, d
     
     return {"message": "Routine saved successfully"}
 
-@app.delete("/routine/{user_id}")
+@api_v1.delete("/routine/{user_id}")
 def delete_routine(user_id: int, db: Session = Depends(get_db), current_user: models.User = Depends(verify_user_access)):
     """
     Delete user's routine
@@ -551,7 +518,7 @@ def delete_routine(user_id: int, db: Session = Depends(get_db), current_user: mo
 
 # ========== WORKOUT ROUTES ==========
 
-@app.get("/workout/state/{user_id}", response_model=schemas.WorkoutStateResponse)
+@api_v1.get("/workout/state/{user_id}", response_model=schemas.WorkoutStateResponse)
 def get_workout_state(user_id: int, db: Session = Depends(get_db), current_user: models.User = Depends(verify_user_access)):
     """
     Get user's current workout state (which day they're on)
@@ -570,7 +537,7 @@ def get_workout_state(user_id: int, db: Session = Depends(get_db), current_user:
     
     return state
 
-@app.post("/workout/complete/{user_id}")
+@api_v1.post("/workout/complete/{user_id}")
 def complete_workout(user_id: int, workout_data: schemas.WorkoutComplete, db: Session = Depends(get_db), current_user: models.User = Depends(verify_user_access)):
     """
     Mark workout as complete
@@ -711,7 +678,7 @@ def cleanup_after_workout(user_id: int, completed_exercise_ids: list, current_da
     state.current_day_number = next_day
     state.last_workout_date = get_user_date(user_id, db)
 
-@app.get("/workout/logs/{user_id}")
+@api_v1.get("/workout/logs/{user_id}")
 def get_workout_logs(user_id: int, limit: int = 30, db: Session = Depends(get_db), current_user: models.User = Depends(verify_user_access)):
     """
     Get user's workout history (last 30 days by default)
@@ -725,7 +692,7 @@ def get_workout_logs(user_id: int, limit: int = 30, db: Session = Depends(get_db
 
 # ========== NEXT WORKOUT SELECTION ROUTES ==========
 
-@app.get("/next-workout/selections/{user_id}")
+@api_v1.get("/next-workout/selections/{user_id}")
 def get_next_workout_selections(user_id: int, db: Session = Depends(get_db), current_user: models.User = Depends(verify_user_access)):
     """
     Get user's manually selected exercises for next workout
@@ -736,7 +703,7 @@ def get_next_workout_selections(user_id: int, db: Session = Depends(get_db), cur
     
     return selections
 
-@app.post("/next-workout/toggle")
+@api_v1.post("/next-workout/toggle")
 def toggle_next_workout_selection(data: dict, db: Session = Depends(get_db), current_user: models.User = Depends(get_current_user)):
     """
     Toggle exercise selection for next workout
@@ -768,7 +735,7 @@ def toggle_next_workout_selection(data: dict, db: Session = Depends(get_db), cur
     db.commit()
     return {"message": "Selection updated"}
 
-@app.delete("/next-workout/clear/{user_id}")
+@api_v1.delete("/next-workout/clear/{user_id}")
 def clear_next_workout_selections(user_id: int, day_number: int = None, db: Session = Depends(get_db), current_user: models.User = Depends(verify_user_access)):
     """
     Clear next workout selections
@@ -808,7 +775,7 @@ def clear_next_workout_selections(user_id: int, day_number: int = None, db: Sess
     return {"message": "Selections cleared"}
 
 
-@app.post("/next-workout/generate/{user_id}")
+@api_v1.post("/next-workout/generate/{user_id}")
 def generate_next_workout(user_id: int, day_number: int = None, db: Session = Depends(get_db), current_user: models.User = Depends(verify_user_access)):
     """
     Auto-generate next workout using algorithm
@@ -933,7 +900,7 @@ def create_exercise_selection(user_id: int, exercise_id: int, db: Session):
 
 # ========== WORKOUT SESSION ROUTES ==========
 
-@app.get("/workout/sessions/{user_id}")
+@api_v1.get("/workout/sessions/{user_id}")
 def get_workout_sessions(user_id: int, limit: int = 10, db: Session = Depends(get_db), current_user: models.User = Depends(verify_user_access)):
     """
     Get user's last N workout sessions (most recent first)
@@ -946,7 +913,7 @@ def get_workout_sessions(user_id: int, limit: int = 10, db: Session = Depends(ge
     return list(reversed(sessions))
 
 
-@app.post("/workout/logs-by-sessions/{user_id}")
+@api_v1.post("/workout/logs-by-sessions/{user_id}")
 def get_workout_logs_by_sessions(user_id: int, data: dict, db: Session = Depends(get_db), current_user: models.User = Depends(verify_user_access)):
     """
     Get workout logs for specific session IDs
@@ -958,6 +925,8 @@ def get_workout_logs_by_sessions(user_id: int, data: dict, db: Session = Depends
         models.WorkoutLog.session_id.in_(session_ids)
     ).all()
     return logs
+
+app.include_router(api_v1)
 
 from mangum import Mangum
 handler = Mangum(app)

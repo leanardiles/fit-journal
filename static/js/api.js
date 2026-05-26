@@ -4,7 +4,7 @@
 // ========================================
 
 // API base URL - change this when you deploy
-const API_URL = window.location.origin;
+const API_URL = window.location.origin + '/v1';
 
 // ========================================
 // AUTHENTICATION
