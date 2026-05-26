@@ -43,12 +43,12 @@ interface FitJournalApiService {
     /**
      * Login endpoint for mobile
      *
-     * POST /login/mobile
+     * POST /login
      *
      * @param loginRequest Email and password
      * @return LoginResponse with JWT token and user info
      */
-    @POST("login/mobile")
+    @POST("login")
     suspend fun login(
         @Body loginRequest: LoginRequest
     ): LoginResponse
