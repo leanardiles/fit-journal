@@ -279,6 +279,7 @@ def login(user: schemas.UserLogin, db: Session = Depends(get_db)):
 
     return {
         "message": "Login successful",
+        "token_type": "bearer",
         "user_id": db_user.user_id,
         "user_email": db_user.user_email,
         "access_token": access_token
