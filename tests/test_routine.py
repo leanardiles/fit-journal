@@ -4,7 +4,7 @@
 def test_save_valid_routine(auth):
     """A routine where every day has a muscle group saves successfully."""
     response = auth["client"].post(
-        f"/routine/{auth['user_id']}",
+        f"/v1/routine/{auth['user_id']}",
         headers=auth["headers"],
         json={
             "days_per_week": 2,
@@ -20,7 +20,7 @@ def test_save_valid_routine(auth):
 def test_get_routine(auth):
     """After saving a routine, it can be fetched back."""
     auth["client"].post(
-        f"/routine/{auth['user_id']}",
+        f"/v1/routine/{auth['user_id']}",
         headers=auth["headers"],
         json={
             "days_per_week": 1,
@@ -30,7 +30,7 @@ def test_get_routine(auth):
         }
     )
     response = auth["client"].get(
-        f"/routine/{auth['user_id']}",
+        f"/v1/routine/{auth['user_id']}",
         headers=auth["headers"]
     )
     assert response.status_code == 200
@@ -40,7 +40,7 @@ def test_get_routine(auth):
 def test_save_routine_with_empty_day_rejected(auth):
     """The no-rest-day rule: a routine with an empty training day is rejected."""
     response = auth["client"].post(
-        f"/routine/{auth['user_id']}",
+        f"/v1/routine/{auth['user_id']}",
         headers=auth["headers"],
         json={
             "days_per_week": 2,

@@ -4,7 +4,7 @@
 def test_create_exercise(auth):
     """Creating an exercise succeeds and returns it."""
     response = auth["client"].post(
-        f"/exercises?user_id={auth['user_id']}",
+        f"/v1/exercises?user_id={auth['user_id']}",
         headers=auth["headers"],
         json={
             "exercise_name": "Bench Press",
@@ -20,7 +20,7 @@ def test_delete_exercise(auth):
     """An exercise can be created and then deleted."""
     # Arrange: create one
     created = auth["client"].post(
-        f"/exercises?user_id={auth['user_id']}",
+        f"/v1/exercises?user_id={auth['user_id']}",
         headers=auth["headers"],
         json={"exercise_name": "Squat", "exercise_muscle_group": "Legs"}
     )
@@ -28,7 +28,7 @@ def test_delete_exercise(auth):
 
     # Act: delete it
     response = auth["client"].delete(
-        f"/exercises/{exercise_id}?user_id={auth['user_id']}",
+        f"/v1/exercises/{exercise_id}?user_id={auth['user_id']}",
         headers=auth["headers"]
     )
     # Assert
@@ -38,12 +38,12 @@ def test_delete_exercise(auth):
 def test_get_exercises(auth):
     """After creating exercises, they appear in the user's list."""
     auth["client"].post(
-        f"/exercises?user_id={auth['user_id']}",
+        f"/v1/exercises?user_id={auth['user_id']}",
         headers=auth["headers"],
         json={"exercise_name": "Deadlift", "exercise_muscle_group": "Back"}
     )
     response = auth["client"].get(
-        f"/exercises?user_id={auth['user_id']}",
+        f"/v1/exercises?user_id={auth['user_id']}",
         headers=auth["headers"]
     )
     assert response.status_code == 200

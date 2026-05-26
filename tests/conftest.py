@@ -72,7 +72,7 @@ def _clean_tables():
 def client():
     """
     A FastAPI TestClient that talks to the app in-memory (no real server).
-    Use it in tests like: response = client.post("/login", json={...})
+    Use it in tests like: response = client.post("/v1/login", json={...})
     """
     return TestClient(main.app)
 
@@ -86,8 +86,8 @@ def auth(client):
     email = "authuser@example.com"
     password = "testpass123"
 
-    client.post("/register", json={"user_email": email, "user_password": password})
-    login = client.post("/login", json={"user_email": email, "user_password": password})
+    client.post("/v1/register", json={"user_email": email, "user_password": password})
+    login = client.post("/v1/login", json={"user_email": email, "user_password": password})
     data = login.json()
 
     return {

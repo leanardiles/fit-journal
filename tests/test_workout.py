@@ -8,13 +8,13 @@ def _setup_routine_and_exercise(auth, muscle="Chest", with_exercise=True):
     """
     client, uid, headers = auth["client"], auth["user_id"], auth["headers"]
 
-    client.post(f"/routine/{uid}", headers=headers, json={
+    client.post(f"/v1/routine/{uid}", headers=headers, json={
         "days_per_week": 1,
         "routine_days": [{"day_number": 1, "muscle_groups": [muscle]}]
     })
 
     if with_exercise:
-        client.post(f"/exercises?user_id={uid}", headers=headers, json={
+        client.post(f"/v1/exercises?user_id={uid}", headers=headers, json={
             "exercise_name": f"{muscle} Exercise",
             "exercise_muscle_group": muscle
         })
@@ -25,7 +25,7 @@ def test_generate_selects_exercises(auth):
     _setup_routine_and_exercise(auth, muscle="Chest", with_exercise=True)
 
     response = auth["client"].post(
-        f"/next-workout/generate/{auth['user_id']}?day_number=1",
+        f"/v1/next-workout/generate/{auth['user_id']}?day_number=1",
         headers=auth["headers"]
     )
     assert response.status_code == 200
@@ -42,7 +42,7 @@ def test_generate_with_no_exercises_selects_none(auth):
     _setup_routine_and_exercise(auth, muscle="Chest", with_exercise=False)
 
     response = auth["client"].post(
-        f"/next-workout/generate/{auth['user_id']}?day_number=1",
+        f"/v1/next-workout/generate/{auth['user_id']}?day_number=1",
         headers=auth["headers"]
     )
     assert response.status_code == 200
@@ -58,7 +58,7 @@ def test_generate_empty_day_rejected(auth):
     _setup_routine_and_exercise(auth, muscle="Chest", with_exercise=True)
 
     response = auth["client"].post(
-        f"/next-workout/generate/{auth['user_id']}?day_number=2",
+        f"/v1/next-workout/generate/{auth['user_id']}?day_number=2",
         headers=auth["headers"]
     )
     assert response.status_code == 400

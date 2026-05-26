@@ -7,11 +7,11 @@ def test_cannot_read_another_users_profile(auth):
     user_a_headers = auth["headers"]  # token belongs to user A (authuser@example.com)
 
     # Create a second user, B
-    client.post("/register", json={
+    client.post("/v1/register", json={
         "user_email": "userb@example.com",
         "user_password": "testpass123"
     })
-    login_b = client.post("/login", json={
+    login_b = client.post("/v1/login", json={
         "user_email": "userb@example.com",
         "user_password": "testpass123"
     })
@@ -19,7 +19,7 @@ def test_cannot_read_another_users_profile(auth):
 
     # User A tries to read user B's profile using A's token
     response = client.get(
-        f"/profile/{user_b_id}",
+        f"/v1/profile/{user_b_id}",
         headers=user_a_headers
     )
 
