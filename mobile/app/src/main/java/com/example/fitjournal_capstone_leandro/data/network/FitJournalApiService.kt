@@ -4,6 +4,7 @@ import com.example.fitjournal_capstone_leandro.data.local.TokenManager
 import com.example.fitjournal_capstone_leandro.data.model.CreateExerciseRequest
 import com.example.fitjournal_capstone_leandro.data.model.LoginRequest
 import com.example.fitjournal_capstone_leandro.data.model.LoginResponse
+import com.example.fitjournal_capstone_leandro.data.model.LogsBySessionsRequest
 import com.example.fitjournal_capstone_leandro.data.model.NextWorkoutSelection
 import com.example.fitjournal_capstone_leandro.data.model.RegisterRequest
 import com.example.fitjournal_capstone_leandro.data.model.RegisterResponse
@@ -14,6 +15,7 @@ import com.example.fitjournal_capstone_leandro.data.model.UserExercise
 import com.example.fitjournal_capstone_leandro.data.model.UserProfile
 import com.example.fitjournal_capstone_leandro.data.model.UserProfileUpdate
 import com.example.fitjournal_capstone_leandro.data.model.WorkoutCompleteRequest
+import com.example.fitjournal_capstone_leandro.data.model.WorkoutLog
 import com.example.fitjournal_capstone_leandro.data.model.WorkoutSession
 import com.example.fitjournal_capstone_leandro.data.model.WorkoutState
 import retrofit2.Retrofit
@@ -30,20 +32,22 @@ import retrofit2.Response
 
 
 /**
- One file, two parts:
-  - Interface - Defines what endpoints exist
-  - Object - Creates the Retrofit instance that implements the interface
-
-  INTERFACE
- Retrofit API service  for FitJournal backend
- Defines all endpoints for authentication, exercises, routines, etc.
+ * One file, two parts:
+ *  - Interface - Defines what endpoints exist
+ *  - Object    - Creates the Retrofit instance that implements the interface
+ *
+ * Retrofit API service for FitJournal backend.
+ * Defines all endpoints for authentication, exercises, routines, etc.
+ *
+ * Note: all paths are relative (no leading slash) so they append to the
+ * versioned BASE_URL in ApiConfig (".../v1/").
  */
 interface FitJournalApiService {
 
     /**
-     * Login endpoint for mobile
+     * Login endpoint
      *
-     * POST login
+     * POST /v1/login
      *
      * @param loginRequest Email and password
      * @return LoginResponse with JWT token and user info
@@ -56,7 +60,7 @@ interface FitJournalApiService {
     /**
      * Register new user
      *
-     * POST /register
+     * POST /v1/register
      *
      * @param registerRequest Email and password
      * @return RegisterResponse with user info
@@ -71,11 +75,10 @@ interface FitJournalApiService {
         @Path("user_id") userId: Int
     ): UserProfile
 
-
     /**
      * Update user profile
      *
-     * PUT /profile/{user_id}
+     * PUT /v1/profile/{user_id}
      */
     @PUT("profile/{user_id}")
     suspend fun updateProfile(
@@ -83,11 +86,10 @@ interface FitJournalApiService {
         @Body profile: UserProfileUpdate
     ): UserProfile
 
-
     /**
      * Get all exercises for a user
      *
-     * GET /exercises?user_id={id}
+     * GET /v1/exercises?user_id={id}
      */
     @GET("exercises")
     suspend fun getExercises(
@@ -97,7 +99,7 @@ interface FitJournalApiService {
     /**
      * Create a new exercise
      *
-     * POST /exercises?user_id={id}
+     * POST /v1/exercises?user_id={id}
      */
     @POST("exercises")
     suspend fun createExercise(
@@ -105,11 +107,10 @@ interface FitJournalApiService {
         @Body exercise: CreateExerciseRequest
     ): UserExercise
 
-
     /**
      * Delete an exercise
      *
-     * DELETE /exercises/{exercise_id}?user_id={id}
+     * DELETE /v1/exercises/{exercise_id}?user_id={id}
      */
     @DELETE("exercises/{exercise_id}")
     suspend fun deleteExercise(
@@ -117,11 +118,10 @@ interface FitJournalApiService {
         @Query("user_id") userId: Int
     ): Response<Unit>
 
-
     /**
      * Get user's routine
      *
-     * GET /routine/{user_id}
+     * GET /v1/routine/{user_id}
      */
     @GET("routine/{user_id}")
     suspend fun getRoutine(
@@ -131,7 +131,7 @@ interface FitJournalApiService {
     /**
      * Save user's routine
      *
-     * POST /routine/{user_id}
+     * POST /v1/routine/{user_id}
      */
     @POST("routine/{user_id}")
     suspend fun saveRoutine(
@@ -142,18 +142,17 @@ interface FitJournalApiService {
     /**
      * Delete user's routine
      *
-     * DELETE /routine/{user_id}
+     * DELETE /v1/routine/{user_id}
      */
     @DELETE("routine/{user_id}")
     suspend fun deleteRoutine(
         @Path("user_id") userId: Int
     ): Response<Unit>
 
-
     /**
      * Update an exercise
      *
-     * PUT /exercises/{exercise_id}?user_id={id}
+     * PUT /v1/exercises/{exercise_id}?user_id={id}
      */
     @PUT("exercises/{exercise_id}")
     suspend fun updateExercise(
@@ -190,10 +189,35 @@ interface FitJournalApiService {
         @Body workoutData: WorkoutCompleteRequest
     ): Any
 
+    /**
+     * Clear next-workout selections.
+     *
+     * DELETE /v1/next-workout/clear/{user_id}[?day_number={n}]
+     *
+     * @param userId     who
+     * @param dayNumber  optional — if provided, clears only that day's
+     *                   selections; if null, clears all of the user's
+     *                   selections (the original behaviour).
+     */
     @DELETE("next-workout/clear/{user_id}")
     suspend fun clearAllSelections(
-        @Path("user_id") userId: Int
+        @Path("user_id") userId: Int,
+        @Query("day_number") dayNumber: Int? = null
     ): Any
+
+    /**
+     * Get workout logs for a list of session IDs.
+     *
+     * POST /v1/workout/logs-by-sessions/{user_id}
+     *
+     * Used by the Calendar to populate the cells of the per-day log table
+     * with the most recent N sessions for a given routine day.
+     */
+    @POST("workout/logs-by-sessions/{user_id}")
+    suspend fun getWorkoutLogsBySessions(
+        @Path("user_id") userId: Int,
+        @Body request: LogsBySessionsRequest
+    ): List<WorkoutLog>
 }
 
 
@@ -209,15 +233,15 @@ object RetrofitClient {
     private var tokenManager: TokenManager? = null
 
     /**
-     * Initialize with TokenManager
-     * Call this once from MainActivity before any API calls
+     * Initialize with TokenManager.
+     * Call this once from MainActivity before any API calls.
      */
     fun initialize(tokenManager: TokenManager) {
         this.tokenManager = tokenManager
     }
 
     /**
-     * OkHttp client with AuthInterceptor attached
+     * OkHttp client with AuthInterceptor attached.
      */
     private val okHttpClient by lazy {
         val tm = tokenManager
@@ -232,18 +256,18 @@ object RetrofitClient {
     }
 
     /**
-     * Retrofit instance with OkHttp client
+     * Retrofit instance with OkHttp client.
      */
     private val retrofit: Retrofit by lazy {
         Retrofit.Builder()
             .baseUrl(ApiConfig.BASE_URL)
-            .client(okHttpClient)                          // Attach OkHttp client
+            .client(okHttpClient)
             .addConverterFactory(GsonConverterFactory.create())
             .build()
     }
 
     /**
-     * FitJournalApiService instance
+     * FitJournalApiService instance.
      */
     val apiService: FitJournalApiService by lazy {
         retrofit.create(FitJournalApiService::class.java)

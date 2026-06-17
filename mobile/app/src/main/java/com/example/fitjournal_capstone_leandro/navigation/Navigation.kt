@@ -23,6 +23,7 @@ import com.example.fitjournal_capstone_leandro.data.local.TokenManager
 import com.example.fitjournal_capstone_leandro.ui.auth.AuthViewModel
 import com.example.fitjournal_capstone_leandro.ui.auth.LoginScreen
 import com.example.fitjournal_capstone_leandro.ui.calendar.CalendarScreen
+import com.example.fitjournal_capstone_leandro.ui.calendar.CalendarViewModel
 import com.example.fitjournal_capstone_leandro.ui.exercise_details.ExerciseDetailsViewModel
 import com.example.fitjournal_capstone_leandro.ui.exercise_details.ExerciseDetailsScreen
 import com.example.fitjournal_capstone_leandro.ui.exercises.UserExercisesViewModel
@@ -38,7 +39,6 @@ import com.example.fitjournal_capstone_leandro.ui.workout.WorkoutViewModel
 import com.example.fitjournal_capstone_leandro.ui.workout.WorkoutScreen
 
 
-
 @Composable
 fun AppNavigation(
     homeViewModel: HomeViewModel,
@@ -49,6 +49,7 @@ fun AppNavigation(
     routineViewModel: RoutineViewModel,
     authViewModel: AuthViewModel,
     workoutViewModel: WorkoutViewModel,
+    calendarViewModel: CalendarViewModel,
     navController: NavHostController,
     tokenManager: TokenManager,
     modifier: Modifier = Modifier
@@ -112,7 +113,7 @@ fun AppNavigation(
             )
         }
 
-        // Workout tab (placeholder)
+        // Workout tab
         composable(Routes.WORKOUT) {
             WorkoutScreen(
                 viewModel = workoutViewModel,
@@ -124,9 +125,9 @@ fun AppNavigation(
             )
         }
 
-        // Calendar tab (placeholder)
+        // Calendar tab
         composable(Routes.CALENDAR) {
-            CalendarScreen()
+            CalendarScreen(viewModel = calendarViewModel)
         }
     }
 }

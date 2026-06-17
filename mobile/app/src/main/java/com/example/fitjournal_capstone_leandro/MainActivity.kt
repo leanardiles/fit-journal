@@ -4,7 +4,6 @@ import com.example.fitjournal_capstone_leandro.ui.home.HomeViewModel
 import com.example.fitjournal_capstone_leandro.ui.home.HomeViewModelFactory
 import com.example.fitjournal_capstone_leandro.ui.exercise_details.ExerciseDetailsViewModel
 import com.example.fitjournal_capstone_leandro.ui.exercise_details.ExerciseDetailsViewModelFactory
-import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 import android.os.Bundle
 import android.util.Log
 import androidx.activity.ComponentActivity
@@ -26,6 +25,7 @@ import androidx.navigation.compose.rememberNavController
 import com.example.fitjournal_capstone_leandro.data.local.FitJournalDatabase
 import com.example.fitjournal_capstone_leandro.data.local.TokenManager
 import com.example.fitjournal_capstone_leandro.data.network.service
+import com.example.fitjournal_capstone_leandro.data.repository.CalendarRepository
 import com.example.fitjournal_capstone_leandro.data.repository.DashboardRepository
 import com.example.fitjournal_capstone_leandro.data.repository.ExerciseRepository
 import com.example.fitjournal_capstone_leandro.data.repository.UserExercisesRepository
@@ -34,6 +34,8 @@ import com.example.fitjournal_capstone_leandro.data.repository.WorkoutRepository
 import com.example.fitjournal_capstone_leandro.navigation.AppNavigation
 import com.example.fitjournal_capstone_leandro.ui.auth.AuthViewModel
 import com.example.fitjournal_capstone_leandro.ui.auth.AuthViewModelFactory
+import com.example.fitjournal_capstone_leandro.ui.calendar.CalendarViewModel
+import com.example.fitjournal_capstone_leandro.ui.calendar.CalendarViewModelFactory
 import com.example.fitjournal_capstone_leandro.ui.exercises.UserExercisesViewModel
 import com.example.fitjournal_capstone_leandro.ui.exercises.UserExercisesViewModelFactory
 import com.example.fitjournal_capstone_leandro.ui.home.DashboardViewModel
@@ -129,11 +131,18 @@ class MainActivity : ComponentActivity() {
         WorkoutViewModelFactory(workoutRepository)
     }
 
+    private val calendarRepository by lazy {
+        CalendarRepository(tokenManager)
+    }
+
+    private val calendarViewModel: CalendarViewModel by viewModels {
+        CalendarViewModelFactory(calendarRepository)
+    }
+
     private val stopwatchViewModel: StopwatchViewModel by viewModels()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        installSplashScreen()
         enableEdgeToEdge()
         setContent {
             fitJournalCapstoneLeandroTheme {
@@ -214,6 +223,7 @@ class MainActivity : ComponentActivity() {
                         routineViewModel = routineViewModel,
                         authViewModel = authViewModel,
                         workoutViewModel = workoutViewModel,
+                        calendarViewModel = calendarViewModel,
                         navController = navController,
                         tokenManager = tokenManager,
                         modifier = Modifier.padding(innerPadding)

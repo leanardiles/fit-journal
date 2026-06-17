@@ -14,6 +14,7 @@ data class LoginRequest(
     val user_password: String
 )
 
+
 /**
  * Login response
  *
@@ -116,6 +117,7 @@ data class UserExercise(
     val comments: String?
 )
 
+
 /**
  * Create exercise request body
  *
@@ -133,6 +135,7 @@ data class UpdateExerciseRequest(
     val exercise_user_current_weight: Float?
 )
 
+
 /**
  * A single day in the routine setup request
  */
@@ -140,6 +143,7 @@ data class RoutineDay(
     val day_number: Int,
     val muscle_groups: List<String>
 )
+
 
 /**
  * Routine setup request body
@@ -150,6 +154,7 @@ data class RoutineSetupRequest(
     val days_per_week: Int,
     val routine_days: List<RoutineDay>
 )
+
 
 /**
  * Routine response from backend
@@ -196,4 +201,36 @@ data class ExerciseLog(
 data class WorkoutCompleteRequest(
     val day_number: Int,
     val exercises: List<ExerciseLog>
+)
+
+
+/**
+ * A single workout log entry from the backend.
+ *
+ * What we receive from POST /v1/workout/logs-by-sessions/{user_id}
+ * (also from GET /v1/workout/logs/{user_id}, though the calendar uses
+ * the by-sessions variant).
+ */
+data class WorkoutLog(
+    val log_id: Int,
+    val user_id: Int,
+    val routine_day_number: Int,
+    val exercise_id: Int,
+    val sets_completed: Int,
+    val reps_completed: Int,
+    val weight_used: Float,
+    val workout_date: String,
+    val session_id: Int
+)
+
+
+/**
+ * Request body for POST /v1/workout/logs-by-sessions/{user_id}
+ *
+ * Returns the logs for the given session IDs (rather than the user's
+ * full log history). Used by the Calendar screen to populate the table
+ * cells for a selected day's last 10 sessions.
+ */
+data class LogsBySessionsRequest(
+    val session_ids: List<Int>
 )

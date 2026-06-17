@@ -14,9 +14,28 @@ import com.example.fitjournal_capstone_leandro.ui.theme.myCustomFont
 import java.text.SimpleDateFormat
 import java.util.*
 
+/**
+ * Placeholder Calendar screen.
+ *
+ * The real per-day, tap-to-select Calendar UI is being built incrementally:
+ *  - Session 1 (current): data layer is wired. We accept the ViewModel
+ *    here so its init { loadCalendar() } fires when the user opens the tab,
+ *    which lets us verify the state population via Logcat (filter on
+ *    "FitJournalCalendar"). The placeholder UI below is unchanged.
+ *  - Session 2: render real day tabs + table from `state`.
+ */
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun CalendarScreen() {
+fun CalendarScreen(viewModel: CalendarViewModel) {
+
+    // Observe the calendar state — this is what hooks the screen up to
+    // the ViewModel. The state is read but not yet rendered (placeholder
+    // UI below remains). The act of subscribing keeps the ViewModel alive
+    // and lets it fire its initial load.
+    val state by viewModel.state.collectAsState()
+
+    // ---- Placeholder UI below (unchanged from before) ----
+
     // State to hold the selected date
     val datePickerState = rememberDatePickerState(
         initialSelectedDateMillis = System.currentTimeMillis()
@@ -25,7 +44,7 @@ fun CalendarScreen() {
     // Format the selected date for display (using UTC to avoid timezone issues)
     val selectedDate = datePickerState.selectedDateMillis?.let { millis ->
         val formatter = SimpleDateFormat("EEEE, MMMM dd, yyyy", Locale.getDefault())
-        formatter.timeZone = TimeZone.getTimeZone("UTC")  // ← ADD THIS LINE!
+        formatter.timeZone = TimeZone.getTimeZone("UTC")
         formatter.format(Date(millis))
     } ?: "No date selected"
 
