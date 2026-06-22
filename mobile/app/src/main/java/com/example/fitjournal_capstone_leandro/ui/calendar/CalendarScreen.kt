@@ -30,17 +30,20 @@ private val TextGray       = Color(0xFF8E8E93)
 private val CurrentMarker  = Color(0xFFFF453A)  // small red dot for "current day"
 
 // Table layout constants — tuned together; changing one may need the others.
-private val ExerciseColWidth = 140.dp           // left frozen column width
+private val ExerciseColWidth = 130.dp           // left frozen column width
 private val LogColWidth      = 60.dp            // each session column on the right
 private val RowHeight        = 40.dp            // shared row height across both halves
 private val HeaderHeight     = 32.dp
+
+// Selection visual — yellow border around the exercise-name cell only
+private val SelectionBorderWidth = 1.5.dp
 
 /**
  * Calendar screen.
  *
  * Slice A: day tabs + header + actions. (done)
- * Slice B (current): the table — frozen exercise column + scrollable log columns.
- * Slice C: tap-to-select + visual highlight (after toggle endpoint is wired).
+ * Slice B: the table — frozen exercise column + scrollable log columns. (done)
+ * Slice C (current): tap-to-select + visual highlight on the name cell.
  * Slice D: polish (empty states, unit indicator, swipe affordance, date format).
  */
 @Composable
@@ -73,7 +76,8 @@ fun CalendarScreen(viewModel: CalendarViewModel) {
                     state = state,
                     onSelectDay        = { viewModel.selectDay(it) },
                     onAutoSelect       = { viewModel.autoSelectForCurrentDay() },
-                    onClearSelections  = { viewModel.clearSelectionsForCurrentDay() }
+                    onClearSelections  = { viewModel.clearSelectionsForCurrentDay() },
+                    onToggleExercise   = { viewModel.toggleSelection(it) }
                 )
             }
         }
@@ -87,7 +91,8 @@ private fun ReadyContent(
     state: CalendarScreenState,
     onSelectDay: (Int) -> Unit,
     onAutoSelect: () -> Unit,
-    onClearSelections: () -> Unit
+    onClearSelections: () -> Unit,
+    onToggleExercise: (Int) -> Unit
 ) {
     Column(
         modifier = Modifier
@@ -122,8 +127,9 @@ private fun ReadyContent(
         Spacer(modifier = Modifier.height(16.dp))
 
         ExerciseLogTable(
-            rows    = state.exercisesForSelectedDay,
-            columns = state.sessionColumns
+            rows             = state.exercisesForSelectedDay,
+            columns          = state.sessionColumns,
+            onToggleExercise = onToggleExercise
         )
     }
 }
@@ -339,14 +345,17 @@ private fun ActionButtonsRow(
  * Both halves render the same exercises in the same order with the same row
  * heights so rows align visually across the seam.
  *
- * Vertical scrolling wraps the whole thing — both halves scroll together.
+ * Vertical scrolling wraps the body — header stays pinned, rows scroll.
+ *
+ * Slice C: each row's exercise-name cell is clickable (calls onToggleExercise)
+ * and gets a yellow border when the row's exercise is selected.
  */
 @Composable
 private fun ExerciseLogTable(
     rows: List<CalendarExerciseRow>,
-    columns: List<SessionColumn>
+    columns: List<SessionColumn>,
+    onToggleExercise: (Int) -> Unit
 ) {
-    // Single vertical scroll wraps both halves so they always stay aligned
     val vScroll = rememberScrollState()
     val hScroll = rememberScrollState()
 
@@ -406,13 +415,24 @@ private fun ExerciseLogTable(
         Column(modifier = Modifier.verticalScroll(vScroll)) {
             rows.forEach { row ->
                 Row(modifier = Modifier.fillMaxWidth()) {
-                    // Frozen exercise-name cell
+                    // Frozen exercise-name cell.
+                    // Clickable (toggles selection). Border applied when selected.
+                    val nameCellModifier = Modifier
+                        .width(ExerciseColWidth)
+                        .height(RowHeight)
+                        .background(Color(0xFF1F1F1F))
+                        .clickable { onToggleExercise(row.exerciseId) }
+                        .let { base ->
+                            if (row.isSelected) {
+                                base.border(SelectionBorderWidth, AccentYellow)
+                            } else {
+                                base
+                            }
+                        }
+                        .padding(horizontal = 10.dp)
+
                     Box(
-                        modifier = Modifier
-                            .width(ExerciseColWidth)
-                            .height(RowHeight)
-                            .background(Color(0xFF1F1F1F))
-                            .padding(horizontal = 10.dp),
+                        modifier = nameCellModifier,
                         contentAlignment = Alignment.CenterStart
                     ) {
                         Text(
@@ -518,7 +538,6 @@ private fun formatWeight(weight: Float?): String {
  * Falls back to the raw String if it doesn't look like ISO.
  */
 private fun formatDate(raw: String): String {
-    // Expecting "YYYY-MM-DD". Show "MM-DD".
     return if (raw.length >= 10 && raw[4] == '-' && raw[7] == '-') {
         raw.substring(5, 10)  // "04-20"
     } else {

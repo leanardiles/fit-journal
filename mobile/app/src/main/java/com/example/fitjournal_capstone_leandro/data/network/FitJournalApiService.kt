@@ -10,6 +10,7 @@ import com.example.fitjournal_capstone_leandro.data.model.RegisterRequest
 import com.example.fitjournal_capstone_leandro.data.model.RegisterResponse
 import com.example.fitjournal_capstone_leandro.data.model.RoutineResponse
 import com.example.fitjournal_capstone_leandro.data.model.RoutineSetupRequest
+import com.example.fitjournal_capstone_leandro.data.model.ToggleSelectionRequest
 import com.example.fitjournal_capstone_leandro.data.model.UpdateExerciseRequest
 import com.example.fitjournal_capstone_leandro.data.model.UserExercise
 import com.example.fitjournal_capstone_leandro.data.model.UserProfile
@@ -48,9 +49,6 @@ interface FitJournalApiService {
      * Login endpoint
      *
      * POST /v1/login
-     *
-     * @param loginRequest Email and password
-     * @return LoginResponse with JWT token and user info
      */
     @POST("login")
     suspend fun login(
@@ -61,9 +59,6 @@ interface FitJournalApiService {
      * Register new user
      *
      * POST /v1/register
-     *
-     * @param registerRequest Email and password
-     * @return RegisterResponse with user info
      */
     @POST("register")
     suspend fun register(
@@ -181,6 +176,18 @@ interface FitJournalApiService {
     suspend fun generateNextWorkout(
         @Path("user_id") userId: Int,
         @Query("day_number") dayNumber: Int
+    ): Any
+
+    /**
+     * Toggle a single exercise's selection for the next workout.
+     *
+     * POST /v1/next-workout/toggle
+     *
+     * Used by the Calendar screen's tap-to-select interaction.
+     */
+    @POST("next-workout/toggle")
+    suspend fun toggleNextWorkoutSelection(
+        @Body request: ToggleSelectionRequest
     ): Any
 
     @POST("workout/complete/{user_id}")

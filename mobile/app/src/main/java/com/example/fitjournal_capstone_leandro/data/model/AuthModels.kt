@@ -234,3 +234,16 @@ data class WorkoutLog(
 data class LogsBySessionsRequest(
     val session_ids: List<Int>
 )
+
+
+/**
+ * Request body for POST /v1/next-workout/toggle
+ *
+ * Toggles whether an exercise is part of the user's next workout selection.
+ * Used by the Calendar screen's tap-to-select interaction.
+ */
+data class ToggleSelectionRequest(
+    val user_id: Int,
+    val exercise_id: Int,
+    val is_selected: Boolean
+)

@@ -4,6 +4,7 @@ import com.example.fitjournal_capstone_leandro.data.local.TokenManager
 import com.example.fitjournal_capstone_leandro.data.model.LogsBySessionsRequest
 import com.example.fitjournal_capstone_leandro.data.model.NextWorkoutSelection
 import com.example.fitjournal_capstone_leandro.data.model.RoutineResponse
+import com.example.fitjournal_capstone_leandro.data.model.ToggleSelectionRequest
 import com.example.fitjournal_capstone_leandro.data.model.UserExercise
 import com.example.fitjournal_capstone_leandro.data.model.WorkoutLog
 import com.example.fitjournal_capstone_leandro.data.model.WorkoutSession
@@ -120,16 +121,28 @@ class CalendarRepository(private val tokenManager: TokenManager) {
     }
 
     /**
-     * Toggle an exercise's selection. Currently a stub — the backend has
-     * POST /v1/next-workout/toggle, but it's not yet exposed on
-     * FitJournalApiService. The UI surfaces an error message via the
-     * ViewModel until this is wired up.
+     * Toggle a single exercise's selection for the next workout.
      *
-     * TODO: add @POST("next-workout/toggle") to FitJournalApiService +
-     * a ToggleSelectionRequest data class, then implement here.
+     * POST /v1/next-workout/toggle
+     *
+     * Used by the Calendar's tap-to-select interaction.
      */
     suspend fun toggleSelection(exerciseId: Int, isSelected: Boolean): Result<Unit> {
-        return Result.failure(NotImplementedError("toggle endpoint not yet wired"))
+        return try {
+            val userId = tokenManager.getUserId()
+            if (userId == -1) return Result.failure(Exception("No user logged in"))
+            apiService.toggleNextWorkoutSelection(
+                ToggleSelectionRequest(
+                    user_id = userId,
+                    exercise_id = exerciseId,
+                    is_selected = isSelected
+                )
+            )
+            Result.success(Unit)
+        } catch (e: Exception) {
+            android.util.Log.e("CalendarRepo", "toggleSelection error: ${e.message}", e)
+            Result.failure(e)
+        }
     }
 
     companion object {
