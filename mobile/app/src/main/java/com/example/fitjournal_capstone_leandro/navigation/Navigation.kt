@@ -39,6 +39,7 @@ import com.example.fitjournal_capstone_leandro.ui.workout.WorkoutViewModel
 import com.example.fitjournal_capstone_leandro.ui.workout.WorkoutScreen
 
 
+
 @Composable
 fun AppNavigation(
     homeViewModel: HomeViewModel,
