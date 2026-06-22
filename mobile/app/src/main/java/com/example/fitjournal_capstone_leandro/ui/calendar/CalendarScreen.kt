@@ -6,6 +6,7 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.horizontalScroll
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.*
@@ -16,6 +17,8 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.fitjournal_capstone_leandro.ui.theme.myCustomFont
@@ -26,13 +29,19 @@ private val SurfaceDark    = Color(0xFF2C2C2E)
 private val TextGray       = Color(0xFF8E8E93)
 private val CurrentMarker  = Color(0xFFFF453A)  // small red dot for "current day"
 
+// Table layout constants — tuned together; changing one may need the others.
+private val ExerciseColWidth = 140.dp           // left frozen column width
+private val LogColWidth      = 60.dp            // each session column on the right
+private val RowHeight        = 40.dp            // shared row height across both halves
+private val HeaderHeight     = 32.dp
+
 /**
  * Calendar screen.
  *
- * Slice A (current): day tabs + header + actions.
- * Slice B (next): the table (frozen exercise column + scrollable log columns).
- * Slice C: selection toggling + table interactions.
- * Slice D: polish (empty states, weight-0 rendering, edge cues).
+ * Slice A: day tabs + header + actions. (done)
+ * Slice B (current): the table — frozen exercise column + scrollable log columns.
+ * Slice C: tap-to-select + visual highlight (after toggle endpoint is wired).
+ * Slice D: polish (empty states, unit indicator, swipe affordance, date format).
  */
 @Composable
 fun CalendarScreen(viewModel: CalendarViewModel) {
@@ -112,8 +121,10 @@ private fun ReadyContent(
 
         Spacer(modifier = Modifier.height(16.dp))
 
-        // Slice B placeholder — the table goes here next session
-        TablePlaceholder()
+        ExerciseLogTable(
+            rows    = state.exercisesForSelectedDay,
+            columns = state.sessionColumns
+        )
     }
 }
 
@@ -319,6 +330,131 @@ private fun ActionButtonsRow(
     }
 }
 
+// ─── TABLE ────────────────────────────────────────────────────────────────────
+
+/**
+ * The table: a frozen left column (exercise names) + a horizontally scrollable
+ * right region (one column per session, showing the weight or "—").
+ *
+ * Both halves render the same exercises in the same order with the same row
+ * heights so rows align visually across the seam.
+ *
+ * Vertical scrolling wraps the whole thing — both halves scroll together.
+ */
+@Composable
+private fun ExerciseLogTable(
+    rows: List<CalendarExerciseRow>,
+    columns: List<SessionColumn>
+) {
+    // Single vertical scroll wraps both halves so they always stay aligned
+    val vScroll = rememberScrollState()
+    val hScroll = rememberScrollState()
+
+    Column(
+        modifier = Modifier
+            .fillMaxWidth()
+            .clip(RoundedCornerShape(8.dp))
+            .background(SurfaceDark)
+    ) {
+        // Header row — frozen "Exercise" label + scrollable date headers
+        Row(modifier = Modifier.fillMaxWidth()) {
+            // Frozen header cell
+            Box(
+                modifier = Modifier
+                    .width(ExerciseColWidth)
+                    .height(HeaderHeight)
+                    .background(Color(0xFF232323))
+                    .padding(horizontal = 10.dp),
+                contentAlignment = Alignment.CenterStart
+            ) {
+                Text(
+                    text       = "Exercise",
+                    color      = TextGray,
+                    fontSize   = 11.sp,
+                    fontWeight = FontWeight.SemiBold,
+                    fontFamily = myCustomFont
+                )
+            }
+            // Scrollable date headers
+            Row(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .horizontalScroll(hScroll)
+                    .background(Color(0xFF232323))
+            ) {
+                columns.forEach { col ->
+                    Box(
+                        modifier = Modifier
+                            .width(LogColWidth)
+                            .height(HeaderHeight),
+                        contentAlignment = Alignment.Center
+                    ) {
+                        Text(
+                            text       = formatDate(col.workoutDate),
+                            color      = TextGray,
+                            fontSize   = 10.sp,
+                            fontFamily = myCustomFont,
+                            textAlign  = TextAlign.Center,
+                            maxLines   = 1
+                        )
+                    }
+                }
+            }
+        }
+
+        // Body rows — vertically scrollable as a unit
+        Column(modifier = Modifier.verticalScroll(vScroll)) {
+            rows.forEach { row ->
+                Row(modifier = Modifier.fillMaxWidth()) {
+                    // Frozen exercise-name cell
+                    Box(
+                        modifier = Modifier
+                            .width(ExerciseColWidth)
+                            .height(RowHeight)
+                            .background(Color(0xFF1F1F1F))
+                            .padding(horizontal = 10.dp),
+                        contentAlignment = Alignment.CenterStart
+                    ) {
+                        Text(
+                            text       = row.exerciseName,
+                            color      = Color.White,
+                            fontSize   = 12.sp,
+                            fontFamily = myCustomFont,
+                            maxLines   = 2,
+                            overflow   = TextOverflow.Ellipsis
+                        )
+                    }
+                    // Scrollable cells — must share the SAME hScroll as the header
+                    Row(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .horizontalScroll(hScroll)
+                    ) {
+                        columns.forEach { col ->
+                            val log = row.logsBySessionId[col.sessionId]
+                            val display = formatWeight(log?.weight)
+                            Box(
+                                modifier = Modifier
+                                    .width(LogColWidth)
+                                    .height(RowHeight),
+                                contentAlignment = Alignment.Center
+                            ) {
+                                Text(
+                                    text       = display,
+                                    color      = if (display == EMPTY_CELL) TextGray else Color.White,
+                                    fontSize   = 13.sp,
+                                    fontFamily = myCustomFont,
+                                    textAlign  = TextAlign.Center
+                                )
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+}
+
 // ─── ERROR ────────────────────────────────────────────────────────────────────
 
 @Composable
@@ -350,24 +486,42 @@ private fun ErrorContent(message: String, onRetry: () -> Unit) {
     }
 }
 
-// ─── PLACEHOLDER FOR SLICE B (the table) ──────────────────────────────────────
+// ─── HELPERS ──────────────────────────────────────────────────────────────────
 
-@Composable
-private fun TablePlaceholder() {
-    Box(
-        modifier = Modifier
-            .fillMaxWidth()
-            .height(220.dp)
-            .clip(RoundedCornerShape(8.dp))
-            .background(SurfaceDark),
-        contentAlignment = Alignment.Center
-    ) {
-        Text(
-            text       = "Exercises + logs table coming next.",
-            color      = TextGray,
-            fontSize   = 12.sp,
-            fontStyle  = FontStyle.Italic,
-            fontFamily = myCustomFont
-        )
+private const val EMPTY_CELL = "—"
+
+/**
+ * Render the weight for a single cell.
+ *
+ * Treats null and 0f the same — both become "—" — because the data has both
+ * "no log entry for this exercise that session" (null) and "log entry exists
+ * but weight is 0/missing" (0f). Both are non-informative to the user.
+ *
+ * Returned as a plain integer string ("60", not "60.0") since users enter
+ * whole numbers most of the time. When per-set weights ship later
+ * (e.g. "60-70-80"), only the data shape needs to change; this function
+ * already returns a String.
+ */
+private fun formatWeight(weight: Float?): String {
+    if (weight == null || weight == 0f) return EMPTY_CELL
+    return weight.toInt().toString()
+}
+
+/**
+ * Format a workout_date String for the column header.
+ *
+ * The backend sends ISO dates like "2026-04-20". For now we show just
+ * "04-20" (month-day, no year), which is compact enough to fit in a 60dp
+ * column. Slice D could upgrade this to localized "20 Apr" once the trade-
+ * offs (parsing cost, locale handling) are worth the effort.
+ *
+ * Falls back to the raw String if it doesn't look like ISO.
+ */
+private fun formatDate(raw: String): String {
+    // Expecting "YYYY-MM-DD". Show "MM-DD".
+    return if (raw.length >= 10 && raw[4] == '-' && raw[7] == '-') {
+        raw.substring(5, 10)  // "04-20"
+    } else {
+        raw
     }
 }
