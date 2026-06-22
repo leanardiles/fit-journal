@@ -31,16 +31,15 @@ private val BackgroundDark = Color(0xFF1B1B1E)
 private val SurfaceDark    = Color(0xFF2C2C2E)
 private val TextGray       = Color(0xFF8E8E93)
 private val CurrentMarker  = Color(0xFFFF453A)
-private val CellDark       = Color(0xFF1F1F1F)   // exercise-name cell background
+private val CellDark       = Color(0xFF1F1F1F)
 
 // Table layout constants — tuned together; changing one may need the others.
-private val ExerciseColWidth = 130.dp
-private val LogColWidth      = 60.dp
-private val RowHeight        = 40.dp
-private val HeaderHeight     = 32.dp
+private val ExerciseColWidth   = 130.dp
+private val LogColWidth        = 60.dp
+private val RowHeight          = 40.dp
+private val HeaderHeight       = 32.dp
 private val MuscleHeaderHeight = 36.dp
 
-// Selection visual — yellow border around the exercise-name cell only
 private val SelectionBorderWidth = 1.5.dp
 
 /**
@@ -49,10 +48,17 @@ private val SelectionBorderWidth = 1.5.dp
  * Slice A: day tabs + header + actions. (done)
  * Slice B: the table — frozen exercise column + scrollable log columns. (done)
  * Slice C: tap-to-select + visual highlight on the name cell. (done)
- * Slice D (partial): muscle-group section headers inside the table.
+ * Slice D (partial): muscle-group section headers; unit indicator above the table.
+ *
+ * `unitPreference` is the user's preference from their profile
+ * ("metric" or "imperial"); anything else is treated as metric. Used here
+ * only to label the table's unit, not to convert values.
  */
 @Composable
-fun CalendarScreen(viewModel: CalendarViewModel) {
+fun CalendarScreen(
+    viewModel: CalendarViewModel,
+    unitPreference: String = "metric"
+) {
     val state by viewModel.state.collectAsState()
 
     Box(
@@ -78,7 +84,8 @@ fun CalendarScreen(viewModel: CalendarViewModel) {
 
             is CalendarUiState.Ready -> {
                 ReadyContent(
-                    state = state,
+                    state              = state,
+                    unitPreference     = unitPreference,
                     onSelectDay        = { viewModel.selectDay(it) },
                     onAutoSelect       = { viewModel.autoSelectForCurrentDay() },
                     onClearSelections  = { viewModel.clearSelectionsForCurrentDay() },
@@ -94,6 +101,7 @@ fun CalendarScreen(viewModel: CalendarViewModel) {
 @Composable
 private fun ReadyContent(
     state: CalendarScreenState,
+    unitPreference: String,
     onSelectDay: (Int) -> Unit,
     onAutoSelect: () -> Unit,
     onClearSelections: () -> Unit,
@@ -105,10 +113,10 @@ private fun ReadyContent(
             .padding(horizontal = 16.dp, vertical = 16.dp)
     ) {
         DayTabsRow(
-            daysPerWeek      = state.daysPerWeek,
-            currentDay       = state.currentDayNumber,
-            selectedDay      = state.selectedDayNumber,
-            onSelectDay      = onSelectDay
+            daysPerWeek = state.daysPerWeek,
+            currentDay  = state.currentDayNumber,
+            selectedDay = state.selectedDayNumber,
+            onSelectDay = onSelectDay
         )
 
         Spacer(modifier = Modifier.height(8.dp))
@@ -129,7 +137,11 @@ private fun ReadyContent(
             onClearSelections = onClearSelections
         )
 
-        Spacer(modifier = Modifier.height(16.dp))
+        Spacer(modifier = Modifier.height(12.dp))
+
+        UnitIndicator(unitPreference = unitPreference)
+
+        Spacer(modifier = Modifier.height(6.dp))
 
         ExerciseLogTable(
             rows             = state.exercisesForSelectedDay,
@@ -322,6 +334,31 @@ private fun ActionButtonsRow(
     }
 }
 
+// ─── UNIT INDICATOR ───────────────────────────────────────────────────────────
+
+/**
+ * Small right-aligned caption above the table telling the user which
+ * weight unit the values are in. Matches the user's profile preference
+ * — does NOT convert values, only labels them.
+ *
+ * Non-interactive in v1. P3 backlog: make tappable, either deep-linking
+ * to ProfileSettings or offering an inline kg/lb toggle.
+ */
+@Composable
+private fun UnitIndicator(unitPreference: String) {
+    val label = if (unitPreference == "imperial") "LB" else "KG"
+    Box(modifier = Modifier.fillMaxWidth()) {
+        Text(
+            text       = "Showing weights in $label",
+            color      = TextGray,
+            fontSize   = 11.sp,
+            fontStyle  = FontStyle.Italic,
+            fontFamily = myCustomFont,
+            modifier   = Modifier.align(Alignment.CenterEnd)
+        )
+    }
+}
+
 // ─── TABLE ────────────────────────────────────────────────────────────────────
 
 @Composable
@@ -388,7 +425,6 @@ private fun ExerciseLogTable(
             var previousMuscle: String? = null
 
             rows.forEach { row ->
-                // Inject a muscle-group header whenever the muscle changes
                 if (row.muscleGroup != previousMuscle) {
                     MuscleGroupSectionRow(
                         muscleName  = row.muscleGroup,
@@ -398,7 +434,6 @@ private fun ExerciseLogTable(
                     previousMuscle = row.muscleGroup
                 }
 
-                // Exercise row (frozen name cell + scrollable data cells)
                 Row(modifier = Modifier.fillMaxWidth()) {
                     val nameCellModifier = Modifier
                         .width(ExerciseColWidth)
@@ -458,20 +493,6 @@ private fun ExerciseLogTable(
     }
 }
 
-/**
- * Section-header row inside the table labelling the muscle group the
- * following exercises belong to.
- *
- * Frozen-left cell:
- *  - background: same as exercise-name cells (CellDark = #1F1F1F)
- *  - muscle name in UPPERCASE, bold, slightly larger font
- *  - light-grey bottom border
- *
- * Scrollable right region:
- *  - empty (Option A from the design choice)
- *  - no background — shows the table's SurfaceDark through
- *  - bottom border continues across, tying both halves visually
- */
 @Composable
 private fun MuscleGroupSectionRow(
     muscleName: String,
@@ -481,7 +502,6 @@ private fun MuscleGroupSectionRow(
     val borderColor = TextGray.copy(alpha = 0.4f)
 
     Row(modifier = Modifier.fillMaxWidth()) {
-        // Frozen left: the muscle name, on CellDark background
         Box(
             modifier = Modifier
                 .width(ExerciseColWidth)
@@ -500,8 +520,6 @@ private fun MuscleGroupSectionRow(
             )
         }
 
-        // Scrollable right: empty cells, no background tint, just the bottom
-        // border continuing across so the row reads as one visual unit.
         Row(
             modifier = Modifier
                 .fillMaxWidth()
@@ -519,11 +537,6 @@ private fun MuscleGroupSectionRow(
     }
 }
 
-/**
- * Draws a thin bottom border inside a composable. Used by the muscle-group
- * section row so the border lines up cleanly across both halves of the
- * table without adding borders on the other three sides.
- */
 private fun Modifier.drawBottomBorder(color: Color, widthDp: Dp): Modifier =
     this.drawBehind {
         val strokePx = widthDp.toPx()

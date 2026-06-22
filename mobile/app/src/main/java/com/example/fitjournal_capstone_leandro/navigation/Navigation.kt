@@ -128,7 +128,11 @@ fun AppNavigation(
 
         // Calendar tab
         composable(Routes.CALENDAR) {
-            CalendarScreen(viewModel = calendarViewModel)
+            val unitPreference = authViewModel.userProfile.collectAsState().value?.user_unit_preference ?: "metric"
+            CalendarScreen(
+                viewModel = calendarViewModel,
+                unitPreference = unitPreference
+            )
         }
     }
 }
