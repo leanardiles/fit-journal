@@ -47,6 +47,12 @@ data class LogCell(
 
 /**
  * Composite state for the Calendar screen — the single thing the UI observes.
+ *
+ * Note on `exercisesForSelectedDay` ordering: rows are sorted by muscle group
+ * in the order defined by `muscleGroupsForSelectedDay` (which mirrors the
+ * routine setup), then alphabetically within each muscle group. The UI
+ * relies on this contiguous-by-muscle ordering to insert muscle-group
+ * headers between groups in the table.
  */
 data class CalendarScreenState(
     val uiState: CalendarUiState = CalendarUiState.Idle,
@@ -125,9 +131,8 @@ class CalendarViewModel(
     }
 
     /**
-     * Tap-to-select toggle. The toggle endpoint isn't wired into the API
-     * service yet (see CalendarRepository.toggleSelection), so this
-     * currently surfaces an error.
+     * Tap-to-select toggle. Calls the backend; on success applies an
+     * optimistic local update (no full reload) so the UI feels responsive.
      */
     fun toggleSelection(exerciseId: Int) {
         val row = _state.value.exercisesForSelectedDay
@@ -142,7 +147,6 @@ class CalendarViewModel(
                 )
                 return@launch
             }
-            // Optimistic local update once the toggle endpoint is wired
             _state.value = _state.value.copy(
                 exercisesForSelectedDay = _state.value.exercisesForSelectedDay.map {
                     if (it.exerciseId == exerciseId) it.copy(isSelected = newIsSelected) else it
@@ -195,10 +199,24 @@ class CalendarViewModel(
      * Builds the UI-shaped state from the raw CalendarBundle returned by
      * the repository. All the "combine" logic lives here so the repo just
      * deals with the network.
+     *
+     * Sorting: rows are grouped by muscle (in the order the muscles appear
+     * in the routine's day definition) and alphabetized within each group.
+     * The UI relies on this for inserting muscle-group headers in the table.
      */
     private fun composeStateFrom(bundle: CalendarBundle): CalendarScreenState {
         val muscleGroupsForDay: List<String> =
             bundle.routine.routine_days[bundle.viewingDay.toString()].orEmpty()
+
+        // Map muscle name → its order index from the routine. Anything not
+        // in the routine (defensive: shouldn't happen since we filter exercises
+        // to the day's muscles) is parked at the end.
+        val muscleOrder: Map<String, Int> =
+            muscleGroupsForDay.withIndex().associate { (i, name) -> name to i }
+        val muscleOrderComparator = compareBy<CalendarExerciseRow>(
+            { muscleOrder[it.muscleGroup] ?: Int.MAX_VALUE },
+            { it.exerciseName.lowercase() }
+        )
 
         // Index logs by (exercise_id, session_id) for O(1) cell lookup
         val logIndex: Map<Pair<Int, Int>, LogCell> = bundle.logs.associate { log ->
@@ -213,7 +231,6 @@ class CalendarViewModel(
 
         val rows: List<CalendarExerciseRow> = bundle.exercises
             .filter { it.exercise_muscle_group in muscleGroupsForDay }
-            .sortedBy { it.exercise_name }
             .map { ex ->
                 CalendarExerciseRow(
                     exerciseId      = ex.exercise_id,
@@ -228,6 +245,7 @@ class CalendarViewModel(
                         .toMap()
                 )
             }
+            .sortedWith(muscleOrderComparator)
 
         val columns: List<SessionColumn> = bundle.sessionsForDay.map {
             SessionColumn(sessionId = it.session_id, workoutDate = it.workout_date)

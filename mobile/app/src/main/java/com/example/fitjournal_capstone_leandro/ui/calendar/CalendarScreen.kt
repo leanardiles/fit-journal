@@ -14,11 +14,14 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.draw.drawBehind
+import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
+import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.fitjournal_capstone_leandro.ui.theme.myCustomFont
@@ -27,13 +30,15 @@ private val AccentYellow   = Color(0xFFFFEB3B)
 private val BackgroundDark = Color(0xFF1B1B1E)
 private val SurfaceDark    = Color(0xFF2C2C2E)
 private val TextGray       = Color(0xFF8E8E93)
-private val CurrentMarker  = Color(0xFFFF453A)  // small red dot for "current day"
+private val CurrentMarker  = Color(0xFFFF453A)
+private val CellDark       = Color(0xFF1F1F1F)   // exercise-name cell background
 
 // Table layout constants — tuned together; changing one may need the others.
-private val ExerciseColWidth = 130.dp           // left frozen column width
-private val LogColWidth      = 60.dp            // each session column on the right
-private val RowHeight        = 40.dp            // shared row height across both halves
+private val ExerciseColWidth = 130.dp
+private val LogColWidth      = 60.dp
+private val RowHeight        = 40.dp
 private val HeaderHeight     = 32.dp
+private val MuscleHeaderHeight = 36.dp
 
 // Selection visual — yellow border around the exercise-name cell only
 private val SelectionBorderWidth = 1.5.dp
@@ -43,8 +48,8 @@ private val SelectionBorderWidth = 1.5.dp
  *
  * Slice A: day tabs + header + actions. (done)
  * Slice B: the table — frozen exercise column + scrollable log columns. (done)
- * Slice C (current): tap-to-select + visual highlight on the name cell.
- * Slice D: polish (empty states, unit indicator, swipe affordance, date format).
+ * Slice C: tap-to-select + visual highlight on the name cell. (done)
+ * Slice D (partial): muscle-group section headers inside the table.
  */
 @Composable
 fun CalendarScreen(viewModel: CalendarViewModel) {
@@ -136,15 +141,6 @@ private fun ReadyContent(
 
 // ─── DAY TABS ─────────────────────────────────────────────────────────────────
 
-/**
- * Horizontally-scrollable row of day chips. Each chip:
- *  - shows "Day N"
- *  - is filled yellow when it's the SELECTED day
- *  - has a small red dot when it's the CURRENT day (from workout_state)
- *
- * On first load currentDay == selectedDay, so both signals appear on the
- * same chip simultaneously (yellow fill + red dot).
- */
 @Composable
 private fun DayTabsRow(
     daysPerWeek: Int,
@@ -159,8 +155,6 @@ private fun DayTabsRow(
             .horizontalScroll(scroll),
         horizontalArrangement = Arrangement.spacedBy(8.dp)
     ) {
-        // If daysPerWeek == 0 (no routine yet) this loop produces nothing —
-        // an empty-state message would be a Slice D refinement.
         (1..daysPerWeek).forEach { day ->
             DayChip(
                 day        = day,
@@ -200,7 +194,6 @@ private fun DayChip(
             )
         }
 
-        // Current-day marker (small red dot, top-right of the chip)
         if (isCurrent) {
             Box(
                 modifier = Modifier
@@ -215,18 +208,12 @@ private fun DayChip(
     }
 }
 
-/**
- * Tiny legend under the tabs row, since the dual-marker convention
- * (red dot = current, yellow fill = viewing) is not obvious at first.
- * Can be removed in Slice D if it ever feels redundant.
- */
 @Composable
 private fun TabsLegend() {
     Row(
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.spacedBy(8.dp)
     ) {
-        // current
         Row(verticalAlignment = Alignment.CenterVertically) {
             Box(
                 modifier = Modifier
@@ -245,7 +232,6 @@ private fun TabsLegend() {
 
         Text(text = "·", color = TextGray, fontSize = 11.sp)
 
-        // viewing
         Row(verticalAlignment = Alignment.CenterVertically) {
             Box(
                 modifier = Modifier
@@ -338,18 +324,6 @@ private fun ActionButtonsRow(
 
 // ─── TABLE ────────────────────────────────────────────────────────────────────
 
-/**
- * The table: a frozen left column (exercise names) + a horizontally scrollable
- * right region (one column per session, showing the weight or "—").
- *
- * Both halves render the same exercises in the same order with the same row
- * heights so rows align visually across the seam.
- *
- * Vertical scrolling wraps the body — header stays pinned, rows scroll.
- *
- * Slice C: each row's exercise-name cell is clickable (calls onToggleExercise)
- * and gets a yellow border when the row's exercise is selected.
- */
 @Composable
 private fun ExerciseLogTable(
     rows: List<CalendarExerciseRow>,
@@ -365,9 +339,8 @@ private fun ExerciseLogTable(
             .clip(RoundedCornerShape(8.dp))
             .background(SurfaceDark)
     ) {
-        // Header row — frozen "Exercise" label + scrollable date headers
+        // Top header row — frozen "Exercise" label + scrollable date headers
         Row(modifier = Modifier.fillMaxWidth()) {
-            // Frozen header cell
             Box(
                 modifier = Modifier
                     .width(ExerciseColWidth)
@@ -384,7 +357,6 @@ private fun ExerciseLogTable(
                     fontFamily = myCustomFont
                 )
             }
-            // Scrollable date headers
             Row(
                 modifier = Modifier
                     .fillMaxWidth()
@@ -411,16 +383,27 @@ private fun ExerciseLogTable(
             }
         }
 
-        // Body rows — vertically scrollable as a unit
+        // Body — vertically scrollable as a unit
         Column(modifier = Modifier.verticalScroll(vScroll)) {
+            var previousMuscle: String? = null
+
             rows.forEach { row ->
+                // Inject a muscle-group header whenever the muscle changes
+                if (row.muscleGroup != previousMuscle) {
+                    MuscleGroupSectionRow(
+                        muscleName  = row.muscleGroup,
+                        columnCount = columns.size,
+                        hScroll     = hScroll
+                    )
+                    previousMuscle = row.muscleGroup
+                }
+
+                // Exercise row (frozen name cell + scrollable data cells)
                 Row(modifier = Modifier.fillMaxWidth()) {
-                    // Frozen exercise-name cell.
-                    // Clickable (toggles selection). Border applied when selected.
                     val nameCellModifier = Modifier
                         .width(ExerciseColWidth)
                         .height(RowHeight)
-                        .background(Color(0xFF1F1F1F))
+                        .background(CellDark)
                         .clickable { onToggleExercise(row.exerciseId) }
                         .let { base ->
                             if (row.isSelected) {
@@ -444,7 +427,7 @@ private fun ExerciseLogTable(
                             overflow   = TextOverflow.Ellipsis
                         )
                     }
-                    // Scrollable cells — must share the SAME hScroll as the header
+
                     Row(
                         modifier = Modifier
                             .fillMaxWidth()
@@ -474,6 +457,83 @@ private fun ExerciseLogTable(
         }
     }
 }
+
+/**
+ * Section-header row inside the table labelling the muscle group the
+ * following exercises belong to.
+ *
+ * Frozen-left cell:
+ *  - background: same as exercise-name cells (CellDark = #1F1F1F)
+ *  - muscle name in UPPERCASE, bold, slightly larger font
+ *  - light-grey bottom border
+ *
+ * Scrollable right region:
+ *  - empty (Option A from the design choice)
+ *  - no background — shows the table's SurfaceDark through
+ *  - bottom border continues across, tying both halves visually
+ */
+@Composable
+private fun MuscleGroupSectionRow(
+    muscleName: String,
+    columnCount: Int,
+    hScroll: androidx.compose.foundation.ScrollState
+) {
+    val borderColor = TextGray.copy(alpha = 0.4f)
+
+    Row(modifier = Modifier.fillMaxWidth()) {
+        // Frozen left: the muscle name, on CellDark background
+        Box(
+            modifier = Modifier
+                .width(ExerciseColWidth)
+                .height(MuscleHeaderHeight)
+                .background(CellDark)
+                .drawBottomBorder(color = borderColor, widthDp = 1.dp)
+                .padding(horizontal = 10.dp),
+            contentAlignment = Alignment.CenterStart
+        ) {
+            Text(
+                text       = muscleName.uppercase(),
+                color      = Color.White,
+                fontSize   = 13.sp,
+                fontWeight = FontWeight.Bold,
+                fontFamily = myCustomFont
+            )
+        }
+
+        // Scrollable right: empty cells, no background tint, just the bottom
+        // border continuing across so the row reads as one visual unit.
+        Row(
+            modifier = Modifier
+                .fillMaxWidth()
+                .horizontalScroll(hScroll)
+        ) {
+            repeat(columnCount) {
+                Box(
+                    modifier = Modifier
+                        .width(LogColWidth)
+                        .height(MuscleHeaderHeight)
+                        .drawBottomBorder(color = borderColor, widthDp = 1.dp)
+                )
+            }
+        }
+    }
+}
+
+/**
+ * Draws a thin bottom border inside a composable. Used by the muscle-group
+ * section row so the border lines up cleanly across both halves of the
+ * table without adding borders on the other three sides.
+ */
+private fun Modifier.drawBottomBorder(color: Color, widthDp: Dp): Modifier =
+    this.drawBehind {
+        val strokePx = widthDp.toPx()
+        drawLine(
+            color = color,
+            start = Offset(0f, size.height - strokePx / 2),
+            end   = Offset(size.width, size.height - strokePx / 2),
+            strokeWidth = strokePx
+        )
+    }
 
 // ─── ERROR ────────────────────────────────────────────────────────────────────
 
@@ -510,33 +570,11 @@ private fun ErrorContent(message: String, onRetry: () -> Unit) {
 
 private const val EMPTY_CELL = "—"
 
-/**
- * Render the weight for a single cell.
- *
- * Treats null and 0f the same — both become "—" — because the data has both
- * "no log entry for this exercise that session" (null) and "log entry exists
- * but weight is 0/missing" (0f). Both are non-informative to the user.
- *
- * Returned as a plain integer string ("60", not "60.0") since users enter
- * whole numbers most of the time. When per-set weights ship later
- * (e.g. "60-70-80"), only the data shape needs to change; this function
- * already returns a String.
- */
 private fun formatWeight(weight: Float?): String {
     if (weight == null || weight == 0f) return EMPTY_CELL
     return weight.toInt().toString()
 }
 
-/**
- * Format a workout_date String for the column header.
- *
- * The backend sends ISO dates like "2026-04-20". For now we show just
- * "04-20" (month-day, no year), which is compact enough to fit in a 60dp
- * column. Slice D could upgrade this to localized "20 Apr" once the trade-
- * offs (parsing cost, locale handling) are worth the effort.
- *
- * Falls back to the raw String if it doesn't look like ISO.
- */
 private fun formatDate(raw: String): String {
     return if (raw.length >= 10 && raw[4] == '-' && raw[7] == '-') {
         raw.substring(5, 10)  // "04-20"
