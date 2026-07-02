@@ -2,7 +2,7 @@
 
 FitJournal is a personal fitness tracking application. This roadmap tracks planned features, technical debt, and the path from local development to AWS production deployment.
 
-**Last updated:** June 2026
+**Last updated:** 2 July 2026
 
 ---
 
@@ -39,8 +39,7 @@ The short list — what's most likely to be worked on in the next session or two
 
 | Item | Scope | Priority | Effort | Notes |
 |---|---|---|---|---|
-| Account deletion flow | All | 🟠 P1 | M | Google Play requires a user-facing way to delete an account and its data. Needs three parts: a backend delete endpoint (cascade-deletes the user's rows — FKs are already `ON DELETE CASCADE`, so deleting the user row should clear exercises, routine, logs, sessions, selections, workout_state); mobile UI (Settings → Delete account → confirmation dialog → call endpoint → clear token → return to login); and a web-accessible deletion route/URL (the Play Store Data Safety form requires a stated URL where users can request deletion). Authorization: must only allow deleting one's own account (reuse `verify_user_access`). Play Store launch blocker. |
-| Play Store launch prep | Mobile | 🟠 P1 | L | The non-code requirements to publish on Google Play. (1) Privacy policy — a hosted, publicly-accessible URL stating what data is collected and how it's used (the app stores email + fitness data); required by the Data Safety form. (2) Data Safety form — declare data collection/sharing/security in the Play Console. (3) $25 one-time Google Play developer account. (4) Closed testing requirement — new personal developer accounts must run a closed test with ~12 testers for ~14 days before production access. (5) Target SDK / app signing / store listing assets (icon, screenshots, description). Depends on the account-deletion flow being in place. Health-adjacent data may warrant extra care in the Data Safety declarations. |
+| Play Store launch prep | Mobile | 🟠 P1 | L | The non-code requirements to publish on Google Play. (1) Privacy policy — a hosted, publicly-accessible URL stating what data is collected and how it's used (the app stores email + fitness data); required by the Data Safety form. (2) Data Safety form — declare data collection/sharing/security in the Play Console. (3) $25 one-time Google Play developer account. (4) Closed testing requirement — new personal developer accounts must run a closed test with ~12 testers for ~14 days before production access. (5) Target SDK / app signing / store listing assets (icon, screenshots, description). Account-deletion flow is now in place (see Done), so this is unblocked. The deletion URL for the Data Safety form is https://app.fit-journal.com/web/delete-account. |
 
 ---
 
@@ -92,6 +91,9 @@ Lower priority, but tracked so they're not forgotten.
 ## ✅ Done
 
 Recent shipped work, for context.
+
+### July 2026
+- **[Backend / Web / Mobile] Account deletion flow** — Users can permanently delete their account and all associated data. Backend DELETE /v1/account/{user_id} with password re-authentication (cascades via ON DELETE CASCADE); public /web/delete-account confirmation page (also the Play Store Data Safety deletion URL) plus a Profile danger-zone link; mobile confirmation dialog in Profile Settings that clears the token and routes to login. Covered by test_account.py.
 
 ### June 2026
 - **[Mobile] Built out the mobile Calendar screen** — replaced the placeholder DatePicker with a real per-day workout planner matching what the web Calendar does, redesigned for a narrow phone screen. Day tabs at top with dual current/selected markers (red dot + yellow fill); muscle-group section headers (uppercase, with a continuous bottom border across the frozen+scrollable seam) so a day's exercises read as grouped sections rather than one long alphabetical list; frozen exercise-name column on the left + horizontally scrollable session columns on the right (last 10 sessions for the selected day) showing weights as plain numbers (zero/missing → "—"); tap an exercise row → yellow border on the name cell, persists via `POST /v1/next-workout/toggle`; Auto-select + Clear buttons wired to the existing endpoints; right-aligned unit indicator ("Showing weights in KG"). Required adding three API surface pieces on the mobile side: `WorkoutLog` model, `LogsBySessionsRequest` + `getWorkoutLogsBySessions` service method, `ToggleSelectionRequest` + `toggleNextWorkoutSelection` service method, plus an optional `dayNumber` parameter on `clearAllSelections`. Architected the data layer as `CalendarRepository` (parallel fan-out across 5 endpoints + per-session-log fetch) + `CalendarViewModel` exposing a single `CalendarScreenState`, all following the existing `WorkoutRepository`/`WorkoutViewModel` patterns. Built in slices — data layer, table, tap-to-select, muscle grouping, unit indicator — each verified separately. Some polish items deferred (see Calendar polish backlog item).
