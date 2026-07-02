@@ -305,6 +305,44 @@ async function updateUserProfile(profileData) {
 }
 
 
+// Delete the current user's account (irreversible). Requires the account
+// password as a re-authentication step. On success, tears down the local
+// session so no stale token remains.
+async function deleteAccount(password) {
+    const userId = getCurrentUserId();
+
+    if (!userId) {
+        return { success: false, error: 'You must be logged in to delete your account.' };
+    }
+
+    try {
+        const response = await fetch(`${API_URL}/account/${userId}`, {
+            method: 'DELETE',
+            headers: authHeaders(),
+            body: JSON.stringify({ user_password: password })
+        });
+
+        if (response.ok) {
+            // Account is gone — clear the local session.
+            localStorage.removeItem('user_id');
+            localStorage.removeItem('user_email');
+            localStorage.removeItem('user_first_name');
+            localStorage.removeItem('access_token');
+            return { success: true };
+        } else {
+            let detail = 'Could not delete account. Please try again.';
+            try {
+                const data = await response.json();
+                if (data && data.detail) detail = data.detail;
+            } catch (e) { /* non-JSON error body */ }
+            return { success: false, error: detail };
+        }
+    } catch (error) {
+        console.error('Error deleting account:', error);
+        return { success: false, error: 'Network error. Please try again.' };
+    }
+}
+
 // ========================================
 // ROUTINE
 // ========================================

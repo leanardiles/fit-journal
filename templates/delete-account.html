@@ -1,0 +1,431 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FitJournal — Delete Account</title>
+    <link rel="stylesheet" href="/static/css/notebook.css">
+    <link rel="icon" type="image/x-icon" href="/static/images/favicon/favicon.ico">
+    <link rel="icon" type="image/png" sizes="32x32" href="/static/images/favicon/favicon-32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="/static/images/favicon/favicon-16.png">
+    <link rel="apple-touch-icon" sizes="180x180" href="/static/images/favicon/apple-touch-icon.png">
+    <style>
+        html, body {
+            height: auto;
+            min-height: 100%;
+            overflow-y: auto;
+            background: var(--bg);
+            background-image: none;
+        }
+
+        .nb-auth-page {
+            min-height: 100vh;
+            display: flex;
+            align-items: flex-start;
+            justify-content: center;
+            padding: 80px 24px 40px;
+            background: var(--bg);
+            overflow-y: auto;
+        }
+
+        .nb-auth-card {
+            position: relative;
+            width: 100%;
+            max-width: 465px;
+            border: 1px solid var(--border);
+            border-radius: 14px;
+            overflow: hidden;
+            background-image: linear-gradient(var(--line-color) 1px, transparent 1px);
+            background-size: 100% var(--lh);
+            background-position: 0 0;
+            padding: var(--lh) 36px var(--lh) 56px;
+        }
+
+        .nb-auth-card::before {
+            content: "";
+            position: absolute;
+            top: 0;
+            bottom: 0;
+            left: 26px;
+            width: 2px;
+            background: var(--margin);
+        }
+
+        .nb-auth-logo-row {
+            height: calc(var(--lh) * 2);
+            display: flex;
+            align-items: flex-end;
+            justify-content: center;
+            padding-bottom: 2px;
+        }
+
+        .nb-auth-logo {
+            height: calc(var(--lh) * 1.75);
+            width: auto;
+            opacity: 0.9;
+        }
+
+        .nb-auth-heading {
+            height: var(--lh);
+            display: flex;
+            align-items: flex-end;
+            padding-bottom: 2px;
+            font-size: 22px;
+            font-weight: bold;
+            color: var(--text);
+            letter-spacing: 0.5px;
+        }
+
+        .nb-auth-gap {
+            height: var(--lh);
+        }
+
+        .nb-auth-text {
+            line-height: var(--lh);
+            color: var(--text);
+            font-size: var(--fs);
+        }
+
+        .nb-danger-list {
+            list-style: none;
+            margin: 0;
+            padding: 0 0 0 24px;
+        }
+
+        .nb-danger-list li {
+            line-height: var(--lh);
+            color: var(--text);
+            font-size: var(--fs);
+            padding-left: 18px;
+            position: relative;
+        }
+
+        .nb-danger-list li::before {
+            content: "–";
+            position: absolute;
+            left: 2px;
+            color: var(--red);
+        }
+
+        .nb-auth-label {
+            height: var(--lh);
+            display: flex;
+            align-items: flex-end;
+            padding-bottom: 2px;
+            font-size: var(--fs);
+            color: var(--text);
+            letter-spacing: 0.5px;
+        }
+
+        .nb-auth-readonly {
+            height: var(--lh);
+            display: flex;
+            align-items: flex-end;
+            padding: 0 2px 4px;
+            color: var(--muted);
+            font-size: var(--fs);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .nb-auth-field {
+            position: relative;
+        }
+
+        .nb-auth-eye {
+            position: absolute;
+            right: 4px;
+            bottom: 4px;
+            background: transparent;
+            border: none;
+            cursor: pointer;
+            color: var(--muted);
+            font-size: 16px;
+            padding: 0 4px;
+            line-height: 1;
+            opacity: 0.7;
+            transition: opacity 0.12s;
+        }
+
+        .nb-auth-eye:hover {
+            opacity: 1;
+        }
+
+        .nb-auth-input {
+            background: transparent;
+            border: none;
+            color: var(--text);
+            font-family: 'Patrick Hand', cursive;
+            font-size: var(--fs);
+            height: var(--lh);
+            width: 100%;
+            padding: 0 2px 4px;
+            outline: none;
+            display: block;
+        }
+
+        .nb-auth-input::placeholder {
+            color: var(--muted);
+        }
+
+        .nb-auth-field::after {
+            content: "";
+            position: absolute;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            height: 1.5px;
+            background: var(--red-border);
+            opacity: 0;
+            transition: opacity 0.12s;
+        }
+
+        .nb-auth-field:focus-within::after {
+            opacity: 1;
+        }
+
+        .nb-auth-error {
+            height: var(--lh);
+            display: none;
+            align-items: flex-end;
+            padding-bottom: 2px;
+            color: rgba(192, 57, 43, 0.85);
+            font-size: 14px;
+        }
+
+        .nb-auth-error.visible {
+            display: flex;
+        }
+
+        .nb-auth-btn-row {
+            height: calc(var(--lh) * 2);
+            display: flex;
+            align-items: flex-end;
+            justify-content: center;
+            gap: 14px;
+            padding-bottom: 2px;
+        }
+
+        .nb-auth-btn {
+            background: transparent;
+            border: 2px solid var(--red-border);
+            color: var(--text);
+            font-family: 'Patrick Hand', cursive;
+            font-size: var(--fs);
+            height: calc(var(--lh) - 4px);
+            padding: 0 22px;
+            cursor: pointer;
+            border-radius: 9px;
+            transition: all 0.12s;
+            letter-spacing: 0.5px;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+        }
+
+        .nb-auth-btn:hover {
+            border-color: rgba(150, 30, 30, 0.8);
+            background: var(--active-bg);
+        }
+
+        .nb-auth-btn:active {
+            transform: scale(0.98);
+        }
+
+        /* Cancel is the dominant, safe default */
+        .nb-cancel-btn {
+            background: var(--active-bg);
+            border-color: rgba(150, 30, 30, 0.5);
+            color: var(--text);
+        }
+
+        /* Delete is the de-emphasized, destructive action */
+        .nb-delete-btn {
+            background: transparent;
+            border: 1px solid var(--red);
+            color: var(--red);
+        }
+
+        .nb-delete-btn:hover {
+            background: rgba(192, 57, 43, 0.12);
+            border-color: var(--red);
+        }
+
+        .nb-delete-btn:disabled {
+            opacity: 0.4;
+            cursor: not-allowed;
+            background: transparent;
+        }
+
+        .nb-delete-btn:disabled:hover {
+            background: transparent;
+            transform: none;
+        }
+
+        .nb-auth-link {
+            height: var(--lh);
+            display: flex;
+            align-items: flex-end;
+            justify-content: center;
+            padding-bottom: 2px;
+            font-size: 14px;
+            color: var(--muted);
+        }
+
+        .nb-auth-link a {
+            color: var(--text);
+            text-decoration: underline;
+            text-decoration-color: var(--red-border);
+            text-underline-offset: 3px;
+            margin-left: 5px;
+        }
+
+        .nb-auth-link a:hover {
+            text-decoration-color: var(--red);
+        }
+    </style>
+</head>
+<body>
+
+<div class="nb-auth-page">
+    <div class="nb-auth-card">
+        <div class="nb-auth-logo-row">
+            <img src="/static/images/logo-drawn-both-v4.3-transparent.png" alt="FitJournal" class="nb-auth-logo">
+        </div>
+
+        <!-- LOGGED-IN: the actual confirmation -->
+        <div id="logged-in-view" style="display:none;">
+            <div class="nb-auth-gap"></div>
+            <div class="nb-auth-heading">Delete your account?</div>
+
+            <div class="nb-auth-text">This permanently deletes your FitJournal account and everything in it:</div>
+            <ul class="nb-danger-list">
+                <li>Profile and settings</li>
+                <li>Exercises and current weights</li>
+                <li>Your routine</li>
+                <li>Workout logs and session history</li>
+                <li>Saved next-workout selections</li>
+            </ul>
+            <div class="nb-auth-text"><span style="color: var(--red); font-weight: bold;">(!)</span> This cannot be undone and your data cannot be recovered.</div>
+
+            <div class="nb-auth-gap"></div>
+            <div class="nb-auth-label">Account</div>
+            <div class="nb-auth-readonly" id="account-email">—</div>
+
+            <div class="nb-auth-label">Enter your password to confirm</div>
+            <div class="nb-auth-field">
+                <input type="password" id="password" class="nb-auth-input" placeholder="••••••••" autocomplete="current-password" style="padding-right: 34px;">
+                <button type="button" class="nb-auth-eye" data-target="password" aria-label="Show password">
+                    <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.8">
+                        <path class="eye-open" d="M1 12s4-7 11-7 11 7 11 7-4 7-11 7-11-7-11-7z"/>
+                        <circle class="eye-open" cx="12" cy="12" r="3"/>
+                        <path class="eye-closed" d="M3 3l18 18" style="display:none;"/>
+                    </svg>
+                </button>
+            </div>
+
+            <div id="error-msg" class="nb-auth-error"></div>
+
+            <div class="nb-auth-btn-row">
+                <a href="/web/profile" class="nb-auth-btn nb-cancel-btn">Cancel</a>
+                <button id="delete-btn" class="nb-auth-btn nb-delete-btn" disabled>Delete my account</button>
+            </div>
+        </div>
+
+        <!-- LOGGED-OUT: public info + prompt to log in -->
+        <div id="logged-out-view" style="display:none;">
+            <div class="nb-auth-heading">Delete your account</div>
+            <div class="nb-auth-text">
+                To delete your FitJournal account and all of its data, log in and then confirm on this page. Deletion is permanent and removes your profile, exercises, routine, workout logs, session history, and saved selections. It cannot be undone.
+            </div>
+            <div class="nb-auth-btn-row">
+                <a href="/web/login" class="nb-auth-btn nb-cancel-btn">Log in to continue</a>
+            </div>
+            <div class="nb-auth-link">
+                Changed your mind? <a href="/web/login">Back to sign in</a>
+            </div>
+        </div>
+
+        <!-- DONE: post-deletion confirmation -->
+        <div id="done-view" style="display:none;">
+            <div class="nb-auth-heading">Account deleted</div>
+            <div class="nb-auth-text">
+                Your account and all associated data have been permanently deleted. Taking you back to the sign-in page.
+            </div>
+            <div class="nb-auth-link"><a href="/web/login">Go to sign in now</a></div>
+        </div>
+
+    </div>
+</div>
+
+<script src="/static/js/api.js"></script>
+<script>
+    // Restore light/dark mode preference
+    if (localStorage.getItem('nb-mode') === 'light') {
+        document.body.classList.add('light');
+    }
+
+    const loggedInView = document.getElementById('logged-in-view');
+    const loggedOutView = document.getElementById('logged-out-view');
+    const doneView = document.getElementById('done-view');
+
+    if (isLoggedIn()) {
+        loggedInView.style.display = '';
+        const email = getCurrentUserEmail();
+        if (email) document.getElementById('account-email').textContent = email;
+        initDeleteControls();
+    } else {
+        loggedOutView.style.display = '';
+    }
+
+    function initDeleteControls() {
+        const pwd = document.getElementById('password');
+        const deleteBtn = document.getElementById('delete-btn');
+        const errorMsg = document.getElementById('error-msg');
+
+        // The password entry is the friction gate: no password, no delete.
+        pwd.addEventListener('input', () => {
+            deleteBtn.disabled = pwd.value.length === 0;
+            errorMsg.classList.remove('visible');
+        });
+
+        async function attemptDelete() {
+            const password = pwd.value;
+            if (!password) return;
+
+            errorMsg.classList.remove('visible');
+            deleteBtn.disabled = true;
+            deleteBtn.textContent = 'Deleting\u2026';
+
+            const result = await deleteAccount(password);
+            if (result.success) {
+                loggedInView.style.display = 'none';
+                doneView.style.display = '';
+                setTimeout(() => { window.location.href = '/web/login'; }, 2500);
+            } else {
+                errorMsg.textContent = result.error;
+                errorMsg.classList.add('visible');
+                deleteBtn.disabled = false;
+                deleteBtn.textContent = 'Delete my account';
+            }
+        }
+
+        deleteBtn.addEventListener('click', attemptDelete);
+        pwd.addEventListener('keydown', (e) => {
+            if (e.key === 'Enter' && pwd.value.length > 0) attemptDelete();
+        });
+
+        // Password visibility toggle
+        document.querySelectorAll('.nb-auth-eye').forEach(btn => {
+            btn.addEventListener('click', () => {
+                const input = document.getElementById(btn.dataset.target);
+                const showing = input.type === 'text';
+                input.type = showing ? 'password' : 'text';
+                btn.querySelector('.eye-closed').style.display = showing ? 'none' : '';
+                btn.setAttribute('aria-label', showing ? 'Show password' : 'Hide password');
+            });
+        });
+    }
+</script>
+
+</body>
+</html>

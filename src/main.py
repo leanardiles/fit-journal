@@ -164,6 +164,10 @@ async def login_page(request: Request):
 async def forgot_password_page(request: Request):
     return templates.TemplateResponse("forgot-password.html", {"request": request})
 
+@app.get("/web/delete-account")
+async def delete_account_page(request: Request):
+    return templates.TemplateResponse("delete-account.html", {"request": request})
+
 @app.get("/web/register")
 async def register_page(request: Request):
     return templates.TemplateResponse("register.html", {"request": request})
@@ -333,6 +337,39 @@ def update_profile(user_id: int, profile: schemas.UserProfileUpdate, db: Session
     db.refresh(user)
     
     return user
+
+
+# ========== ACCOUNT MANAGEMENT ROUTES ==========
+
+@api_v1.delete("/account/{user_id}")
+def delete_account(
+    user_id: int,
+    payload: schemas.AccountDeleteRequest,
+    db: Session = Depends(get_db),
+    current_user: models.User = Depends(verify_user_access)
+):
+    """
+    Permanently delete the authenticated user's account and all associated data.
+
+    Requires the account password in the request body as a re-authentication
+    step, layered on top of the JWT and the verify_user_access ownership check.
+    Deleting the user row cascades to exercises, routine, routine muscles,
+    workout state, workout logs, workout sessions, and next-workout selections
+    (all foreign keys are ON DELETE CASCADE).
+    """
+    user = db.query(models.User).filter(models.User.user_id == user_id).first()
+
+    if not user:
+        raise HTTPException(status_code=404, detail="User not found")
+
+    # Re-authenticate before destroying data: confirm the password matches.
+    if not verify_password(payload.user_password, user.user_password):
+        raise HTTPException(status_code=401, detail="Incorrect password")
+
+    db.delete(user)
+    db.commit()
+
+    return {"message": "Account deleted successfully"}
 
 
 # ========== EXERCISE ROUTES ==========

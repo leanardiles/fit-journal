@@ -14,6 +14,9 @@ class UserCreate(UserBase):
 class UserLogin(UserBase):
     user_password: str
 
+class AccountDeleteRequest(BaseModel):
+    user_password: str
+
 class UserResponse(UserBase):
     user_id: int
     user_first_name: Optional[str] = None
