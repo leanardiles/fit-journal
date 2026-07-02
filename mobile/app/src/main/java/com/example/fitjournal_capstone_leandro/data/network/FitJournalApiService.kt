@@ -2,6 +2,7 @@ package com.example.fitjournal_capstone_leandro.data.network
 
 import com.example.fitjournal_capstone_leandro.data.local.TokenManager
 import com.example.fitjournal_capstone_leandro.data.model.CreateExerciseRequest
+import com.example.fitjournal_capstone_leandro.data.model.DeleteAccountRequest
 import com.example.fitjournal_capstone_leandro.data.model.LoginRequest
 import com.example.fitjournal_capstone_leandro.data.model.LoginResponse
 import com.example.fitjournal_capstone_leandro.data.model.LogsBySessionsRequest
@@ -24,6 +25,7 @@ import okhttp3.OkHttpClient
 import retrofit2.converter.gson.GsonConverterFactory
 import retrofit2.http.Body
 import retrofit2.http.DELETE
+import retrofit2.http.HTTP
 import retrofit2.http.GET
 import retrofit2.http.Query
 import retrofit2.http.POST
@@ -225,6 +227,20 @@ interface FitJournalApiService {
         @Path("user_id") userId: Int,
         @Body request: LogsBySessionsRequest
     ): List<WorkoutLog>
+
+    /**
+     * Permanently delete the user's account and all their data.
+     *
+     * DELETE /v1/account/{user_id}
+     *
+     * Retrofit's @DELETE does not allow a request body, so this uses
+     * @HTTP(hasBody = true) to send the password for re-authentication.
+     */
+    @HTTP(method = "DELETE", path = "account/{user_id}", hasBody = true)
+    suspend fun deleteAccount(
+        @Path("user_id") userId: Int,
+        @Body request: DeleteAccountRequest
+    ): Response<Unit>
 }
 
 

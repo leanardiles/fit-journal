@@ -247,3 +247,14 @@ data class ToggleSelectionRequest(
     val exercise_id: Int,
     val is_selected: Boolean
 )
+
+
+/**
+ * Request body for DELETE /v1/account/{user_id}
+ *
+ * The account password is re-checked by the backend before deletion,
+ * on top of the JWT. Sent as a body on a DELETE request.
+ */
+data class DeleteAccountRequest(
+    val user_password: String
+)

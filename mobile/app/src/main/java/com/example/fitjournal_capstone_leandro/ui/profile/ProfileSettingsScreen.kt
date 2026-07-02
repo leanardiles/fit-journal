@@ -1,6 +1,7 @@
 package com.example.fitjournal_capstone_leandro.ui.profile
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
@@ -17,6 +18,8 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardType
+import androidx.compose.ui.text.input.PasswordVisualTransformation
+import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.fitjournal_capstone_leandro.ui.theme.myCustomFont
@@ -25,6 +28,7 @@ private val AccentYellow = Color(0xFFFFEB3B)
 private val BackgroundDark = Color(0xFF1B1B1E)
 private val SurfaceDark = Color(0xFF2C2C2E)
 private val TextGray = Color(0xFF8E8E93)
+private val DangerRed = Color(0xFFFF453A)
 
 private val timezones = listOf(
     // Americas
@@ -64,7 +68,8 @@ private val timezones = listOf(
 @Composable
 fun ProfileSettingsScreen(
     viewModel: ProfileSettingsViewModel,
-    onSaved: () -> Unit
+    onSaved: () -> Unit,
+    onAccountDeleted: () -> Unit
 ) {
     val state by viewModel.state.collectAsState()
     val snackbarHostState = remember { SnackbarHostState() }
@@ -75,6 +80,14 @@ fun ProfileSettingsScreen(
             snackbarHostState.showSnackbar("Profile saved!")
             viewModel.resetState()
             onSaved()
+        }
+    }
+
+    // Account deleted -> leave for login (backstack cleared by the caller)
+    LaunchedEffect(state.accountDeleted) {
+        if (state.accountDeleted) {
+            onAccountDeleted()
+            viewModel.acknowledgeAccountDeleted()
         }
     }
 
@@ -302,8 +315,151 @@ fun ProfileSettingsScreen(
                     }
 
                     Spacer(modifier = Modifier.height(32.dp))
+
+                    // ---- Danger zone ----
+                    Box(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .height(1.dp)
+                            .background(Color(0xFF3A3A3C))
+                    )
+
+                    Spacer(modifier = Modifier.height(24.dp))
+
+                    Text(
+                        text = "Danger zone",
+                        fontSize = 14.sp,
+                        color = DangerRed,
+                        fontWeight = FontWeight.Bold,
+                        fontFamily = myCustomFont
+                    )
+
+                    Spacer(modifier = Modifier.height(8.dp))
+
+                    Text(
+                        text = "Permanently delete your account and all associated data. This can't be undone.",
+                        fontSize = 13.sp,
+                        color = TextGray,
+                        fontFamily = myCustomFont
+                    )
+
+                    Spacer(modifier = Modifier.height(12.dp))
+
+                    OutlinedButton(
+                        onClick = { viewModel.showDeleteAccountDialog() },
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .height(50.dp),
+                        border = BorderStroke(2.dp, DangerRed),
+                        shape = RoundedCornerShape(10.dp),
+                        colors = ButtonDefaults.outlinedButtonColors(contentColor = DangerRed)
+                    ) {
+                        Text(
+                            text = "Delete account",
+                            color = DangerRed,
+                            fontWeight = FontWeight.Bold,
+                            fontSize = 16.sp,
+                            fontFamily = myCustomFont
+                        )
+                    }
+
+                    Spacer(modifier = Modifier.height(32.dp))
                 }
             }
+        }
+
+        // ---- Delete account confirmation dialog ----
+        if (state.showDeleteDialog) {
+            var deletePassword by remember { mutableStateOf("") }
+            var showPassword by remember { mutableStateOf(false) }
+
+            AlertDialog(
+                onDismissRequest = {
+                    if (!state.deleteInProgress) viewModel.dismissDeleteAccountDialog()
+                },
+                containerColor = SurfaceDark,
+                titleContentColor = Color.White,
+                textContentColor = Color.White,
+                title = {
+                    Text(
+                        text = "Delete account?",
+                        fontFamily = myCustomFont,
+                        fontWeight = FontWeight.Bold
+                    )
+                },
+                text = {
+                    Column {
+                        Text(
+                            text = "This permanently deletes your account and all associated data: " +
+                                    "profile, exercises, routine, workout logs, session history, and saved " +
+                                    "selections. This can't be undone.",
+                            fontFamily = myCustomFont,
+                            fontSize = 14.sp,
+                            color = TextGray
+                        )
+
+                        Spacer(modifier = Modifier.height(16.dp))
+
+                        OutlinedTextField(
+                            value = deletePassword,
+                            onValueChange = { deletePassword = it },
+                            placeholder = { Text("Password", color = TextGray) },
+                            singleLine = true,
+                            visualTransformation = if (showPassword) VisualTransformation.None else PasswordVisualTransformation(),
+                            keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password),
+                            trailingIcon = {
+                                Text(
+                                    text = if (showPassword) "Hide" else "Show",
+                                    color = AccentYellow,
+                                    fontFamily = myCustomFont,
+                                    fontSize = 13.sp,
+                                    modifier = Modifier
+                                        .clickable { showPassword = !showPassword }
+                                        .padding(horizontal = 12.dp)
+                                )
+                            },
+                            modifier = Modifier.fillMaxWidth(),
+                            colors = outlinedColors(),
+                            shape = RoundedCornerShape(10.dp)
+                        )
+
+                        if (state.deleteError != null) {
+                            Spacer(modifier = Modifier.height(8.dp))
+                            Text(
+                                text = state.deleteError!!,
+                                color = DangerRed,
+                                fontFamily = myCustomFont,
+                                fontSize = 13.sp
+                            )
+                        }
+                    }
+                },
+                confirmButton = {
+                    TextButton(
+                        onClick = { viewModel.deleteAccount(deletePassword) },
+                        enabled = deletePassword.isNotBlank() && !state.deleteInProgress
+                    ) {
+                        Text(
+                            text = if (state.deleteInProgress) "Deleting\u2026" else "Delete",
+                            color = if (deletePassword.isNotBlank() && !state.deleteInProgress) DangerRed else TextGray,
+                            fontFamily = myCustomFont,
+                            fontWeight = FontWeight.Bold
+                        )
+                    }
+                },
+                dismissButton = {
+                    TextButton(
+                        onClick = { viewModel.dismissDeleteAccountDialog() },
+                        enabled = !state.deleteInProgress
+                    ) {
+                        Text(
+                            text = "Cancel",
+                            color = Color.White,
+                            fontFamily = myCustomFont
+                        )
+                    }
+                }
+            )
         }
 
         SnackbarHost(

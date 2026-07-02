@@ -5,6 +5,7 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
 import com.example.fitjournal_capstone_leandro.data.local.TokenManager
 import com.example.fitjournal_capstone_leandro.data.model.UserProfileUpdate
+import com.example.fitjournal_capstone_leandro.data.model.DeleteAccountRequest
 import com.example.fitjournal_capstone_leandro.data.network.RetrofitClient
 import com.example.fitjournal_capstone_leandro.data.model.UserProfile
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -28,7 +29,11 @@ data class ProfileSettingsScreenState(
     val timezone: String = "America/New_York",
     val unitPreference: String = "metric",
     val height: String = "",
-    val weight: String = ""
+    val weight: String = "",
+    val showDeleteDialog: Boolean = false,
+    val deleteInProgress: Boolean = false,
+    val deleteError: String? = null,
+    val accountDeleted: Boolean = false
 )
 
 class ProfileSettingsViewModel(
@@ -177,6 +182,54 @@ class ProfileSettingsViewModel(
                 )
             }
         }
+    }
+
+    // ---- Account deletion ----
+
+    fun showDeleteAccountDialog() {
+        _state.value = _state.value.copy(showDeleteDialog = true, deleteError = null)
+    }
+
+    fun dismissDeleteAccountDialog() {
+        if (_state.value.deleteInProgress) return
+        _state.value = _state.value.copy(showDeleteDialog = false, deleteError = null)
+    }
+
+    fun deleteAccount(password: String) {
+        if (password.isBlank()) return
+        viewModelScope.launch {
+            _state.value = _state.value.copy(deleteInProgress = true, deleteError = null)
+            try {
+                val userId = tokenManager.getUserId()
+                val response = apiService.deleteAccount(userId, DeleteAccountRequest(password))
+                if (response.isSuccessful) {
+                    // Account is gone — tear down the local session.
+                    tokenManager.clearAll()
+                    _state.value = _state.value.copy(
+                        deleteInProgress = false,
+                        showDeleteDialog = false,
+                        accountDeleted = true
+                    )
+                } else {
+                    val msg = if (response.code() == 401) {
+                        "Incorrect password"
+                    } else {
+                        "Could not delete account. Please try again."
+                    }
+                    _state.value = _state.value.copy(deleteInProgress = false, deleteError = msg)
+                }
+            } catch (e: Exception) {
+                _state.value = _state.value.copy(
+                    deleteInProgress = false,
+                    deleteError = e.message ?: "Network error. Please try again."
+                )
+            }
+        }
+    }
+
+    /** Reset the flag after the screen has navigated away, so re-entry doesn't re-fire. */
+    fun acknowledgeAccountDeleted() {
+        _state.value = _state.value.copy(accountDeleted = false)
     }
 
     fun resetState() {

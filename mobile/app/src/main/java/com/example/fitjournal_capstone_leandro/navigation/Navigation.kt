@@ -110,6 +110,11 @@ fun AppNavigation(
                 onSaved = {
                     authViewModel.fetchProfile()
                     navController.popBackStack()
+                },
+                onAccountDeleted = {
+                    navController.navigate(Routes.LOGIN) {
+                        popUpTo(0) { inclusive = true }
+                    }
                 }
             )
         }
