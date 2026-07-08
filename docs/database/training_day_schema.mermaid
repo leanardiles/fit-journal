@@ -1,0 +1,49 @@
+erDiagram
+    users ||--o{ training_days : "has"
+    users ||--o{ training_day_muscles : "has"
+    users ||--o{ training_day_exercises : "has"
+    training_days ||--o{ training_day_muscles : "targets (per_muscle)"
+    training_days ||--o{ training_day_exercises : "includes"
+    exercises ||--o{ training_day_exercises : "referenced by"
+
+    users {
+        int user_id PK
+        varchar user_email
+    }
+
+    exercises {
+        int exercise_id PK
+        int user_id FK
+        varchar exercise_name
+        enum exercise_muscle_group
+        int exercise_times_performed "drives rotation"
+    }
+
+    training_days {
+        int training_day_id PK
+        int user_id FK
+        int day_number "1-7 ordinal, uniq with user"
+        varchar name "optional, e.g. Lower A"
+        enum day_type "per_muscle or manual"
+        timestamp created_at
+        timestamp updated_at
+    }
+
+    training_day_muscles {
+        int training_day_muscle_id PK
+        int user_id FK
+        int training_day_id FK
+        enum muscle_group "uniq with day"
+        int exercise_count "default 3, min 1"
+        timestamp created_at
+        timestamp updated_at
+    }
+
+    training_day_exercises {
+        int training_day_exercise_id PK
+        int user_id FK
+        int training_day_id FK
+        int exercise_id FK "uniq with day"
+        int position "optional order"
+        timestamp created_at
+    }

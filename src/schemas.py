@@ -84,26 +84,49 @@ class ExerciseResponse(ExerciseBase):
 
 # ========== ROUTINE SCHEMAS ==========
 
-class RoutineDayCreate(BaseModel):
-    day_number: int  # 1-7
-    muscle_groups: list[str]  # List of muscle groups for this day
+class TrainingDayMuscleCreate(BaseModel):
+    muscle_group: str            # validated against MuscleGroupEnum at the endpoint
+    exercise_count: int = 3      # how many exercises to draw for this muscle (per_muscle)
 
-class RoutineDayResponse(BaseModel):
-    routine_day_id: int
-    user_id: int
-    day_number: int
-    muscle_group: str
-    
-    class Config:
-        from_attributes = True
+
+class TrainingDayCreate(BaseModel):
+    day_number: int                              # 1-7
+    day_type: str                                # "per_muscle" or "manual"
+    name: Optional[str] = None                   # optional label, e.g. "Lower A"
+    muscles: list[TrainingDayMuscleCreate] = []  # per_muscle days: muscles + counts
+    exercise_ids: list[int] = []                 # per_muscle: the pool; manual: exact list
+
 
 class RoutineSetup(BaseModel):
-    days_per_week: int  # 1-7
-    routine_days: list[RoutineDayCreate]  # Each day with its muscle groups
+    days: list[TrainingDayCreate]                # days_per_week is derived from len(days)
+
+
+# --- Response shapes ---
+
+class TrainingDayMuscleResponse(BaseModel):
+    muscle_group: str
+    exercise_count: int
+
+
+class TrainingDayExerciseResponse(BaseModel):
+    exercise_id: int
+    exercise_name: str
+    muscle_group: str
+    position: Optional[int] = None
+
+
+class TrainingDayResponse(BaseModel):
+    training_day_id: int
+    day_number: int
+    day_type: str
+    name: Optional[str] = None
+    muscles: list[TrainingDayMuscleResponse] = []
+    exercises: list[TrainingDayExerciseResponse] = []
+
 
 class RoutineResponse(BaseModel):
-    days_per_week: int
-    routine_days: dict[int, list[str]]  # day_number -> list of muscle groups
+    days_per_week: int                           # derived = len(days)
+    days: list[TrainingDayResponse]
 
 
     # ========== WORKOUT SCHEMAS ==========

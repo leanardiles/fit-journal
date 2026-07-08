@@ -1,0 +1,143 @@
+erDiagram
+    users ||--o{ exercises : "user_id"
+    users ||--o{ routine_days : "user_id"
+    users ||--o{ routine_muscles_per_day : "user_id"
+    users ||--o| workout_state : "user_id (unique)"
+    users ||--o{ workout_logs : "user_id"
+    users ||--o{ next_workout_selections : "user_id"
+    users ||--o{ workout_sessions : "user_id"
+    users ||--o{ training_days : "user_id"
+    users ||--o{ training_day_muscles : "user_id"
+    users ||--o{ training_day_exercises : "user_id"
+
+    exercises ||--o{ workout_logs : "exercise_id"
+    exercises ||--o{ next_workout_selections : "exercise_id"
+    exercises ||--o{ training_day_exercises : "exercise_id"
+
+    workout_sessions ||--o{ workout_logs : "session_id (nullable)"
+
+    training_days ||--o{ training_day_muscles : "training_day_id"
+    training_days ||--o{ training_day_exercises : "training_day_id"
+
+    users {
+        int user_id PK "autoincrement"
+        varchar user_email "100, unique, not null"
+        varchar user_password "255, not null (bcrypt hash)"
+        varchar user_first_name "50, nullable"
+        varchar user_last_name "50, nullable"
+        enum user_sex "M/F/NB, nullable"
+        int user_age "nullable, check 0-100"
+        enum user_unit_preference "metric/imperial, default metric"
+        decimal user_weight "5,2 nullable, check 0-300"
+        int user_height "nullable, check 0-300"
+        varchar user_timezone "50, default America/New_York"
+        int user_subscription "default 0, unused"
+        bool user_is_active "default true"
+        timestamp user_created_at "default now"
+        timestamp user_updated_at "default now, on update"
+    }
+
+    default_exercises {
+        int default_exercise_id PK "autoincrement"
+        varchar exercise_name "50, not null"
+        enum exercise_muscle_group "MuscleGroupEnum, not null"
+        varchar exercise_link "500, nullable"
+    }
+
+    exercises {
+        int exercise_id PK "autoincrement"
+        varchar exercise_name "50, not null"
+        enum exercise_muscle_group "MuscleGroupEnum, not null"
+        decimal exercise_user_current_weight "5,2 nullable, check 0-300"
+        int user_id FK "not null, cascade"
+        bool exercise_is_in_routine "default true, DEPRECATED"
+        int exercise_times_performed "default 0, drives rotation"
+        varchar exercise_link "500, nullable"
+        varchar comments "300, nullable"
+        timestamp exercise_created_at "default now"
+        timestamp exercise_updated_at "default now, on update"
+    }
+
+    routine_days {
+        int routine_id PK "autoincrement, OLD header table"
+        int user_id FK "not null, cascade"
+        int days_per_week "not null, check 1-7"
+        timestamp created_at "default now"
+        timestamp updated_at "default now, on update"
+    }
+
+    routine_muscles_per_day {
+        int routine_day_id PK "autoincrement, SUPERSEDED"
+        int user_id FK "not null, cascade"
+        int day_number "not null, 1-7"
+        enum muscle_group "MuscleGroupEnum, not null"
+        timestamp created_at "default now"
+        timestamp updated_at "default now, on update"
+    }
+
+    workout_state {
+        int state_id PK "autoincrement"
+        int user_id FK "not null, unique, cascade"
+        int current_day_number "default 1"
+        date last_workout_date "nullable"
+        timestamp updated_at "default now, on update"
+    }
+
+    workout_sessions {
+        int session_id PK "autoincrement"
+        int user_id FK "not null, cascade"
+        int routine_day_number "not null"
+        date workout_date "not null"
+        int session_order "not null"
+        timestamp created_at "default now"
+    }
+
+    workout_logs {
+        int log_id PK "autoincrement"
+        int user_id FK "not null, cascade"
+        int routine_day_number "not null"
+        int exercise_id FK "not null, cascade"
+        int sets_completed "default 0"
+        int reps_completed "default 0"
+        decimal weight_used "5,2 nullable"
+        date workout_date "not null"
+        int session_id FK "nullable, cascade"
+        timestamp created_at "default now"
+    }
+
+    next_workout_selections {
+        int selection_id PK "autoincrement"
+        int user_id FK "not null, cascade"
+        int exercise_id FK "not null, cascade"
+        bool is_selected "default false"
+        timestamp updated_at "default now, on update"
+    }
+
+    training_days {
+        int training_day_id PK "autoincrement, NEW"
+        int user_id FK "not null, cascade"
+        int day_number "not null, 1-7 ordinal"
+        varchar name "50, nullable, e.g. Lower A"
+        enum day_type "per_muscle/manual, not null, default per_muscle"
+        timestamp created_at "default now"
+        timestamp updated_at "default now, on update"
+    }
+
+    training_day_muscles {
+        int training_day_muscle_id PK "autoincrement, NEW"
+        int user_id FK "not null, cascade"
+        int training_day_id FK "not null, cascade"
+        enum muscle_group "MuscleGroupEnum, not null, uniq w/ day"
+        int exercise_count "not null, default 3, check min 1"
+        timestamp created_at "default now"
+        timestamp updated_at "default now, on update"
+    }
+
+    training_day_exercises {
+        int training_day_exercise_id PK "autoincrement, NEW"
+        int user_id FK "not null, cascade"
+        int training_day_id FK "not null, cascade"
+        int exercise_id FK "not null, cascade, uniq w/ day"
+        int position "nullable, order hint"
+        timestamp created_at "default now"
+    }

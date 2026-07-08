@@ -33,6 +33,40 @@
         background: var(--active-bg);
     }
 
+    /* Routine type buttons */
+    .nb-type-group {
+        display: flex;
+        gap: 10px;
+        flex-wrap: wrap;
+        align-items: flex-end;
+        min-height: var(--lh);
+        padding-bottom: 4px;
+    }
+
+    .nb-type-btn {
+        background: transparent;
+        border: 1px solid var(--border);
+        color: var(--muted);
+        font-family: 'Patrick Hand', cursive;
+        font-size: var(--fs);
+        padding: 0 16px;
+        height: calc(var(--lh) - 8px);
+        cursor: pointer;
+        border-radius: 8px;
+        transition: all 0.12s;
+    }
+
+    .nb-type-btn:hover { color: var(--text); }
+    .nb-type-btn.nb-selected {
+        border-color: var(--red-border);
+        color: #ccc;
+        background: var(--active-bg);
+    }
+
+    /* Type locked (edit mode): show the current type, but not changeable */
+    .nb-type-group.nb-locked .nb-type-btn { opacity: 0.45; pointer-events: none; cursor: default; }
+    .nb-type-group.nb-locked .nb-type-btn.nb-selected { opacity: 0.85; }
+
     .nb-muscle-group {
         display: flex;
         flex-wrap: wrap;
@@ -71,6 +105,28 @@
         color: var(--red);
     }
 
+    .nb-day-heading.nb-day-empty {
+        border-left: 2px solid var(--red);
+        padding-left: 6px;
+        background: var(--active-bg);
+    }
+
+    /* Optional day name field */
+    .nb-day-name-input {
+        background: transparent;
+        border: none;
+        border-bottom: 1px solid rgba(255, 255, 255, 0.12);
+        color: var(--text);
+        font-family: 'Patrick Hand', cursive;
+        font-size: 14px;
+        padding: 0 4px 2px;
+        margin-left: 12px;
+        width: 160px;
+        outline: none;
+    }
+    .nb-day-name-input:focus { border-bottom-color: var(--red-border); }
+    .nb-day-name-input::placeholder { color: var(--muted); }
+
     .nb-selected-tag {
         font-size: 12px;
         color: var(--muted);
@@ -79,15 +135,135 @@
         align-items: flex-end;
         padding-bottom: 4px;
     }
-
     .nb-selected-tag span { color: var(--text); margin-left: 4px; }
 
-    .nb-day-heading.nb-day-empty {
-        border-left: 2px solid var(--red);
-        padding-left: 6px;
-        background: var(--active-bg);
+    /* Pool expander */
+    .nb-expander {
+        display: inline-flex;
+        align-items: flex-end;
+        height: var(--lh);
+        padding-bottom: 4px;
+        color: var(--red);
+        font-size: 13px;
+        cursor: pointer;
+        user-select: none;
     }
-    
+    .nb-expander:hover { color: var(--text); }
+
+    /* Exercise pool */
+    .nb-pool {
+        border-left: 2px solid var(--border);
+        padding: 0 0 6px 12px;
+        margin-bottom: 4px;
+        display: flex;
+        gap: 32px;
+        overflow-x: auto;
+        align-items: flex-start;
+    }
+
+    .nb-pool-col {
+        flex: 0 0 auto;
+        min-width: 150px;
+    }
+
+    .nb-pool-muscle-row {
+        display: flex;
+        align-items: flex-end;
+        height: var(--lh);
+        padding-bottom: 4px;
+        gap: 14px;
+    }
+
+    .nb-pool-muscle-name {
+        font-size: 16px;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+        color: var(--text);
+        border-bottom: 2px solid var(--red);
+        padding-bottom: 1.5px;
+        display: inline-block;
+    }
+
+    .nb-stepper { display: inline-flex; align-items: center; gap: 8px; }
+    .nb-step-btn {
+        background: transparent;
+        border: 1px solid var(--border);
+        color: var(--muted);
+        width: 20px;
+        height: 20px;
+        border-radius: 6px;
+        cursor: pointer;
+        font-family: 'Patrick Hand', cursive;
+        line-height: 1;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding: 0;
+    }
+    .nb-step-btn:hover { color: var(--text); border-color: var(--red-border); }
+    .nb-step-val { min-width: 16px; text-align: center; color: var(--text); font-size: 14px; }
+    .nb-step-label { font-size: 11px; color: var(--muted); }
+
+    .nb-pool-ex {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        height: calc(var(--lh) - 4px);
+        padding-left: 2px;
+    }
+    .nb-checkbox {
+        width: 14px;
+        height: 14px;
+        accent-color: rgba(150, 30, 30, 0.8);
+        cursor: pointer;
+    }
+    .nb-pool-ex label { font-size: 14px; color: var(--text); cursor: pointer; }
+    .nb-pool-empty { font-size: 12px; color: var(--red); padding-left: 2px; height: calc(var(--lh) - 4px); display: flex; align-items: center; }
+
+    /* Manual day: Exercises-page-style tabs + scrollable list */
+    .nb-manual-layout { display: flex; gap: 0; margin-bottom: 4px; }
+    .nb-manual-tabs { display: flex; flex-direction: column; width: 120px; min-width: 120px; flex-shrink: 0; border-right: 1px solid var(--border); padding-right: 8px; }
+    .nb-manual-tab { display: flex; align-items: flex-end; height: var(--lh); padding: 0 10px 4px; color: var(--muted); font-family: 'Patrick Hand', cursive; font-size: 14px; cursor: pointer; border-left: 2px solid transparent; user-select: none; }
+    .nb-manual-tab:hover { color: var(--text); }
+    .nb-manual-tab.active { color: var(--text); border-left-color: var(--red-border); }
+    .nb-manual-tab .cnt { margin-left: 6px; font-size: 11px; color: var(--red); }
+    .nb-manual-list { flex: 1; padding-left: 20px; max-height: calc(var(--lh) * 6); overflow-y: auto; }
+
+    /* Per-day type toggle (mixed routines) */
+    .nb-daytype-group { display: flex; gap: 8px; margin: 2px 0 6px; }
+    .nb-daytype-btn { background: transparent; border: 1px solid var(--border); color: var(--muted); font-family: 'Patrick Hand', cursive; font-size: 13px; padding: 0 12px; height: calc(var(--lh) - 12px); cursor: pointer; border-radius: 8px; transition: all 0.12s; }
+    .nb-daytype-btn:hover { color: var(--text); }
+    .nb-daytype-btn.nb-selected { border-color: var(--red-border); color: #ccc; background: var(--active-bg); }
+
+    .nb-placeholder {
+        color: var(--muted);
+        font-size: var(--fs);
+        line-height: var(--lh);
+    }
+
+    /* Current-routine display */
+    .nb-day-row { display: flex; align-items: flex-end; min-height: var(--lh); padding-bottom: 4px; gap: 6px; flex-wrap: wrap; }
+    .nb-day-label { color: var(--muted); }
+    .nb-day-muscles { color: var(--text); }
+
+    /* Current routine: one column per day, grouped by muscle, scroll sideways */
+    .nb-routine-cols { display: flex; gap: 40px; overflow-x: auto; align-items: flex-start; padding-bottom: 8px; }
+    .nb-routine-col { flex: 0 0 auto; min-width: 200px; }
+    .nb-routine-day-head {
+        display: inline-block;
+        color: var(--text);
+        font-size: 15px;
+        border-bottom: 2px solid var(--red);
+        padding-bottom: 2px;
+        margin-bottom: 8px;
+    }
+    .nb-routine-daytype { color: var(--red); font-size: 12px; margin-left: 10px; }
+    .nb-routine-seepool { color: var(--red); font-size: 12px; cursor: pointer; user-select: none; min-height: var(--lh); display: flex; align-items: flex-end; padding-bottom: 4px; }
+    .nb-routine-seepool:hover { text-decoration: underline; }
+    .nb-routine-pool { padding-left: 2px; }
+    .nb-routine-ex-row { display: flex; gap: 2px; min-height: var(--lh); align-items: flex-end; padding-bottom: 4px; }
+    .nb-routine-muscle { flex: 0 0 76px; min-width: 76px; font-size: 11px; text-transform: uppercase; letter-spacing: 1px; color: var(--muted); }
+    .nb-routine-ex { flex: 1; color: var(--text); font-size: 12px; }
 </style>
 {% endblock %}
 
@@ -108,13 +284,23 @@
     </div>
 </div>
 
-<!-- STEP 2: Muscle groups per day -->
+<!-- STEP 2: Routine type -->
 <div id="step-2" style="display:none;">
     <div class="nb-spacer"></div>
-    <div class="nb-row" style="color:var(--text);font-size:var(--fs);">Select muscle groups for each day</div>
+    <div class="nb-row" style="color:var(--text);font-size:var(--fs);">How will you build it?</div>
+    <div class="nb-type-group">
+        <button type="button" class="nb-type-btn" data-type="per_muscle">By muscle group</button>
+        <button type="button" class="nb-type-btn" data-type="manual">Manual</button>
+        <button type="button" class="nb-type-btn" data-type="mixed">Mixed</button>
+    </div>
+</div>
+
+<!-- STEP 3: Per-day editor -->
+<div id="step-3" style="display:none;">
+    <div class="nb-spacer"></div>
     <div id="days-container"></div>
     <div class="nb-spacer"></div>
-    <div class="nb-row">
+    <div class="nb-row" id="save-row">
         <button id="save-routine-btn" class="nb-btn">✓ Save Routine</button>
         <button id="cancel-btn" class="nb-btn" style="margin-left:12px;">✕ Cancel</button>
     </div>
@@ -126,6 +312,7 @@
     <div class="nb-spacer"></div>
     <div class="nb-row">
         <button id="edit-routine-btn" class="nb-btn">✎ Edit Routine</button>
+        <button id="new-routine-btn" class="nb-btn" style="margin-left:12px;">+ New Routine</button>
     </div>
 </div>
 
@@ -137,136 +324,433 @@
 <script>
     requireLogin();
 
-    let selectedDays = 0;
-    let routineData = {};
-    const muscleGroups = ['Abs', 'Back', 'Biceps', 'Calves', 'Chest', 'Forearms', 'Glutes','Legs', 'Shoulders', 'Triceps'];
+    const MUSCLE_GROUPS = ['Abs', 'Back', 'Biceps', 'Calves', 'Chest', 'Forearms', 'Glutes', 'Legs', 'Shoulders', 'Triceps'];
+    const DEFAULT_COUNT = 3;
+
+    let daysPerWeek = 0;
+    let routineType = null;
+    let allExercises = [];
+    let exercisesByMuscle = {};     // muscle -> [exercise, ...]
+    let days = {};                  // day_number -> { name, muscles:Set, counts:{}, checked:{exId:bool} }
+    let editMode = false;           // editing an existing routine: type locked, day count live
 
     document.addEventListener('DOMContentLoaded', async () => {
+        allExercises = await getUserExercises() || [];
+        exercisesByMuscle = {};
+        MUSCLE_GROUPS.forEach(m => exercisesByMuscle[m] = []);
+        allExercises.forEach(ex => {
+            (exercisesByMuscle[ex.exercise_muscle_group] = exercisesByMuscle[ex.exercise_muscle_group] || []).push(ex);
+        });
+
         const routine = await getUserRoutine();
         if (routine && routine.days_per_week > 0) {
             displayCurrentRoutine(routine);
         }
     });
 
-    function displayCurrentRoutine(routine) {
-        document.getElementById('step-1').style.display = 'none';
-        document.getElementById('step-2').style.display = 'none';
-        document.getElementById('current-routine').style.display = 'block';
-
-        const display = document.getElementById('routine-display');
-        let html = `
-            <div class="nb-section-label" style="color: var(--text);">Your current routine</div>
-            <div class="nb-row" style="color:var(--text);font-size:var(--fs);">
-                Training <u style="text-decoration-color:var(--red-border);text-underline-offset:3px;margin:0 4px;">${routine.days_per_week}</u> ${routine.days_per_week === 1 ? 'day' : 'days'} per week
-            </div>`;
-
-        for (let day = 1; day <= routine.days_per_week; day++) {
-            const muscles = routine.routine_days[day] || [];
-            html += `
-                <div class="nb-day-row">
-                    <span class="nb-day-label nb-other">Day ${day} —</span>
-                    <span class="nb-day-muscles">${muscles.length > 0 ? muscles.join(', ') : 'Rest day'}</span>
-                </div>`;
-        }
-
-        display.innerHTML = html;
-    }
-
+    // ---------- Step 1: days ----------
     document.querySelectorAll('.nb-day-num-btn').forEach(btn => {
         btn.addEventListener('click', (e) => {
-            selectedDays = parseInt(e.target.dataset.days);
+            daysPerWeek = parseInt(e.target.dataset.days);
             document.querySelectorAll('.nb-day-num-btn').forEach(b => b.classList.remove('nb-selected'));
             e.target.classList.add('nb-selected');
+
+            if (editMode) {
+                // Keep type and existing day data. Added days render empty;
+                // removed days stay in memory so re-adding restores them.
+                renderDaysEditor();
+                return;
+            }
+
+            // Create mode: reset downstream state when day count changes
+            routineType = null;
+            days = {};
+            document.querySelectorAll('.nb-type-btn').forEach(b => b.classList.remove('nb-selected'));
             document.getElementById('step-2').style.display = 'block';
-            generateDaySelectors(selectedDays);
+            document.getElementById('step-3').style.display = 'none';
         });
     });
 
-    function generateDaySelectors(numDays) {
+    // ---------- Step 2: routine type ----------
+    document.querySelectorAll('.nb-type-btn').forEach(btn => {
+        btn.addEventListener('click', (e) => {
+            if (editMode) return;  // type is locked while editing an existing routine
+            routineType = e.target.dataset.type;
+            document.querySelectorAll('.nb-type-btn').forEach(b => b.classList.remove('nb-selected'));
+            e.target.classList.add('nb-selected');
+
+            document.getElementById('step-3').style.display = 'block';
+
+            buildEditor(routineType);
+            document.getElementById('save-row').style.display = 'flex';
+        });
+    });
+
+    // ---------- Per-muscle editor ----------
+    function buildEditor(type) {
+        // Create mode entry: start every day empty (of the chosen type), then render.
+        days = {};
+        for (let day = 1; day <= daysPerWeek; day++) {
+            // Mixed: each day starts typeless (user picks per day). Pure: all days share the type.
+            days[day] = { type: (type === 'mixed' ? null : type), name: '', muscles: new Set(), counts: {}, checked: {} };
+        }
+        renderDaysEditor();
+    }
+
+    // Renders the per-day editor for days 1..daysPerWeek from the `days` state.
+    // Each day renders per its type: per_muscle (muscle buttons + pool) or manual
+    // (muscle-filter tabs + a checkbox list).
+    function renderDaysEditor() {
         const container = document.getElementById('days-container');
         container.innerHTML = '';
-        routineData = {};
 
-        for (let day = 1; day <= numDays; day++) {
-            routineData[day] = [];
+        const showTypeToggle = (routineType === 'mixed');
+
+        for (let day = 1; day <= daysPerWeek; day++) {
+            if (!days[day]) days[day] = { type: (routineType === 'mixed' ? null : routineType), name: '', muscles: new Set(), counts: {}, checked: {} };
+            const st = days[day];
+
             const dayDiv = document.createElement('div');
-            dayDiv.innerHTML = `
-                <div class="nb-day-heading" data-day="${day}">Day ${day}</div>
-                <div class="nb-muscle-group" data-day="${day}">
-                    ${muscleGroups.map(m => `
-                        <button type="button" class="nb-muscle-btn" data-day="${day}" data-muscle="${m}">${m}</button>
-                    `).join('')}
-                </div>
-                <div class="nb-selected-tag" data-day="${day}">
-                    Selected: <span class="muscle-list">None</span>
-                </div>`;
+            dayDiv.innerHTML = headingHTML(day) +
+                (showTypeToggle ? dayTypeToggleHTML(day, st) : '') +
+                dayBodyHTML(day, st) +
+                '<div class="nb-spacer"></div>';
             container.appendChild(dayDiv);
+            dayDiv.querySelector('.nb-day-name-input').value = st.name || '';
         }
 
-        document.querySelectorAll('.nb-muscle-btn').forEach(btn => {
-            btn.addEventListener('click', toggleMuscleGroup);
+        // Post-render each day's body (typed days only)
+        for (let day = 1; day <= daysPerWeek; day++) {
+            const st = days[day];
+            if (st.type === 'manual') renderManualDay(day);
+            else if (st.type === 'per_muscle' && st.muscles.size) renderPool(day);
+        }
+
+        // Common: name inputs
+        container.querySelectorAll('.nb-day-name-input').forEach(inp => {
+            inp.addEventListener('input', (e) => { days[parseInt(e.target.dataset.day)].name = e.target.value; });
+        });
+        // Per-day type toggle (mixed only)
+        container.querySelectorAll('.nb-daytype-btn').forEach(btn => btn.addEventListener('click', onDayTypeToggle));
+        // Per-muscle: muscle toggles + expanders
+        container.querySelectorAll('.nb-muscle-btn').forEach(btn => btn.addEventListener('click', onToggleMuscle));
+        container.querySelectorAll('.nb-expander').forEach(exp => {
+            exp.addEventListener('click', (e) => {
+                const day = parseInt(e.currentTarget.dataset.day);
+                const pool = container.querySelector(`.nb-pool[data-day="${day}"]`);
+                const open = pool.style.display !== 'none';
+                pool.style.display = open ? 'none' : 'flex';
+                e.currentTarget.innerHTML = (open ? '&#9656;' : '&#9662;') + ' Select exercises to include';
+            });
         });
     }
 
-    function toggleMuscleGroup(e) {
-        const day = parseInt(e.target.dataset.day);
-        const muscle = e.target.dataset.muscle;
-        if (routineData[day].includes(muscle)) {
-            routineData[day] = routineData[day].filter(m => m !== muscle);
-            e.target.classList.remove('nb-selected');
-        } else {
-            routineData[day].push(muscle);
-            e.target.classList.add('nb-selected');
-        }
-        const tag = document.querySelector(`.nb-selected-tag[data-day="${day}"] .muscle-list`);
-        tag.textContent = routineData[day].length > 0 ? routineData[day].join(', ') : 'None';
-
-        // If this day now has a selection, clear any "empty day" highlight on it.
-        if (routineData[day].length > 0) {
-            const heading = document.querySelector(`.nb-day-heading[data-day="${day}"]`);
-            if (heading) heading.classList.remove('nb-day-empty');
-        }
+    function dayBodyHTML(day, st) {
+        if (st.type === 'manual') return manualBodyHTML(day, st);
+        if (st.type === 'per_muscle') return perMuscleBodyHTML(day, st);
+        return '';  // typeless (mixed, not yet chosen)
     }
 
-    function highlightEmptyDays(emptyDays) {
-        // Clear any previous highlights first.
-        document.querySelectorAll('.nb-day-heading.nb-day-empty').forEach(h => h.classList.remove('nb-day-empty'));
-        emptyDays.forEach(day => {
-            const heading = document.querySelector(`.nb-day-heading[data-day="${day}"]`);
-            if (heading) heading.classList.add('nb-day-empty');
-        });
+    function dayTypeToggleHTML(day, st) {
+        return `
+                <div class="nb-daytype-group" data-day="${day}">
+                    <button type="button" class="nb-daytype-btn${st.type === 'per_muscle' ? ' nb-selected' : ''}" data-day="${day}" data-type="per_muscle">By muscle group</button>
+                    <button type="button" class="nb-daytype-btn${st.type === 'manual' ? ' nb-selected' : ''}" data-day="${day}" data-type="manual">Manual</button>
+                </div>`;
     }
 
-    document.getElementById('save-routine-btn').addEventListener('click', async () => {
-        const message = document.getElementById('message');
+    function dayHasContent(st) {
+        if (st.type === 'per_muscle') return st.muscles.size > 0;
+        if (st.type === 'manual') return Object.values(st.checked).some(Boolean);
+        return false;
+    }
 
-        // Every training day must have at least one muscle group — no rest days allowed.
-        const emptyDays = [];
-        for (let day = 1; day <= selectedDays; day++) {
-            if (!routineData[day] || routineData[day].length === 0) {
-                emptyDays.push(day);
+    function onDayTypeToggle(e) {
+        const day = parseInt(e.currentTarget.dataset.day);
+        const newType = e.currentTarget.dataset.type;
+        const st = days[day];
+        if (st.type === newType) return;
+
+        if (dayHasContent(st)) {
+            const label = newType === 'manual' ? 'Manual' : 'By muscle group';
+            if (!confirm(`Switching Day ${day} to "${label}" will clear its current exercises. Continue?`)) {
+                return;
             }
         }
 
-        if (emptyDays.length > 0) {
-            const dayLabel = emptyDays.length === 1 ? 'day' : 'days';
-            const dayList = emptyDays.join(', ');
-            message.textContent = `Please choose at least one muscle group for ${dayLabel} ${dayList}.`;
+        st.type = newType;
+        st.muscles = new Set();
+        st.counts = {};
+        st.checked = {};
+        renderDaysEditor();
+    }
+
+    function headingHTML(day) {
+        return `
+                <div class="nb-day-heading" data-day="${day}">
+                    Day ${day}
+                    <input type="text" class="nb-day-name-input" data-day="${day}" placeholder="name (optional)" maxlength="50">
+                </div>`;
+    }
+
+    function perMuscleBodyHTML(day, st) {
+        const selectedList = MUSCLE_GROUPS.filter(m => st.muscles.has(m));
+        return `
+                <div class="nb-muscle-group" data-day="${day}">
+                    ${MUSCLE_GROUPS.map(m => `
+                        <button type="button" class="nb-muscle-btn${st.muscles.has(m) ? ' nb-selected' : ''}" data-day="${day}" data-muscle="${m}">${m}</button>
+                    `).join('')}
+                </div>
+                <div class="nb-selected-tag" data-day="${day}">Selected:<span class="muscle-list">${selectedList.length ? ' ' + selectedList.join(', ') : 'None'}</span></div>
+                <div class="nb-expander" data-day="${day}" style="display:${selectedList.length ? 'inline-flex' : 'none'};">&#9656; Select exercises to include</div>
+                <div class="nb-pool" data-day="${day}" style="display:none;"></div>`;
+    }
+
+    function manualBodyHTML(day, st) {
+        return `
+                <div class="nb-manual-layout" data-day="${day}">
+                    <div class="nb-manual-tabs" data-day="${day}">
+                        ${MUSCLE_GROUPS.map(m => `
+                            <div class="nb-manual-tab" data-day="${day}" data-muscle="${m}">${m}<span class="cnt" data-day="${day}" data-muscle="${m}"></span></div>
+                        `).join('')}
+                    </div>
+                    <div class="nb-manual-list" data-day="${day}"></div>
+                </div>
+                <div class="nb-selected-tag">Selected:<span class="manual-count" data-day="${day}"> 0 exercises</span></div>`;
+    }
+
+    // Manual: pick a default muscle, render its list, wire the tabs and counts.
+    function renderManualDay(day) {
+        const tabs = document.querySelectorAll(`.nb-manual-tab[data-day="${day}"]`);
+        const active = MUSCLE_GROUPS.find(m => (exercisesByMuscle[m] || []).length) || MUSCLE_GROUPS[0];
+        tabs.forEach(t => t.classList.toggle('active', t.dataset.muscle === active));
+        renderManualList(day, active);
+        updateManualCounts(day);
+
+        tabs.forEach(tab => {
+            tab.addEventListener('click', (e) => {
+                const d = parseInt(e.currentTarget.dataset.day);
+                const m = e.currentTarget.dataset.muscle;
+                document.querySelectorAll(`.nb-manual-tab[data-day="${d}"]`).forEach(t => t.classList.remove('active'));
+                e.currentTarget.classList.add('active');
+                renderManualList(d, m);
+            });
+        });
+    }
+
+    function renderManualList(day, muscle) {
+        const st = days[day];
+        const list = document.querySelector(`.nb-manual-list[data-day="${day}"]`);
+        const exs = exercisesByMuscle[muscle] || [];
+        list.innerHTML = exs.length
+            ? exs.map(ex => `
+                <div class="nb-pool-ex">
+                    <input type="checkbox" class="nb-checkbox" data-day="${day}" data-ex="${ex.exercise_id}" ${st.checked[ex.exercise_id] ? 'checked' : ''}>
+                    <label>${ex.exercise_name}</label>
+                </div>`).join('')
+            : `<div class="nb-pool-empty">No ${muscle} exercises yet — add some on the Exercises page.</div>`;
+
+        list.querySelectorAll('.nb-checkbox').forEach(cb => {
+            cb.addEventListener('change', (e) => {
+                const d = parseInt(e.target.dataset.day);
+                const exId = parseInt(e.target.dataset.ex);
+                days[d].checked[exId] = e.target.checked;
+                updateManualCounts(d);
+            });
+        });
+    }
+
+    function updateManualCounts(day) {
+        const st = days[day];
+        let total = 0;
+        MUSCLE_GROUPS.forEach(m => {
+            const n = (exercisesByMuscle[m] || []).filter(ex => st.checked[ex.exercise_id]).length;
+            const badge = document.querySelector(`.cnt[data-day="${day}"][data-muscle="${m}"]`);
+            if (badge) badge.textContent = n ? ` ${n}` : '';
+            total += n;
+        });
+        const tag = document.querySelector(`.manual-count[data-day="${day}"]`);
+        if (tag) tag.textContent = ` ${total} exercise${total === 1 ? '' : 's'}`;
+    }
+
+    function onToggleMuscle(e) {
+        const day = parseInt(e.target.dataset.day);
+        const muscle = e.target.dataset.muscle;
+        const st = days[day];
+
+        if (st.muscles.has(muscle)) {
+            st.muscles.delete(muscle);
+            delete st.counts[muscle];
+            (exercisesByMuscle[muscle] || []).forEach(ex => { delete st.checked[ex.exercise_id]; });
+            e.target.classList.remove('nb-selected');
+        } else {
+            st.muscles.add(muscle);
+            st.counts[muscle] = DEFAULT_COUNT;
+            // Default: every exercise of this muscle is in the pool
+            (exercisesByMuscle[muscle] || []).forEach(ex => { st.checked[ex.exercise_id] = true; });
+            e.target.classList.add('nb-selected');
+        }
+
+        // Update the "Selected:" tag
+        const tag = document.querySelector(`.nb-selected-tag[data-day="${day}"] .muscle-list`);
+        const list = MUSCLE_GROUPS.filter(m => st.muscles.has(m));
+        tag.textContent = list.length ? ' ' + list.join(', ') : 'None';
+
+        // Show/hide the expander, and rebuild the pool blocks
+        const exp = document.querySelector(`.nb-expander[data-day="${day}"]`);
+        exp.style.display = list.length ? 'inline-flex' : 'none';
+
+        const heading = document.querySelector(`.nb-day-heading[data-day="${day}"]`);
+        if (list.length) heading.classList.remove('nb-day-empty');
+
+        renderPool(day);
+    }
+
+    function renderPool(day) {
+        const st = days[day];
+        const pool = document.querySelector(`.nb-pool[data-day="${day}"]`);
+        const orderedMuscles = MUSCLE_GROUPS.filter(m => st.muscles.has(m));
+
+        if (!orderedMuscles.length) {
+            pool.innerHTML = '';
+            return;
+        }
+
+        pool.innerHTML = orderedMuscles.map(muscle => {
+            const exs = exercisesByMuscle[muscle] || [];
+            const count = st.counts[muscle] || DEFAULT_COUNT;
+
+            const header = `
+                <div class="nb-pool-muscle-row">
+                    <span class="nb-pool-muscle-name">${muscle}</span>
+                    <span class="nb-stepper" data-day="${day}" data-muscle="${muscle}">
+                        <span class="nb-step-label">exercises per session</span>
+                        <button type="button" class="nb-step-btn" data-dir="-1">&#8722;</button>
+                        <span class="nb-step-val">${count}</span>
+                        <button type="button" class="nb-step-btn" data-dir="1">+</button>
+                    </span>
+                </div>`;
+
+            const rows = exs.length
+                ? exs.map(ex => `
+                    <div class="nb-pool-ex">
+                        <input type="checkbox" class="nb-checkbox" data-day="${day}" data-ex="${ex.exercise_id}" ${st.checked[ex.exercise_id] ? 'checked' : ''}>
+                        <label>${ex.exercise_name}</label>
+                    </div>`).join('')
+                : `<div class="nb-pool-empty">No ${muscle} exercises yet — add some on the Exercises page.</div>`;
+
+            return `<div class="nb-pool-col">${header}${rows}</div>`;
+        }).join('');
+
+        // Checkbox handlers
+        pool.querySelectorAll('.nb-checkbox').forEach(cb => {
+            cb.addEventListener('change', (e) => {
+                const d = parseInt(e.target.dataset.day);
+                const exId = parseInt(e.target.dataset.ex);
+                days[d].checked[exId] = e.target.checked;
+            });
+        });
+
+        // Stepper handlers
+        pool.querySelectorAll('.nb-stepper').forEach(stepper => {
+            const d = parseInt(stepper.dataset.day);
+            const m = stepper.dataset.muscle;
+            stepper.querySelectorAll('.nb-step-btn').forEach(sb => {
+                sb.addEventListener('click', () => {
+                    const dir = parseInt(sb.dataset.dir);
+                    let val = (days[d].counts[m] || DEFAULT_COUNT) + dir;
+                    val = Math.max(1, Math.min(10, val));
+                    days[d].counts[m] = val;
+                    stepper.querySelector('.nb-step-val').textContent = val;
+                });
+            });
+        });
+    }
+
+    // ---------- Save ----------
+    function buildPayload() {
+        const daysArr = [];
+        for (let d = 1; d <= daysPerWeek; d++) {
+            const st = days[d];
+
+            if (st.type === 'manual') {
+                const exercise_ids = [];
+                MUSCLE_GROUPS.forEach(m => {
+                    (exercisesByMuscle[m] || []).forEach(ex => {
+                        if (st.checked[ex.exercise_id]) exercise_ids.push(ex.exercise_id);
+                    });
+                });
+                daysArr.push({ day_number: d, day_type: 'manual', name: st.name.trim() || null, muscles: [], exercise_ids: exercise_ids });
+                continue;
+            }
+
+            const muscles = MUSCLE_GROUPS.filter(m => st.muscles.has(m));
+            const exercise_ids = [];
+            muscles.forEach(m => {
+                (exercisesByMuscle[m] || []).forEach(ex => {
+                    if (st.checked[ex.exercise_id]) exercise_ids.push(ex.exercise_id);
+                });
+            });
+            daysArr.push({
+                day_number: d,
+                day_type: 'per_muscle',
+                name: st.name.trim() || null,
+                muscles: muscles.map(m => ({ muscle_group: m, exercise_count: st.counts[m] || DEFAULT_COUNT })),
+                exercise_ids: exercise_ids
+            });
+        }
+        return { days: daysArr };
+    }
+
+    function validate() {
+        for (let d = 1; d <= daysPerWeek; d++) {
+            const st = days[d];
+
+            if (!st.type) {
+                return { ok: false, day: d, msg: `Choose a type for Day ${d} (by muscle group or manual).` };
+            }
+
+            if (st.type === 'manual') {
+                const anyChecked = MUSCLE_GROUPS.some(m => (exercisesByMuscle[m] || []).some(ex => st.checked[ex.exercise_id]));
+                if (!anyChecked) {
+                    return { ok: false, day: d, msg: `Select at least one exercise for Day ${d}.` };
+                }
+                continue;
+            }
+
+            const muscles = [...st.muscles];
+            if (!muscles.length) {
+                return { ok: false, day: d, msg: `Day ${d} needs at least one muscle group.` };
+            }
+            for (const m of muscles) {
+                const exs = exercisesByMuscle[m] || [];
+                if (!exs.length) {
+                    return { ok: false, day: d, msg: `You have no ${m} exercises. Add some on the Exercises page first.` };
+                }
+                const anyChecked = exs.some(ex => st.checked[ex.exercise_id]);
+                if (!anyChecked) {
+                    return { ok: false, day: d, msg: `Select at least one ${m} exercise for Day ${d}.` };
+                }
+            }
+        }
+        return { ok: true };
+    }
+    document.getElementById('save-routine-btn').addEventListener('click', async () => {
+        const message = document.getElementById('message');
+
+        document.querySelectorAll('.nb-day-heading.nb-day-empty').forEach(h => h.classList.remove('nb-day-empty'));
+
+        const check = validate();
+        if (!check.ok) {
+            message.textContent = check.msg;
             message.className = 'nb-message error';
             message.style.display = 'flex';
-            highlightEmptyDays(emptyDays);
+            const heading = document.querySelector(`.nb-day-heading[data-day="${check.day}"]`);
+            if (heading) heading.classList.add('nb-day-empty');
             return;
-        }    
+        }
 
-        const apiData = {
-            days_per_week: selectedDays,
-            routine_days: Object.entries(routineData).map(([day, muscles]) => ({
-                day_number: parseInt(day),
-                muscle_groups: muscles
-            }))
-        };
-
-        const result = await saveUserRoutine(apiData);
+        const result = await saveUserRoutine(buildPayload());
         if (result) {
             document.getElementById('save-routine-btn').classList.add('nb-btn-saved');
             message.textContent = 'Routine saved!';
@@ -285,15 +769,172 @@
         if (routine && routine.days_per_week > 0) {
             displayCurrentRoutine(routine);
         } else {
-            document.getElementById('step-1').style.display = 'block';
-            document.getElementById('step-2').style.display = 'none';
+            resetToStart();
         }
     });
 
-    document.getElementById('edit-routine-btn').addEventListener('click', () => {
+    // ---------- Current routine display ----------
+    function displayCurrentRoutine(routine) {
+        editMode = false;
+        document.querySelector('.nb-type-group').classList.remove('nb-locked');
+        document.getElementById('step-1').style.display = 'none';
+        document.getElementById('step-2').style.display = 'none';
+        document.getElementById('step-3').style.display = 'none';
+        document.getElementById('current-routine').style.display = 'block';
+
+        // Routine type
+        const dayTypes = new Set((routine.days || []).map(d => d.day_type));
+        let typeLabel = 'By muscle group';
+        if (dayTypes.size > 1) typeLabel = 'Mixed';
+        else if ([...dayTypes][0] === 'manual') typeLabel = 'Manual';
+        const isMixed = dayTypes.size > 1;
+
+        let html = `
+            <div class="nb-section-label" style="color: var(--text);">Your current routine</div>
+            <div class="nb-row" style="color:var(--text);font-size:var(--fs);">
+                Routine type:<span style="color:var(--red);margin-left:6px;">${typeLabel}</span>
+            </div>
+            <div class="nb-row" style="color:var(--text);font-size:var(--fs);">
+                Training <span style="color:var(--red);margin:0 4px;">${routine.days_per_week}</span> ${routine.days_per_week === 1 ? 'day' : 'days'} per week
+            </div>
+            <div class="nb-spacer"></div>`;
+
+        // One column per day
+        let cols = '';
+        (routine.days || []).forEach(day => {
+            const head = day.name ? `Day ${day.day_number} — ${day.name}` : `Day ${day.day_number}`;
+            const dayTypeTag = isMixed
+                ? `<span class="nb-routine-daytype">${day.day_type === 'manual' ? 'Manual' : 'Per muscle'}</span>`
+                : '';
+
+            // Full exercise list grouped by muscle (the workout for manual, the pool for per_muscle)
+            const byMuscle = {};
+            (day.exercises || []).forEach(ex => {
+                (byMuscle[ex.muscle_group] = byMuscle[ex.muscle_group] || []).push(ex.exercise_name);
+            });
+            let exRows = '';
+            MUSCLE_GROUPS.forEach(m => {
+                const names = byMuscle[m];
+                if (!names || !names.length) return;
+                names.forEach((name, idx) => {
+                    exRows += `
+                        <div class="nb-routine-ex-row">
+                            <span class="nb-routine-muscle">${idx === 0 ? m : ''}</span>
+                            <span class="nb-routine-ex">${name}</span>
+                        </div>`;
+                });
+            });
+
+            let body;
+            if (day.day_type === 'manual') {
+                body = exRows || `<div class="nb-routine-ex-row"><span class="nb-routine-ex" style="color:var(--muted);">No exercises</span></div>`;
+            } else {
+                // Per muscle: collapsed muscle + per-session count, with an expandable pool
+                let summary = '';
+                (day.muscles || []).forEach(m => {
+                    summary += `
+                        <div class="nb-routine-ex-row">
+                            <span class="nb-routine-muscle">${m.muscle_group}</span>
+                            <span class="nb-routine-ex">${m.exercise_count} ${m.exercise_count === 1 ? 'exercise' : 'exercises'}</span>
+                        </div>`;
+                });
+                if (!summary) summary = `<div class="nb-routine-ex-row"><span class="nb-routine-ex" style="color:var(--muted);">No muscles</span></div>`;
+                body = `
+                    ${summary}
+                    <div class="nb-routine-seepool">&#9656; see pool</div>
+                    <div class="nb-routine-pool" style="display:none;">${exRows}</div>`;
+            }
+
+            cols += `
+                <div class="nb-routine-col">
+                    <div class="nb-routine-day-head">${head}</div>${dayTypeTag}
+                    ${body}
+                </div>`;
+        });
+
+        html += `<div class="nb-routine-cols">${cols}</div>`;
+
+        document.getElementById('routine-display').innerHTML = html;
+
+        // Wire per-day "see pool" expanders (per_muscle days)
+        document.querySelectorAll('.nb-routine-seepool').forEach(link => {
+            link.addEventListener('click', (e) => {
+                const pool = e.currentTarget.nextElementSibling;
+                const open = pool.style.display !== 'none';
+                pool.style.display = open ? 'none' : 'block';
+                e.currentTarget.innerHTML = (open ? '&#9656;' : '&#9662;') + ' see pool';
+            });
+        });
+    }
+
+    document.getElementById('edit-routine-btn').addEventListener('click', enterEditModeFromRoutine);
+    document.getElementById('new-routine-btn').addEventListener('click', resetToStart);
+
+    // ---------- Edit mode: load the saved routine into the editor ----------
+    async function enterEditModeFromRoutine() {
+        const routine = await getUserRoutine();
+        if (!routine || !routine.days_per_week) { resetToStart(); return; }
+
+        // Derive the routine's type: uniform if all days share one, else mixed.
+        const dayTypes = new Set((routine.days || []).map(d => d.day_type));
+        const derivedType = dayTypes.size === 1 ? [...dayTypes][0] : 'mixed';
+
+        editMode = true;
+        daysPerWeek = routine.days_per_week;
+        routineType = derivedType;
+
+        // Prefill day state from the saved routine
+        days = {};
+        routine.days.forEach(d => {
+            const st = { type: d.day_type, name: d.name || '', muscles: new Set(), counts: {}, checked: {} };
+            const savedIds = new Set((d.exercises || []).map(e => e.exercise_id));
+            if (d.day_type === 'manual') {
+                savedIds.forEach(id => { st.checked[id] = true; });
+            } else {
+                (d.muscles || []).forEach(m => {
+                    st.muscles.add(m.muscle_group);
+                    st.counts[m.muscle_group] = m.exercise_count;
+                });
+                st.muscles.forEach(muscle => {
+                    (exercisesByMuscle[muscle] || []).forEach(ex => {
+                        st.checked[ex.exercise_id] = savedIds.has(ex.exercise_id);
+                    });
+                });
+            }
+            days[d.day_number] = st;
+        });
+
+        // Show the editor: days live, type locked, step 3 prefilled
+        document.getElementById('current-routine').style.display = 'none';
+        document.getElementById('step-1').style.display = 'block';
+        document.getElementById('step-2').style.display = 'block';
+        document.getElementById('step-3').style.display = 'block';
+        document.getElementById('save-row').style.display = 'flex';
+        document.getElementById('message').style.display = 'none';
+
+        document.querySelectorAll('.nb-day-num-btn').forEach(b =>
+            b.classList.toggle('nb-selected', parseInt(b.dataset.days) === daysPerWeek));
+
+        document.querySelectorAll('.nb-type-btn').forEach(b =>
+            b.classList.toggle('nb-selected', b.dataset.type === routineType));
+        document.querySelector('.nb-type-group').classList.add('nb-locked');
+
+        renderDaysEditor();
+    }
+
+    function resetToStart() {
+        editMode = false;
         document.getElementById('current-routine').style.display = 'none';
         document.getElementById('step-1').style.display = 'block';
         document.getElementById('step-2').style.display = 'none';
-    });
+        document.getElementById('step-3').style.display = 'none';
+        document.getElementById('message').style.display = 'none';
+        document.querySelectorAll('.nb-day-num-btn').forEach(b => b.classList.remove('nb-selected'));
+        document.querySelectorAll('.nb-type-btn').forEach(b => b.classList.remove('nb-selected'));
+        document.querySelector('.nb-type-group').classList.remove('nb-locked');
+        daysPerWeek = 0;
+        routineType = null;
+        days = {};
+    }
 </script>
 {% endblock %}

@@ -448,97 +448,247 @@ def get_default_exercises(db: Session = Depends(get_db)):
 
 # ========== ROUTINE ROUTES ==========
 
-@api_v1.get("/routine/{user_id}")
+def _enum_str(value):
+    """Return the plain string for a SQLAlchemy enum value (or pass through a str)."""
+    return value.value if hasattr(value, "value") else value
+
+
+@api_v1.get("/routine/{user_id}", response_model=schemas.RoutineResponse)
 def get_routine(user_id: int, db: Session = Depends(get_db), current_user: models.User = Depends(verify_user_access)):
     """
-    Get user's routine configuration
-    Returns days_per_week and muscle groups per day
+    Get the user's routine as an ordered list of training days. Each day carries
+    its type (per_muscle or manual), optional name, its muscles + counts
+    (per_muscle only), and its selected exercises (the pool for per_muscle, the
+    exact list for manual). days_per_week is derived from the number of days.
     """
-    # Get routine info
-    routine = db.query(models.Routine).filter(models.Routine.user_id == user_id).first()
-    
-    if not routine:
-        return {
-            "days_per_week": 0,
-            "routine_days": {}
+    days = db.query(models.TrainingDay).filter(
+        models.TrainingDay.user_id == user_id
+    ).order_by(models.TrainingDay.day_number).all()
+
+    if not days:
+        return {"days_per_week": 0, "days": []}
+
+    day_ids = [d.training_day_id for d in days]
+
+    # Muscles grouped by day
+    muscles_by_day = {}
+    muscle_rows = db.query(models.TrainingDayMuscle).filter(
+        models.TrainingDayMuscle.training_day_id.in_(day_ids)
+    ).all()
+    for m in muscle_rows:
+        muscles_by_day.setdefault(m.training_day_id, []).append({
+            "muscle_group": _enum_str(m.muscle_group),
+            "exercise_count": m.exercise_count,
+        })
+
+    # Selected exercises grouped by day (joined to the library for name + muscle)
+    exercises_by_day = {}
+    tde_rows = db.query(models.TrainingDayExercise, models.Exercise).join(
+        models.Exercise, models.TrainingDayExercise.exercise_id == models.Exercise.exercise_id
+    ).filter(
+        models.TrainingDayExercise.training_day_id.in_(day_ids)
+    ).order_by(models.TrainingDayExercise.position).all()
+    for tde, ex in tde_rows:
+        exercises_by_day.setdefault(tde.training_day_id, []).append({
+            "exercise_id": ex.exercise_id,
+            "exercise_name": ex.exercise_name,
+            "muscle_group": _enum_str(ex.exercise_muscle_group),
+            "position": tde.position,
+        })
+
+    result_days = [
+        {
+            "training_day_id": d.training_day_id,
+            "day_number": d.day_number,
+            "day_type": _enum_str(d.day_type),
+            "name": d.name,
+            "muscles": muscles_by_day.get(d.training_day_id, []),
+            "exercises": exercises_by_day.get(d.training_day_id, []),
         }
-    
-    # Get all routine muscles per day
-    routine_muscles = db.query(models.RoutineMusclePerDay).filter(
-        models.RoutineMusclePerDay.user_id == user_id
-    ).order_by(models.RoutineMusclePerDay.day_number).all()
-    
-    # Organize by day
-    days_dict = {}
-    for rm in routine_muscles:
-        if rm.day_number not in days_dict:
-            days_dict[rm.day_number] = []
-        days_dict[rm.day_number].append(rm.muscle_group)
-    
-    return {
-        "days_per_week": routine.days_per_week,
-        "routine_days": days_dict
-    }
+        for d in days
+    ]
+
+    return {"days_per_week": len(days), "days": result_days}
+
 
 @api_v1.post("/routine/{user_id}")
 def create_or_update_routine(user_id: int, routine_data: schemas.RoutineSetup, db: Session = Depends(get_db), current_user: models.User = Depends(verify_user_access)):
     """
-    Create or update user's routine
-    Allows multiple muscle groups per day
+    Replace the user's routine with the submitted set of training days.
+
+    Validates the whole payload before touching existing data so a rejected
+    request never wipes the current routine, then does a clean-slate replace of
+    the training days (cascading to muscles + exercises) inside one transaction.
     """
-    # Validate user exists
     user = db.query(models.User).filter(models.User.user_id == user_id).first()
     if not user:
         raise HTTPException(status_code=404, detail="User not found")
-    
-    # Validate days_per_week
-    if routine_data.days_per_week < 1 or routine_data.days_per_week > 7:
-        raise HTTPException(status_code=400, detail="days_per_week must be between 1 and 7")
-    
-    # Every training day must have at least one muscle group — no rest days allowed.
-    # Validate before touching existing data so a rejected request doesn't wipe the routine.
-    muscles_by_day = {
-        d.day_number: [m for m in d.muscle_groups if m]
-        for d in routine_data.routine_days
-    }
-    empty_days = [
-        day for day in range(1, routine_data.days_per_week + 1)
-        if not muscles_by_day.get(day)
-    ]
-    if empty_days:
-        day_list = ", ".join(str(d) for d in empty_days)
+
+    days = routine_data.days
+    if not days:
+        raise HTTPException(status_code=400, detail="A routine must have at least one day.")
+
+    n_days = len(days)
+    if n_days > 7:
+        raise HTTPException(status_code=400, detail="A routine can have at most 7 days.")
+
+    # Day numbers must be exactly 1..n_days (no gaps or duplicates)
+    if sorted(d.day_number for d in days) != list(range(1, n_days + 1)):
         raise HTTPException(
             status_code=400,
-            detail=f"Each training day must have at least one muscle group. Missing for day(s): {day_list}."
+            detail=f"Day numbers must be 1 through {n_days} with no gaps or duplicates."
         )
 
-    # Delete existing routine and routine_muscles_per_day (clean slate)
-    db.query(models.RoutineMusclePerDay).filter(models.RoutineMusclePerDay.user_id == user_id).delete()
-    db.query(models.Routine).filter(models.Routine.user_id == user_id).delete()
-    
-    # Create new routine
-    new_routine = models.Routine(
-        user_id=user_id,
-        days_per_week=routine_data.days_per_week
-    )
-    db.add(new_routine)
-    
-    # Create routine_muscles_per_day entries
-    for day_data in routine_data.routine_days:
-        # Validate day_number
-        if day_data.day_number < 1 or day_data.day_number > routine_data.days_per_week:
-            continue  # Skip invalid days
-        
-        for muscle_group in day_data.muscle_groups:
-            routine_muscle = models.RoutineMusclePerDay(
+    valid_muscles = {m.value for m in models.MuscleGroupEnum}
+
+    # Map the user's own exercises to their muscle group (for ownership + matching)
+    ex_muscle = {
+        eid: _enum_str(mg)
+        for eid, mg in db.query(
+            models.Exercise.exercise_id, models.Exercise.exercise_muscle_group
+        ).filter(models.Exercise.user_id == user_id).all()
+    }
+
+    def _dedup(ids):
+        seen = set()
+        out = []
+        for i in ids:
+            if i not in seen:
+                seen.add(i)
+                out.append(i)
+        return out
+
+    # ---- Validate every day before any write ----
+    for d in days:
+        if d.day_type not in ("per_muscle", "manual"):
+            raise HTTPException(status_code=400, detail=f"Day {d.day_number}: invalid day_type '{d.day_type}'.")
+
+        ex_ids = _dedup(d.exercise_ids)
+
+        # All referenced exercises must belong to the user
+        for eid in ex_ids:
+            if eid not in ex_muscle:
+                raise HTTPException(status_code=400, detail=f"Day {d.day_number}: exercise {eid} does not belong to you.")
+
+        if d.day_type == "manual":
+            if not ex_ids:
+                raise HTTPException(status_code=400, detail=f"Day {d.day_number} (manual) must include at least one exercise.")
+        else:  # per_muscle
+            if not d.muscles:
+                raise HTTPException(status_code=400, detail=f"Day {d.day_number} (per muscle) must have at least one muscle group.")
+
+            day_muscles = set()
+            for m in d.muscles:
+                if m.muscle_group not in valid_muscles:
+                    raise HTTPException(status_code=400, detail=f"Day {d.day_number}: invalid muscle group '{m.muscle_group}'.")
+                if m.muscle_group in day_muscles:
+                    raise HTTPException(status_code=400, detail=f"Day {d.day_number}: muscle '{m.muscle_group}' listed more than once.")
+                if m.exercise_count < 1:
+                    raise HTTPException(status_code=400, detail=f"Day {d.day_number}: exercise count for {m.muscle_group} must be at least 1.")
+                day_muscles.add(m.muscle_group)
+
+            # Every selected exercise must belong to one of the day's muscles
+            for eid in ex_ids:
+                if ex_muscle[eid] not in day_muscles:
+                    raise HTTPException(
+                        status_code=400,
+                        detail=f"Day {d.day_number}: exercise {eid} ({ex_muscle[eid]}) is not one of the day's muscle groups."
+                    )
+
+            # Pool coverage: each muscle needs at least one selected exercise
+            covered = {ex_muscle[eid] for eid in ex_ids}
+            missing = [mg for mg in day_muscles if mg not in covered]
+            if missing:
+                raise HTTPException(
+                    status_code=400,
+                    detail=f"Day {d.day_number}: no exercises selected for {', '.join(sorted(missing))}. Add or select at least one exercise for each muscle."
+                )
+
+    # ---- Passed validation: clean-slate replace (atomic) ----
+    # Deleting the training days cascades to their muscles and exercises via FK.
+    db.query(models.TrainingDay).filter(
+        models.TrainingDay.user_id == user_id
+    ).delete(synchronize_session=False)
+
+    for d in days:
+        training_day = models.TrainingDay(
+            user_id=user_id,
+            day_number=d.day_number,
+            name=d.name,
+            day_type=d.day_type,
+        )
+        db.add(training_day)
+        db.flush()  # assign training_day_id
+
+        if d.day_type == "per_muscle":
+            for m in d.muscles:
+                db.add(models.TrainingDayMuscle(
+                    user_id=user_id,
+                    training_day_id=training_day.training_day_id,
+                    muscle_group=m.muscle_group,
+                    exercise_count=m.exercise_count,
+                ))
+
+        for position, eid in enumerate(_dedup(d.exercise_ids)):
+            db.add(models.TrainingDayExercise(
                 user_id=user_id,
-                day_number=day_data.day_number,
-                muscle_group=muscle_group
-            )
-            db.add(routine_muscle)
-    
+                training_day_id=training_day.training_day_id,
+                exercise_id=eid,
+                position=position,
+            ))
+
+    # ---- Reconcile the rotation pool (exercises_in_routine) ----
+    # Exercises used anywhere in the new routine (per_muscle pools + manual lists).
+    routine_exercise_ids = set()
+    for d in days:
+        routine_exercise_ids.update(_dedup(d.exercise_ids))
+
+    existing_rows = {
+        r.exercise_id: r
+        for r in db.query(models.ExerciseInRoutine).filter(
+            models.ExerciseInRoutine.user_id == user_id
+        ).all()
+    }
+    existing_ids = set(existing_rows.keys())
+
+    # Drop exercises that are no longer in the routine anywhere.
+    removed_ids = existing_ids - routine_exercise_ids
+    if removed_ids:
+        db.query(models.ExerciseInRoutine).filter(
+            models.ExerciseInRoutine.user_id == user_id,
+            models.ExerciseInRoutine.exercise_id.in_(removed_ids)
+        ).delete(synchronize_session=False)
+
+    # Survivors keep their counts. Compute the per-muscle minimum among survivors
+    # BEFORE inserting new rows, so several new exercises in the same muscle all
+    # anchor to the same baseline instead of seeding off one another.
+    survivor_ids = existing_ids & routine_exercise_ids
+    survivor_min_by_muscle = {}
+    for eid in survivor_ids:
+        muscle = ex_muscle[eid]
+        count = existing_rows[eid].times_performed
+        if muscle not in survivor_min_by_muscle or count < survivor_min_by_muscle[muscle]:
+            survivor_min_by_muscle[muscle] = count
+
+    # New exercises enter at their muscle's surviving minimum (0 if the muscle is
+    # new to the routine and has no survivors to anchor to).
+    added_ids = routine_exercise_ids - existing_ids
+    for eid in added_ids:
+        db.add(models.ExerciseInRoutine(
+            user_id=user_id,
+            exercise_id=eid,
+            times_performed=survivor_min_by_muscle.get(ex_muscle[eid], 0),
+        ))
+
+    # Keep workout_state pointer in range if the routine shrank
+    state = db.query(models.WorkoutState).filter(
+        models.WorkoutState.user_id == user_id
+    ).first()
+    if state and (state.current_day_number is None or state.current_day_number > n_days):
+        state.current_day_number = 1
+
     db.commit()
-    
+
     return {"message": "Routine saved successfully"}
 
 @api_v1.delete("/routine/{user_id}")
@@ -546,8 +696,10 @@ def delete_routine(user_id: int, db: Session = Depends(get_db), current_user: mo
     """
     Delete user's routine
     """
-    db.query(models.RoutineMusclePerDay).filter(models.RoutineMusclePerDay.user_id == user_id).delete()
-    db.query(models.Routine).filter(models.Routine.user_id == user_id).delete()
+    # Deleting the training days cascades to their muscles and exercises;
+    # also drop the rotation-pool rows.
+    db.query(models.TrainingDay).filter(models.TrainingDay.user_id == user_id).delete(synchronize_session=False)
+    db.query(models.ExerciseInRoutine).filter(models.ExerciseInRoutine.user_id == user_id).delete(synchronize_session=False)
     db.commit()
     
     return {"message": "Routine deleted successfully"}
@@ -583,7 +735,7 @@ def complete_workout(user_id: int, workout_data: schemas.WorkoutComplete, db: Se
     from datetime import date
     
     # Validate and get required data
-    user, routine = validate_user_and_routine(user_id, db)
+    user, days_per_week = validate_user_and_routine(user_id, db)
     
     # Create workout session
     session = create_workout_session(user_id, workout_data.day_number, db)
@@ -592,13 +744,13 @@ def complete_workout(user_id: int, workout_data: schemas.WorkoutComplete, db: Se
     completed_exercise_ids = log_workout_exercises(session, workout_data.exercises, user_id, workout_data.day_number, db)
     
     # Clean up and update state
-    cleanup_after_workout(user_id, completed_exercise_ids, workout_data.day_number, routine.days_per_week, db)
+    cleanup_after_workout(user_id, completed_exercise_ids, workout_data.day_number, days_per_week, db)
     
     db.commit()
     
     return {
         "message": "Workout completed successfully",
-        "next_day": (workout_data.day_number % routine.days_per_week) + 1,
+        "next_day": (workout_data.day_number % days_per_week) + 1,
         "session_id": session.session_id
     }
 
@@ -611,11 +763,13 @@ def validate_user_and_routine(user_id: int, db: Session):
     if not user:
         raise HTTPException(status_code=404, detail="User not found")
     
-    routine = db.query(models.Routine).filter(models.Routine.user_id == user_id).first()
-    if not routine:
+    days_per_week = db.query(models.TrainingDay).filter(
+        models.TrainingDay.user_id == user_id
+    ).count()
+    if days_per_week == 0:
         raise HTTPException(status_code=400, detail="No routine set up")
     
-    return user, routine
+    return user, days_per_week
 
 
 def get_user_date(user_id: int, db: Session) -> date:
@@ -674,24 +828,32 @@ def log_workout_exercises(session, exercises_data, user_id: int, day_number: int
         db.add(log)
         
         # Update exercise metadata
-        update_exercise_metadata(exercise_data, db)
+        update_exercise_metadata(exercise_data, user_id, db)
     
     return completed_exercise_ids
 
 
-def update_exercise_metadata(exercise_data, db: Session):
-    """Increment performance count and update weight"""
+def update_exercise_metadata(exercise_data, user_id: int, db: Session):
+    """Bump the lifetime + rotation counters and update the current weight."""
     exercise = db.query(models.Exercise).filter(
         models.Exercise.exercise_id == exercise_data.exercise_id
     ).first()
-    
+
     if exercise:
-        # Increment times performed
+        # Lifetime count (kept for stats)
         exercise.exercise_times_performed += 1
-        
-        # Update weight if changed
+
+        # Update the current weight if a value was logged
         if exercise_data.weight_used and exercise_data.weight_used > 0:
             exercise.exercise_user_current_weight = exercise_data.weight_used
+
+    # Rotation counter: the single per-exercise pool counter generation reads.
+    pool_row = db.query(models.ExerciseInRoutine).filter(
+        models.ExerciseInRoutine.user_id == user_id,
+        models.ExerciseInRoutine.exercise_id == exercise_data.exercise_id
+    ).first()
+    if pool_row:
+        pool_row.times_performed += 1
 
 
 def cleanup_after_workout(user_id: int, completed_exercise_ids: list, current_day: int, days_per_week: int, db: Session):
@@ -745,8 +907,10 @@ def toggle_next_workout_selection(data: dict, db: Session = Depends(get_db), cur
     """
     Toggle exercise selection for next workout
     """
-    user_id = data['user_id']
-    exercise_id = data['exercise_id']
+    # Coerce ids to int: the body may arrive with a string user_id (localStorage),
+    # and a strict int-vs-string compare would wrongly 403 the ownership check.
+    user_id = int(data['user_id'])
+    exercise_id = int(data['exercise_id'])
     is_selected = data['is_selected']
 
     # Authorization: the body's user_id must match the logged-in user
@@ -784,28 +948,26 @@ def clear_next_workout_selections(user_id: int, day_number: int = None, db: Sess
             models.NextWorkoutSelection.user_id == user_id
         ).delete()
     else:
-        # Get muscle groups for specified day
-        muscle_groups_for_day = db.query(models.RoutineMusclePerDay.muscle_group).filter(
-            models.RoutineMusclePerDay.user_id == user_id,
-            models.RoutineMusclePerDay.day_number == day_number
-        ).distinct().all()
-        
-        muscle_groups = [mg[0] for mg in muscle_groups_for_day]
-        
-        # Get exercises for these muscle groups
-        exercises_for_day = db.query(models.Exercise.exercise_id).filter(
-            models.Exercise.user_id == user_id,
-            models.Exercise.exercise_muscle_group.in_(muscle_groups),
-            models.Exercise.exercise_is_in_routine == True
-        ).all()
-        
-        exercise_ids = [ex[0] for ex in exercises_for_day]
-        
-        # Clear only these exercises
-        db.query(models.NextWorkoutSelection).filter(
-            models.NextWorkoutSelection.user_id == user_id,
-            models.NextWorkoutSelection.exercise_id.in_(exercise_ids)
-        ).delete(synchronize_session=False)
+        # Clear only the selections for exercises in that training day's pool.
+        training_day = db.query(models.TrainingDay).filter(
+            models.TrainingDay.user_id == user_id,
+            models.TrainingDay.day_number == day_number
+        ).first()
+
+        pool_ids = []
+        if training_day:
+            pool_ids = [
+                row.exercise_id
+                for row in db.query(models.TrainingDayExercise.exercise_id).filter(
+                    models.TrainingDayExercise.training_day_id == training_day.training_day_id
+                ).all()
+            ]
+
+        if pool_ids:
+            db.query(models.NextWorkoutSelection).filter(
+                models.NextWorkoutSelection.user_id == user_id,
+                models.NextWorkoutSelection.exercise_id.in_(pool_ids)
+            ).delete(synchronize_session=False)
     
     db.commit()
     
@@ -815,26 +977,36 @@ def clear_next_workout_selections(user_id: int, day_number: int = None, db: Sess
 @api_v1.post("/next-workout/generate/{user_id}")
 def generate_next_workout(user_id: int, day_number: int = None, db: Session = Depends(get_db), current_user: models.User = Depends(verify_user_access)):
     """
-    Auto-generate next workout using algorithm
-    Main orchestration function - delegates to helpers
+    Auto-generate the next workout for a training day.
+
+    per_muscle day: for each muscle, take the least-performed exercises from that
+    day's pool for the muscle, up to the muscle's exercise_count.
+    manual day: take every exercise in the day's list.
+    The chosen exercises are written as NextWorkoutSelection rows.
     """
-    # Determine which day to generate for
     target_day = determine_target_day(user_id, day_number, db)
-    
-    # Get muscle groups for the target day
-    muscle_groups = get_muscle_groups_for_day(user_id, target_day, db)
-    
-    # Clear existing selections for this day
-    clear_selections_for_day(user_id, muscle_groups, db)
-    
-    # Select exercises for each muscle group
-    selected_count = select_exercises_for_workout(user_id, muscle_groups, db)
-    
+
+    training_day = db.query(models.TrainingDay).filter(
+        models.TrainingDay.user_id == user_id,
+        models.TrainingDay.day_number == target_day
+    ).first()
+    if not training_day:
+        raise HTTPException(status_code=400, detail=f"No routine day found for day {target_day}.")
+
+    chosen_ids = choose_exercises_for_day(user_id, training_day, db)
+
+    # Replace this day's selections with the freshly chosen ones
+    clear_selections_for_training_day(user_id, training_day, db)
+    db.bulk_save_objects([
+        models.NextWorkoutSelection(user_id=user_id, exercise_id=eid, is_selected=True)
+        for eid in chosen_ids
+    ])
+
     db.commit()
-    
+
     return {
         "message": "Next workout generated",
-        "exercises_selected": selected_count,
+        "exercises_selected": len(chosen_ids),
         "day_number": target_day
     }
 
@@ -842,97 +1014,95 @@ def generate_next_workout(user_id: int, day_number: int = None, db: Session = De
 # ========== HELPER FUNCTIONS FOR GENERATE_NEXT_WORKOUT ==========
 
 def determine_target_day(user_id: int, day_number: int, db: Session):
-    """Determine which day to generate workout for"""
+    """Determine which day to generate for (explicit arg, else the current-state day)."""
     if day_number is not None:
         return day_number
-    
-    # Use user's current workout state
+
     state = db.query(models.WorkoutState).filter(
         models.WorkoutState.user_id == user_id
     ).first()
-    
+
     if not state:
         raise HTTPException(status_code=400, detail="No workout state found")
-    
+
     return state.current_day_number
 
 
-def get_muscle_groups_for_day(user_id: int, day_number: int, db: Session):
-    """Get list of muscle groups assigned to a specific day"""
-    muscle_groups_query = db.query(models.RoutineMusclePerDay.muscle_group).filter(
-        models.RoutineMusclePerDay.user_id == user_id,
-        models.RoutineMusclePerDay.day_number == day_number
-    ).distinct().all()
-    
-    muscle_groups = [mg[0] for mg in muscle_groups_query]
-    
-    if not muscle_groups:
-        raise HTTPException(status_code=400, detail="No muscle groups assigned to this day")
-    
-    return muscle_groups
-
-
-def clear_selections_for_day(user_id: int, muscle_groups: list, db: Session):
-    """Clear existing selections for exercises in specified muscle groups"""
-    # Get exercises for these muscle groups
-    exercises_for_day = db.query(models.Exercise.exercise_id).filter(
-        models.Exercise.user_id == user_id,
-        models.Exercise.exercise_muscle_group.in_(muscle_groups),
-        models.Exercise.exercise_is_in_routine == True
-    ).all()
-    
-    exercise_ids = [ex[0] for ex in exercises_for_day]
-    
-    # Clear selections
-    db.query(models.NextWorkoutSelection).filter(
-        models.NextWorkoutSelection.user_id == user_id,
-        models.NextWorkoutSelection.exercise_id.in_(exercise_ids)
-    ).delete(synchronize_session=False)
-
-
-def select_exercises_for_workout(user_id: int, muscle_groups: list, db: Session):
-    """Select exercises for workout using bulk insert"""
-    all_exercises = []
-    
-    for muscle_group in muscle_groups:
-        exercises = get_exercises_for_muscle_group(user_id, muscle_group, db)
-        all_exercises.extend(exercises)
-    
-    selections = [
-        models.NextWorkoutSelection(
-            user_id=user_id,
-            exercise_id=exercise.exercise_id,
-            is_selected=True
-        )
-        for exercise in all_exercises
+def clear_selections_for_training_day(user_id: int, training_day, db: Session):
+    """Clear NextWorkoutSelection rows for the exercises in this day's pool."""
+    pool_ids = [
+        row.exercise_id
+        for row in db.query(models.TrainingDayExercise.exercise_id).filter(
+            models.TrainingDayExercise.training_day_id == training_day.training_day_id
+        ).all()
     ]
-    
-    db.bulk_save_objects(selections)
-    return len(selections)
+    if pool_ids:
+        db.query(models.NextWorkoutSelection).filter(
+            models.NextWorkoutSelection.user_id == user_id,
+            models.NextWorkoutSelection.exercise_id.in_(pool_ids)
+        ).delete(synchronize_session=False)
 
 
-def get_exercises_for_muscle_group(user_id: int, muscle_group: str, db: Session):
-    """Get top 4 exercises for a muscle group (by lowest performance count)"""
-    exercises = db.query(models.Exercise).filter(
-        models.Exercise.user_id == user_id,
-        models.Exercise.exercise_muscle_group == muscle_group,
-        models.Exercise.exercise_is_in_routine == True
-    ).order_by(
-        models.Exercise.exercise_times_performed.asc(),
-        func.rand()
-    ).limit(3).all()
-    
-    return exercises
+def choose_exercises_for_day(user_id: int, training_day, db: Session):
+    """
+    Decide which exercises make up the generated workout for this day.
 
+    manual: every exercise in the day's list (ordered by position).
+    per_muscle: for each muscle, the least-performed exercises from the day's
+    pool for that muscle (by exercises_in_routine.times_performed, random
+    tiebreak), up to that muscle's exercise_count.
+    """
+    import random
 
-def create_exercise_selection(user_id: int, exercise_id: int, db: Session):
-    """Create a next workout selection for an exercise"""
-    selection = models.NextWorkoutSelection(
-        user_id=user_id,
-        exercise_id=exercise_id,
-        is_selected=True
-    )
-    db.add(selection)
+    day_type = _enum_str(training_day.day_type)
+
+    if day_type == "manual":
+        rows = db.query(models.TrainingDayExercise.exercise_id).filter(
+            models.TrainingDayExercise.training_day_id == training_day.training_day_id
+        ).order_by(models.TrainingDayExercise.position).all()
+        return [r[0] for r in rows]
+
+    # per_muscle: how many exercises to draw for each muscle on this day
+    counts = {
+        _enum_str(m.muscle_group): m.exercise_count
+        for m in db.query(models.TrainingDayMuscle).filter(
+            models.TrainingDayMuscle.training_day_id == training_day.training_day_id
+        ).all()
+    }
+
+    # The day's pool joined to each exercise's muscle group and rotation counter
+    pool = db.query(
+        models.TrainingDayExercise.exercise_id,
+        models.Exercise.exercise_muscle_group,
+        models.ExerciseInRoutine.times_performed
+    ).join(
+        models.Exercise,
+        models.TrainingDayExercise.exercise_id == models.Exercise.exercise_id
+    ).outerjoin(
+        models.ExerciseInRoutine,
+        (models.ExerciseInRoutine.exercise_id == models.TrainingDayExercise.exercise_id) &
+        (models.ExerciseInRoutine.user_id == user_id)
+    ).filter(
+        models.TrainingDayExercise.training_day_id == training_day.training_day_id
+    ).all()
+
+    # Group the pool by muscle
+    by_muscle = {}
+    for exercise_id, muscle_group, times_performed in pool:
+        mg = _enum_str(muscle_group)
+        by_muscle.setdefault(mg, []).append(
+            (exercise_id, times_performed if times_performed is not None else 0)
+        )
+
+    chosen = []
+    for mg, items in by_muscle.items():
+        # Randomize first so equal counters break randomly, then sort by counter asc
+        random.shuffle(items)
+        items.sort(key=lambda t: t[1])
+        take = counts.get(mg, 0)
+        chosen.extend(exercise_id for exercise_id, _ in items[:take])
+
+    return chosen
 
 
 # ========== WORKOUT SESSION ROUTES ==========

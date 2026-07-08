@@ -1,26 +1,71 @@
 {% extends 'base.html' %}
 
+{% block extra_css %}
+<style>
+    .nb-dashboard-grid {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 32px;
+        align-items: start;
+    }
+    .nb-module { min-width: 0; }
+
+    /* Collapse to a single column on narrow screens */
+    @media (max-width: 900px) {
+        .nb-dashboard-grid { grid-template-columns: 1fr; }
+    }
+
+    /* Quick stats: labels match the routine text; values in red */
+    .nb-stat-item { color: var(--text); font-size: var(--fs); }
+    .nb-stat-item .nb-val { color: var(--red); }
+    body.light .nb-stat-item .nb-val { color: var(--red); }
+
+    /* Day list: all days in --text; underline the current day (← today tag stays red) */
+    .nb-day-label.nb-today,
+    .nb-day-label.nb-other,
+    .nb-day-muscles,
+    .nb-day-muscles.nb-today { color: var(--text); }
+    body.light .nb-day-label.nb-today,
+    body.light .nb-day-muscles.nb-today { color: var(--text); }
+
+    .nb-day-label.nb-today,
+    .nb-day-muscles.nb-today {
+        text-decoration: underline;
+        text-decoration-color: var(--red);
+        text-underline-offset: 3px;
+    }
+</style>
+{% endblock %}
+
 {% block content %}
 
-<div class="nb-section-label">quick stats</div>
-<div class="nb-stat-row">
-    <div class="nb-stat-item">
-        This week: <span class="nb-val" id="workouts-this-week">—</span>
+<div class="nb-dashboard-grid">
+    <!-- Left column: quick stats -->
+    <div class="nb-module">
+        <div class="nb-section-label">quick stats</div>
+        <div class="nb-stat-row">
+            <div class="nb-stat-item">
+                This week: <span class="nb-val" id="workouts-this-week">—</span>
+            </div>
+            <div class="nb-stat-item">
+                Current day: <span class="nb-val" id="current-day">—</span>
+            </div>
+        </div>
     </div>
-    <div class="nb-stat-item">
-        Current day: <span class="nb-val" id="current-day">—</span>
+
+    <!-- Middle column: current routine -->
+    <div class="nb-module">
+        <div class="nb-section-label">your current routine</div>
+        <div id="routine-container">
+            <div class="nb-row">
+                <span style="color: var(--muted);">Loading...</span>
+            </div>
+        </div>
     </div>
+
+    <!-- Right column (future module) -->
+    <div class="nb-module"></div>
 </div>
-
-<div class="nb-spacer"></div>
-
-<div class="nb-section-label">your routine</div>
-<div id="routine-container">
-    <div class="nb-row">
-        <span style="color: var(--muted);">Loading...</span>
-    </div>
-</div>
-
 <div id="message" class="nb-message" style="display:none;"></div>
 
 {% endblock %}
@@ -74,25 +119,35 @@
             currentDay = data.current_day_number;
         } catch(e) {}
 
+        // Routine type: uniform if all days share one, otherwise mixed
+        const dayTypes = new Set((routine.days || []).map(d => d.day_type));
+        let typeLabel = 'By muscle group';
+        if (dayTypes.size > 1) typeLabel = 'Mixed';
+        else if ([...dayTypes][0] === 'manual') typeLabel = 'Manual';
+
         let html = `
-            <div class="nb-row" style="color:var(--text);font-size:var(--fs);">Your current routine</div>
             <div class="nb-row" style="color:var(--text);font-size:var(--fs);">
-                Training <u style="text-decoration-color:var(--red-border);text-underline-offset:3px;margin:0 4px;">${routine.days_per_week}</u> ${routine.days_per_week === 1 ? 'day' : 'days'} per week
+                Routine type:<span style="color:var(--red);margin-left:6px;">${typeLabel}</span>
+            </div>
+            <div class="nb-row" style="color:var(--text);font-size:var(--fs);">
+                Training <span style="color:var(--red);margin:0 4px;">${routine.days_per_week}</span> ${routine.days_per_week === 1 ? 'day' : 'days'} per week
             </div>`;
 
-        for (let day = 1; day <= routine.days_per_week; day++) {
-            const muscles = routine.routine_days[day] || [];
+        (routine.days || []).forEach(dayObj => {
+            const day = dayObj.day_number;
             const isToday = day === currentDay;
+            const label = dayObj.name ? `Day ${day} — ${dayObj.name}` : `Day ${day}`;
+            let detail = '';
+            if (dayObj.day_type !== 'manual') {
+                detail = (dayObj.muscles || []).map(m => m.muscle_group).join(', ') || 'Rest day';
+            }
             html += `
-                <div class="nb-day-row">
-                    <span class="nb-day-label ${isToday ? 'nb-today' : 'nb-other'}">Day ${day} —</span>
-                    <span class="nb-day-muscles ${isToday ? 'nb-today' : ''}">
-                        ${muscles.length > 0 ? muscles.join(', ') : 'Rest day'}
-                    </span>
+                <div class="nb-day-row" style="padding-left:20px;">
+                    <span class="nb-day-label ${isToday ? 'nb-today' : 'nb-other'}">${label}${detail ? ' —' : ''}</span>
+                    <span class="nb-day-muscles ${isToday ? 'nb-today' : ''}">${detail}</span>
                     ${isToday ? '<span class="nb-today-tag">← today</span>' : ''}
                 </div>`;
-        }
-
+        });
         html += `
             <div class="nb-spacer"></div>
             <div class="nb-row">

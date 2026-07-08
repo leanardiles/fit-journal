@@ -167,3 +167,70 @@ def test_cannot_delete_another_users_account(auth):
     finally:
         session.close()
     assert b_row is not None
+
+
+# --- deletion cascades the routine tables -----------------------------------
+
+def test_delete_account_with_routine_cascades(auth):
+    """
+    Deleting an account that has a full routine must succeed and remove the
+    training-day and pool rows. This is the real-world path (most accounts have
+    a routine) and the one that matters for the app-store data-deletion promise.
+    """
+    client = auth["client"]
+    uid = auth["user_id"]
+
+    # Seed an exercise and a per_muscle routine -> populates training_days,
+    # training_day_muscles, training_day_exercises, and exercises_in_routine.
+    ex = client.post(
+        f"/v1/exercises?user_id={uid}",
+        headers=auth["headers"],
+        json={"exercise_name": "Bench Press", "exercise_muscle_group": "Chest"},
+    ).json()["exercise_id"]
+
+    save = client.post(
+        f"/v1/routine/{uid}",
+        headers=auth["headers"],
+        json={"days": [{
+            "day_number": 1,
+            "day_type": "per_muscle",
+            "muscles": [{"muscle_group": "Chest", "exercise_count": 1}],
+            "exercise_ids": [ex],
+        }]},
+    )
+    assert save.status_code in (200, 201), save.text
+
+    # Sanity: the new tables actually hold rows for this user before deletion.
+    session = SessionLocal()
+    try:
+        assert session.query(models.TrainingDay).filter(
+            models.TrainingDay.user_id == uid).count() > 0
+        assert session.query(models.ExerciseInRoutine).filter(
+            models.ExerciseInRoutine.user_id == uid).count() > 0
+    finally:
+        session.close()
+
+    # Delete the account.
+    r = client.request(
+        "DELETE",
+        f"/v1/account/{uid}",
+        headers=auth["headers"],
+        json={"user_password": "testpass123"},
+    )
+    assert r.status_code == 200, r.text
+
+    # Every routine-related row for the user is gone, and so is the user.
+    session = SessionLocal()
+    try:
+        assert session.query(models.TrainingDay).filter(
+            models.TrainingDay.user_id == uid).count() == 0
+        assert session.query(models.TrainingDayMuscle).filter(
+            models.TrainingDayMuscle.user_id == uid).count() == 0
+        assert session.query(models.TrainingDayExercise).filter(
+            models.TrainingDayExercise.user_id == uid).count() == 0
+        assert session.query(models.ExerciseInRoutine).filter(
+            models.ExerciseInRoutine.user_id == uid).count() == 0
+        assert session.query(models.User).filter(
+            models.User.user_id == uid).first() is None
+    finally:
+        session.close()

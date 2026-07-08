@@ -1,0 +1,22 @@
+# Environment and secrets
+.env
+.env.*
+
+# AWS credentials
+.aws/
+aws-exports.js
+
+# Database
+*.sqlite
+*.db
+
+# Private keys and certificates
+*.pem
+*.key
+*.p12
+*.jks
+
+# Android signing
+android/keystore/
+*.keystore
+local.properties

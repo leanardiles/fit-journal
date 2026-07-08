@@ -1,4 +1,4 @@
-from sqlalchemy import Column, Integer, String, DECIMAL, Enum, Boolean, TIMESTAMP, ForeignKey, Text, CheckConstraint, text, Date
+from sqlalchemy import Column, Integer, String, DECIMAL, Enum, Boolean, TIMESTAMP, ForeignKey, Text, CheckConstraint, UniqueConstraint, text, Date
 from sqlalchemy.orm import relationship
 from sqlalchemy.sql import func
 from database import Base
@@ -26,6 +26,10 @@ class MuscleGroupEnum(str, enum.Enum):
     Legs = "Legs"
     Shoulders = "Shoulders"
     Triceps = "Triceps"
+
+class DayTypeEnum(str, enum.Enum):
+    per_muscle = "per_muscle"
+    manual = "manual"
 
 
 # ========== MODELS ==========
@@ -57,6 +61,8 @@ class User(Base):
     routine_muscles = relationship("RoutineMusclePerDay", back_populates="user", cascade="all, delete-orphan")
     workout_state = relationship("WorkoutState", back_populates="user", uselist=False, cascade="all, delete-orphan")  # ADD THIS
     workout_logs = relationship("WorkoutLog", back_populates="user", cascade="all, delete-orphan")  # ADD THIS
+    training_days = relationship("TrainingDay", back_populates="user", cascade="all, delete-orphan")
+    exercises_in_routine = relationship("ExerciseInRoutine", cascade="all, delete-orphan")
 
     # Table constraints
     __table_args__ = (
@@ -133,6 +139,111 @@ class RoutineMusclePerDay(Base):
     
     # Relationship
     user = relationship("User", back_populates="routine_muscles")
+
+
+
+class TrainingDay(Base):
+    """
+    A single day within a user's routine. First-class so it can carry a name
+    and a type. day_type decides how the day is resolved at generation time:
+    per_muscle (rotate within selected pools) or manual (fixed exercise list).
+    """
+    __tablename__ = "training_days"
+
+    training_day_id = Column(Integer, primary_key=True, autoincrement=True)
+    user_id = Column(Integer, ForeignKey("users.user_id", ondelete="CASCADE"), nullable=False)
+    day_number = Column(Integer, nullable=False)  # 1-7, ordinal within the routine
+    name = Column(String(50), default=None)  # optional label, e.g. "Lower A"
+    day_type = Column(Enum(DayTypeEnum), nullable=False, default="per_muscle")
+    created_at = Column(TIMESTAMP, server_default=text('CURRENT_TIMESTAMP'))
+    updated_at = Column(TIMESTAMP, server_default=text('CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP'))
+
+    # Relationships
+    user = relationship("User", back_populates="training_days")
+    muscles = relationship("TrainingDayMuscle", back_populates="training_day", cascade="all, delete-orphan")
+    exercises = relationship("TrainingDayExercise", back_populates="training_day", cascade="all, delete-orphan")
+
+    __table_args__ = (
+        UniqueConstraint('user_id', 'day_number', name='uq_training_day_user_day'),
+    )
+
+
+
+class TrainingDayMuscle(Base):
+    """
+    A muscle group targeted on a per_muscle day, plus how many exercises to
+    draw for it. At generation the algorithm rotates within the day's selected
+    pool for this muscle and picks exercise_count of them by least-performed.
+    """
+    __tablename__ = "training_day_muscles"
+
+    training_day_muscle_id = Column(Integer, primary_key=True, autoincrement=True)
+    user_id = Column(Integer, ForeignKey("users.user_id", ondelete="CASCADE"), nullable=False)
+    training_day_id = Column(Integer, ForeignKey("training_days.training_day_id", ondelete="CASCADE"), nullable=False)
+    muscle_group = Column(Enum(MuscleGroupEnum), nullable=False)
+    exercise_count = Column(Integer, nullable=False, default=3)
+    created_at = Column(TIMESTAMP, server_default=text('CURRENT_TIMESTAMP'))
+    updated_at = Column(TIMESTAMP, server_default=text('CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP'))
+
+    # Relationships
+    training_day = relationship("TrainingDay", back_populates="muscles")
+
+    __table_args__ = (
+        UniqueConstraint('training_day_id', 'muscle_group', name='uq_training_day_muscle'),
+        CheckConstraint('exercise_count >= 1', name='check_exercise_count'),
+    )
+
+
+
+class TrainingDayExercise(Base):
+    """
+    An exercise attached to a training day.
+    - per_muscle day: part of the selected pool the generator rotates within,
+      grouped by the exercise's own muscle group.
+    - manual day: an exact exercise to include every session.
+    """
+    __tablename__ = "training_day_exercises"
+
+    training_day_exercise_id = Column(Integer, primary_key=True, autoincrement=True)
+    user_id = Column(Integer, ForeignKey("users.user_id", ondelete="CASCADE"), nullable=False)
+    training_day_id = Column(Integer, ForeignKey("training_days.training_day_id", ondelete="CASCADE"), nullable=False)
+    exercise_id = Column(Integer, ForeignKey("exercises.exercise_id", ondelete="CASCADE"), nullable=False)
+    position = Column(Integer, default=None)  # optional order hint within the day
+    created_at = Column(TIMESTAMP, server_default=text('CURRENT_TIMESTAMP'))
+
+    # Relationships
+    training_day = relationship("TrainingDay", back_populates="exercises")
+    exercise = relationship("Exercise")
+
+    __table_args__ = (
+        UniqueConstraint('training_day_id', 'exercise_id', name='uq_training_day_exercise'),
+    )
+
+
+class ExerciseInRoutine(Base):
+    """
+    One row per (user, exercise) that is currently in the routine anywhere.
+    Holds times_performed: the rotation counter shared across every training
+    day that uses the exercise (the single pool). Row existence supersedes the
+    old exercise_is_in_routine flag. Reconciled on each routine save: survivors
+    keep their count, dropped exercises lose their row, and new exercises enter
+    at their muscle's surviving minimum.
+    """
+    __tablename__ = "exercises_in_routine"
+
+    exercise_in_routine_id = Column(Integer, primary_key=True, autoincrement=True)
+    user_id = Column(Integer, ForeignKey("users.user_id", ondelete="CASCADE"), nullable=False)
+    exercise_id = Column(Integer, ForeignKey("exercises.exercise_id", ondelete="CASCADE"), nullable=False)
+    times_performed = Column(Integer, nullable=False, default=0)
+    created_at = Column(TIMESTAMP, server_default=text('CURRENT_TIMESTAMP'))
+    updated_at = Column(TIMESTAMP, server_default=text('CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP'))
+
+    # Relationships
+    exercise = relationship("Exercise")
+
+    __table_args__ = (
+        UniqueConstraint('user_id', 'exercise_id', name='uq_exercise_in_routine'),
+    )
 
 
 

@@ -182,6 +182,9 @@
         color: var(--muted);
         font-size: 14px;
     }
+
+    /* Manual-day select cell: fixed by routine, so show a subtle lock */
+    .nb-cal-lock { color: var(--muted); opacity: 0.5; display: inline-flex; align-items: center; justify-content: center; }
 </style>
 {% endblock %}
 
@@ -356,29 +359,53 @@
         return all;
     }
 
+    // ---- New routine shape helpers ----
+    function getDayObj(dayNumber) {
+        return (userRoutine.days || []).find(d => d.day_number === dayNumber);
+    }
+
+    // A day's exercises as full library objects, in the routine's stored order
+    function getDayExerciseObjects(dayNumber) {
+        const day = getDayObj(dayNumber);
+        if (!day) return [];
+        return (day.exercises || [])
+            .map(e => allExercises.find(ex => ex.exercise_id === e.exercise_id))
+            .filter(Boolean);
+    }
+
+    // Label for a day: its name if set, otherwise its distinct muscle groups
+    function getDayMuscleLabel(dayNumber) {
+        const day = getDayObj(dayNumber);
+        if (!day) return '';
+        if (day.name) return day.name;
+        const seen = [];
+        (day.exercises || []).forEach(e => { if (!seen.includes(e.muscle_group)) seen.push(e.muscle_group); });
+        return seen.join(', ');
+    }
+
     function updateViewInfo() {
         const el = document.getElementById('current-view-info');
         if (filterMode === 'all') {
             el.textContent = 'Showing: All Days';
         } else {
-            const muscleSet = new Set();
-            selectedDays.forEach(d => {
-                ((userRoutine.routine_days || {})[d] || []).forEach(g => muscleSet.add(g));
+            const labels = selectedDays.map(d => {
+                const lbl = getDayMuscleLabel(d);
+                return lbl ? `Day ${d} (${lbl})` : `Day ${d}`;
             });
-            const daysList = selectedDays.map(d => `Day ${d}`).join(', ');
-            el.textContent = `${daysList} — ${Array.from(muscleSet).join(', ')}`;
+            el.textContent = labels.join(', ');
         }
     }
-
     function getFilteredExercises() {
         const activeDays = getActiveDays();
-        const muscleSet = new Set();
+        const seen = new Set();
+        const result = [];
         activeDays.forEach(d => {
-            ((userRoutine.routine_days || {})[d] || []).forEach(g => muscleSet.add(g));
+            getDayExerciseObjects(d).forEach(ex => {
+                if (!seen.has(ex.exercise_id)) { seen.add(ex.exercise_id); result.push(ex); }
+            });
         });
-        return allExercises.filter(ex => muscleSet.has(ex.exercise_muscle_group));
+        return result;
     }
-
     function getFilteredSessions() {
         const activeDays = getActiveDays();
         return workoutSessions.filter(s => activeDays.includes(s.routine_day_number));
@@ -432,7 +459,7 @@
         tbody.innerHTML = '';
 
         // Helper: render a single exercise row (uses outer scope's filteredSessions, workoutLogs, nextWorkoutSelections)
-        function renderExerciseRow(ex) {
+        function renderExerciseRow(ex, isManual = false) {
             const row = document.createElement('tr');
 
             // Exercise name
@@ -441,20 +468,27 @@
             nameCell.textContent = ex.exercise_name;
             row.appendChild(nameCell);
 
-            // Next workout button
+            // Next workout cell: toggle for per_muscle days, a fixed lock for manual days
             const nextCell = document.createElement('td');
             nextCell.className = 'center';
-            const isSelected = !!nextWorkoutSelections[ex.exercise_id];
-            const btn = document.createElement('button');
-            btn.className = 'nb-next-btn' + (isSelected ? ' selected' : '');
-            btn.textContent = isSelected ? '✓' : '';
-            btn.addEventListener('click', async () => {
-                await toggleNextWorkoutSelection(ex.exercise_id, !isSelected);
-                await loadCalendar();
-            });
-            nextCell.appendChild(btn);
+            if (isManual) {
+                const lock = document.createElement('span');
+                lock.className = 'nb-cal-lock';
+                lock.title = 'Manual day — exercises are fixed by your routine';
+                lock.innerHTML = '<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="5" y="11" width="14" height="10" rx="2"></rect><path d="M8 11V7a4 4 0 0 1 8 0v4"></path></svg>';
+                nextCell.appendChild(lock);
+            } else {
+                const isSelected = !!nextWorkoutSelections[ex.exercise_id];
+                const btn = document.createElement('button');
+                btn.className = 'nb-next-btn' + (isSelected ? ' selected' : '');
+                btn.textContent = isSelected ? '✓' : '';
+                btn.addEventListener('click', async () => {
+                    await toggleNextWorkoutSelection(ex.exercise_id, !isSelected);
+                    await loadCalendar();
+                });
+                nextCell.appendChild(btn);
+            }
             row.appendChild(nextCell);
-
             // WOD cells
             for (let i = 0; i < columnsToShow; i++) {
                 const cell = document.createElement('td');
@@ -495,9 +529,7 @@
 
         // Helper: get exercises for a single day, filtered and sorted
         function getExercisesForDay(dayNumber) {
-            const muscles = (userRoutine.routine_days || {})[dayNumber] || [];
-            return allExercises
-                .filter(ex => muscles.includes(ex.exercise_muscle_group))
+            return getDayExerciseObjects(dayNumber)
                 .sort((a, b) => {
                     if (a.exercise_muscle_group !== b.exercise_muscle_group) {
                         return a.exercise_muscle_group.localeCompare(b.exercise_muscle_group);
@@ -505,7 +537,6 @@
                     return a.exercise_name.localeCompare(b.exercise_name);
                 });
         }
-
         // Decide whether to group by day
         const activeDays = getActiveDays();
         const groupByDay = (filterMode === 'all' || (filterMode === 'specific' && selectedDays.length > 1));
@@ -516,12 +547,13 @@
 
             activeDays.forEach(dayNumber => {
                 const dayExercises = getExercisesForDay(dayNumber);
+                const dayIsManual = (getDayObj(dayNumber) || {}).day_type === 'manual';
                 if (dayExercises.length === 0) return;
                 anyExercises = true;
 
                 // Day header
-                const muscleNames = ((userRoutine.routine_days || {})[dayNumber] || []).join(', ');
-                tbody.appendChild(renderSectionHeader(`Day ${dayNumber} — ${muscleNames}`, 'nb-cal-day-row'));
+                const dayLabel = getDayMuscleLabel(dayNumber);
+                tbody.appendChild(renderSectionHeader(dayLabel ? `Day ${dayNumber} — ${dayLabel}` : `Day ${dayNumber}`, 'nb-cal-day-row'));
 
                 // Muscle subheaders + exercise rows
                 let currentMuscle = null;
@@ -530,7 +562,7 @@
                         currentMuscle = ex.exercise_muscle_group;
                         tbody.appendChild(renderSectionHeader(currentMuscle, 'nb-cal-muscle-row'));
                     }
-                    tbody.appendChild(renderExerciseRow(ex));
+                    tbody.appendChild(renderExerciseRow(ex, dayIsManual));
                 });
             });
 
@@ -548,13 +580,14 @@
                     'nb-cal-empty'
                 ));
             } else {
+                const singleDayIsManual = selectedDays.length === 1 && (getDayObj(selectedDays[0]) || {}).day_type === 'manual';
                 let currentMuscle = null;
                 filteredExercises.forEach(ex => {
                     if (ex.exercise_muscle_group !== currentMuscle) {
                         currentMuscle = ex.exercise_muscle_group;
                         tbody.appendChild(renderSectionHeader(currentMuscle, 'nb-cal-muscle-row'));
                     }
-                    tbody.appendChild(renderExerciseRow(ex));
+                    tbody.appendChild(renderExerciseRow(ex, singleDayIsManual));
                 });
             }
         }

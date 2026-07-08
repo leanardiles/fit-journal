@@ -73,13 +73,23 @@ def test_cannot_read_another_users_sessions(auth):
 # --- A mutating B's data: should be rejected ---------------------------------
 
 def test_cannot_modify_another_users_routine(auth):
-    """A cannot overwrite B's routine."""
+    """A cannot overwrite B's routine. Uses a valid new-shape payload so the
+    only reason for rejection is the ownership check, not payload validation."""
     client = auth["client"]
     b = _make_second_user(client)
     r = client.post(
         f"/v1/routine/{b['user_id']}",
         headers=auth["headers"],
-        json={"days_per_week": 1, "routine_days": [{"day_number": 1, "muscle_groups": ["Chest"]}]}
+        json={
+            "days": [
+                {
+                    "day_number": 1,
+                    "day_type": "per_muscle",
+                    "muscles": [{"muscle_group": "Chest", "exercise_count": 1}],
+                    "exercise_ids": [1],
+                }
+            ]
+        },
     )
     assert r.status_code in (401, 403, 404)
 

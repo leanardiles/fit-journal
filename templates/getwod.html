@@ -261,7 +261,32 @@
             const stateRes = await fetch(`${API_URL}/workout/state/${userId}`, { headers: authHeaders() });
             const state = await stateRes.json();
             const currentDay = state.current_day_number;
-            const muscleGroupsForCurrentDay = routine.routine_days[currentDay] || [];
+
+            // Today's routine day (new shape). Its exercises define what belongs to today.
+            const dayObj = (routine.days || []).find(d => d.day_number === currentDay);
+            const todaysExerciseIds = new Set((dayObj && dayObj.exercises ? dayObj.exercises : []).map(e => e.exercise_id));
+
+            // Muscle groups for the header/prompts:
+            // per_muscle -> the day's muscles; manual -> the distinct muscles of its exercises
+            let muscleGroupsForCurrentDay = [];
+            if (dayObj) {
+                if (dayObj.day_type === 'manual') {
+                    muscleGroupsForCurrentDay = [...new Set((dayObj.exercises || []).map(e => e.muscle_group))];
+                } else {
+                    muscleGroupsForCurrentDay = (dayObj.muscles || []).map(m => m.muscle_group);
+                }
+            }
+
+            const isManual = dayObj && dayObj.day_type === 'manual';
+
+            // Manual day: the WOD is exactly the day's list, so regenerate on arrival
+            // to reflect the current routine. No Calendar selection step for manual days.
+            if (isManual && !afterAutoGenerate) {
+                await fetch(`${API_URL}/next-workout/generate/${userId}?day_number=${currentDay}`, {
+                    method: 'POST',
+                    headers: authHeaders()
+                });
+            }
 
             const selectionsRes = await fetch(`${API_URL}/next-workout/selections/${userId}`, { headers: authHeaders() });
             const selections = await selectionsRes.json();
@@ -272,13 +297,16 @@
                 .map(sel => allExercises.find(ex => ex.exercise_id === sel.exercise_id))
                 .filter(ex => ex !== undefined);
 
+            // Keep only the selected exercises that belong to today's routine day
             const filteredWorkoutExercises = workoutExercises.filter(ex =>
-                muscleGroupsForCurrentDay.includes(ex.exercise_muscle_group)
+                todaysExerciseIds.has(ex.exercise_id)
             );
-
             // Nothing usable for today (no selections at all, or none matching today's muscles)
             if (filteredWorkoutExercises.length === 0) {
-                if (afterAutoGenerate) {
+                if (isManual) {
+                    // Manual day regenerated but is empty -> the routine day itself has no exercises
+                    showPrompt(`This day has no exercises yet. <a href="/web/routine">Edit your routine</a> to add some.`);
+                } else if (afterAutoGenerate) {
                     // Auto-generate ran but produced nothing for today's muscle groups
                     showPrompt(`No exercises in your library for today's muscle groups (${muscleGroupsForCurrentDay.join(', ')}). <a href="/web/exercises">Add some on the Exercises page</a>.`);
                 } else {
@@ -292,6 +320,7 @@
 
             currentWorkoutData = {
                 day_number: currentDay,
+                day_name: dayObj ? dayObj.name : null,
                 muscle_groups: muscleGroupsForCurrentDay,
                 exercises: filteredWorkoutExercises
             };
@@ -374,7 +403,8 @@
     function displayWorkout(workoutData) {
         const today = new Date();
         document.getElementById('workout-date-info').textContent = formatDateShort(today);
-        document.getElementById('routine-day-info').textContent = `Day ${workoutData.day_number} — ${workoutData.muscle_groups.join(', ')}`;
+        const dayDesc = workoutData.day_name || workoutData.muscle_groups.join(', ');
+        document.getElementById('routine-day-info').textContent = `Day ${workoutData.day_number} — ${dayDesc}`;
 
         getUserProfile().then(profile => {
             if (profile && profile.user_unit_preference === 'imperial') {
@@ -414,7 +444,7 @@
                 weightCell.className = 'center';
                 const weightInput = document.createElement('input');
                 weightInput.type = 'number';
-                weightInput.id = `weight-${exerciseIndex}`;
+                weightInput.id = `weight-${exercise.exercise_id}`;
                 weightInput.className = 'nb-wod-input nb-weight';
                 weightInput.value = exercise.exercise_user_current_weight || '';
                 weightInput.placeholder = '';
@@ -431,7 +461,7 @@
                 setsCell.className = 'center';
                 const setsInput = document.createElement('input');
                 setsInput.type = 'number';
-                setsInput.id = `sets-${exerciseIndex}`;
+                setsInput.id = `sets-${exercise.exercise_id}`;
                 setsInput.className = 'nb-wod-input';
                 setsInput.placeholder = '';
                 setsInput.min = '1';
@@ -444,7 +474,7 @@
                 repsCell.className = 'center';
                 const repsInput = document.createElement('input');
                 repsInput.type = 'number';
-                repsInput.id = `reps-${exerciseIndex}`;
+                repsInput.id = `reps-${exercise.exercise_id}`;
                 repsInput.className = 'nb-wod-input';
                 repsInput.placeholder = '';
                 repsInput.min = '1';
@@ -486,9 +516,9 @@
 
         // Validate: every CHECKED exercise must have a sets value
         const missingSets = [];
-        currentWorkoutData.exercises.forEach((ex, index) => {
+        currentWorkoutData.exercises.forEach((ex) => {
             if (!checkedExerciseIds.has(ex.exercise_id)) return;  // skip unchecked
-            const setsVal = document.getElementById(`sets-${index}`).value;
+            const setsVal = document.getElementById(`sets-${ex.exercise_id}`).value;
             if (!setsVal || parseInt(setsVal) <= 0) {
                 missingSets.push(ex.exercise_name);
             }
@@ -501,13 +531,12 @@
 
         // Build payload — only checked exercises
         const exercises = currentWorkoutData.exercises
-            .map((exercise, index) => ({ exercise, index }))
-            .filter(({ exercise }) => checkedExerciseIds.has(exercise.exercise_id))
-            .map(({ exercise, index }) => ({
+            .filter(exercise => checkedExerciseIds.has(exercise.exercise_id))
+            .map(exercise => ({
                 exercise_id: exercise.exercise_id,
-                sets_completed: parseInt(document.getElementById(`sets-${index}`).value) || 0,
-                reps_completed: parseInt(document.getElementById(`reps-${index}`).value) || 0,
-                weight_used: parseFloat(document.getElementById(`weight-${index}`).value) || 0
+                sets_completed: parseInt(document.getElementById(`sets-${exercise.exercise_id}`).value) || 0,
+                reps_completed: parseInt(document.getElementById(`reps-${exercise.exercise_id}`).value) || 0,
+                weight_used: parseFloat(document.getElementById(`weight-${exercise.exercise_id}`).value) || 0
             }));
 
         const userId = getCurrentUserId();
@@ -530,9 +559,9 @@
                 btn.textContent = '✅ Complete!';
                 btn.classList.add('nb-btn-saved');
 
-                currentWorkoutData.exercises.forEach((ex, index) => {
+                currentWorkoutData.exercises.forEach((ex) => {
                     ['weight', 'sets', 'reps'].forEach(field => {
-                        const el = document.getElementById(`${field}-${index}`);
+                        const el = document.getElementById(`${field}-${ex.exercise_id}`);
                         if (el) el.disabled = true;
                     });
                 });
