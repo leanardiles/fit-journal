@@ -110,7 +110,7 @@ The backend runs on AWS Lambda behind API Gateway, deployed via a GitHub Actions
 
 ## Testing
 
-**Backend** — a pytest suite (21 tests) covers authentication, authorization, exercise/routine CRUD, profile, workout generation, and page loads, run against a disposable MySQL test database. The suite runs in CI (GitHub Actions) against a MySQL service container *before* every deploy — a failing test blocks the deploy.
+**Backend** — a pytest suite (51 tests) covers authentication, authorization, exercise/routine CRUD, profile, workout generation and completion, the routine reconcile logic, account deletion, and page loads, run against a disposable MySQL test database. The suite runs in CI (GitHub Actions) against a MySQL service container *before* every deploy — a failing test blocks the deploy.
 
 ```bash
 pip install pytest httpx
@@ -135,7 +135,7 @@ cd mobile
 
 ## Status
 
-Actively developed. The web and Android apps are functional and deployed, with a CI/CD pipeline (GitHub Actions) that runs a backend test suite before each deploy. Current focus is broadening test coverage, pointing the Android app at the production backend, and a marketing landing page. See [ROADMAP.md](ROADMAP.md).
+Actively developed. The web and Android apps are functional and deployed, with a CI/CD pipeline (GitHub Actions) that runs a backend test suite before each deploy. Current focus is migrating the Android app to the new routine model (the web app now supports per_muscle, manual, and mixed routine types), then Play Store launch prep. See [ROADMAP.md](ROADMAP.md).
 
 ## License
 
