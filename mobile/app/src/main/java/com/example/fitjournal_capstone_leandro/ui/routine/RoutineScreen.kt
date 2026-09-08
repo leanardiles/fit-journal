@@ -11,11 +11,14 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.text.BasicTextField
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.SolidColor
+import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -52,6 +55,7 @@ fun RoutineScreen(viewModel: RoutineViewModel, navController: NavHostController)
                     muscleGroups = viewModel.muscleGroups,
                     onSelectDays = { viewModel.selectDaysPerWeek(it) },
                     onSetType = { day, type -> viewModel.setDayType(day, type) },
+                    onSetName = { day, name -> viewModel.setDayName(day, name) },
                     onToggleMuscle = { day, muscle -> viewModel.toggleMuscleGroup(day, muscle) },
                     onOpenPicker = { day -> navController.navigate(Routes.exercisePicker(day)) },
                     onSave = { viewModel.saveRoutine() },
@@ -113,6 +117,7 @@ private fun EditingContent(
     muscleGroups: List<String>,
     onSelectDays: (Int) -> Unit,
     onSetType: (Int, String) -> Unit,
+    onSetName: (Int, String) -> Unit,
     onToggleMuscle: (Int, String) -> Unit,
     onOpenPicker: (Int) -> Unit,
     onSave: () -> Unit,
@@ -143,6 +148,7 @@ private fun EditingContent(
                 dayEdit = state.editingDays[day] ?: DayEdit(),
                 muscleGroups = muscleGroups,
                 onSetType = { type -> onSetType(day, type) },
+                onSetName = { name -> onSetName(day, name) },
                 onToggleMuscle = { muscle -> onToggleMuscle(day, muscle) },
                 onOpenPicker = { onOpenPicker(day) }
             )
@@ -176,12 +182,25 @@ private fun ViewRoutineContent(state: RoutineScreenState, onEdit: () -> Unit) {
 
         (1..state.daysPerWeek).forEach { day ->
             val muscles = state.routineDays[day.toString()] ?: emptyList()
-            Row(modifier = Modifier.fillMaxWidth().padding(vertical = 8.dp), verticalAlignment = Alignment.Top) {
-                Text("Day $day:", fontSize = 16.sp, color = AccentYellow, fontWeight = FontWeight.Bold, fontFamily = myCustomFont, modifier = Modifier.width(60.dp))
-                Text(
-                    text = if (muscles.isEmpty()) "Rest day" else muscles.joinToString(", "),
-                    fontSize = 16.sp, color = Color.White, fontFamily = myCustomFont
-                )
+            val dayName = state.routineDayNames[day.toString()]
+            val typeLabel = if (state.routineDayTypes[day.toString()] == "manual") "Manual" else "By Muscle"
+            Column(modifier = Modifier.fillMaxWidth().padding(vertical = 8.dp)) {
+                // Line 1: day number (yellow) + optional name (white), both bold
+                Row {
+                    Text("Day $day", fontSize = 16.sp, color = AccentYellow, fontWeight = FontWeight.Bold, fontFamily = myCustomFont)
+                    if (!dayName.isNullOrBlank()) {
+                        Text(" — $dayName", fontSize = 16.sp, color = Color.White, fontWeight = FontWeight.Bold, fontFamily = myCustomFont)
+                    }
+                }
+                Spacer(modifier = Modifier.height(2.dp))
+                // Line 2: type + muscles
+                Row {
+                    Text("$typeLabel · ", fontSize = 14.sp, color = TextGray, fontFamily = myCustomFont)
+                    Text(
+                        text = if (muscles.isEmpty()) "Rest day" else muscles.joinToString(", "),
+                        fontSize = 14.sp, color = Color.White, fontFamily = myCustomFont
+                    )
+                }
             }
             Divider(color = SurfaceDark)
         }
@@ -415,18 +434,48 @@ private fun DayCard(
     dayEdit: DayEdit,
     muscleGroups: List<String>,
     onSetType: (String) -> Unit,
+    onSetName: (String) -> Unit,
     onToggleMuscle: (String) -> Unit,
     onOpenPicker: () -> Unit
 ) {
     var pendingType by remember { mutableStateOf<String?>(null) }
 
     Column(modifier = Modifier.fillMaxWidth().background(SurfaceDark, RoundedCornerShape(12.dp)).padding(16.dp)) {
+        // Row 1: day number + inline name field (now roomy — toggle moved below)
         Row(
             modifier = Modifier.fillMaxWidth(),
-            verticalAlignment = Alignment.CenterVertically,
-            horizontalArrangement = Arrangement.SpaceBetween
+            verticalAlignment = Alignment.CenterVertically
         ) {
             Text("Day $day", fontSize = 18.sp, color = AccentYellow, fontWeight = FontWeight.Bold, fontFamily = myCustomFont)
+            BasicTextField(
+                value = dayEdit.name,
+                onValueChange = { if (it.length <= 25) onSetName(it) },
+                singleLine = true,
+                textStyle = TextStyle(color = Color.White, fontFamily = myCustomFont, fontSize = 15.sp),
+                cursorBrush = SolidColor(AccentYellow),
+                modifier = Modifier
+                    .weight(1f)
+                    .padding(start = 10.dp)
+                    .background(Color(0x22FFFFFF), RoundedCornerShape(6.dp))
+                    .padding(horizontal = 8.dp, vertical = 6.dp),
+                decorationBox = { inner ->
+                    Box {
+                        if (dayEdit.name.isEmpty()) {
+                            Text("name (optional)", color = Color(0xFF888888), fontFamily = myCustomFont, fontSize = 15.sp)
+                        }
+                        inner()
+                    }
+                }
+            )
+        }
+
+        Spacer(modifier = Modifier.height(8.dp))
+
+        // Row 2: type toggle, centered
+        Row(
+            modifier = Modifier.fillMaxWidth(),
+            horizontalArrangement = Arrangement.Center
+        ) {
             TypeToggle(current = dayEdit.type) { newType ->
                 val hasContent = dayEdit.perMuscle.isNotEmpty() || dayEdit.manualExerciseIds.isNotEmpty()
                 if (hasContent) pendingType = newType else onSetType(newType)

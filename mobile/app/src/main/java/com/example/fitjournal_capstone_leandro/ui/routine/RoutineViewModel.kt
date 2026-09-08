@@ -40,6 +40,7 @@ data class MuscleSelection(
  */
 data class DayEdit(
     val type: String = "per_muscle",
+    val name: String = "",
     val perMuscle: Map<String, MuscleSelection> = emptyMap(),
     val manualExerciseIds: Set<Int> = emptySet(),
     val manualActiveMuscles: Set<String> = emptySet()
@@ -50,6 +51,8 @@ data class RoutineScreenState(
     val daysPerWeek: Int = 0,
     val selectedDays: Int = 0,                                   // days selected in editor
     val routineDays: Map<String, List<String>> = emptyMap(),    // existing routine (view mode display)
+    val routineDayNames: Map<String, String?> = emptyMap(),     // day_number -> optional name (view mode)
+    val routineDayTypes: Map<String, String> = emptyMap(),      // day_number -> "per_muscle" | "manual" (view mode)
     val editingDays: Map<Int, DayEdit> = emptyMap(),            // day -> edit state
     val exercisesByMuscle: Map<String, List<UserExercise>> = emptyMap(),   // library, for the picker
     val savedMessage: String? = null
@@ -97,10 +100,16 @@ class RoutineViewModel(
                     val displayMap = routine.days
                         .sortedBy { it.day_number }
                         .associate { it.day_number.toString() to musclesForDisplay(it) }
+                    val nameMap = routine.days
+                        .associate { it.day_number.toString() to it.name }
+                    val typeMap = routine.days
+                        .associate { it.day_number.toString() to it.day_type }
                     _state.value = _state.value.copy(
                         uiState = RoutineUiState.Success,
                         daysPerWeek = routine.days_per_week,
                         routineDays = displayMap,
+                        routineDayNames = nameMap,
+                        routineDayTypes = typeMap,
                         exercisesByMuscle = exByMuscle
                     )
                 }
@@ -140,7 +149,15 @@ class RoutineViewModel(
         val current = _state.value.editingDays.toMutableMap()
         val existing = current[day] ?: DayEdit()
         if (existing.type == type) return
-        current[day] = DayEdit(type = type)   // fresh, empty of the new type
+        current[day] = DayEdit(type = type, name = existing.name)   // keep the name; clear content
+        _state.value = _state.value.copy(editingDays = current)
+    }
+
+    /** Set a day's optional label (capped short). */
+    fun setDayName(day: Int, name: String) {
+        val current = _state.value.editingDays.toMutableMap()
+        val de = current[day] ?: DayEdit()
+        current[day] = de.copy(name = name.take(25))
         _state.value = _state.value.copy(editingDays = current)
     }
 
@@ -256,11 +273,13 @@ class RoutineViewModel(
             }
 
             val days: Map<Int, DaySave> = editingDays.mapValues { (_, de) ->
+                val dayName = de.name.trim().ifBlank { null }
                 if (de.type == "manual") {
-                    DaySave(day_type = "manual", exercise_ids = de.manualExerciseIds.toList())
+                    DaySave(day_type = "manual", name = dayName, exercise_ids = de.manualExerciseIds.toList())
                 } else {
                     DaySave(
                         day_type = "per_muscle",
+                        name = dayName,
                         pools = de.perMuscle.map { (muscle, sel) ->
                             MusclePool(
                                 muscle_group = muscle,
@@ -294,7 +313,7 @@ class RoutineViewModel(
             val de = if (day.day_type == "manual") {
                 val ids = day.exercises.map { it.exercise_id }.toSet()
                 val active = day.exercises.map { it.muscle_group }.distinct().toSet()
-                DayEdit(type = "manual", manualExerciseIds = ids, manualActiveMuscles = active)
+                DayEdit(type = "manual", name = day.name ?: "", manualExerciseIds = ids, manualActiveMuscles = active)
             } else {
                 val pm = day.muscles.associate { m ->
                     val ids = day.exercises
@@ -303,7 +322,7 @@ class RoutineViewModel(
                         .toSet()
                     m.muscle_group to MuscleSelection(exerciseIds = ids, count = m.exercise_count)
                 }
-                DayEdit(type = "per_muscle", perMuscle = pm)
+                DayEdit(type = "per_muscle", name = day.name ?: "", perMuscle = pm)
             }
             day.day_number to de
         }

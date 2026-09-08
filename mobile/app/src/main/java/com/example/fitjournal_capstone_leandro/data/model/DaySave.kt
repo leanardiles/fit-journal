@@ -4,6 +4,7 @@ package com.example.fitjournal_capstone_leandro.data.model
 // (muscle pools + counts) or manual (a flat exercise list).
 data class DaySave(
     val day_type: String,                        // "per_muscle" | "manual"
+    val name: String? = null,                    // optional day label, e.g. "Lower B"
     val pools: List<MusclePool> = emptyList(),   // per_muscle days
     val exercise_ids: List<Int> = emptyList()    // manual days
 )

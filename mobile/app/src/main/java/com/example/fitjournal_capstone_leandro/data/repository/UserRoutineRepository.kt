@@ -51,7 +51,7 @@ class UserRoutineRepository(
                     TrainingDayRequest(
                         day_number = dayNumber,
                         day_type = "manual",
-                        name = null,
+                        name = d.name,
                         muscles = emptyList(),
                         exercise_ids = d.exercise_ids.distinct()
                     )
@@ -59,7 +59,7 @@ class UserRoutineRepository(
                     TrainingDayRequest(
                         day_number = dayNumber,
                         day_type = "per_muscle",
-                        name = null,
+                        name = d.name,
                         muscles = d.pools.map {
                             TrainingDayMuscleRequest(
                                 muscle_group = it.muscle_group,
