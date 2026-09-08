@@ -58,6 +58,8 @@ fun RoutineScreen(viewModel: RoutineViewModel, navController: NavHostController)
                     onSetName = { day, name -> viewModel.setDayName(day, name) },
                     onToggleMuscle = { day, muscle -> viewModel.toggleMuscleGroup(day, muscle) },
                     onOpenPicker = { day -> navController.navigate(Routes.exercisePicker(day)) },
+                    onAddDay = { viewModel.addDay() },
+                    onDeleteDay = { day -> viewModel.deleteDay(day) },
                     onSave = { viewModel.saveRoutine() },
                     onCancel = { viewModel.cancelEditing() }
                 )
@@ -100,8 +102,8 @@ private fun NoRoutineContent(onSelectDays: (Int) -> Unit) {
         Text("Your Routine", fontSize = 32.sp, color = Color.White, fontWeight = FontWeight.Bold, fontFamily = myCustomFont)
         Spacer(modifier = Modifier.height(40.dp))
         Text(
-            text = "How many days per week\ndo you want to train?",
-            fontSize = 20.sp, color = Color.White, fontFamily = myCustomFont,
+            text = "Select the number of days of training per week:",
+            fontSize = 14.sp, color = Color.White, fontFamily = myCustomFont, maxLines = 1,
             textAlign = androidx.compose.ui.text.style.TextAlign.Center
         )
         Spacer(modifier = Modifier.height(32.dp))
@@ -120,6 +122,8 @@ private fun EditingContent(
     onSetName: (Int, String) -> Unit,
     onToggleMuscle: (Int, String) -> Unit,
     onOpenPicker: (Int) -> Unit,
+    onAddDay: () -> Unit,
+    onDeleteDay: (Int) -> Unit,
     onSave: () -> Unit,
     onCancel: () -> Unit
 ) {
@@ -131,12 +135,13 @@ private fun EditingContent(
             Text("Your Routine", fontSize = 32.sp, color = Color.White, fontWeight = FontWeight.Bold, fontFamily = myCustomFont)
             Spacer(modifier = Modifier.height(24.dp))
             Text(
-                text = "How many days per week\ndo you want to train?",
-                fontSize = 18.sp, color = Color.White, fontFamily = myCustomFont,
+                text = if (state.editMode) "Number of training days per week selected:"
+                else "Select the number of days of training per week:",
+                fontSize = 14.sp, color = Color.White, fontFamily = myCustomFont, maxLines = 1,
                 textAlign = androidx.compose.ui.text.style.TextAlign.Center
             )
             Spacer(modifier = Modifier.height(16.dp))
-            DaySelector(selectedDays = state.selectedDays, onSelectDays = onSelectDays)
+            DaySelector(selectedDays = state.selectedDays, locked = state.editMode, onSelectDays = onSelectDays)
             Spacer(modifier = Modifier.height(32.dp))
             Text("Set up each day:", fontSize = 18.sp, color = Color.White, fontFamily = myCustomFont)
             Spacer(modifier = Modifier.height(16.dp))
@@ -147,12 +152,27 @@ private fun EditingContent(
                 day = day,
                 dayEdit = state.editingDays[day] ?: DayEdit(),
                 muscleGroups = muscleGroups,
+                editMode = state.editMode,
                 onSetType = { type -> onSetType(day, type) },
                 onSetName = { name -> onSetName(day, name) },
                 onToggleMuscle = { muscle -> onToggleMuscle(day, muscle) },
-                onOpenPicker = { onOpenPicker(day) }
+                onOpenPicker = { onOpenPicker(day) },
+                onDelete = { onDeleteDay(day) }
             )
             Spacer(modifier = Modifier.height(16.dp))
+        }
+
+        if (state.editMode && state.selectedDays < 7) {
+            item {
+                OutlinedButton(
+                    onClick = onAddDay,
+                    modifier = Modifier.fillMaxWidth(),
+                    border = BorderStroke(1.5.dp, AccentYellow)
+                ) {
+                    Text("+ Add day", color = AccentYellow, fontFamily = myCustomFont)
+                }
+                Spacer(modifier = Modifier.height(16.dp))
+            }
         }
 
         item {
@@ -382,19 +402,19 @@ private fun PickerButtons(onCancel: () -> Unit, onDone: () -> Unit) {
 }
 
 @Composable
-private fun DaySelector(selectedDays: Int, onSelectDays: (Int) -> Unit) {
+private fun DaySelector(selectedDays: Int, locked: Boolean = false, onSelectDays: (Int) -> Unit) {
     Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
         (1..7).forEach { day ->
             val isSelected = day == selectedDays
-            Box(
-                modifier = Modifier
-                    .size(44.dp)
-                    .border(2.dp, if (isSelected) AccentYellow else Color.White, RoundedCornerShape(8.dp))
-                    .background(if (isSelected) AccentYellow.copy(alpha = 0.2f) else Color.Transparent, RoundedCornerShape(8.dp))
-                    .clickable { onSelectDays(day) },
-                contentAlignment = Alignment.Center
-            ) {
-                Text("$day", color = if (isSelected) AccentYellow else Color.White, fontWeight = FontWeight.Bold, fontFamily = myCustomFont, fontSize = 18.sp)
+            val borderColor = if (isSelected) AccentYellow else if (locked) Color(0xFF444444) else Color.White
+            val textColor = if (isSelected) AccentYellow else if (locked) TextGray else Color.White
+            var mod = Modifier
+                .size(44.dp)
+                .border(2.dp, borderColor, RoundedCornerShape(8.dp))
+                .background(if (isSelected) AccentYellow.copy(alpha = 0.2f) else Color.Transparent, RoundedCornerShape(8.dp))
+            if (!locked) mod = mod.clickable { onSelectDays(day) }
+            Box(modifier = mod, contentAlignment = Alignment.Center) {
+                Text("$day", color = textColor, fontWeight = FontWeight.Bold, fontFamily = myCustomFont, fontSize = 18.sp)
             }
         }
     }
@@ -433,14 +453,36 @@ private fun DayCard(
     day: Int,
     dayEdit: DayEdit,
     muscleGroups: List<String>,
+    editMode: Boolean,
     onSetType: (String) -> Unit,
     onSetName: (String) -> Unit,
     onToggleMuscle: (String) -> Unit,
-    onOpenPicker: () -> Unit
+    onOpenPicker: () -> Unit,
+    onDelete: () -> Unit
 ) {
     var pendingType by remember { mutableStateOf<String?>(null) }
+    var confirmDelete by remember { mutableStateOf(false) }
 
-    Column(modifier = Modifier.fillMaxWidth().background(SurfaceDark, RoundedCornerShape(12.dp)).padding(16.dp)) {
+    Column(modifier = Modifier.fillMaxWidth().background(SurfaceDark, RoundedCornerShape(12.dp)).padding(start = 16.dp, top = 10.dp, end = 16.dp, bottom = 16.dp)) {
+        // Delete control (edit mode) — its own right-aligned line at the top
+        if (editMode) {
+            Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.End) {
+                Text(
+                    text = "✕",
+                    color = TextGray,
+                    fontFamily = myCustomFont,
+                    fontSize = 18.sp,
+                    modifier = Modifier
+                        .clickable {
+                            val hasContent = dayEdit.perMuscle.isNotEmpty() || dayEdit.manualExerciseIds.isNotEmpty()
+                            if (hasContent) confirmDelete = true else onDelete()
+                        }
+                        .padding(end = 2.dp)
+                )
+            }
+            Spacer(modifier = Modifier.height(12.dp))
+        }
+
         // Row 1: day number + inline name field (now roomy — toggle moved below)
         Row(
             modifier = Modifier.fillMaxWidth(),
@@ -536,6 +578,25 @@ private fun DayCard(
             },
             dismissButton = {
                 TextButton(onClick = { pendingType = null }) {
+                    Text("Cancel", color = TextGray, fontFamily = myCustomFont)
+                }
+            }
+        )
+    }
+
+    if (confirmDelete) {
+        AlertDialog(
+            onDismissRequest = { confirmDelete = false },
+            containerColor = SurfaceDark,
+            title = { Text("Delete Day $day?", color = Color.White, fontFamily = myCustomFont) },
+            text = { Text("Its exercises will be removed and the later days renumbered.", color = TextGray, fontFamily = myCustomFont) },
+            confirmButton = {
+                TextButton(onClick = { confirmDelete = false; onDelete() }) {
+                    Text("Delete", color = AccentYellow, fontFamily = myCustomFont)
+                }
+            },
+            dismissButton = {
+                TextButton(onClick = { confirmDelete = false }) {
                     Text("Cancel", color = TextGray, fontFamily = myCustomFont)
                 }
             }

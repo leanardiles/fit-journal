@@ -54,6 +54,7 @@ data class RoutineScreenState(
     val routineDayNames: Map<String, String?> = emptyMap(),     // day_number -> optional name (view mode)
     val routineDayTypes: Map<String, String> = emptyMap(),      // day_number -> "per_muscle" | "manual" (view mode)
     val editingDays: Map<Int, DayEdit> = emptyMap(),            // day -> edit state
+    val editMode: Boolean = false,                              // true = editing existing (selector locked, add/delete on)
     val exercisesByMuscle: Map<String, List<UserExercise>> = emptyMap(),   // library, for the picker
     val savedMessage: String? = null
 )
@@ -140,8 +141,33 @@ class RoutineViewModel(
         _state.value = _state.value.copy(
             uiState = RoutineUiState.Editing,
             selectedDays = days,
-            editingDays = editing
+            editingDays = editing,
+            editMode = false
         )
+    }
+
+    /** Add an empty day at the end (edit mode). */
+    fun addDay() {
+        val n = _state.value.selectedDays
+        if (n >= 7) return
+        val current = _state.value.editingDays.toMutableMap()
+        current[n + 1] = DayEdit()
+        _state.value = _state.value.copy(selectedDays = n + 1, editingDays = current)
+    }
+
+    /** Delete a day and renumber the rest to stay contiguous (edit mode). */
+    fun deleteDay(day: Int) {
+        val n = _state.value.selectedDays
+        if (n <= 1) return   // a routine needs at least one day
+        val old = _state.value.editingDays
+        val rebuilt = LinkedHashMap<Int, DayEdit>()
+        var target = 1
+        for (d in 1..n) {
+            if (d == day) continue
+            rebuilt[target] = old[d] ?: DayEdit()
+            target++
+        }
+        _state.value = _state.value.copy(selectedDays = n - 1, editingDays = rebuilt)
     }
 
     /** Switch a day between per_muscle and manual, clearing its content. */
@@ -329,7 +355,8 @@ class RoutineViewModel(
         _state.value = _state.value.copy(
             uiState = RoutineUiState.Editing,
             selectedDays = _state.value.daysPerWeek,
-            editingDays = editing
+            editingDays = editing,
+            editMode = true
         )
     }
 
