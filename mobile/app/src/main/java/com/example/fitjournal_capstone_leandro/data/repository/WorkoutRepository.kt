@@ -3,6 +3,7 @@ package com.example.fitjournal_capstone_leandro.data.repository
 import com.example.fitjournal_capstone_leandro.data.local.TokenManager
 import com.example.fitjournal_capstone_leandro.data.model.ExerciseLog
 import com.example.fitjournal_capstone_leandro.data.model.NextWorkoutSelection
+import com.example.fitjournal_capstone_leandro.data.model.RoutineResponse
 import com.example.fitjournal_capstone_leandro.data.model.UpdateExerciseRequest
 import com.example.fitjournal_capstone_leandro.data.model.UserExercise
 import com.example.fitjournal_capstone_leandro.data.model.WorkoutCompleteRequest
@@ -19,6 +20,16 @@ class WorkoutRepository(private val tokenManager: TokenManager) {
             if (userId == -1) return Result.failure(Exception("No user logged in"))
             val state = apiService.getWorkoutState(userId)
             Result.success(state)
+        } catch (e: Exception) {
+            Result.failure(e)
+        }
+    }
+
+    suspend fun getRoutine(): Result<RoutineResponse> {
+        return try {
+            val userId = tokenManager.getUserId()
+            if (userId == -1) return Result.failure(Exception("No user logged in"))
+            Result.success(apiService.getRoutine(userId))
         } catch (e: Exception) {
             Result.failure(e)
         }
@@ -46,6 +57,17 @@ class WorkoutRepository(private val tokenManager: TokenManager) {
         }
     }
 
+    suspend fun setCurrentDay(dayNumber: Int): Result<Unit> {
+        return try {
+            val userId = tokenManager.getUserId()
+            if (userId == -1) return Result.failure(Exception("No user logged in"))
+            apiService.setCurrentDay(userId, dayNumber)
+            Result.success(Unit)
+        } catch (e: Exception) {
+            Result.failure(e)
+        }
+    }
+
     suspend fun getExercises(): Result<List<UserExercise>> {
         return try {
             val userId = tokenManager.getUserId()
@@ -59,19 +81,11 @@ class WorkoutRepository(private val tokenManager: TokenManager) {
 
     suspend fun completeWorkout(
         dayNumber: Int,
-        exercises: List<UserExercise>
+        logs: List<ExerciseLog>
     ): Result<Unit> {
         return try {
             val userId = tokenManager.getUserId()
             if (userId == -1) return Result.failure(Exception("No user logged in"))
-            val logs = exercises.map { ex ->
-                ExerciseLog(
-                    exercise_id = ex.exercise_id,
-                    sets_completed = 3,
-                    reps_completed = 10,
-                    weight_used = ex.exercise_user_current_weight ?: 0f
-                )
-            }
             apiService.completeWorkout(
                 userId,
                 WorkoutCompleteRequest(day_number = dayNumber, exercises = logs)

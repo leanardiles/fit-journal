@@ -180,6 +180,12 @@ interface FitJournalApiService {
         @Query("day_number") dayNumber: Int
     ): Any
 
+    @POST("workout/state/{user_id}/current-day")
+    suspend fun setCurrentDay(
+        @Path("user_id") userId: Int,
+        @Query("day_number") dayNumber: Int
+    ): Any
+
     /**
      * Toggle a single exercise's selection for the next workout.
      *
