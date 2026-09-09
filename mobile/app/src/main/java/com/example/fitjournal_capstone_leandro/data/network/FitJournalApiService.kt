@@ -6,6 +6,7 @@ import com.example.fitjournal_capstone_leandro.data.model.DeleteAccountRequest
 import com.example.fitjournal_capstone_leandro.data.model.LoginRequest
 import com.example.fitjournal_capstone_leandro.data.model.LoginResponse
 import com.example.fitjournal_capstone_leandro.data.model.LogsBySessionsRequest
+import com.example.fitjournal_capstone_leandro.data.model.ManualLogRequest
 import com.example.fitjournal_capstone_leandro.data.model.NextWorkoutSelection
 import com.example.fitjournal_capstone_leandro.data.model.RegisterRequest
 import com.example.fitjournal_capstone_leandro.data.model.RegisterResponse
@@ -202,6 +203,17 @@ interface FitJournalApiService {
     suspend fun completeWorkout(
         @Path("user_id") userId: Int,
         @Body workoutData: WorkoutCompleteRequest
+    ): Any
+
+    /**
+     * Log an off-routine ("manual") workout for a chosen date.
+     *
+     * POST /v1/workout/log-manual/{user_id}
+     */
+    @POST("workout/log-manual/{user_id}")
+    suspend fun logManualWorkout(
+        @Path("user_id") userId: Int,
+        @Body request: ManualLogRequest
     ): Any
 
     /**

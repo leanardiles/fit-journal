@@ -2,6 +2,8 @@ package com.example.fitjournal_capstone_leandro.data.repository
 
 import com.example.fitjournal_capstone_leandro.data.local.TokenManager
 import com.example.fitjournal_capstone_leandro.data.model.ExerciseLog
+import com.example.fitjournal_capstone_leandro.data.model.ManualLogEntry
+import com.example.fitjournal_capstone_leandro.data.model.ManualLogRequest
 import com.example.fitjournal_capstone_leandro.data.model.NextWorkoutSelection
 import com.example.fitjournal_capstone_leandro.data.model.RoutineResponse
 import com.example.fitjournal_capstone_leandro.data.model.UpdateExerciseRequest
@@ -93,6 +95,25 @@ class WorkoutRepository(private val tokenManager: TokenManager) {
             Result.success(Unit)
         } catch (e: Exception) {
             android.util.Log.e("WorkoutRepo", "completeWorkout error: ${e.message}", e)
+            Result.failure(e)
+        }
+    }
+
+    /** Log an off-routine workout for a date (ISO yyyy-MM-dd). */
+    suspend fun logManual(
+        workoutDateIso: String,
+        entries: List<ManualLogEntry>
+    ): Result<Unit> {
+        return try {
+            val userId = tokenManager.getUserId()
+            if (userId == -1) return Result.failure(Exception("No user logged in"))
+            apiService.logManualWorkout(
+                userId,
+                ManualLogRequest(workout_date = workoutDateIso, exercises = entries)
+            )
+            Result.success(Unit)
+        } catch (e: Exception) {
+            android.util.Log.e("WorkoutRepo", "logManual error: ${e.message}", e)
             Result.failure(e)
         }
     }

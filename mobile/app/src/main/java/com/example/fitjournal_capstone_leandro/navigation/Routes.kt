@@ -16,6 +16,7 @@ object Routes {
     const val ROUTINE = "routine"
     const val EXERCISE_PICKER = "exercise_picker/{day}"
     const val WORKOUT = "workout"
+    const val MANUAL_LOG = "manual_log"
     const val SETTINGS = "settings"
     const val PROFILE = "profile"
     const val TIMER = "timer"

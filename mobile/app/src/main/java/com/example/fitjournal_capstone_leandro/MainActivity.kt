@@ -47,6 +47,8 @@ import com.example.fitjournal_capstone_leandro.ui.shared.BottomNavItem
 import com.example.fitjournal_capstone_leandro.ui.shared.ProfileTopBar
 import com.example.fitjournal_capstone_leandro.ui.stopwatch.StopwatchBottomSheet
 import com.example.fitjournal_capstone_leandro.ui.stopwatch.StopwatchViewModel
+import com.example.fitjournal_capstone_leandro.ui.workout.ManualLogViewModel
+import com.example.fitjournal_capstone_leandro.ui.workout.ManualLogViewModelFactory
 import com.example.fitjournal_capstone_leandro.ui.workout.WorkoutViewModel
 import com.example.fitjournal_capstone_leandro.ui.workout.WorkoutViewModelFactory
 import com.example.fitjournal_capstone_leandro.data.network.RetrofitClient
@@ -130,6 +132,10 @@ class MainActivity : ComponentActivity() {
 
     private val workoutViewModel: WorkoutViewModel by viewModels {
         WorkoutViewModelFactory(workoutRepository)
+    }
+
+    private val manualLogViewModel: ManualLogViewModel by viewModels {
+        ManualLogViewModelFactory(workoutRepository)
     }
 
     private val calendarRepository by lazy {
@@ -225,6 +231,7 @@ class MainActivity : ComponentActivity() {
                         routineViewModel = routineViewModel,
                         authViewModel = authViewModel,
                         workoutViewModel = workoutViewModel,
+                        manualLogViewModel = manualLogViewModel,
                         calendarViewModel = calendarViewModel,
                         navController = navController,
                         tokenManager = tokenManager,

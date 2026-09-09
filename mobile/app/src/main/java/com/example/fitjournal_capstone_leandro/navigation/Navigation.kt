@@ -38,6 +38,8 @@ import com.example.fitjournal_capstone_leandro.ui.profile.ProfileSettingsViewMod
 import com.example.fitjournal_capstone_leandro.ui.routine.RoutineExercisePickerRoute
 import com.example.fitjournal_capstone_leandro.ui.routine.RoutineScreen
 import com.example.fitjournal_capstone_leandro.ui.routine.RoutineViewModel
+import com.example.fitjournal_capstone_leandro.ui.workout.ManualLogScreen
+import com.example.fitjournal_capstone_leandro.ui.workout.ManualLogViewModel
 import com.example.fitjournal_capstone_leandro.ui.workout.WorkoutViewModel
 import com.example.fitjournal_capstone_leandro.ui.workout.WorkoutScreen
 
@@ -53,6 +55,7 @@ fun AppNavigation(
     routineViewModel: RoutineViewModel,
     authViewModel: AuthViewModel,
     workoutViewModel: WorkoutViewModel,
+    manualLogViewModel: ManualLogViewModel,
     calendarViewModel: CalendarViewModel,
     navController: NavHostController,
     tokenManager: TokenManager,
@@ -143,7 +146,20 @@ fun AppNavigation(
         composable(Routes.WORKOUT) {
             WorkoutScreen(
                 viewModel = workoutViewModel,
+                navController = navController,
                 onWorkoutComplete = {
+                    navController.navigate(Routes.HOME) {
+                        popUpTo(Routes.HOME) { inclusive = true }
+                    }
+                }
+            )
+        }
+
+        // Manual (off-routine) logging
+        composable(Routes.MANUAL_LOG) {
+            ManualLogScreen(
+                viewModel = manualLogViewModel,
+                onLogged = {
                     navController.navigate(Routes.HOME) {
                         popUpTo(Routes.HOME) { inclusive = true }
                     }

@@ -2,6 +2,7 @@ package com.example.fitjournal_capstone_leandro.ui.workout
 
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
+import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.horizontalScroll
@@ -33,6 +34,8 @@ import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.fitjournal_capstone_leandro.data.model.UserExercise
+import androidx.navigation.NavHostController
+import com.example.fitjournal_capstone_leandro.navigation.Routes
 import com.example.fitjournal_capstone_leandro.ui.theme.myCustomFont
 import sh.calvin.reorderable.ReorderableItem
 import sh.calvin.reorderable.ReorderableCollectionItemScope
@@ -47,6 +50,7 @@ private val AccentYellow = Color(0xFFFFEB3B)
 @Composable
 fun WorkoutScreen(
     viewModel: WorkoutViewModel,
+    navController: NavHostController,
     onWorkoutComplete: () -> Unit = {}
 ) {
     val state by viewModel.state.collectAsState()
@@ -142,47 +146,51 @@ fun WorkoutScreen(
         when (state.uiState) {
 
             is WorkoutUiState.Idle -> {
-                Box(
+                Column(
                     modifier = Modifier.fillMaxSize(),
-                    contentAlignment = Alignment.Center
+                    horizontalAlignment = Alignment.CenterHorizontally
                 ) {
-                    Column(horizontalAlignment = Alignment.CenterHorizontally) {
-                        if (state.days.isNotEmpty()) {
-                            Text(text = "Current training day:", color = Color.Gray, fontSize = 13.sp)
-                            Spacer(modifier = Modifier.height(8.dp))
-                            Row(
-                                modifier = Modifier
-                                    .fillMaxWidth()
-                                    .horizontalScroll(rememberScrollState()),
-                                horizontalArrangement = Arrangement.spacedBy(8.dp, Alignment.CenterHorizontally)
-                            ) {
-                                state.days.forEach { d ->
-                                    DayChip(
-                                        dayNumber = d.dayNumber,
-                                        name = d.name,
-                                        current = d.dayNumber == state.currentDay,
-                                        onClick = { viewModel.requestSetCurrentDay(d.dayNumber) }
-                                    )
-                                }
+                    if (state.days.isNotEmpty()) {
+                        Text(text = "Current training day:", color = Color.Gray, fontSize = 13.sp, fontFamily = myCustomFont)
+                        Spacer(modifier = Modifier.height(8.dp))
+                        Row(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .horizontalScroll(rememberScrollState()),
+                            horizontalArrangement = Arrangement.spacedBy(8.dp, Alignment.CenterHorizontally)
+                        ) {
+                            state.days.forEach { d ->
+                                DayChip(
+                                    dayNumber = d.dayNumber,
+                                    name = d.name,
+                                    current = d.dayNumber == state.currentDay,
+                                    onClick = { viewModel.requestSetCurrentDay(d.dayNumber) }
+                                )
                             }
-                            Spacer(modifier = Modifier.height(28.dp))
                         }
-                        Text(text = "Ready to train?", color = Color.Gray, fontSize = 16.sp)
-                        Spacer(modifier = Modifier.height(24.dp))
+                    }
+
+                    Spacer(modifier = Modifier.height(36.dp))
+
+                    Row(
+                        modifier = Modifier.fillMaxWidth(),
+                        horizontalArrangement = Arrangement.spacedBy(12.dp)
+                    ) {
                         Button(
                             onClick = { viewModel.createWorkout() },
-                            colors = ButtonDefaults.buttonColors(
-                                containerColor = AccentYellow,
-                                contentColor = Color.Black
-                            ),
+                            colors = ButtonDefaults.buttonColors(containerColor = AccentYellow, contentColor = Color.Black),
                             shape = RoundedCornerShape(12.dp),
-                            modifier = Modifier.fillMaxWidth(0.7f).height(52.dp)
+                            modifier = Modifier.weight(1f).height(52.dp)
                         ) {
-                            Text(
-                                text = "Create Workout",
-                                fontWeight = FontWeight.Bold,
-                                fontSize = 16.sp
-                            )
+                            Text("Generate Workout", fontWeight = FontWeight.Bold, fontSize = 14.sp, fontFamily = myCustomFont)
+                        }
+                        OutlinedButton(
+                            onClick = { navController.navigate(Routes.MANUAL_LOG) },
+                            border = BorderStroke(1.5.dp, AccentYellow),
+                            shape = RoundedCornerShape(12.dp),
+                            modifier = Modifier.weight(1f).height(52.dp)
+                        ) {
+                            Text("Log Manually", color = AccentYellow, fontWeight = FontWeight.Bold, fontSize = 14.sp, fontFamily = myCustomFont)
                         }
                     }
                 }
