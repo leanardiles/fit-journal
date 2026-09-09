@@ -31,6 +31,7 @@ data class WorkoutScreenState(
     val checkedExerciseIds: Set<Int> = emptySet(),
     val setsById: Map<Int, String> = emptyMap(),   // per-exercise input, keyed by id (survives reorder)
     val repsById: Map<Int, String> = emptyMap(),
+    val weightById: Map<Int, String> = emptyMap(),   // inline weight input, keyed by id
     val currentDay: Int = 1,
     val days: List<WorkoutDay> = emptyList(),   // routine days for the picker (Idle screen)
     val pendingGenerateDay: Int? = null,   // set when a day has no selections and we're asking to auto-generate
@@ -175,13 +176,21 @@ class WorkoutViewModel(
         val allExercises = exercisesResult.getOrNull() ?: emptyList()
         val workoutExercises = allExercises.filter { it.exercise_id in ids }
 
+        val weights = workoutExercises.associate { ex ->
+            val w = ex.exercise_user_current_weight
+            val text = if (w != null && w > 0f) {
+                if (w % 1f == 0f) w.toInt().toString() else w.toString()
+            } else ""
+            ex.exercise_id to text
+        }
         _state.value = _state.value.copy(
             uiState = WorkoutUiState.WorkoutReady,
             exercises = workoutExercises,
             currentDay = currentDay,
             checkedExerciseIds = emptySet(),
             setsById = emptyMap(),
-            repsById = emptyMap()
+            repsById = emptyMap(),
+            weightById = weights
         )
     }
 
@@ -205,6 +214,18 @@ class WorkoutViewModel(
         _state.value = _state.value.copy(repsById = _state.value.repsById + (exerciseId to cleaned))
     }
 
+    fun setWeight(exerciseId: Int, value: String) {
+        // digits + at most one decimal point
+        val cleaned = buildString {
+            var dot = false
+            for (c in value) {
+                if (c.isDigit()) append(c)
+                else if (c == '.' && !dot) { append(c); dot = true }
+            }
+        }.take(6)
+        _state.value = _state.value.copy(weightById = _state.value.weightById + (exerciseId to cleaned))
+    }
+
     fun completeWorkout() {
         viewModelScope.launch {
             val st = _state.value
@@ -224,12 +245,14 @@ class WorkoutViewModel(
                     return@launch
                 }
                 val reps = st.repsById[ex.exercise_id]?.toIntOrNull() ?: 0
+                val weight = st.weightById[ex.exercise_id]?.toFloatOrNull()
+                    ?: ex.exercise_user_current_weight ?: 0f
                 logs.add(
                     ExerciseLog(
                         exercise_id = ex.exercise_id,
                         sets_completed = sets,
                         reps_completed = reps,
-                        weight_used = ex.exercise_user_current_weight ?: 0f
+                        weight_used = weight
                     )
                 )
             }

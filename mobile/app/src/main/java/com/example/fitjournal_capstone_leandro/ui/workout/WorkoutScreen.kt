@@ -237,13 +237,12 @@ fun WorkoutScreen(
                                 exercise = exercise,
                                 isChecked = exercise.exercise_id in state.checkedExerciseIds,
                                 onToggle = { viewModel.toggleExerciseChecked(exercise.exercise_id) },
-                                onWeightUpdate = { id, weight ->
-                                    viewModel.updateExerciseWeight(id, weight)
-                                },
                                 setsValue = state.setsById[exercise.exercise_id] ?: "",
                                 repsValue = state.repsById[exercise.exercise_id] ?: "",
+                                weightValue = state.weightById[exercise.exercise_id] ?: "",
                                 onSetsChange = { viewModel.setSets(exercise.exercise_id, it) },
                                 onRepsChange = { viewModel.setReps(exercise.exercise_id, it) },
+                                onWeightChange = { viewModel.setWeight(exercise.exercise_id, it) },
                                 isDragging = isDragging,
                                 reorderableScope = this
                             )
@@ -293,29 +292,17 @@ fun ExerciseRow(
     exercise: UserExercise,
     isChecked: Boolean,
     onToggle: () -> Unit,
-    onWeightUpdate: (Int, Float?) -> Unit,
     setsValue: String,
     repsValue: String,
+    weightValue: String,
     onSetsChange: (String) -> Unit,
     onRepsChange: (String) -> Unit,
+    onWeightChange: (String) -> Unit,
     isDragging: Boolean = false,
     reorderableScope: ReorderableCollectionItemScope? = null
 ) {
-    val textColor = if (isChecked) Color.Gray else Color.White
-    val textDecoration = if (isChecked) TextDecoration.LineThrough else TextDecoration.None
-    var showWeightDialog by remember { mutableStateOf(false) }
-
-    if (showWeightDialog) {
-        WeightEditDialog(
-            exerciseId = exercise.exercise_id,
-            currentWeight = exercise.exercise_user_current_weight,
-            onConfirm = { newWeight ->
-                onWeightUpdate(exercise.exercise_id, newWeight)
-                showWeightDialog = false
-            },
-            onDismiss = { showWeightDialog = false }
-        )
-    }
+    val nameColor = if (isChecked) Color.Gray else Color.White
+    val nameDecoration = if (isChecked) TextDecoration.LineThrough else TextDecoration.None
 
     Card(
         modifier = Modifier
@@ -328,90 +315,88 @@ fun ExerciseRow(
             else Color(0xFF2C2C2E)
         )
     ) {
-        Column {
-            Row(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(start = 12.dp, end = 12.dp, top = 12.dp, bottom = 8.dp),
-                verticalAlignment = Alignment.CenterVertically
-            ) {
-                // Drag handle
-                if (reorderableScope != null) {
-                    with(reorderableScope) {
-                        Icon(
-                            imageVector = Icons.Filled.DragHandle,
-                            contentDescription = "Drag to reorder",
-                            tint = Color.Gray,
-                            modifier = Modifier
-                                .draggableHandle()
-                                .padding(end = 8.dp)
-                                .size(20.dp)
-                        )
-                    }
-                }
-
-                // Left: muscle group + exercise name
-                Column(modifier = Modifier.weight(1f)) {
-                    Text(
-                        text = exercise.exercise_muscle_group,
-                        color = Color(0xFFFFEB3B).copy(alpha = if (isChecked) 0.4f else 1f),
-                        fontSize = 11.sp,
-                        fontWeight = FontWeight.SemiBold
-                    )
-                    Text(
-                        text = exercise.exercise_name,
-                        color = textColor,
-                        fontSize = 15.sp,
-                        fontWeight = FontWeight.Medium,
-                        textDecoration = textDecoration
-                    )
-                }
-
-                // Weight
-                Text(
-                    text = if (exercise.exercise_user_current_weight != null &&
-                        exercise.exercise_user_current_weight > 0)
-                        "${exercise.exercise_user_current_weight} kg"
-                    else "— kg",
-                    color = AccentYellow.copy(alpha = if (isChecked) 0.4f else 1f),
-                    fontSize = 13.sp,
-                    modifier = Modifier
-                        .padding(horizontal = 12.dp)
-                        .clickable(enabled = !isChecked) { showWeightDialog = true },
-                    textDecoration = textDecoration
-                )
-
-                // Check button
-                IconButton(onClick = onToggle) {
+        Row(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(horizontal = 10.dp, vertical = 10.dp),
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            // Drag handle — vertically centered over the whole card
+            if (reorderableScope != null) {
+                with(reorderableScope) {
                     Icon(
-                        imageVector = if (isChecked) Icons.Filled.CheckCircle
-                        else Icons.Outlined.Circle,
-                        contentDescription = if (isChecked) "Done" else "Mark as done",
-                        tint = if (isChecked) AccentYellow else Color.Gray
+                        imageVector = Icons.Filled.DragHandle,
+                        contentDescription = "Drag to reorder",
+                        tint = Color.Gray,
+                        modifier = Modifier
+                            .draggableHandle()
+                            .padding(end = 8.dp)
+                            .size(20.dp)
                     )
                 }
             }
 
-            // Line 2: sets + reps inputs (per-session, logged on completion)
-            Row(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(start = 12.dp, end = 12.dp, bottom = 12.dp),
-                horizontalArrangement = Arrangement.spacedBy(12.dp)
-            ) {
-                SmallNumberField(
-                    label = "Sets",
-                    value = setsValue,
-                    onChange = onSetsChange,
-                    modifier = Modifier.weight(1f)
+            // Center: two lines (header + inputs)
+            Column(modifier = Modifier.weight(1f)) {
+                // Line 1: muscle group (inline) + exercise name
+                Row(verticalAlignment = Alignment.CenterVertically) {
+                    Text(
+                        text = exercise.exercise_muscle_group,
+                        color = AccentYellow.copy(alpha = if (isChecked) 0.4f else 1f),
+                        fontSize = 11.sp,
+                        fontWeight = FontWeight.SemiBold,
+                        fontFamily = myCustomFont
+                    )
+                    Spacer(modifier = Modifier.width(8.dp))
+                    Text(
+                        text = exercise.exercise_name,
+                        color = nameColor,
+                        fontSize = 15.sp,
+                        fontWeight = FontWeight.Medium,
+                        fontFamily = myCustomFont,
+                        textDecoration = nameDecoration,
+                        maxLines = 1,
+                        overflow = androidx.compose.ui.text.style.TextOverflow.Ellipsis,
+                        modifier = Modifier.weight(1f)
+                    )
+                }
+
+                Spacer(modifier = Modifier.height(8.dp))
+
+                // Line 2: Weight / Sets / Reps inline
+                Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+                    SmallNumberField(
+                        label = "Weight (kg)",
+                        value = weightValue,
+                        onChange = onWeightChange,
+                        decimal = true,
+                        modifier = Modifier.weight(1f)
+                    )
+                    SmallNumberField(
+                        label = "Sets",
+                        value = setsValue,
+                        onChange = onSetsChange,
+                        modifier = Modifier.weight(1f)
+                    )
+                    SmallNumberField(
+                        label = "Reps",
+                        value = repsValue,
+                        onChange = onRepsChange,
+                        modifier = Modifier.weight(1f)
+                    )
+                }
+            }
+
+            Spacer(modifier = Modifier.width(8.dp))
+
+            // Check — vertically centered over the whole card
+            IconButton(onClick = onToggle) {
+                Icon(
+                    imageVector = if (isChecked) Icons.Filled.CheckCircle
+                    else Icons.Outlined.Circle,
+                    contentDescription = if (isChecked) "Done" else "Mark as done",
+                    tint = if (isChecked) AccentYellow else Color.Gray
                 )
-                SmallNumberField(
-                    label = "Reps",
-                    value = repsValue,
-                    onChange = onRepsChange,
-                    modifier = Modifier.weight(1f)
-                )
-                Spacer(modifier = Modifier.weight(1f))
             }
         }
     }
@@ -422,6 +407,7 @@ private fun SmallNumberField(
     label: String,
     value: String,
     onChange: (String) -> Unit,
+    decimal: Boolean = false,
     modifier: Modifier = Modifier
 ) {
     Column(modifier = modifier) {
@@ -433,7 +419,7 @@ private fun SmallNumberField(
             singleLine = true,
             textStyle = TextStyle(color = Color.White, fontFamily = myCustomFont, fontSize = 15.sp),
             cursorBrush = SolidColor(AccentYellow),
-            keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
+            keyboardOptions = KeyboardOptions(keyboardType = if (decimal) KeyboardType.Decimal else KeyboardType.Number),
             modifier = Modifier
                 .fillMaxWidth()
                 .border(1.dp, Color(0xFF444444), RoundedCornerShape(6.dp))
@@ -479,56 +465,4 @@ fun DayChip(
             )
         }
     }
-}
-
-@Composable
-fun WeightEditDialog(
-    exerciseId: Int,
-    currentWeight: Float?,
-    onConfirm: (Float?) -> Unit,
-    onDismiss: () -> Unit
-) {
-    var weightText by remember {
-        mutableStateOf(
-            if (currentWeight != null && currentWeight > 0) currentWeight.toString() else ""
-        )
-    }
-
-    AlertDialog(
-        onDismissRequest = onDismiss,
-        containerColor = Color(0xFF2C2C2E),
-        title = {
-            Text("Update Weight", color = Color.White, fontWeight = FontWeight.Bold)
-        },
-        text = {
-            OutlinedTextField(
-                value = weightText,
-                onValueChange = { weightText = it.filter { c -> c.isDigit() || c == '.' } },
-                label = { Text("Weight (kg)", color = Color.Gray) },
-                singleLine = true,
-                keyboardOptions = androidx.compose.foundation.text.KeyboardOptions(
-                    keyboardType = androidx.compose.ui.text.input.KeyboardType.Decimal
-                ),
-                colors = OutlinedTextFieldDefaults.colors(
-                    focusedBorderColor = AccentYellow,
-                    unfocusedBorderColor = Color(0xFF3A3A3C),
-                    focusedTextColor = Color.White,
-                    unfocusedTextColor = Color.White
-                )
-            )
-        },
-        confirmButton = {
-            TextButton(onClick = {
-                val newWeight = weightText.toFloatOrNull()
-                onConfirm(newWeight)
-            }) {
-                Text("Save", color = AccentYellow, fontWeight = FontWeight.Bold)
-            }
-        },
-        dismissButton = {
-            TextButton(onClick = onDismiss) {
-                Text("Cancel", color = Color.Gray)
-            }
-        }
-    )
 }
