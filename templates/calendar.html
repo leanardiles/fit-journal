@@ -185,6 +185,24 @@
 
     /* Manual-day select cell: fixed by routine, so show a subtle lock */
     .nb-cal-lock { color: var(--muted); opacity: 0.5; display: inline-flex; align-items: center; justify-content: center; }
+
+    /* Sticky first column(s) so exercise names (and the Select toggle in day
+       views) stay visible while scrolling the session columns horizontally.
+       Sticky cells need an opaque background so scrolling cells don't show
+       through — use the page background. A fixed name-column width makes the
+       second sticky column's left offset align. */
+    .nb-cal-table th.sticky-col,
+    .nb-cal-table td.sticky-col {
+        position: sticky;
+        background: var(--bg);
+        z-index: 1;
+    }
+    .nb-cal-table .sticky-name { left: 0; width: 180px; min-width: 180px; max-width: 180px; box-sizing: border-box; }
+    .nb-cal-table .sticky-select { left: 180px; }
+    /* Section-header rows: their single cell must also cover the sticky columns,
+       so give it the page background too (it spans the full width anyway). */
+    .nb-cal-muscle-row td,
+    .nb-cal-day-row td { position: sticky; left: 0; background: var(--bg); }
 </style>
 {% endblock %}
 
@@ -457,14 +475,45 @@
         );
     }
 
+    // View All rows (muscle-first, day-agnostic): every routine exercise across
+    // all days' pools, PLUS any logged exercise not already included (placed under
+    // its library muscle) — each exercise once. Pure visualization: no select flags.
+    function getAllViewRows() {
+        const byId = new Map();
+        (userRoutine.days || []).forEach(day => {
+            (day.exercises || []).forEach(e => {
+                if (!byId.has(e.exercise_id)) {
+                    byId.set(e.exercise_id, {
+                        exercise_id: e.exercise_id,
+                        exercise_name: e.exercise_name,
+                        exercise_muscle_group: e.muscle_group,
+                    });
+                }
+            });
+        });
+        new Set(workoutLogs.map(l => l.exercise_id)).forEach(id => {
+            if (byId.has(id)) return;
+            const lib = allExercises.find(ex => ex.exercise_id === id);
+            if (!lib) return;
+            byId.set(id, {
+                exercise_id: lib.exercise_id,
+                exercise_name: lib.exercise_name,
+                exercise_muscle_group: lib.exercise_muscle_group,
+            });
+        });
+        return Array.from(byId.values());
+    }
+
     function buildCalendarTable() {
         const headerRow = document.getElementById('header-row');
         const tbody = document.getElementById('calendar-body');
 
         updateViewInfo();
 
+        const isAllView = (filterMode === 'all');
         const filteredExercises = getFilteredExercises();
-        const rowIds = new Set(filteredExercises.map(ex => ex.exercise_id));
+        const allViewRows = isAllView ? getAllViewRows() : [];
+        const rowIds = new Set((isAllView ? allViewRows : filteredExercises).map(ex => ex.exercise_id));
         const filteredSessions = getFilteredSessions(rowIds);
         filteredSessions.sort((a, b) => parseLocalDate(b.workout_date) - parseLocalDate(a.workout_date));
 
@@ -472,13 +521,16 @@
         headerRow.innerHTML = '';
 
         const thName = document.createElement('th');
-        thName.className = 'left';
+        thName.className = 'left sticky-col sticky-name';
         thName.textContent = 'Exercise';
         headerRow.appendChild(thName);
 
-        const thNext = document.createElement('th');
-        thNext.textContent = 'Select';
-        headerRow.appendChild(thNext);
+        if (!isAllView) {
+            const thNext = document.createElement('th');
+            thNext.className = 'sticky-col sticky-select';
+            thNext.textContent = 'Select';
+            headerRow.appendChild(thNext);
+        }
 
         for (let i = 0; i < columnsToShow; i++) {
             const th = document.createElement('th');
@@ -511,15 +563,16 @@
 
             // Exercise name
             const nameCell = document.createElement('td');
-            nameCell.className = 'left nb-cal-exname';
+            nameCell.className = 'left nb-cal-exname sticky-col sticky-name';
             nameCell.textContent = ex.exercise_name;
             row.appendChild(nameCell);
 
             // Select cell: toggle for per_muscle pool exercises (selectable for
             // the next session), a lock for manual-day exercises (fixed), and
             // nothing for off-routine history rows (logged but not in any pool).
+            if (!isAllView) {
             const nextCell = document.createElement('td');
-            nextCell.className = 'center';
+            nextCell.className = 'center sticky-col sticky-select';
             if (ex.selectable) {
                 const isSelected = !!nextWorkoutSelections[ex.exercise_id];
                 const btn = document.createElement('button');
@@ -539,6 +592,7 @@
             }
             // else: off-routine history row — no select control
             row.appendChild(nextCell);
+            }
             // WOD cells
             for (let i = 0; i < columnsToShow; i++) {
                 const cell = document.createElement('td');
@@ -571,7 +625,7 @@
             const tr = document.createElement('tr');
             tr.className = className;
             const td = document.createElement('td');
-            td.colSpan = 2 + columnsToShow;
+            td.colSpan = (isAllView ? 1 : 2) + columnsToShow;
             td.textContent = text;
             tr.appendChild(td);
             return tr;
@@ -589,9 +643,28 @@
         }
         // Decide whether to group by day
         const activeDays = getActiveDays();
-        const groupByDay = (filterMode === 'all' || (filterMode === 'specific' && selectedDays.length > 1));
+        const groupByDay = (filterMode === 'specific' && selectedDays.length > 1);
 
-        if (groupByDay) {
+        if (isAllView) {
+            // View All: muscle-first — all muscles alphabetical, each exercise once.
+            const allRows = allViewRows.slice().sort((a, b) => {
+                if (a.exercise_muscle_group !== b.exercise_muscle_group)
+                    return a.exercise_muscle_group.localeCompare(b.exercise_muscle_group);
+                return a.exercise_name.localeCompare(b.exercise_name);
+            });
+            if (allRows.length === 0) {
+                tbody.appendChild(renderSectionHeader('No exercises yet. Add some on the Exercises page.', 'nb-cal-empty'));
+            } else {
+                let currentMuscle = null;
+                allRows.forEach(ex => {
+                    if (ex.exercise_muscle_group !== currentMuscle) {
+                        currentMuscle = ex.exercise_muscle_group;
+                        tbody.appendChild(renderSectionHeader(currentMuscle, 'nb-cal-muscle-row'));
+                    }
+                    tbody.appendChild(renderExerciseRow(ex));
+                });
+            }
+        } else if (groupByDay) {
             // Day-grouped layout: Day N header → muscle headers → exercises
             let anyExercises = false;
 
