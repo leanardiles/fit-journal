@@ -212,7 +212,7 @@ data class RoutineResponse(
 data class WorkoutSession(
     val session_id: Int,
     val user_id: Int,
-    val routine_day_number: Int,
+    val routine_day_number: Int?,   // null = off-routine (manual) session
     val workout_date: String,
     val session_order: Int
 )
@@ -257,7 +257,7 @@ data class WorkoutCompleteRequest(
 data class WorkoutLog(
     val log_id: Int,
     val user_id: Int,
-    val routine_day_number: Int,
+    val routine_day_number: Int?,   // null = off-routine (manual) log
     val exercise_id: Int,
     val sets_completed: Int,
     val reps_completed: Int,
