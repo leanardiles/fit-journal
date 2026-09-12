@@ -5,6 +5,7 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
 import com.example.fitjournal_capstone_leandro.data.model.RoutineResponse
 import com.example.fitjournal_capstone_leandro.data.repository.DashboardRepository
+import com.example.fitjournal_capstone_leandro.data.repository.SetsPerMuscle
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -20,7 +21,10 @@ data class DashboardScreenState(
     val uiState: DashboardUiState = DashboardUiState.Loading,
     val routine: RoutineResponse? = null,
     val workoutsThisWeek: Int = 0,
-    val currentDay: Int = 1
+    val currentDay: Int = 1,
+    val setsThisWeek: Map<String, Int> = emptyMap(),
+    val setsLast7: Map<String, Int> = emptyMap(),
+    val setsWindow: String = "week"
 )
 
 class DashboardViewModel(
@@ -41,13 +45,17 @@ class DashboardViewModel(
             val routineResult = repository.getRoutine()
             val workoutsResult = repository.getWorkoutsThisWeek()
             val currentDayResult = repository.getCurrentDay()
+            val sets = repository.getSetsPerMuscle().getOrNull() ?: SetsPerMuscle(emptyMap(), emptyMap())
 
             if (routineResult.isSuccess && workoutsResult.isSuccess) {
                 _state.value = DashboardScreenState(
                     uiState = DashboardUiState.Success,
                     routine = routineResult.getOrNull(),
                     workoutsThisWeek = workoutsResult.getOrNull() ?: 0,
-                    currentDay = currentDayResult.getOrNull() ?: 1
+                    currentDay = currentDayResult.getOrNull() ?: 1,
+                    setsThisWeek = sets.thisWeek,
+                    setsLast7 = sets.last7Days,
+                    setsWindow = _state.value.setsWindow
                 )
             } else {
                 _state.value = _state.value.copy(
@@ -55,6 +63,10 @@ class DashboardViewModel(
                 )
             }
         }
+    }
+
+    fun setSetsWindow(window: String) {
+        _state.value = _state.value.copy(setsWindow = window)
     }
 }
 
