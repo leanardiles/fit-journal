@@ -144,9 +144,11 @@ fun AppNavigation(
 
         // Workout tab
         composable(Routes.WORKOUT) {
+            val unitPreference = authViewModel.userProfile.collectAsState().value?.user_unit_preference ?: "metric"
             WorkoutScreen(
                 viewModel = workoutViewModel,
                 navController = navController,
+                unitPreference = unitPreference,
                 onWorkoutComplete = {
                     navController.navigate(Routes.HOME) {
                         popUpTo(Routes.HOME) { inclusive = true }
@@ -157,8 +159,10 @@ fun AppNavigation(
 
         // Manual (off-routine) logging
         composable(Routes.MANUAL_LOG) {
+            val unitPreference = authViewModel.userProfile.collectAsState().value?.user_unit_preference ?: "metric"
             ManualLogScreen(
                 viewModel = manualLogViewModel,
+                unitPreference = unitPreference,
                 onLogged = {
                     navController.navigate(Routes.HOME) {
                         popUpTo(Routes.HOME) { inclusive = true }

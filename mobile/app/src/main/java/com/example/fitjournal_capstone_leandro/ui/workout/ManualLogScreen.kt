@@ -35,11 +35,13 @@ private val TextGray = Color(0xFF8E8E93)
 @Composable
 fun ManualLogScreen(
     viewModel: ManualLogViewModel,
+    unitPreference: String,
     onLogged: () -> Unit
 ) {
     val state by viewModel.state.collectAsState()
     var showDatePicker by remember { mutableStateOf(false) }
     val picked = viewModel.pickedExercises()
+    val weightUnit = if (unitPreference == "imperial") "lb" else "kg"
 
     Column(
         modifier = Modifier.fillMaxSize().background(BackgroundDark).padding(16.dp)
@@ -128,10 +130,10 @@ fun ManualLogScreen(
                             Text(ex.exercise_name, color = Color.White, fontSize = 14.sp, fontWeight = FontWeight.Medium, fontFamily = myCustomFont, maxLines = 1, overflow = androidx.compose.ui.text.style.TextOverflow.Ellipsis, modifier = Modifier.weight(1f))
                         }
                         Spacer(modifier = Modifier.height(6.dp))
-                        Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
-                            NumberField("Weight (kg)", state.weightById[ex.exercise_id] ?: "", { viewModel.setWeight(ex.exercise_id, it) }, decimal = true, modifier = Modifier.weight(1f))
-                            NumberField("Sets", state.setsById[ex.exercise_id] ?: "", { viewModel.setSets(ex.exercise_id, it) }, modifier = Modifier.weight(1f))
-                            NumberField("Reps", state.repsById[ex.exercise_id] ?: "", { viewModel.setReps(ex.exercise_id, it) }, modifier = Modifier.weight(1f))
+                        Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(10.dp)) {
+                            InlineField("Weight", state.weightById[ex.exercise_id] ?: "", { viewModel.setWeight(ex.exercise_id, it) }, decimal = true, unit = weightUnit, modifier = Modifier.weight(1.3f))
+                            InlineField("Sets", state.setsById[ex.exercise_id] ?: "", { viewModel.setSets(ex.exercise_id, it) }, modifier = Modifier.weight(1f))
+                            InlineField("Reps", state.repsById[ex.exercise_id] ?: "", { viewModel.setReps(ex.exercise_id, it) }, modifier = Modifier.weight(1f))
                         }
                     }
                 }
@@ -233,17 +235,19 @@ private fun CheckboxBox(checked: Boolean) {
     }
 }
 
+// Single-line field: label, a compact box, and an optional trailing unit (kg/lb).
 @Composable
-private fun NumberField(
+private fun InlineField(
     label: String,
     value: String,
     onChange: (String) -> Unit,
     decimal: Boolean = false,
+    unit: String? = null,
     modifier: Modifier = Modifier
 ) {
-    Column(modifier = modifier) {
-        Text(label, color = Color.Gray, fontSize = 11.sp, fontFamily = myCustomFont)
-        Spacer(modifier = Modifier.height(2.dp))
+    Row(modifier = modifier, verticalAlignment = Alignment.CenterVertically) {
+        Text(label, color = Color.Gray, fontSize = 12.sp, fontFamily = myCustomFont)
+        Spacer(modifier = Modifier.width(6.dp))
         BasicTextField(
             value = value,
             onValueChange = onChange,
@@ -251,11 +255,15 @@ private fun NumberField(
             textStyle = TextStyle(color = Color.White, fontFamily = myCustomFont, fontSize = 15.sp),
             cursorBrush = SolidColor(AccentYellow),
             keyboardOptions = KeyboardOptions(keyboardType = if (decimal) KeyboardType.Decimal else KeyboardType.Number),
-            modifier = Modifier.fillMaxWidth().border(1.dp, Color(0xFF444444), RoundedCornerShape(6.dp)).padding(horizontal = 8.dp, vertical = 8.dp),
+            modifier = Modifier.weight(1f).border(1.dp, Color(0xFF444444), RoundedCornerShape(6.dp)).padding(horizontal = 8.dp, vertical = 7.dp),
             decorationBox = { inner ->
-                if (value.isEmpty()) Text("–", color = Color(0xFF666666), fontFamily = myCustomFont, fontSize = 15.sp)
+                if (value.isEmpty()) Text("-", color = Color(0xFF666666), fontFamily = myCustomFont, fontSize = 15.sp)
                 inner()
             }
         )
+        if (unit != null) {
+            Spacer(modifier = Modifier.width(4.dp))
+            Text(unit, color = Color.Gray, fontSize = 12.sp, fontFamily = myCustomFont)
+        }
     }
 }

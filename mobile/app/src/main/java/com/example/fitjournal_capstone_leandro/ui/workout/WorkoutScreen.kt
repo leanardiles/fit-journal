@@ -51,9 +51,11 @@ private val AccentYellow = Color(0xFFFFEB3B)
 fun WorkoutScreen(
     viewModel: WorkoutViewModel,
     navController: NavHostController,
+    unitPreference: String = "metric",
     onWorkoutComplete: () -> Unit = {}
 ) {
     val state by viewModel.state.collectAsState()
+    val weightUnit = if (unitPreference == "imperial") "lb" else "kg"
 
     LaunchedEffect(state.uiState) {
         if (state.uiState is WorkoutUiState.WorkoutComplete) {
@@ -251,6 +253,7 @@ fun WorkoutScreen(
                                 onSetsChange = { viewModel.setSets(exercise.exercise_id, it) },
                                 onRepsChange = { viewModel.setReps(exercise.exercise_id, it) },
                                 onWeightChange = { viewModel.setWeight(exercise.exercise_id, it) },
+                                unit = weightUnit,
                                 isDragging = isDragging,
                                 reorderableScope = this
                             )
@@ -306,6 +309,7 @@ fun ExerciseRow(
     onSetsChange: (String) -> Unit,
     onRepsChange: (String) -> Unit,
     onWeightChange: (String) -> Unit,
+    unit: String = "kg",
     isDragging: Boolean = false,
     reorderableScope: ReorderableCollectionItemScope? = null
 ) {
@@ -371,27 +375,11 @@ fun ExerciseRow(
 
                 Spacer(modifier = Modifier.height(8.dp))
 
-                // Line 2: Weight / Sets / Reps inline
-                Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
-                    SmallNumberField(
-                        label = "Weight (kg)",
-                        value = weightValue,
-                        onChange = onWeightChange,
-                        decimal = true,
-                        modifier = Modifier.weight(1f)
-                    )
-                    SmallNumberField(
-                        label = "Sets",
-                        value = setsValue,
-                        onChange = onSetsChange,
-                        modifier = Modifier.weight(1f)
-                    )
-                    SmallNumberField(
-                        label = "Reps",
-                        value = repsValue,
-                        onChange = onRepsChange,
-                        modifier = Modifier.weight(1f)
-                    )
+                // Line 2: Weight / Sets / Reps inline (single line each)
+                Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(10.dp)) {
+                    InlineField("Weight", weightValue, onWeightChange, decimal = true, unit = unit, modifier = Modifier.weight(1.3f))
+                    InlineField("Sets", setsValue, onSetsChange, modifier = Modifier.weight(1f))
+                    InlineField("Reps", repsValue, onRepsChange, modifier = Modifier.weight(1f))
                 }
             }
 
@@ -410,17 +398,19 @@ fun ExerciseRow(
     }
 }
 
+// Single-line field: label, a compact box, and an optional trailing unit (kg/lb).
 @Composable
-private fun SmallNumberField(
+private fun InlineField(
     label: String,
     value: String,
     onChange: (String) -> Unit,
     decimal: Boolean = false,
+    unit: String? = null,
     modifier: Modifier = Modifier
 ) {
-    Column(modifier = modifier) {
-        Text(label, color = Color.Gray, fontSize = 11.sp, fontFamily = myCustomFont)
-        Spacer(modifier = Modifier.height(2.dp))
+    Row(modifier = modifier, verticalAlignment = Alignment.CenterVertically) {
+        Text(label, color = Color.Gray, fontSize = 12.sp, fontFamily = myCustomFont)
+        Spacer(modifier = Modifier.width(6.dp))
         BasicTextField(
             value = value,
             onValueChange = onChange,
@@ -428,17 +418,16 @@ private fun SmallNumberField(
             textStyle = TextStyle(color = Color.White, fontFamily = myCustomFont, fontSize = 15.sp),
             cursorBrush = SolidColor(AccentYellow),
             keyboardOptions = KeyboardOptions(keyboardType = if (decimal) KeyboardType.Decimal else KeyboardType.Number),
-            modifier = Modifier
-                .fillMaxWidth()
-                .border(1.dp, Color(0xFF444444), RoundedCornerShape(6.dp))
-                .padding(horizontal = 10.dp, vertical = 8.dp),
+            modifier = Modifier.weight(1f).border(1.dp, Color(0xFF444444), RoundedCornerShape(6.dp)).padding(horizontal = 8.dp, vertical = 7.dp),
             decorationBox = { inner ->
-                if (value.isEmpty()) {
-                    Text("–", color = Color(0xFF666666), fontFamily = myCustomFont, fontSize = 15.sp)
-                }
+                if (value.isEmpty()) Text("-", color = Color(0xFF666666), fontFamily = myCustomFont, fontSize = 15.sp)
                 inner()
             }
         )
+        if (unit != null) {
+            Spacer(modifier = Modifier.width(4.dp))
+            Text(unit, color = Color.Gray, fontSize = 12.sp, fontFamily = myCustomFont)
+        }
     }
 }
 
