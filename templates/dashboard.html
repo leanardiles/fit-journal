@@ -198,10 +198,7 @@
             currentDay = data.current_day_number;
         } catch(e) {}
 
-        let html = `
-            <div class="nb-row" style="color:var(--text);font-size:var(--fs);">
-                Training <span style="color:var(--red);margin:0 4px;">${routine.days_per_week}</span> ${routine.days_per_week === 1 ? 'day' : 'days'} per week
-            </div>`;
+        let html = '';
 
         (routine.days || []).forEach(dayObj => {
             const day = dayObj.day_number;
@@ -231,6 +228,8 @@
     let smLogs = [];
     let smExMuscle = {};   // exercise_id -> muscle_group
     let smMode = 'week';   // 'week' (Mon-based) | '7day' (rolling)
+    // Full canonical muscle list — untrained muscles show as 0 (matches mobile).
+    const SM_ALL_MUSCLES = ['Abs', 'Back', 'Biceps', 'Calves', 'Chest', 'Forearms', 'Glutes', 'Legs', 'Shoulders', 'Triceps'];
 
     async function loadMuscleSummary() {
         const userId = getCurrentUserId();
@@ -275,7 +274,9 @@
         const container = document.getElementById('muscle-summary');
         const start = smWindowStart();
 
+        // Seed every canonical muscle at 0, then add logged sets in-window.
         const totals = {};
+        SM_ALL_MUSCLES.forEach(m => { totals[m] = 0; });
         smLogs.forEach(log => {
             if (parseLocalDate(log.workout_date) < start) return;
             const muscle = smExMuscle[log.exercise_id];
@@ -283,14 +284,9 @@
             totals[muscle] = (totals[muscle] || 0) + (log.sets_completed || 0);
         });
 
+        // Most sets first; ties (incl. all the 0s) fall back to alphabetical.
         const entries = Object.entries(totals)
-            .filter(([, sets]) => sets > 0)
-            .sort((a, b) => b[1] - a[1]);
-
-        if (!entries.length) {
-            container.innerHTML = '<div class="nb-row"><span style="color: var(--muted);">No sets logged in this window.</span></div>';
-            return;
-        }
+            .sort((a, b) => b[1] - a[1] || a[0].localeCompare(b[0]));
 
         container.innerHTML = entries.map(([muscle, sets]) => `
             <div class="nb-muscle-sum-row">
