@@ -53,21 +53,20 @@ class CalendarRepository(private val tokenManager: TokenManager) {
                 val selections  = selectionsD.await()
                 val sessions    = sessionsD.await()
 
-                // Resolve which day's logs to fetch
                 val viewingDay = selectedDayNumber ?: workoutState.current_day_number
 
-                // Filter sessions to viewing day, newest first, take last MAX_LOG_COLUMNS.
-                // workout_date is an ISO String, so lexical sort matches chronological.
-                val sessionsForDay = sessions
-                    .filter { it.routine_day_number == viewingDay }
+                // Take the most-recent sessions across ALL days (including manual /
+                // off-routine, which have a null routine_day_number). workout_date is
+                // an ISO String, so lexical sort matches chronological. The ViewModel
+                // does the day/all + muscle filtering — the repo just gathers raw data.
+                val recentSessions = sessions
                     .sortedByDescending { it.workout_date }
                     .take(MAX_LOG_COLUMNS)
 
-                // Fetch logs for just those sessions
-                val logs: List<WorkoutLog> = if (sessionsForDay.isNotEmpty()) {
+                val logs: List<WorkoutLog> = if (recentSessions.isNotEmpty()) {
                     apiService.getWorkoutLogsBySessions(
                         userId,
-                        LogsBySessionsRequest(session_ids = sessionsForDay.map { it.session_id })
+                        LogsBySessionsRequest(session_ids = recentSessions.map { it.session_id })
                     )
                 } else {
                     emptyList()
@@ -78,7 +77,7 @@ class CalendarRepository(private val tokenManager: TokenManager) {
                     workoutState = workoutState,
                     exercises = exercises,
                     selections = selections,
-                    sessionsForDay = sessionsForDay,
+                    sessions = recentSessions,
                     logs = logs,
                     viewingDay = viewingDay
                 )
@@ -169,7 +168,7 @@ data class CalendarBundle(
     val workoutState: WorkoutState,
     val exercises: List<UserExercise>,
     val selections: List<NextWorkoutSelection>,
-    val sessionsForDay: List<WorkoutSession>,
+    val sessions: List<WorkoutSession>,   // most-recent across all days (incl. manual)
     val logs: List<WorkoutLog>,
     val viewingDay: Int
 )

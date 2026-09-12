@@ -87,6 +87,7 @@ fun CalendarScreen(
                     state              = state,
                     unitPreference     = unitPreference,
                     onSelectDay        = { viewModel.selectDay(it) },
+                    onSelectAll        = { viewModel.selectAllView() },
                     onAutoSelect       = { viewModel.autoSelectForCurrentDay() },
                     onClearSelections  = { viewModel.clearSelectionsForCurrentDay() },
                     onToggleExercise   = { viewModel.toggleSelection(it) }
@@ -103,6 +104,7 @@ private fun ReadyContent(
     state: CalendarScreenState,
     unitPreference: String,
     onSelectDay: (Int) -> Unit,
+    onSelectAll: () -> Unit,
     onAutoSelect: () -> Unit,
     onClearSelections: () -> Unit,
     onToggleExercise: (Int) -> Unit
@@ -116,7 +118,9 @@ private fun ReadyContent(
             daysPerWeek = state.daysPerWeek,
             currentDay  = state.currentDayNumber,
             selectedDay = state.selectedDayNumber,
-            onSelectDay = onSelectDay
+            isAllView   = state.isAllView,
+            onSelectDay = onSelectDay,
+            onSelectAll = onSelectAll
         )
 
         Spacer(modifier = Modifier.height(8.dp))
@@ -126,26 +130,27 @@ private fun ReadyContent(
         Spacer(modifier = Modifier.height(16.dp))
 
         DayHeader(
+            isAllView    = state.isAllView,
             dayNumber    = state.selectedDayNumber,
             muscleGroups = state.muscleGroupsForSelectedDay
         )
 
         Spacer(modifier = Modifier.height(12.dp))
 
-        ActionButtonsRow(
-            onAutoSelect      = onAutoSelect,
-            onClearSelections = onClearSelections
-        )
-
-        Spacer(modifier = Modifier.height(12.dp))
-
-        UnitIndicator(unitPreference = unitPreference)
-
-        Spacer(modifier = Modifier.height(6.dp))
+        // Auto-select / Clear are day-scoped selection actions — hidden in the
+        // read-only View All.
+        if (!state.isAllView) {
+            ActionButtonsRow(
+                onAutoSelect      = onAutoSelect,
+                onClearSelections = onClearSelections
+            )
+            Spacer(modifier = Modifier.height(12.dp))
+        }
 
         ExerciseLogTable(
             rows             = state.exercisesForSelectedDay,
             columns          = state.sessionColumns,
+            isAllView        = state.isAllView,
             onToggleExercise = onToggleExercise
         )
     }
@@ -158,7 +163,9 @@ private fun DayTabsRow(
     daysPerWeek: Int,
     currentDay: Int,
     selectedDay: Int,
-    onSelectDay: (Int) -> Unit
+    isAllView: Boolean,
+    onSelectDay: (Int) -> Unit,
+    onSelectAll: () -> Unit
 ) {
     val scroll = rememberScrollState()
     Row(
@@ -167,14 +174,36 @@ private fun DayTabsRow(
             .horizontalScroll(scroll),
         horizontalArrangement = Arrangement.spacedBy(8.dp)
     ) {
+        AllChip(isSelected = isAllView, onClick = onSelectAll)
         (1..daysPerWeek).forEach { day ->
             DayChip(
                 day        = day,
-                isSelected = day == selectedDay,
+                isSelected = !isAllView && day == selectedDay,
                 isCurrent  = day == currentDay,
                 onClick    = { onSelectDay(day) }
             )
         }
+    }
+}
+
+@Composable
+private fun AllChip(isSelected: Boolean, onClick: () -> Unit) {
+    val backgroundColor = if (isSelected) AccentYellow else SurfaceDark
+    val textColor       = if (isSelected) Color.Black else Color.White
+    Row(
+        modifier = Modifier
+            .clip(RoundedCornerShape(10.dp))
+            .background(backgroundColor)
+            .clickable { onClick() }
+            .padding(horizontal = 14.dp, vertical = 8.dp),
+        verticalAlignment = Alignment.CenterVertically
+    ) {
+        Text(
+            text       = "All",
+            color      = textColor,
+            fontSize   = 14.sp,
+            fontFamily = myCustomFont
+        )
     }
 }
 
@@ -266,15 +295,20 @@ private fun TabsLegend() {
 
 @Composable
 private fun DayHeader(
+    isAllView: Boolean,
     dayNumber: Int,
     muscleGroups: List<String>
 ) {
     val muscleLine =
         if (muscleGroups.isNotEmpty()) muscleGroups.joinToString(", ") else "—"
+    val title = if (isAllView) "All days" else "Day $dayNumber — $muscleLine"
+    val hint =
+        if (isAllView) "All logged workouts, by muscle. Read-only."
+        else "Tap an exercise to select it for the next workout."
 
     Column {
         Text(
-            text       = "Day $dayNumber — $muscleLine",
+            text       = title,
             color      = Color.White,
             fontSize   = 16.sp,
             fontWeight = FontWeight.SemiBold,
@@ -284,7 +318,7 @@ private fun DayHeader(
         Spacer(modifier = Modifier.height(2.dp))
 
         Text(
-            text       = "Tap an exercise to select it for the next workout.",
+            text       = hint,
             color      = TextGray,
             fontSize   = 12.sp,
             fontStyle  = FontStyle.Italic,
@@ -365,6 +399,7 @@ private fun UnitIndicator(unitPreference: String) {
 private fun ExerciseLogTable(
     rows: List<CalendarExerciseRow>,
     columns: List<SessionColumn>,
+    isAllView: Boolean,
     onToggleExercise: (Int) -> Unit
 ) {
     val vScroll = rememberScrollState()
@@ -435,13 +470,17 @@ private fun ExerciseLogTable(
                 }
 
                 Row(modifier = Modifier.fillMaxWidth()) {
+                    // Selection is by tapping the name cell — only in day views,
+                    // and only for per_muscle pool exercises (selectable). View All
+                    // and non-selectable rows (manual / off-routine history) don't toggle.
+                    val canSelect = !isAllView && row.selectable
                     val nameCellModifier = Modifier
                         .width(ExerciseColWidth)
                         .height(RowHeight)
                         .background(CellDark)
-                        .clickable { onToggleExercise(row.exerciseId) }
+                        .let { base -> if (canSelect) base.clickable { onToggleExercise(row.exerciseId) } else base }
                         .let { base ->
-                            if (row.isSelected) {
+                            if (!isAllView && row.isSelected) {
                                 base.border(SelectionBorderWidth, AccentYellow)
                             } else {
                                 base
@@ -470,7 +509,7 @@ private fun ExerciseLogTable(
                     ) {
                         columns.forEach { col ->
                             val log = row.logsBySessionId[col.sessionId]
-                            val display = formatWeight(log?.weight)
+                            val display = formatSets(log?.sets)
                             Box(
                                 modifier = Modifier
                                     .width(LogColWidth)
@@ -586,6 +625,11 @@ private const val EMPTY_CELL = "—"
 private fun formatWeight(weight: Float?): String {
     if (weight == null || weight == 0f) return EMPTY_CELL
     return weight.toInt().toString()
+}
+
+private fun formatSets(sets: Int?): String {
+    if (sets == null || sets == 0) return EMPTY_CELL
+    return sets.toString()
 }
 
 private fun formatDate(raw: String): String {
