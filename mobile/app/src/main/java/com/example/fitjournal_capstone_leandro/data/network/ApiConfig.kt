@@ -22,7 +22,7 @@ object ApiConfig {
      * Replace with your machine's IPv4 address when testing on a physical device
      * Find it by running `ipconfig` in Git Bash and looking for IPv4 Address
      */
-    private const val LOCAL_IP = "192.168.1.202"
+    private const val LOCAL_IP = "192.168.1.155"
 
     /**
      * Detects whether the app is running on an emulator or a physical device

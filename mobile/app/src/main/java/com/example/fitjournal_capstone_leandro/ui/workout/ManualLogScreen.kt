@@ -13,6 +13,7 @@ import androidx.compose.foundation.text.BasicTextField
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -39,6 +40,7 @@ fun ManualLogScreen(
     onLogged: () -> Unit
 ) {
     val state by viewModel.state.collectAsState()
+    LaunchedEffect(Unit) { viewModel.loadLibrary() }
     var showDatePicker by remember { mutableStateOf(false) }
     val picked = viewModel.pickedExercises()
     val weightUnit = if (unitPreference == "imperial") "lb" else "kg"
@@ -78,6 +80,31 @@ fun ManualLogScreen(
         }
 
         Spacer(modifier = Modifier.height(12.dp))
+
+        // ---- Load-error / retry (shown when the exercise library failed to load) ----
+        val loadError = state.uiState as? ManualLogUiState.Error
+        if (loadError != null && state.muscles.isEmpty()) {
+            Column(
+                modifier = Modifier.fillMaxWidth().padding(vertical = 12.dp),
+                horizontalAlignment = Alignment.CenterHorizontally
+            ) {
+                Text(
+                    loadError.message,
+                    color = Color(0xFFFF453A),
+                    fontFamily = myCustomFont,
+                    fontSize = 14.sp
+                )
+                Spacer(modifier = Modifier.height(10.dp))
+                OutlinedButton(
+                    onClick = { viewModel.loadLibrary() },
+                    shape = RoundedCornerShape(8.dp),
+                    border = androidx.compose.foundation.BorderStroke(1.5.dp, AccentYellow),
+                    colors = ButtonDefaults.outlinedButtonColors(contentColor = AccentYellow)
+                ) {
+                    Text("Try again", color = AccentYellow, fontFamily = myCustomFont)
+                }
+            }
+        }
 
         // ---- Top pane: selection (scrolls on its own) ----
         Text("Pick exercises", fontSize = 13.sp, color = TextGray, fontFamily = myCustomFont)

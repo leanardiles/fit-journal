@@ -61,16 +61,26 @@ class ManualLogViewModel(
         "Abs", "Back", "Biceps", "Calves", "Chest", "Glutes", "Legs", "Shoulders", "Triceps"
     )
 
-    init {
-        loadLibrary()
-    }
-
     fun loadLibrary() {
         viewModelScope.launch {
-            val byMuscle = repository.getExercises().getOrNull().orEmpty()
+            val result = repository.getExercises()
+            if (result.isFailure) {
+                _state.value = _state.value.copy(
+                    uiState = ManualLogUiState.Error("Couldn't load your exercises. Check your connection and try again.")
+                )
+                return@launch
+            }
+            val byMuscle = result.getOrNull().orEmpty()
                 .groupBy { it.exercise_muscle_group }
             val muscles = byMuscle.keys.sorted()
-            _state.value = _state.value.copy(exercisesByMuscle = byMuscle, muscles = muscles)
+            // Clear a prior load error once exercises come through.
+            val ui = if (_state.value.uiState is ManualLogUiState.Error)
+                ManualLogUiState.Editing else _state.value.uiState
+            _state.value = _state.value.copy(
+                uiState = ui,
+                exercisesByMuscle = byMuscle,
+                muscles = muscles
+            )
         }
     }
 
