@@ -21,6 +21,7 @@ from pydantic import BaseModel
 # Local imports
 import models
 import schemas
+from config import settings
 from database import engine, get_db
 
 
@@ -80,10 +81,10 @@ def verify_password(plain_password: str, hashed_password: str) -> bool:
 
 
 # ========== JWT CONFIGURATION ==========
-SECRET_KEY = os.getenv("SECRET_KEY")
-if not SECRET_KEY:
-    raise RuntimeError("SECRET_KEY environment variable not set")
-ALGORITHM = "HS256"
+# Auth config comes from the central settings object (see config.py). Settings
+# validation already fails fast at startup if SECRET_KEY is missing.
+SECRET_KEY = settings.secret_key
+ALGORITHM = settings.algorithm
 
 ACCESS_TOKEN_EXPIRE_MINUTES = 43200  # 30 days
 

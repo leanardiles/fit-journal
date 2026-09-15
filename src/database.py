@@ -1,30 +1,16 @@
-from sqlalchemy import create_engine, text  # Add 'text' to imports
+from sqlalchemy import create_engine, text
 from sqlalchemy.orm import declarative_base, sessionmaker
-import os
-from dotenv import load_dotenv
 
-# Load environment variables
-load_dotenv()
+from config import settings
 
-# Database configuration
-DB_HOST = os.getenv('DB_HOST')
-DB_PORT = os.getenv('DB_PORT', '3306')
-DB_USER = os.getenv('DB_USER')
-DB_PASSWORD = os.getenv('DB_PASSWORD')
-DB_NAME = os.getenv('DB_NAME')
-
-# Create database URL for SQLAlchemy
-# charset=utf8mb4 forces the CONNECTION to speak full UTF-8 (4-byte, incl. emoji /
-# CJK). Without it, pymysql can negotiate latin1 and silently corrupt non-ASCII
-# text even when the tables are utf8mb4. (Schema charset is enforced separately.)
-DATABASE_URL = f"mysql+pymysql://{DB_USER}:{DB_PASSWORD}@{DB_HOST}:{DB_PORT}/{DB_NAME}?charset=utf8mb4"
-
-# Create SQLAlchemy engine
+# All DB configuration comes from the central settings object (see config.py):
+# settings.database_url already includes ?charset=utf8mb4, which forces the
+# CONNECTION to speak full 4-byte UTF-8 (schema charset is enforced separately).
 engine = create_engine(
-    DATABASE_URL,
+    settings.database_url,
     pool_pre_ping=True,
     pool_recycle=3600,
-    echo=os.getenv("DB_ECHO", "false").lower() == "true"
+    echo=settings.db_echo,
 )
 
 # Create SessionLocal class for database sessions
