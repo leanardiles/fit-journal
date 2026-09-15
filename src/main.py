@@ -23,6 +23,7 @@ import models
 import schemas
 from config import settings
 from database import engine, get_db
+from i18n import t, resolve_request_locale
 
 
 # Create database tables (if they don't exist)
@@ -230,14 +231,16 @@ async def logwod_page(request: Request):
 # ========== USER AUTHENTICATION ROUTES ==========
 
 @api_v1.post("/register", response_model=schemas.UserResponse, status_code=status.HTTP_201_CREATED)
-def register(user: schemas.UserCreate, db: Session = Depends(get_db)):
+def register(user: schemas.UserCreate, request: Request, db: Session = Depends(get_db)):
     """
     Register a new user and copy all default exercises to their account
     """
+    locale = resolve_request_locale(accept_language=request.headers.get("accept-language"))
+
     # Check if user already exists
     existing_user = db.query(models.User).filter(models.User.user_email == user.user_email).first()
     if existing_user:
-        raise HTTPException(status_code=400, detail="Email already registered")
+        raise HTTPException(status_code=400, detail=t("errors.auth.emailAlreadyRegistered", locale))
     
     # Create new user with hashed password
     hashed_pw = hash_password(user.user_password)
@@ -268,20 +271,24 @@ def register(user: schemas.UserCreate, db: Session = Depends(get_db)):
     return new_user
 
 @api_v1.post("/login")
-def login(user: schemas.UserLogin, db: Session = Depends(get_db)):
+def login(user: schemas.UserLogin, request: Request, db: Session = Depends(get_db)):
     """
     Login user with email and password
     """
+    # Pre-auth endpoint: no user context yet, so locale comes from the
+    # Accept-Language header (the only locale signal available before login).
+    locale = resolve_request_locale(accept_language=request.headers.get("accept-language"))
+
     # Find user by email
     db_user = db.query(models.User).filter(models.User.user_email == user.user_email).first()
     
     # Verify user exists and password is correct
     if not db_user or not verify_password(user.user_password, db_user.user_password):
-        raise HTTPException(status_code=401, detail="Invalid email or password")
+        raise HTTPException(status_code=401, detail=t("errors.auth.invalidCredentials", locale))
     
     # Check if user is active
     if not db_user.user_is_active:
-        raise HTTPException(status_code=403, detail="Account is inactive")
+        raise HTTPException(status_code=403, detail=t("errors.auth.accountInactive", locale))
 
     # Create JWT token
     access_token = create_access_token(

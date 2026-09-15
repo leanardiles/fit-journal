@@ -38,6 +38,7 @@ class UserProfileResponse(BaseModel):
     user_height: Optional[float] = None
     user_weight: Optional[float] = None
     user_timezone: Optional[str] = "America/New_York"
+    user_locale: Optional[str] = None
 
     class Config:
         from_attributes = True
@@ -50,6 +51,7 @@ class UserProfileUpdate(BaseModel):
     user_height: Optional[float] = None
     user_weight: Optional[float] = None
     user_timezone: Optional[str] = None
+    user_locale: Optional[str] = None   # BCP 47 tag, e.g. "es-419"; None leaves unchanged
 
 # ========== EXERCISE SCHEMAS ==========
 

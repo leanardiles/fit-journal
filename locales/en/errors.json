@@ -1,0 +1,13 @@
+{
+  "auth": {
+    "invalidCredentials": "Incorrect email or password.",
+    "emailAlreadyRegistered": "That email is already registered.",
+    "accountInactive": "Your account is inactive.",
+    "notAuthenticated": "You are not signed in.",
+    "invalidToken": "Your session has expired. Please sign in again."
+  },
+  "common": {
+    "notFound": "Not found.",
+    "serverError": "Something went wrong. Please try again."
+  }
+}

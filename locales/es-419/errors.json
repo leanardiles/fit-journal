@@ -1,0 +1,5 @@
+{
+  "auth": {
+    "invalidToken": "Tu sesión expiró. Iniciá sesión de nuevo."
+  }
+}

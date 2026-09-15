@@ -1,0 +1,9 @@
+{
+  "nav": {
+    "dashboard": "Panel",
+    "exercises": "Ejercicios",
+    "calendar": "Calendario",
+    "workout": "Entrenamiento",
+    "logout": "Cerrar sesión"
+  }
+}

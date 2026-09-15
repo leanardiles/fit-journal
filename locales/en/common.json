@@ -1,0 +1,9 @@
+{
+  "nav": {
+    "dashboard": "Dashboard",
+    "exercises": "Exercises",
+    "calendar": "Calendar",
+    "workout": "Workout",
+    "logout": "Log out"
+  }
+}
