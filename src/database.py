@@ -14,7 +14,10 @@ DB_PASSWORD = os.getenv('DB_PASSWORD')
 DB_NAME = os.getenv('DB_NAME')
 
 # Create database URL for SQLAlchemy
-DATABASE_URL = f"mysql+pymysql://{DB_USER}:{DB_PASSWORD}@{DB_HOST}:{DB_PORT}/{DB_NAME}"
+# charset=utf8mb4 forces the CONNECTION to speak full UTF-8 (4-byte, incl. emoji /
+# CJK). Without it, pymysql can negotiate latin1 and silently corrupt non-ASCII
+# text even when the tables are utf8mb4. (Schema charset is enforced separately.)
+DATABASE_URL = f"mysql+pymysql://{DB_USER}:{DB_PASSWORD}@{DB_HOST}:{DB_PORT}/{DB_NAME}?charset=utf8mb4"
 
 # Create SQLAlchemy engine
 engine = create_engine(
