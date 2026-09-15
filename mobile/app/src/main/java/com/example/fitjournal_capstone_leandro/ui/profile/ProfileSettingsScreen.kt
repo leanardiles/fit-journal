@@ -22,13 +22,17 @@ import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.example.fitjournal_capstone_leandro.ui.theme.AccentYellow
+import com.example.fitjournal_capstone_leandro.ui.theme.BackgroundDark
+import com.example.fitjournal_capstone_leandro.ui.theme.SurfaceDark
+import com.example.fitjournal_capstone_leandro.ui.theme.TextGray
+import com.example.fitjournal_capstone_leandro.ui.theme.ErrorRed
 import com.example.fitjournal_capstone_leandro.ui.theme.myCustomFont
+import com.example.fitjournal_capstone_leandro.ui.shared.PrimaryButton
+import com.example.fitjournal_capstone_leandro.ui.shared.SecondaryButton
+import com.example.fitjournal_capstone_leandro.ui.shared.ChipToggle
+import com.example.fitjournal_capstone_leandro.ui.shared.DangerButton
 
-private val AccentYellow = Color(0xFFFFEB3B)
-private val BackgroundDark = Color(0xFF1B1B1E)
-private val SurfaceDark = Color(0xFF2C2C2E)
-private val TextGray = Color(0xFF8E8E93)
-private val DangerRed = Color(0xFFFF453A)
 
 private val timezones = listOf(
     // Americas
@@ -114,16 +118,14 @@ fun ProfileSettingsScreen(
                 ) {
                     Text(
                         text = (state.uiState as ProfileSettingsUiState.Error).message,
-                        color = Color(0xFFFF453A),
+                        color = ErrorRed,
                         fontFamily = myCustomFont
                     )
                     Spacer(modifier = Modifier.height(16.dp))
-                    Button(
-                        onClick = { viewModel.loadProfile() },
-                        colors = ButtonDefaults.buttonColors(containerColor = AccentYellow)
-                    ) {
-                        Text("Retry", color = Color.Black, fontFamily = myCustomFont)
-                    }
+                    PrimaryButton(
+                        text = "Retry",
+                        onClick = { viewModel.loadProfile() }
+                    )
                 }
             }
 
@@ -297,22 +299,11 @@ fun ProfileSettingsScreen(
                     Spacer(modifier = Modifier.height(32.dp))
 
                     // Save button
-                    Button(
+                    PrimaryButton(
+                        text = "Save",
                         onClick = { viewModel.saveProfile() },
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .height(50.dp),
-                        colors = ButtonDefaults.buttonColors(containerColor = AccentYellow),
-                        shape = RoundedCornerShape(10.dp)
-                    ) {
-                        Text(
-                            text = "Save",
-                            color = Color.Black,
-                            fontWeight = FontWeight.Bold,
-                            fontSize = 16.sp,
-                            fontFamily = myCustomFont
-                        )
-                    }
+                        modifier = Modifier.fillMaxWidth()
+                    )
 
                     Spacer(modifier = Modifier.height(32.dp))
 
@@ -329,7 +320,7 @@ fun ProfileSettingsScreen(
                     Text(
                         text = "Danger zone",
                         fontSize = 14.sp,
-                        color = DangerRed,
+                        color = ErrorRed,
                         fontWeight = FontWeight.Bold,
                         fontFamily = myCustomFont
                     )
@@ -345,23 +336,11 @@ fun ProfileSettingsScreen(
 
                     Spacer(modifier = Modifier.height(12.dp))
 
-                    OutlinedButton(
+                    DangerButton(
+                        text = "Delete account",
                         onClick = { viewModel.showDeleteAccountDialog() },
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .height(50.dp),
-                        border = BorderStroke(2.dp, DangerRed),
-                        shape = RoundedCornerShape(10.dp),
-                        colors = ButtonDefaults.outlinedButtonColors(contentColor = DangerRed)
-                    ) {
-                        Text(
-                            text = "Delete account",
-                            color = DangerRed,
-                            fontWeight = FontWeight.Bold,
-                            fontSize = 16.sp,
-                            fontFamily = myCustomFont
-                        )
-                    }
+                        modifier = Modifier.fillMaxWidth()
+                    )
 
                     Spacer(modifier = Modifier.height(32.dp))
                 }
@@ -427,7 +406,7 @@ fun ProfileSettingsScreen(
                             Spacer(modifier = Modifier.height(8.dp))
                             Text(
                                 text = state.deleteError!!,
-                                color = DangerRed,
+                                color = ErrorRed,
                                 fontFamily = myCustomFont,
                                 fontSize = 13.sp
                             )
@@ -441,7 +420,7 @@ fun ProfileSettingsScreen(
                     ) {
                         Text(
                             text = if (state.deleteInProgress) "Deleting\u2026" else "Delete",
-                            color = if (deletePassword.isNotBlank() && !state.deleteInProgress) DangerRed else TextGray,
+                            color = if (deletePassword.isNotBlank() && !state.deleteInProgress) ErrorRed else TextGray,
                             fontFamily = myCustomFont,
                             fontWeight = FontWeight.Bold
                         )
@@ -486,29 +465,7 @@ private fun ToggleButton(
     isSelected: Boolean,
     onClick: () -> Unit
 ) {
-    Box(
-        modifier = Modifier
-            .border(
-                width = 2.dp,
-                color = if (isSelected) AccentYellow else Color.Gray,
-                shape = RoundedCornerShape(8.dp)
-            )
-            .background(
-                color = if (isSelected) AccentYellow.copy(alpha = 0.2f) else Color.Transparent,
-                shape = RoundedCornerShape(8.dp)
-            )
-            .clickable { onClick() }
-            .padding(horizontal = 20.dp, vertical = 10.dp),
-        contentAlignment = Alignment.Center
-    ) {
-        Text(
-            text = label,
-            color = if (isSelected) AccentYellow else Color.White,
-            fontWeight = if (isSelected) FontWeight.Bold else FontWeight.Normal,
-            fontFamily = myCustomFont,
-            fontSize = 14.sp
-        )
-    }
+    ChipToggle(text = label, selected = isSelected, onClick = onClick)
 }
 
 @Composable

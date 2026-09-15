@@ -24,6 +24,7 @@ import coil.compose.AsyncImage
 import coil.decode.GifDecoder
 import coil.decode.ImageDecoderDecoder
 import coil.request.ImageRequest
+import com.example.fitjournal_capstone_leandro.ui.theme.BackgroundDark
 import com.example.fitjournal_capstone_leandro.ui.theme.myCustomFont
 
 @Composable
@@ -38,7 +39,7 @@ fun ExerciseDetailsScreen(
         Column(
             modifier = Modifier
                 .fillMaxSize()
-                .background(Color(0xFF1B1B1E))
+                .background(BackgroundDark)
                 .padding(16.dp)
                 .verticalScroll(rememberScrollState())
         ) {
@@ -75,7 +76,7 @@ fun ExerciseDetailsScreen(
     Column(
         modifier = Modifier
             .fillMaxSize()
-            .background(Color(0xFF1B1B1E))
+            .background(BackgroundDark)
             .padding(16.dp)
             .verticalScroll(rememberScrollState())
     ) {

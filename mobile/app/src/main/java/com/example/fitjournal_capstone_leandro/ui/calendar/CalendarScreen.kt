@@ -24,14 +24,18 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.example.fitjournal_capstone_leandro.ui.theme.AccentYellow
+import com.example.fitjournal_capstone_leandro.ui.theme.BackgroundDark
+import com.example.fitjournal_capstone_leandro.ui.theme.SurfaceDark
+import com.example.fitjournal_capstone_leandro.ui.theme.TextGray
+import com.example.fitjournal_capstone_leandro.ui.theme.CellDark
+import com.example.fitjournal_capstone_leandro.ui.theme.ErrorRed
 import com.example.fitjournal_capstone_leandro.ui.theme.myCustomFont
+import com.example.fitjournal_capstone_leandro.ui.shared.PrimaryButton
+import com.example.fitjournal_capstone_leandro.ui.shared.SecondaryButton
+import com.example.fitjournal_capstone_leandro.ui.shared.MutedButton
+import com.example.fitjournal_capstone_leandro.ui.shared.ChipToggle
 
-private val AccentYellow   = Color(0xFFFFEB3B)
-private val BackgroundDark = Color(0xFF1B1B1E)
-private val SurfaceDark    = Color(0xFF2C2C2E)
-private val TextGray       = Color(0xFF8E8E93)
-private val CurrentMarker  = Color(0xFFFF453A)
-private val CellDark       = Color(0xFF1F1F1F)
 
 // Table layout constants — tuned together; changing one may need the others.
 private val ExerciseColWidth   = 130.dp
@@ -188,23 +192,7 @@ private fun DayTabsRow(
 
 @Composable
 private fun AllChip(isSelected: Boolean, onClick: () -> Unit) {
-    val backgroundColor = if (isSelected) AccentYellow else SurfaceDark
-    val textColor       = if (isSelected) Color.Black else Color.White
-    Row(
-        modifier = Modifier
-            .clip(RoundedCornerShape(10.dp))
-            .background(backgroundColor)
-            .clickable { onClick() }
-            .padding(horizontal = 14.dp, vertical = 8.dp),
-        verticalAlignment = Alignment.CenterVertically
-    ) {
-        Text(
-            text       = "All",
-            color      = textColor,
-            fontSize   = 14.sp,
-            fontFamily = myCustomFont
-        )
-    }
+    ChipToggle(text = "All", selected = isSelected, onClick = onClick)
 }
 
 @Composable
@@ -214,26 +202,10 @@ private fun DayChip(
     isCurrent: Boolean,
     onClick: () -> Unit
 ) {
-    val backgroundColor = if (isSelected) AccentYellow else SurfaceDark
-    val textColor       = if (isSelected) Color.Black else Color.White
-
+    // Shared outlined chip look; the red dot overlay marks the current training day
+    // (distinct from the day being viewed).
     Box {
-        Row(
-            modifier = Modifier
-                .clip(RoundedCornerShape(10.dp))
-                .background(backgroundColor)
-                .clickable { onClick() }
-                .padding(horizontal = 14.dp, vertical = 8.dp),
-            verticalAlignment = Alignment.CenterVertically
-        ) {
-            Text(
-                text       = "Day $day",
-                color      = textColor,
-                fontSize   = 14.sp,
-                fontWeight = FontWeight.SemiBold,
-                fontFamily = myCustomFont
-            )
-        }
+        ChipToggle(text = "Day $day", selected = isSelected, onClick = onClick)
 
         if (isCurrent) {
             Box(
@@ -242,7 +214,7 @@ private fun DayChip(
                     .offset(x = 4.dp, y = (-4).dp)
                     .size(10.dp)
                     .clip(CircleShape)
-                    .background(CurrentMarker)
+                    .background(ErrorRed)
                     .border(width = 2.dp, color = BackgroundDark, shape = CircleShape)
             )
         }
@@ -260,7 +232,7 @@ private fun TabsLegend() {
                 modifier = Modifier
                     .size(8.dp)
                     .clip(CircleShape)
-                    .background(CurrentMarker)
+                    .background(ErrorRed)
             )
             Spacer(Modifier.width(4.dp))
             Text(
@@ -338,33 +310,16 @@ private fun ActionButtonsRow(
         modifier = Modifier.fillMaxWidth(),
         horizontalArrangement = Arrangement.spacedBy(8.dp)
     ) {
-        OutlinedButton(
+        SecondaryButton(
+            text = "Auto-select",
             onClick = onAutoSelect,
-            modifier = Modifier.weight(1f),
-            shape = RoundedCornerShape(8.dp),
-            border = androidx.compose.foundation.BorderStroke(1.dp, SurfaceDark),
-            colors = ButtonDefaults.outlinedButtonColors(contentColor = Color.White)
-        ) {
-            Text(
-                text       = "Auto-select",
-                fontSize   = 13.sp,
-                fontFamily = myCustomFont
-            )
-        }
-
-        OutlinedButton(
+            modifier = Modifier.weight(1f)
+        )
+        MutedButton(
+            text = "Clear",
             onClick = onClearSelections,
-            modifier = Modifier.weight(1f),
-            shape = RoundedCornerShape(8.dp),
-            border = androidx.compose.foundation.BorderStroke(1.dp, SurfaceDark),
-            colors = ButtonDefaults.outlinedButtonColors(contentColor = Color.White)
-        ) {
-            Text(
-                text       = "Clear",
-                fontSize   = 13.sp,
-                fontFamily = myCustomFont
-            )
-        }
+            modifier = Modifier.weight(1f)
+        )
     }
 }
 
@@ -600,21 +555,15 @@ private fun ErrorContent(message: String, onRetry: () -> Unit) {
     ) {
         Text(
             text       = message,
-            color      = Color(0xFFFF453A),
+            color      = ErrorRed,
             fontSize   = 16.sp,
             fontFamily = myCustomFont
         )
         Spacer(modifier = Modifier.height(16.dp))
-        Button(
-            onClick = onRetry,
-            colors = ButtonDefaults.buttonColors(containerColor = AccentYellow)
-        ) {
-            Text(
-                text       = "Retry",
-                color      = Color.Black,
-                fontFamily = myCustomFont
-            )
-        }
+        PrimaryButton(
+            text = "Retry",
+            onClick = onRetry
+        )
     }
 }
 

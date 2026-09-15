@@ -19,16 +19,16 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.fitjournal_capstone_leandro.data.model.RoutineResponse
+import com.example.fitjournal_capstone_leandro.ui.theme.AccentYellow
+import com.example.fitjournal_capstone_leandro.ui.theme.BackgroundDark
+import com.example.fitjournal_capstone_leandro.ui.theme.NoteYellow
+import com.example.fitjournal_capstone_leandro.ui.theme.NoteText
+import com.example.fitjournal_capstone_leandro.ui.theme.NoteTextSoft
+import com.example.fitjournal_capstone_leandro.ui.theme.NoteTape
+import com.example.fitjournal_capstone_leandro.ui.theme.ErrorRed
 import com.example.fitjournal_capstone_leandro.ui.theme.myCustomFont
+import com.example.fitjournal_capstone_leandro.ui.shared.PrimaryButton
 
-private val BackgroundDark = Color(0xFF1B1B1E)
-private val AccentYellow = Color(0xFFFFEB3B)
-
-// Sticky-note palette
-private val NoteYellow = Color(0xFFF4D93E)     // slightly muted, paper-like
-private val NoteText = Color(0xFF1A1A1A)       // near-black title/body
-private val NoteTextSoft = Color(0xFF3A3320)   // secondary text on the note
-private val NoteTape = Color(0x4DFFFFFF)        // ~30% white tape strip
 
 @Composable
 fun HomeScreen(
@@ -75,12 +75,14 @@ fun HomeScreen(
             is DashboardUiState.Error -> {
                 Text(
                     text = (dashboardState.uiState as DashboardUiState.Error).message,
-                    color = Color.Red
+                    color = ErrorRed,
+                    fontFamily = myCustomFont
                 )
                 Spacer(modifier = Modifier.height(8.dp))
-                Button(onClick = { dashboardViewModel.loadDashboard() }) {
-                    Text("Retry")
-                }
+                PrimaryButton(
+                    text = "Retry",
+                    onClick = { dashboardViewModel.loadDashboard() }
+                )
             }
 
             is DashboardUiState.Success -> {

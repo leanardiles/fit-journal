@@ -23,14 +23,18 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.example.fitjournal_capstone_leandro.ui.theme.AccentYellow
+import com.example.fitjournal_capstone_leandro.ui.theme.BackgroundDark
+import com.example.fitjournal_capstone_leandro.ui.theme.SurfaceDark
+import com.example.fitjournal_capstone_leandro.ui.theme.TextGray
+import com.example.fitjournal_capstone_leandro.ui.theme.ErrorRed
 import com.example.fitjournal_capstone_leandro.ui.theme.myCustomFont
+import com.example.fitjournal_capstone_leandro.ui.shared.PrimaryButton
+import com.example.fitjournal_capstone_leandro.ui.shared.SecondaryButton
+import com.example.fitjournal_capstone_leandro.ui.shared.MuscleTab
 import java.util.Calendar
 import java.util.TimeZone
 
-private val BackgroundDark = Color(0xFF1B1B1E)
-private val SurfaceDark = Color(0xFF2C2C2E)
-private val AccentYellow = Color(0xFFFFEB3B)
-private val TextGray = Color(0xFF8E8E93)
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -90,19 +94,12 @@ fun ManualLogScreen(
             ) {
                 Text(
                     loadError.message,
-                    color = Color(0xFFFF453A),
+                    color = ErrorRed,
                     fontFamily = myCustomFont,
                     fontSize = 14.sp
                 )
                 Spacer(modifier = Modifier.height(10.dp))
-                OutlinedButton(
-                    onClick = { viewModel.loadLibrary() },
-                    shape = RoundedCornerShape(8.dp),
-                    border = androidx.compose.foundation.BorderStroke(1.5.dp, AccentYellow),
-                    colors = ButtonDefaults.outlinedButtonColors(contentColor = AccentYellow)
-                ) {
-                    Text("Try again", color = AccentYellow, fontFamily = myCustomFont)
-                }
+                SecondaryButton(text = "Try again", onClick = { viewModel.loadLibrary() })
             }
         }
 
@@ -170,18 +167,15 @@ fun ManualLogScreen(
         // ---- Fixed footer: error + submit ----
         val ui = state.uiState
         if (ui is ManualLogUiState.Error) {
-            Text(ui.message, color = Color(0xFFFF453A), fontFamily = myCustomFont, fontSize = 14.sp, modifier = Modifier.padding(top = 6.dp))
+            Text(ui.message, color = ErrorRed, fontFamily = myCustomFont, fontSize = 14.sp, modifier = Modifier.padding(top = 6.dp))
         }
         Spacer(modifier = Modifier.height(8.dp))
-        Button(
+        PrimaryButton(
+            text = if (ui == ManualLogUiState.Submitting) "Logging…" else "Log workout",
             onClick = { viewModel.submit(onLogged) },
             enabled = ui != ManualLogUiState.Submitting,
-            modifier = Modifier.fillMaxWidth().height(50.dp),
-            colors = ButtonDefaults.buttonColors(containerColor = AccentYellow, contentColor = Color.Black),
-            shape = RoundedCornerShape(12.dp)
-        ) {
-            Text(if (ui == ManualLogUiState.Submitting) "Logging…" else "Log workout", fontWeight = FontWeight.Bold, fontSize = 15.sp, fontFamily = myCustomFont)
-        }
+            modifier = Modifier.fillMaxWidth()
+        )
     }
 
     if (showDatePicker) {
@@ -233,21 +227,6 @@ private fun displayDate(millis: Long): String {
     return "%02d-%02d-%04d".format(d, m, y)
 }
 
-@Composable
-private fun MuscleTab(label: String, count: Int, active: Boolean, onClick: () -> Unit) {
-    Row(
-        modifier = Modifier
-            .border(1.5.dp, if (active) AccentYellow else Color.Gray, RoundedCornerShape(16.dp))
-            .background(if (active) AccentYellow.copy(alpha = 0.15f) else Color.Transparent, RoundedCornerShape(16.dp))
-            .clickable { onClick() }
-            .padding(horizontal = 12.dp, vertical = 6.dp),
-        verticalAlignment = Alignment.CenterVertically
-    ) {
-        Text(label, color = if (active) AccentYellow else Color.White, fontFamily = myCustomFont, fontSize = 13.sp)
-        Spacer(modifier = Modifier.width(6.dp))
-        Text("$count", color = if (count > 0) AccentYellow else Color.Gray, fontFamily = myCustomFont, fontSize = 13.sp, fontWeight = FontWeight.Bold)
-    }
-}
 
 @Composable
 private fun CheckboxBox(checked: Boolean) {

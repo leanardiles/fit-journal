@@ -17,15 +17,14 @@ import com.example.fitjournal_capstone_leandro.R
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.PasswordVisualTransformation
+import com.example.fitjournal_capstone_leandro.ui.theme.AccentYellow
+import com.example.fitjournal_capstone_leandro.ui.theme.BackgroundDark
+import com.example.fitjournal_capstone_leandro.ui.theme.TextGray
 import com.example.fitjournal_capstone_leandro.ui.theme.myCustomFont
+import com.example.fitjournal_capstone_leandro.ui.shared.ChipToggle
+import com.example.fitjournal_capstone_leandro.ui.shared.PrimaryButton
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-
-// Accent yellow used throughout the app
-private val AccentYellow = Color(0xFFFFEB3B)
-private val BackgroundDark = Color(0xFF1B1B1E)
-private val SurfaceDark = Color(0xFF2C2C2E)
-private val TextGray = Color(0xFF8E8E93)
 
 /**
  * Login Screen
@@ -92,18 +91,18 @@ fun LoginScreen(
             modifier = Modifier.fillMaxWidth(),
             horizontalArrangement = Arrangement.spacedBy(12.dp)
         ) {
-            TabButton(
+            ChipToggle(
                 text = "Login",
-                isSelected = isLoginMode,
+                selected = isLoginMode,
                 modifier = Modifier.weight(1f),
                 onClick = {
                     isLoginMode = true
                     viewModel.resetState()
                 }
             )
-            TabButton(
+            ChipToggle(
                 text = "Register",
-                isSelected = !isLoginMode,
+                selected = !isLoginMode,
                 modifier = Modifier.weight(1f),
                 onClick = {
                     isLoginMode = false
@@ -154,73 +153,17 @@ fun LoginScreen(
             )
         }
 
-        // Submit button
-        Button(
+        // Submit button (shared PrimaryButton). While loading it disables and shows
+        // a wait label — keeps the auth spinner behaviour without a custom button.
+        val isLoading = uiState is AuthUiState.Loading
+        PrimaryButton(
+            text = if (isLoading) "Please wait…" else if (isLoginMode) "Login" else "Register",
             onClick = {
-                if (isLoginMode) {
-                    viewModel.login(email, password)
-                } else {
-                    viewModel.register(email, password)
-                }
+                if (isLoginMode) viewModel.login(email, password)
+                else viewModel.register(email, password)
             },
-            enabled = uiState !is AuthUiState.Loading,
-            modifier = Modifier
-                .fillMaxWidth(0.48f)
-                .height(50.dp),
-            colors = ButtonDefaults.buttonColors(
-                containerColor = AccentYellow,
-                contentColor = Color.Black,
-                disabledContainerColor = AccentYellow.copy(alpha = 0.4f)
-            ),
-            shape = RoundedCornerShape(10.dp)
-        ) {
-            if (uiState is AuthUiState.Loading) {
-                CircularProgressIndicator(
-                    color = Color.Black,
-                    modifier = Modifier.size(22.dp),
-                    strokeWidth = 2.dp
-                )
-            } else {
-                Text(
-                    text = if (isLoginMode) "Login" else "Register",
-                    fontWeight = FontWeight.Bold,
-                    fontSize = 16.sp,
-                    fontFamily = myCustomFont
-                )
-            }
-        }
-    }
-}
-
-/**
- * Tab toggle button (Login / Register)
- */
-@Composable
-private fun TabButton(
-    text: String,
-    isSelected: Boolean,
-    modifier: Modifier = Modifier,
-    onClick: () -> Unit
-) {
-    // Mirrors the workout screen day chips: selected = yellow-tinted fill +
-    // yellow border + yellow text; unselected = transparent + white border + white text.
-    val borderColor = if (isSelected) AccentYellow else Color.White
-    val fillColor   = if (isSelected) AccentYellow.copy(alpha = 0.15f) else Color.Transparent
-    val textColor   = if (isSelected) AccentYellow else Color.White
-    Box(
-        modifier = modifier
-            .height(40.dp)
-            .border(1.5.dp, borderColor, RoundedCornerShape(10.dp))
-            .background(fillColor, RoundedCornerShape(10.dp))
-            .clickable { onClick() },
-        contentAlignment = Alignment.Center
-    ) {
-        Text(
-            text = text,
-            color = textColor,
-            fontWeight = FontWeight.SemiBold,
-            fontSize = 14.sp,
-            fontFamily = myCustomFont
+            enabled = !isLoading,
+            modifier = Modifier.fillMaxWidth(0.48f)
         )
     }
 }

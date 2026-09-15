@@ -36,14 +36,16 @@ import androidx.compose.ui.unit.sp
 import com.example.fitjournal_capstone_leandro.data.model.UserExercise
 import androidx.navigation.NavHostController
 import com.example.fitjournal_capstone_leandro.navigation.Routes
+import com.example.fitjournal_capstone_leandro.ui.theme.AccentYellow
+import com.example.fitjournal_capstone_leandro.ui.theme.BackgroundDark
 import com.example.fitjournal_capstone_leandro.ui.theme.myCustomFont
+import com.example.fitjournal_capstone_leandro.ui.shared.PrimaryButton
+import com.example.fitjournal_capstone_leandro.ui.shared.SecondaryButton
 import sh.calvin.reorderable.ReorderableItem
 import sh.calvin.reorderable.ReorderableCollectionItemScope
 import sh.calvin.reorderable.rememberReorderableLazyListState
 
 
-private val BackgroundDark = Color(0xFF1B1B1E)
-private val AccentYellow = Color(0xFFFFEB3B)
 
 @OptIn(ExperimentalFoundationApi::class)
 
@@ -178,22 +180,16 @@ fun WorkoutScreen(
                         modifier = Modifier.fillMaxWidth(),
                         horizontalArrangement = Arrangement.spacedBy(12.dp)
                     ) {
-                        Button(
+                        PrimaryButton(
+                            text = "Generate Workout",
                             onClick = { viewModel.createWorkout() },
-                            colors = ButtonDefaults.buttonColors(containerColor = AccentYellow, contentColor = Color.Black),
-                            shape = RoundedCornerShape(12.dp),
-                            modifier = Modifier.weight(1f).height(52.dp)
-                        ) {
-                            Text("Generate Workout", fontWeight = FontWeight.Bold, fontSize = 14.sp, fontFamily = myCustomFont)
-                        }
-                        OutlinedButton(
+                            modifier = Modifier.weight(1f)
+                        )
+                        SecondaryButton(
+                            text = "Log Manually",
                             onClick = { navController.navigate(Routes.MANUAL_LOG) },
-                            border = BorderStroke(1.5.dp, AccentYellow),
-                            shape = RoundedCornerShape(12.dp),
-                            modifier = Modifier.weight(1f).height(52.dp)
-                        ) {
-                            Text("Log Manually", color = AccentYellow, fontWeight = FontWeight.Bold, fontSize = 14.sp, fontFamily = myCustomFont)
-                        }
+                            modifier = Modifier.weight(1f)
+                        )
                     }
                 }
             }
@@ -213,7 +209,7 @@ fun WorkoutScreen(
                             fontSize = 14.sp
                         )
                         Spacer(modifier = Modifier.height(16.dp))
-                        Button(onClick = { viewModel.reset() }) { Text("Try Again") }
+                        PrimaryButton(text = "Try Again", onClick = { viewModel.reset() })
                     }
                 }
             }
@@ -263,23 +259,12 @@ fun WorkoutScreen(
 
                 Spacer(modifier = Modifier.height(16.dp))
 
-                Button(
+                PrimaryButton(
+                    text = "Mark Workout as Complete",
                     onClick = { viewModel.completeWorkout() },
                     enabled = state.checkedExerciseIds.isNotEmpty(),
-                    modifier = Modifier.fillMaxWidth().height(52.dp),
-                    colors = ButtonDefaults.buttonColors(
-                        containerColor = AccentYellow,
-                        contentColor = Color.Black,
-                        disabledContainerColor = AccentYellow.copy(alpha = 0.4f)
-                    ),
-                    shape = RoundedCornerShape(12.dp)
-                ) {
-                    Text(
-                        text = "Mark Workout as Complete",
-                        fontWeight = FontWeight.Bold,
-                        fontSize = 15.sp
-                    )
-                }
+                    modifier = Modifier.fillMaxWidth()
+                )
 
                 Spacer(modifier = Modifier.height(8.dp))
 

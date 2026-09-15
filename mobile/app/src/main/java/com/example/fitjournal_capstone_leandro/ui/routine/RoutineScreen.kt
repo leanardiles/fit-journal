@@ -24,12 +24,16 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
 import com.example.fitjournal_capstone_leandro.navigation.Routes
+import com.example.fitjournal_capstone_leandro.ui.theme.AccentYellow
+import com.example.fitjournal_capstone_leandro.ui.theme.BackgroundDark
+import com.example.fitjournal_capstone_leandro.ui.theme.SurfaceDark
+import com.example.fitjournal_capstone_leandro.ui.theme.TextGray
 import com.example.fitjournal_capstone_leandro.ui.theme.myCustomFont
+import com.example.fitjournal_capstone_leandro.ui.shared.PrimaryButton
+import com.example.fitjournal_capstone_leandro.ui.shared.SecondaryButton
+import com.example.fitjournal_capstone_leandro.ui.shared.MutedButton
+import com.example.fitjournal_capstone_leandro.ui.shared.MuscleTab
 
-private val AccentYellow = Color(0xFFFFEB3B)
-private val BackgroundDark = Color(0xFF1B1B1E)
-private val SurfaceDark = Color(0xFF2C2C2E)
-private val TextGray = Color(0xFF8E8E93)
 
 @Composable
 fun RoutineScreen(viewModel: RoutineViewModel, navController: NavHostController) {
@@ -82,9 +86,7 @@ fun RoutineScreen(viewModel: RoutineViewModel, navController: NavHostController)
                         fontSize = 16.sp
                     )
                     Spacer(modifier = Modifier.height(16.dp))
-                    Button(onClick = { viewModel.loadRoutine() }, colors = ButtonDefaults.buttonColors(containerColor = AccentYellow)) {
-                        Text("Retry", color = Color.Black, fontFamily = myCustomFont)
-                    }
+                    PrimaryButton(text = "Retry", onClick = { viewModel.loadRoutine() })
                 }
             }
         }
@@ -164,13 +166,7 @@ private fun EditingContent(
 
         if (state.editMode && state.selectedDays < 7) {
             item {
-                OutlinedButton(
-                    onClick = onAddDay,
-                    modifier = Modifier.fillMaxWidth(),
-                    border = BorderStroke(1.5.dp, AccentYellow)
-                ) {
-                    Text("+ Add day", color = AccentYellow, fontFamily = myCustomFont)
-                }
+                SecondaryButton(text = "+ Add day", onClick = onAddDay, modifier = Modifier.fillMaxWidth())
                 Spacer(modifier = Modifier.height(16.dp))
             }
         }
@@ -178,12 +174,8 @@ private fun EditingContent(
         item {
             Spacer(modifier = Modifier.height(8.dp))
             Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.Center) {
-                OutlinedButton(onClick = onCancel, modifier = Modifier.padding(end = 12.dp)) {
-                    Text("Cancel", color = TextGray, fontFamily = myCustomFont)
-                }
-                Button(onClick = onSave, colors = ButtonDefaults.buttonColors(containerColor = AccentYellow)) {
-                    Text("Save Routine", color = Color.Black, fontFamily = myCustomFont, fontWeight = FontWeight.Bold)
-                }
+                MutedButton(text = "Cancel", onClick = onCancel, modifier = Modifier.padding(end = 12.dp))
+                PrimaryButton(text = "Save Routine", onClick = onSave)
             }
             Spacer(modifier = Modifier.height(32.dp))
         }
@@ -226,9 +218,7 @@ private fun ViewRoutineContent(state: RoutineScreenState, onEdit: () -> Unit) {
         }
 
         Spacer(modifier = Modifier.height(32.dp))
-        Button(onClick = onEdit, colors = ButtonDefaults.buttonColors(containerColor = SurfaceDark)) {
-            Text("Edit Routine", color = Color.White, fontFamily = myCustomFont)
-        }
+        SecondaryButton(text = "Edit Routine", onClick = onEdit)
     }
 }
 
@@ -392,12 +382,8 @@ private fun ManualPickerScreen(
 @Composable
 private fun PickerButtons(onCancel: () -> Unit, onDone: () -> Unit) {
     Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.spacedBy(12.dp)) {
-        OutlinedButton(onClick = onCancel, modifier = Modifier.weight(1f)) {
-            Text("Cancel", color = TextGray, fontFamily = myCustomFont)
-        }
-        Button(onClick = onDone, colors = ButtonDefaults.buttonColors(containerColor = AccentYellow), modifier = Modifier.weight(1f)) {
-            Text("Done", color = Color.Black, fontWeight = FontWeight.Bold, fontFamily = myCustomFont)
-        }
+        MutedButton(text = "Cancel", onClick = onCancel, modifier = Modifier.weight(1f))
+        PrimaryButton(text = "Done", onClick = onDone, modifier = Modifier.weight(1f))
     }
 }
 
@@ -604,21 +590,6 @@ private fun DayCard(
     }
 }
 
-@Composable
-private fun MuscleTab(label: String, count: Int, active: Boolean, onClick: () -> Unit) {
-    Row(
-        modifier = Modifier
-            .border(1.5.dp, if (active) AccentYellow else Color.Gray, RoundedCornerShape(16.dp))
-            .background(if (active) AccentYellow.copy(alpha = 0.15f) else Color.Transparent, RoundedCornerShape(16.dp))
-            .clickable { onClick() }
-            .padding(horizontal = 12.dp, vertical = 6.dp),
-        verticalAlignment = Alignment.CenterVertically
-    ) {
-        Text(label, color = if (active) AccentYellow else Color.White, fontFamily = myCustomFont, fontSize = 13.sp)
-        Spacer(modifier = Modifier.width(6.dp))
-        Text("$count", color = if (count > 0) AccentYellow else Color.Gray, fontFamily = myCustomFont, fontSize = 13.sp, fontWeight = FontWeight.Bold)
-    }
-}
 
 @Composable
 private fun StepperButton(label: String, onClick: () -> Unit) {

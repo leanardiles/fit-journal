@@ -15,6 +15,8 @@ import androidx.compose.material.icons.filled.DateRange
 import androidx.compose.material.icons.filled.FitnessCenter
 import androidx.compose.material.icons.filled.Timer
 import com.example.fitjournal_capstone_leandro.ui.theme.myCustomFont
+import com.example.fitjournal_capstone_leandro.ui.theme.AccentYellow
+import com.example.fitjournal_capstone_leandro.ui.theme.BackgroundDark
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -34,14 +36,15 @@ import com.example.fitjournal_capstone_leandro.R
 sealed class BottomNavItem(
     val route: String,
     val icon: ImageVector? = null,
-    val logoRes: Int? = null,
+    val logoRes: Int? = null,             // shown when unselected
+    val logoSelectedRes: Int? = null,     // shown when selected
     val title: String
 ) {
-    object Timer : BottomNavItem(Routes.TIMER, Icons.Filled.Timer, null, "Timer")
-    object Calendar : BottomNavItem(Routes.CALENDAR, Icons.Filled.DateRange, null, "Calendar")
-    object Home : BottomNavItem(Routes.HOME, null, R.drawable.logo_alone, "Home")
-    object Exercises : BottomNavItem(Routes.EXERCISES, Icons.Filled.FitnessCenter, null, "Exercises")
-    object Workout : BottomNavItem(Routes.WORKOUT, null, null, "Workout")
+    object Timer : BottomNavItem(Routes.TIMER, Icons.Filled.Timer, null, null, "Timer")
+    object Calendar : BottomNavItem(Routes.CALENDAR, Icons.Filled.DateRange, null, null, "Calendar")
+    object Home : BottomNavItem(Routes.HOME, null, R.drawable.logo_white, R.drawable.logo_white, "Home")
+    object Exercises : BottomNavItem(Routes.EXERCISES, Icons.Filled.FitnessCenter, null, null, "Exercises")
+    object Workout : BottomNavItem(Routes.WORKOUT, null, null, null, "Workout")
 }
 
 @Composable
@@ -55,7 +58,7 @@ fun BottomNavBar(
         modifier = modifier
             .fillMaxWidth()
             .height(72.dp)
-            .background(Color(0xFF1B1B1E)),
+            .background(BackgroundDark),
         horizontalArrangement = Arrangement.SpaceEvenly,
         verticalAlignment = Alignment.CenterVertically
     ) {
@@ -75,21 +78,22 @@ fun BottomNavItemView(
     isSelected: Boolean,
     onClick: () -> Unit
 ) {
-    val tint = if (isSelected) Color(0xFFFFEB3B) else Color.Gray
+    val tint = if (isSelected) AccentYellow else Color.White
 
-    // Special handling for Home (logo)
+    // Special handling for Home (logo) — white unselected, yellow selected.
     if (item.logoRes != null) {
+        val logo = if (isSelected) (item.logoSelectedRes ?: item.logoRes) else item.logoRes
         Column(
             modifier = Modifier
                 .clickable(onClick = onClick)
-                .padding(12.dp),
+                .padding(8.dp),
             horizontalAlignment = Alignment.CenterHorizontally,
             verticalArrangement = Arrangement.Center
         ) {
             Image(
-                painter = painterResource(id = item.logoRes),
+                painter = painterResource(id = logo),
                 contentDescription = item.title,
-                modifier = Modifier.size(45.dp)
+                modifier = Modifier.size(40.dp)
             )
         }
     } else if (item.route == Routes.WORKOUT) {

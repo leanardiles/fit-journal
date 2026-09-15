@@ -9,12 +9,23 @@ import androidx.compose.material3.dynamicDarkColorScheme
 import androidx.compose.material3.dynamicLightColorScheme
 import androidx.compose.material3.lightColorScheme
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 
+// Brand dark scheme: yellow accent on the app's dark surfaces. The app mostly
+// uses named colours directly (see Color.kt), but wiring the MaterialTheme scheme
+// to the brand keeps Material components (dialogs, text fields, etc.) coherent.
 private val DarkColorScheme = darkColorScheme(
-    primary = Purple80,
-    secondary = PurpleGrey80,
-    tertiary = Pink80
+    primary = AccentYellow,
+    onPrimary = Color.Black,
+    secondary = AccentYellow,
+    onSecondary = Color.Black,
+    background = BackgroundDark,
+    onBackground = TextWhite,
+    surface = SurfaceDark,
+    onSurface = TextWhite,
+    error = ErrorRed,
+    onError = Color.Black
 )
 
 private val LightColorScheme = lightColorScheme(
@@ -37,7 +48,7 @@ private val LightColorScheme = lightColorScheme(
 fun fitJournalCapstoneLeandroTheme(
     darkTheme: Boolean = isSystemInDarkTheme(),
     // Dynamic color is available on Android 12+
-    dynamicColor: Boolean = true,
+    dynamicColor: Boolean = false,   // use the FitJournal brand, not wallpaper colours
     content: @Composable () -> Unit
 ) {
     val colorScheme = when {
@@ -45,9 +56,9 @@ fun fitJournalCapstoneLeandroTheme(
             val context = LocalContext.current
             if (darkTheme) dynamicDarkColorScheme(context) else dynamicLightColorScheme(context)
         }
-
-        darkTheme -> DarkColorScheme
-        else -> LightColorScheme
+        // The app is designed dark-first around the brand, so always use the dark
+        // brand scheme (the light scheme stays defined as a fallback only).
+        else -> DarkColorScheme
     }
 
     MaterialTheme(

@@ -25,13 +25,15 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.Dialog
 import com.example.fitjournal_capstone_leandro.data.model.UserExercise
+import com.example.fitjournal_capstone_leandro.ui.theme.AccentYellow
+import com.example.fitjournal_capstone_leandro.ui.theme.BackgroundDark
+import com.example.fitjournal_capstone_leandro.ui.theme.SurfaceDark
+import com.example.fitjournal_capstone_leandro.ui.theme.TextGray
+import com.example.fitjournal_capstone_leandro.ui.theme.ErrorRed
 import com.example.fitjournal_capstone_leandro.ui.theme.myCustomFont
+import com.example.fitjournal_capstone_leandro.ui.shared.PrimaryButton
 import kotlinx.coroutines.launch
 
-private val AccentYellow = Color(0xFFFFFFFF)
-private val BackgroundDark = Color(0xFF1B1B1E)
-private val SurfaceDark = Color(0xFF2C2C2E)
-private val TextGray = Color(0xFF8E8E93)
 
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -263,12 +265,10 @@ fun UserExercisesScreen(
                             fontFamily = myCustomFont
                         )
                         Spacer(modifier = Modifier.height(16.dp))
-                        Button(
-                            onClick = { viewModel.fetchMuscleGroups() },
-                            colors = ButtonDefaults.buttonColors(containerColor = AccentYellow)
-                        ) {
-                            Text("Retry", color = Color.Black, fontFamily = myCustomFont)
-                        }
+                        PrimaryButton(
+                            text = "Retry",
+                            onClick = { viewModel.fetchMuscleGroups() }
+                        )
                     }
                 }
                 else -> {}
@@ -472,14 +472,10 @@ private fun AddExerciseDialog(
                         Text("Cancel", color = TextGray, fontFamily = myCustomFont)
                     }
                     Spacer(modifier = Modifier.width(8.dp))
-                    Button(
-                        onClick = {
-                            if (name.isNotBlank()) onConfirm(name.trim(), selectedMuscle)
-                        },
-                        colors = ButtonDefaults.buttonColors(containerColor = AccentYellow)
-                    ) {
-                        Text("Add", color = Color.Black, fontFamily = myCustomFont)
-                    }
+                    PrimaryButton(
+                        text = "Add",
+                        onClick = { if (name.isNotBlank()) onConfirm(name.trim(), selectedMuscle) }
+                    )
                 }
             }
         }
@@ -555,7 +551,8 @@ private fun EditWeightDialog(
                         Text("Cancel", color = TextGray, fontFamily = myCustomFont)
                     }
                     Spacer(modifier = Modifier.width(8.dp))
-                    Button(
+                    PrimaryButton(
+                        text = "Save",
                         onClick = {
                             val input = weightInput.toFloatOrNull()
                             // Convert back to kg if imperial
@@ -563,11 +560,8 @@ private fun EditWeightDialog(
                                 input / 2.20462f
                             } else input
                             onConfirm(weightKg)
-                        },
-                        colors = ButtonDefaults.buttonColors(containerColor = AccentYellow)
-                    ) {
-                        Text("Save", color = Color.Black, fontFamily = myCustomFont)
-                    }
+                        }
+                    )
                 }
             }
         }
