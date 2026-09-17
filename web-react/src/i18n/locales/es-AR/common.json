@@ -1,5 +1,11 @@
 {
   "login": {
-    "title": "Iniciá sesión y registrá tu próximo entrenamiento"
+    "title": "Iniciá sesión y registrá tu próximo entrenamiento",
+    "noAccount": "¿No tenés cuenta? Registrate"
+
+  },
+  "register": {
+    "title": "Creá tu cuenta",
+    "haveAccount": "¿Ya tenés cuenta? Iniciá sesión"
   }
 }

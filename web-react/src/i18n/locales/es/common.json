@@ -14,6 +14,14 @@
     "button": "Iniciar sesión",
     "emailLabel": "Correo electrónico",
     "emailPlaceholder": "tu@ejemplo.com",
-    "passwordLabel": "Contraseña"
+    "passwordLabel": "Contraseña",
+    "noAccount": "¿No tienes cuenta? Regístrate"
+
+  },
+  "register": {
+    "title": "Crea tu cuenta",
+    "button": "Registrarse",
+    "haveAccount": "¿Ya tienes cuenta? Inicia sesión",
+    "success": "¡Cuenta creada! Inicia sesión"
   }
 }

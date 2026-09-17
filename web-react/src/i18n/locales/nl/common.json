@@ -13,6 +13,14 @@
     "button": "Inloggen",
     "emailLabel": "Email",
     "emailPlaceholder": "jij@voorbeeld.com",
-    "passwordLabel": "Wachtwoord"
+    "passwordLabel": "Wachtwoord",
+    "noAccount": "Geen account? Registreer"
+
+  },
+  "register": {
+    "title": "Maak je account aan",
+    "button": "Registreren",
+    "haveAccount": "Heb je al een account? Inloggen",
+    "success": "Account aangemaakt! Log in"
   }
 }
