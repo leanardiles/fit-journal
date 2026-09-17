@@ -35,3 +35,15 @@ export async function apiPut(path, body) {
   });
   return res;
 }
+
+export async function apiDelete(path, body) {
+  const res = await fetch(`${API_URL}${path}`, {
+    method: "DELETE",
+    headers: {
+      "Content-Type": "application/json",
+      "Authorization": `Bearer ${getToken()}`,
+    },
+    body: body ? JSON.stringify(body) : undefined,
+  });
+  return res;
+}

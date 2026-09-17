@@ -7,5 +7,8 @@
   "register": {
     "title": "Creá tu cuenta",
     "haveAccount": "¿Ya tenés cuenta? Iniciá sesión"
-  }
+  },
+  "profile": {
+    "confirmPassword": "Introducí tu contraseña para confirmar"
+  }  
 }

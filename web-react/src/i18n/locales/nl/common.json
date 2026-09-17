@@ -38,10 +38,22 @@
     "units": "Eenheden",
     "metric": "Metrisch (kg, cm)",
     "imperial": "Imperiaal (lb, ft)",
+    "height": "Lengte",
+    "weight": "Gewicht",
+    "feet": "ft",
+    "inches": "in",
     "timezone": "Tijdzone",
     "language": "Taal",
     "save": "Opslaan",
     "saved": "Profiel opgeslagen.",
-    "saveError": "Kon je profiel niet opslaan."
+    "saveError": "Kon je profiel niet opslaan.",
+     "dangerZone": "Gevarenzone",
+    "deleteAccount": "Account verwijderen",
+    "deleteWarning": "Hiermee verwijder je je account en al je gegevens permanent. Dit kan niet ongedaan worden gemaakt.",
+    "confirmPassword": "Voer je wachtwoord in om te bevestigen",
+    "confirmDelete": "Permanent verwijderen",
+    "cancel": "Annuleren",
+    "accountDeleted": "Je account is verwijderd.",
+    "deleteError": "Kon je account niet verwijderen."
   }
 }

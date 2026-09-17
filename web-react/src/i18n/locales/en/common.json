@@ -38,10 +38,22 @@
     "units": "Units",
     "metric": "Metric (kg, cm)",
     "imperial": "Imperial (lb, ft)",
+    "height": "Height",
+    "weight": "Weight",
+    "feet": "ft",
+    "inches": "in",
     "timezone": "Timezone",
     "language": "Language",
     "save": "Save",
     "saved": "Profile saved.",
-    "saveError": "Couldn't save your profile."
+    "saveError": "Couldn't save your profile.",
+    "dangerZone": "Danger zone",
+    "deleteAccount": "Delete account",
+    "deleteWarning": "This permanently deletes your account and all your data. This cannot be undone.",
+    "confirmPassword": "Enter your password to confirm",
+    "confirmDelete": "Permanently delete",
+    "cancel": "Cancel",
+    "accountDeleted": "Your account has been deleted.",
+    "deleteError": "Couldn't delete your account."
   }
 }

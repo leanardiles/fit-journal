@@ -63,3 +63,4 @@ Legend: [ ] todo   [~] in progress   [x] done
 - Frontend catalogs are thin regional overrides (es-AR only holds what differs from es).
 - API base URL comes from Vite env (.env.development=local, .env.production=prod).
 - All user-facing text routes through t(); values may match English where natural (e.g. Dutch "Dashboard").
+- Feedback convention: form-validation errors the user must act on show inline (persist while correcting); action confirmations and system/transient feedback use toasts (auto-dismiss). Rationale: auto-dismissing a validation error while the user is still fixing it is bad UX.

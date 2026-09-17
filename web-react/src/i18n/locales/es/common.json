@@ -39,10 +39,22 @@
     "units": "Unidades",
     "metric": "Métrico (kg, cm)",
     "imperial": "Imperial (lb, ft)",
+    "height": "Altura",
+    "weight": "Peso",
+    "feet": "pies",
+    "inches": "pulg",
     "timezone": "Zona horaria",
     "language": "Idioma",
     "save": "Guardar",
     "saved": "Perfil guardado.",
-    "saveError": "No se pudo guardar tu perfil."
+    "saveError": "No se pudo guardar tu perfil.",
+     "dangerZone": "Zona de peligro",
+    "deleteAccount": "Eliminar cuenta",
+    "deleteWarning": "Esto elimina permanentemente tu cuenta y todos tus datos. No se puede deshacer.",
+    "confirmPassword": "Introduce tu contraseña para confirmar",
+    "confirmDelete": "Eliminar permanentemente",
+    "cancel": "Cancelar",
+    "accountDeleted": "Tu cuenta ha sido eliminada.",
+    "deleteError": "No se pudo eliminar tu cuenta."
   }
 }
