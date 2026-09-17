@@ -11,7 +11,7 @@
   "login": {
     "title": "Log in en registreer je volgende training",
     "button": "Inloggen",
-    "emailLabel": "Email",
+    "emailLabel": "E-mail",
     "emailPlaceholder": "jij@voorbeeld.com",
     "passwordLabel": "Wachtwoord",
     "noAccount": "Geen account? Registreer"
@@ -22,5 +22,26 @@
     "button": "Registreren",
     "haveAccount": "Heb je al een account? Inloggen",
     "success": "Account aangemaakt! Log in"
+  },
+  "common": {
+    "loading": "Laden..."
+  },
+  "profile": {
+    "title": "Profiel",
+    "email": "E-mail",
+    "name": "Naam",
+    "age": "Leeftijd",
+    "sex": "Geslacht",
+    "sexMale": "Man",
+    "sexFemale": "Vrouw",
+    "sexNonBinary": "Non-binair",
+    "units": "Eenheden",
+    "metric": "Metrisch (kg, cm)",
+    "imperial": "Imperiaal (lb, ft)",
+    "timezone": "Tijdzone",
+    "language": "Taal",
+    "save": "Opslaan",
+    "saved": "Profiel opgeslagen.",
+    "saveError": "Kon je profiel niet opslaan."
   }
 }

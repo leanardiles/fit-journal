@@ -22,3 +22,16 @@ export async function apiGet(path) {
   });
   return res;
 }
+
+// Authenticated PUT , update a resource (sends the JWT + JSON body).
+export async function apiPut(path, body) {
+  const res = await fetch(`${API_URL}${path}`, {
+    method: "PUT",
+    headers: {
+      "Content-Type": "application/json",
+      "Authorization": `Bearer ${getToken()}`,
+    },
+    body: JSON.stringify(body),
+  });
+  return res;
+}

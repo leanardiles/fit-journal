@@ -23,5 +23,26 @@
     "button": "Registrarse",
     "haveAccount": "¿Ya tienes cuenta? Inicia sesión",
     "success": "¡Cuenta creada! Inicia sesión"
+  },
+  "common": {
+    "loading": "Cargando..."
+  },
+  "profile": {
+    "title": "Perfil",
+    "email": "Correo electrónico",
+    "name": "Nombre",
+    "age": "Edad",
+    "sex": "Sexo",
+    "sexMale": "Masculino",
+    "sexFemale": "Femenino",
+    "sexNonBinary": "No binario",
+    "units": "Unidades",
+    "metric": "Métrico (kg, cm)",
+    "imperial": "Imperial (lb, ft)",
+    "timezone": "Zona horaria",
+    "language": "Idioma",
+    "save": "Guardar",
+    "saved": "Perfil guardado.",
+    "saveError": "No se pudo guardar tu perfil."
   }
 }

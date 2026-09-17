@@ -22,5 +22,26 @@
     "button": "Register",
     "haveAccount": "Already have an account? Log in",
     "success": "Account created! Please log in"
+  },
+  "common": {
+    "loading": "Loading..."
+  },
+  "profile": {
+    "title": "Profile",
+    "email": "Email",
+    "name": "Name",
+    "age": "Age",
+    "sex": "Sex",
+    "sexMale": "Male",
+    "sexFemale": "Female",
+    "sexNonBinary": "Non-binary",
+    "units": "Units",
+    "metric": "Metric (kg, cm)",
+    "imperial": "Imperial (lb, ft)",
+    "timezone": "Timezone",
+    "language": "Language",
+    "save": "Save",
+    "saved": "Profile saved.",
+    "saveError": "Couldn't save your profile."
   }
 }
