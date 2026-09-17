@@ -42,7 +42,8 @@ The distinguishing feature is the interface — a "paper notebook" design system
 - Jinja2 server-side templating
 
 **Web**
-- Jinja2 + vanilla JavaScript, custom `notebook.css` (no framework)
+- Jinja2 + vanilla JavaScript, custom `notebook.css` (no framework) — the live frontend
+- React rewrite in progress (`web-react/`): Vite + `react-i18next`, internationalized from the start — see [web-react/README.md](web-react/README.md)
 
 **Android**
 - Kotlin, Jetpack Compose, MVI architecture
@@ -136,6 +137,8 @@ cd mobile
 ## Status
 
 Actively developed. The web and Android apps are functional and deployed, with a CI/CD pipeline (GitHub Actions) that runs a backend test suite before each deploy. Current focus is migrating the Android app to the new routine model (the web app now builds routines day-by-day — each day a rotating per-muscle pool or a fixed manual list with optional supersets — plus off-routine manual logging), then Play Store launch prep. See [ROADMAP.md](ROADMAP.md).
+
+A React frontend (`web-react/`) is also being built — an internationalized rewrite of the web app using Vite and `react-i18next` (UTF-8 end to end, a BCP 47 locale model with fallback chains, and a component library documented in Storybook). It is migrated screen by screen; the Jinja frontend above remains the live one until the rewrite reaches parity.
 
 ## License
 
