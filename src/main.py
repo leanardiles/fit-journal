@@ -55,13 +55,16 @@ app.mount("/static", StaticFiles(directory=STATIC_DIR), name="static")
 # Jinja2 templates
 templates = Jinja2Templates(directory=TEMPLATES_DIR)
 
+
 # ========== CORS CONFIGURATION ==========
 app.add_middleware(
     CORSMiddleware,
     allow_origins=[
         "https://app.fit-journal.com",   # production (web app)
-        "http://localhost:8000",          # local dev
-        "http://127.0.0.1:8000",          # local dev
+        "http://localhost:8000",          # local dev (backend origin)
+        "http://127.0.0.1:8000",          # local dev (backend origin)
+        "http://localhost:5173",          # local dev (React / Vite frontend)
+        "http://127.0.0.1:5173",          # local dev (React / Vite frontend)
     ],
     allow_credentials=True,
     allow_methods=["*"],
