@@ -15,6 +15,7 @@
     "emailLabel": "Email",
     "emailPlaceholder": "you@example.com",
     "passwordLabel": "Password",
+    "passwordPlaceholder": "••••••••••",
     "noAccount": "No account? Register"
   },
   "register": {

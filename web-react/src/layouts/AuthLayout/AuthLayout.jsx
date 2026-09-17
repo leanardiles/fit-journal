@@ -2,7 +2,7 @@ import { Outlet } from "react-router-dom";
 
 /**
  * Shared shell for the auth pages (login, register): a centered card area
- * on the app background. The specific page (login/register) renders via <Outlet />.
+ * on the app background. The specific page renders via <Outlet />.
  */
 export function AuthLayout() {
   return (

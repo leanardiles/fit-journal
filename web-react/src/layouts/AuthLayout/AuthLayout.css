@@ -1,0 +1,55 @@
+/* ============================================================
+   Auth pages (login / register) , notebook styling.
+   Structure inside the card:
+     .auth-header  , logo area, NO ruled lines, red separator beneath
+     .auth-body    , the form, ruled notepad lines behind it
+   Uses design tokens; --lh drives the rule spacing.
+   ============================================================ */
+
+/* Thicker outer border on the auth card. Applied to the Card via this class
+   on its inner wrapper's parent isn't possible, so we target a wrapper. */
+.auth-wrapper {
+  border: 2px solid var(--border);
+  border-radius: var(--radius);
+  overflow: hidden;            /* keep header/body corners tidy inside the border */
+  background: var(--bg);
+  width: 360px;
+  max-width: 90vw;
+}
+
+/* Header , logo only, no ruled lines, red separator at the bottom. */
+.auth-header {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: var(--space-lg);
+  border-bottom: 2px solid var(--red-border);
+}
+
+.auth-header img {
+  width: 80%;
+  max-width: 240px;
+}
+
+/* Body , the form area, with ruled notepad lines behind it.
+   line-height and the rule spacing both use --lh so text baselines track the
+   rules. Top padding is a whole --lh so the first line aligns to a rule. */
+.auth-body {
+  text-align: start;
+  padding: var(--lh) var(--space-lg) var(--space-lg);
+  line-height: var(--lh);
+  background-image: linear-gradient(var(--line-color) 1px, transparent 1px);
+  background-size: 100% var(--lh);
+  background-position: 0 0;
+}
+
+/* Stack the form controls on the --lh rhythm so they track the rules. */
+.auth-body .auth-form {
+  display: flex;
+  flex-direction: column;
+}
+
+/* Each row occupies rule-height multiples so fields sit on the lines. */
+.auth-body .auth-form > * {
+  margin-block: 0;
+}

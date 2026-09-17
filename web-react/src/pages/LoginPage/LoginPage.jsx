@@ -1,12 +1,11 @@
 import { useState } from "react";
-import { useToast } from "../../context/ToastContext";
 import { useTranslation } from "react-i18next";
 import { useNavigate, Link } from "react-router-dom";
-import { Card } from "../../components/Card/Card";
 import { Field } from "../../components/Field/Field";
 import { Button } from "../../components/Button/Button";
 import { apiPost } from "../../api/client";
 import logo from "../../assets/logo-and-name-dark.png";
+import "../../layouts/AuthLayout/AuthLayout.css";
 
 export function LoginPage() {
   const { t } = useTranslation();
@@ -21,17 +20,12 @@ export function LoginPage() {
     setError("");
     setLoading(true);
     try {
-      const res = await apiPost("/login", {
-        user_email: email,
-        user_password: password,
-      });
+      const res = await apiPost("/login", { user_email: email, user_password: password });
       const data = await res.json();
-
       if (!res.ok) {
         setError(data.detail || "Login failed");
         return;
       }
-
       localStorage.setItem("token", data.access_token);
       localStorage.setItem("user_id", data.user_id);
       navigate("/dashboard");
@@ -43,43 +37,39 @@ export function LoginPage() {
   };
 
   return (
-    <Card>
-      <div style={{ display: "flex", flexDirection: "column", gap: "var(--space-md)" }}>
-        <img
-          src={logo}
-          alt={t("appName")}
-          style={{ width: "85%", maxWidth: 280, alignSelf: "center" }}
-        />
-        <p style={{ color: "var(--muted)", fontFamily: "var(--font-body)", margin: 0 }}>
-          {t("login.title")}
-        </p>
-
-        <Field
-          labelKey="login.emailLabel"
-          placeholderKey="login.emailPlaceholder"
-          type="email"
-          value={email}
-          onChange={setEmail}
-        />
-        <Field
-          labelKey="login.passwordLabel"
-          type="password"
-          value={password}
-          onChange={setPassword}
-        />
-
-        {error && (
-          <p style={{ color: "var(--error)", fontFamily: "var(--font-body)", margin: 0 }}>
-            {error}
-          </p>
-        )}
-
-        <Button labelKey="login.button" variant="primary" onClick={handleSubmit} />
-
-        <Link to="/register" style={{ color: "var(--red)", textAlign: "center", fontSize: 14 }}>
-          {t("login.noAccount")}
-        </Link>
+    <div className="auth-wrapper">
+      <div className="auth-header">
+        <img src={logo} alt={t("appName")} />
       </div>
-    </Card>
+
+      <div className="auth-body">
+        <div className="auth-form">
+          <p style={{ color: "var(--text)", margin: 0 }}>{t("login.title")}</p>
+
+          <Field
+            labelKey="login.emailLabel"
+            placeholderKey="login.emailPlaceholder"
+            type="email"
+            value={email}
+            onChange={setEmail}
+          />
+          <Field
+            labelKey="login.passwordLabel"
+            placeholderKey="login.passwordPlaceholder"
+            type="password"
+            value={password}
+            onChange={setPassword}
+          />
+
+          {error && <p style={{ color: "var(--error)", margin: 0 }}>{error}</p>}
+
+          <Button labelKey="login.button" variant="primary" onClick={handleSubmit} />
+
+          <Link to="/register" style={{ color: "var(--text)", textAlign: "center", fontSize: 14 }}>
+            {t("login.noAccount")}
+          </Link>
+        </div>
+      </div>
+    </div>
   );
 }

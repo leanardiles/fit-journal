@@ -14,7 +14,7 @@ export function Field({ labelKey, placeholderKey, type = "text", value = "", onC
 
   return (
     <label style={{ display: "flex", flexDirection: "column", gap: "var(--space-xs)", fontFamily: "var(--font-body)" }}>
-      <span style={{ fontSize: 14, color: "var(--muted)" }}>{t(labelKey)}</span>
+      <span style={{ fontSize: 14, color: "var(--text)" }}>{t(labelKey)}</span>
       <input
         type={type}
         value={value}
