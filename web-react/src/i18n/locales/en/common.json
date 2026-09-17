@@ -1,0 +1,12 @@
+{
+  "appName": "FitJournal",
+  "nav": {
+    "dashboard": "Dashboard",
+    "exercises": "Exercises",
+    "logout": "Log out"
+  },
+  "login": {
+    "title": "Sign in and log your next workout",
+    "button": "Log in"
+  }
+}

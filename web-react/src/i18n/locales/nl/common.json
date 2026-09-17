@@ -1,0 +1,12 @@
+{
+  "appName": "FitJournal",
+  "nav": {
+    "dashboard": "Dashboard",
+    "exercises": "Oefeningen",
+    "logout": "Uitloggen"
+  },
+  "login": {
+    "title": "Log in en registreer je volgende training",
+    "button": "Inloggen"
+  }
+}

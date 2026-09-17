@@ -1,0 +1,12 @@
+{
+  "appName": "FitJournal",
+  "nav": {
+    "dashboard": "Panel",
+    "exercises": "Ejercicios",
+    "logout": "Cerrar sesión"
+  },
+  "login": {
+    "title": "Iniciá sesión y registrá tu próximo entrenamiento",
+    "button": "Iniciar sesión"
+  }
+}
