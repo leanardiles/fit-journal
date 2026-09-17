@@ -1,0 +1,72 @@
+/* ============================================================
+   FitJournal , Design Tokens (React)
+   Ported from the Jinja notebook.css design system so the React
+   frontend stays visually consistent with the live web app.
+
+   Tokens are SEMANTIC (named by role, not colour), so switching
+   dark <-> light is just re-declaring the same names under
+   `body.light`. Components reference var(--...) and never hardcode
+   colours, this is the design-system single-source-of-truth.
+   ============================================================ */
+
+@import url('https://fonts.googleapis.com/css2?family=Patrick+Hand&display=swap');
+
+:root {
+  /* Typography */
+  --font-body: 'Patrick Hand', cursive;
+  --fs: 17px;
+  --lh: 34px;
+
+  /* Surfaces / lines */
+  --bg:         #171717;
+  --line-color: #242424;
+  --border:     rgba(255, 255, 255, 0.06);
+
+  /* Text */
+  --text:  #cccccc;
+  --muted: #555555;
+
+  /* Brand accent (the notebook "red margin" family) */
+  --red:        rgba(192, 57, 43, 0.85);
+  --red-border: rgba(150, 30, 30, 0.40);
+  --margin:     rgba(150, 30, 30, 0.40);
+  --active-bg:  rgba(139, 32, 32, 0.09);
+
+  /* Feedback */
+  --success: rgba(100, 180, 100, 0.8);
+  --error:   rgba(192, 57, 43, 0.85);
+
+  /* Shape / spacing */
+  --radius: 10px;
+  --space-xs: 4px;
+  --space-sm: 8px;
+  --space-md: 16px;
+  --space-lg: 24px;
+}
+
+/* Light mode , same token names, light values.
+   Toggle by adding class="light" to <body>. Components don't change. */
+body.light {
+  --bg:         #f5f0e8;
+  --line-color: #79a5d2;
+  --border:     rgba(0, 0, 0, 0.08);
+
+  --text:  #2a2a2a;
+  --muted: #999999;
+
+  --red:        rgba(160, 40, 40, 0.85);
+  --red-border: rgba(150, 30, 30, 0.35);
+  --margin:     rgba(150, 30, 30, 0.30);
+  --active-bg:  rgba(139, 32, 32, 0.07);
+}
+
+/* Base */
+*, *::before, *::after { box-sizing: border-box; }
+
+body {
+  margin: 0;
+  font-family: var(--font-body);
+  font-size: var(--fs);
+  color: var(--text);
+  background: var(--bg);
+}

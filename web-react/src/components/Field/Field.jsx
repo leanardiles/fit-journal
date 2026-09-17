@@ -13,19 +13,22 @@ export function Field({ labelKey, placeholderKey, type = "text", value = "", onC
   const { t } = useTranslation();
 
   return (
-    <label style={{ display: "flex", flexDirection: "column", gap: 4, fontFamily: "sans-serif" }}>
-      <span style={{ fontSize: 13, color: "#555" }}>{t(labelKey)}</span>
+    <label style={{ display: "flex", flexDirection: "column", gap: "var(--space-xs)", fontFamily: "var(--font-body)" }}>
+      <span style={{ fontSize: 14, color: "var(--muted)" }}>{t(labelKey)}</span>
       <input
         type={type}
         value={value}
         placeholder={placeholderKey ? t(placeholderKey) : ""}
         onChange={(e) => onChange?.(e.target.value)}
         style={{
-          padding: "10px 12px",
-          borderRadius: 8,
-          border: "1.5px solid #ccc",
-          fontSize: 15,
-          fontFamily: "inherit",
+          padding: "8px 4px",
+          border: "none",
+          borderBottom: "1px solid var(--border)",
+          background: "transparent",
+          color: "var(--text)",
+          fontFamily: "var(--font-body)",
+          fontSize: "var(--fs)",
+          outline: "none",
         }}
       />
     </label>

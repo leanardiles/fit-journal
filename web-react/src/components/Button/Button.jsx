@@ -11,8 +11,8 @@ export function Button({ labelKey, onClick, variant = "primary" }) {
   const { t } = useTranslation();
 
   const styles = {
-    primary:   { background: "#FFEB3B", color: "#000", border: "none" },
-    secondary: { background: "transparent", color: "#FFEB3B", border: "1.5px solid #FFEB3B" },
+    primary:   { background: "var(--red)", color: "var(--text)", border: "none" },
+    secondary: { background: "transparent", color: "var(--text)", border: "1.5px solid var(--red-border)" },
   };
 
   return (
@@ -20,11 +20,11 @@ export function Button({ labelKey, onClick, variant = "primary" }) {
       onClick={onClick}
       style={{
         ...styles[variant],
-        padding: "10px 20px",
-        borderRadius: 8,
-        fontSize: 15,
+        padding: "8px 20px",
+        borderRadius: "var(--radius)",
+        fontSize: "var(--fs)",
+        fontFamily: "var(--font-body)",
         cursor: "pointer",
-        fontFamily: "sans-serif",
       }}
     >
       {t(labelKey)}
