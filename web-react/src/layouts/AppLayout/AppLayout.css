@@ -1,0 +1,100 @@
+/* ============================================================
+   AppLayout , the notebook shell for all app pages.
+   Ported from the Jinja notebook.css aesthetic:
+   - ruled horizontal lines (like lined paper)
+   - a vertical red "margin" line
+   - a red header separator
+   The ruled background lives on the SCROLLING content element with
+   background-attachment: local, so lines scroll WITH the text (real
+   notepad feel), unlike a fixed frame.
+   ============================================================ */
+
+.app-shell {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  background: var(--bg);
+  color: var(--text);
+  font-family: var(--font-body);
+}
+
+/* Header , transparent, with the red margin-coloured separator below it */
+.app-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 12px 24px;
+  border-bottom: 2px solid var(--red-border);
+  flex-shrink: 0;
+}
+
+.app-header .app-logo {
+  height: 44px;
+  width: auto;
+  opacity: 0.9;
+}
+
+.app-nav {
+  display: flex;
+  gap: 24px;
+}
+
+.app-nav a {
+  color: var(--text);
+  text-decoration: none;
+  font-size: var(--fs);
+  padding-bottom: 2px;
+  transition: color 0.12s;
+}
+
+.app-nav a:hover {
+  text-decoration: underline;
+  text-decoration-color: var(--red);
+  text-underline-offset: 4px;
+}
+
+/* Active nav link (react-router NavLink adds .active) */
+.app-nav a.active {
+  text-decoration: underline;
+  text-decoration-color: var(--red);
+  text-underline-offset: 4px;
+}
+
+.app-logout-btn {
+  background: transparent;
+  border: 1px solid var(--red-border);
+  color: var(--muted);
+  font-family: var(--font-body);
+  font-size: 14px;
+  padding: 4px 14px;
+  border-radius: var(--radius);
+  cursor: pointer;
+  transition: all 0.12s;
+}
+
+.app-logout-btn:hover {
+  color: var(--text);
+  border-color: var(--red);
+}
+
+/* Content , the scrolling area. Ruled lines + vertical margin line live
+   here and scroll WITH the content (background-attachment: local).
+   Text line-height matches the rule spacing so lines sit under the text. */
+.app-content {
+  flex: 1;
+  overflow-y: auto;
+  line-height: var(--lh);
+
+  background-image:
+    linear-gradient(90deg, var(--margin) 2px, transparent 2px),
+    linear-gradient(var(--line-color) 1px, transparent 1px);
+  background-size:
+    100% 100%,
+    100% var(--lh);
+  background-position:
+    64px 0,
+    0 0;
+  background-attachment: local, local;
+
+  padding: var(--lh) 48px calc(var(--lh) * 3) 96px;
+}
