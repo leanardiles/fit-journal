@@ -2,7 +2,10 @@
   "appName": "FitJournal",
   "nav": {
     "dashboard": "Dashboard",
+    "profile": "Profiel",
     "exercises": "Oefeningen",
+    "calendar": "Kalender",
+    "workout": "Workout",
     "logout": "Uitloggen"
   },
   "login": {

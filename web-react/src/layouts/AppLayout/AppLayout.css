@@ -60,6 +60,17 @@
   text-underline-offset: 4px;
 }
 
+.app-user {
+  display: flex;
+  align-items: center;
+  gap: 24px;
+}
+
+.app-user-name {
+  color: var(--text);
+  font-size: var(--fs);
+}
+
 .app-logout-btn {
   background: transparent;
   border: 1px solid var(--red-border);

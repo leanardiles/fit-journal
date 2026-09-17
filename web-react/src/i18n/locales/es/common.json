@@ -2,7 +2,11 @@
   "appName": "FitJournal",
   "nav": {
     "dashboard": "Panel",
+    "profile": "Perfil",
+    "routine": "Rutina",
     "exercises": "Ejercicios",
+    "calendar": "Calendario",
+    "workout": "Entrenamiento",
     "logout": "Cerrar sesión"
   },
   "login": {

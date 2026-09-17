@@ -5,9 +5,12 @@ import { Field } from "../../components/Field/Field";
 import { Button } from "../../components/Button/Button";
 import { apiPost } from "../../api/client";
 import logo from "../../assets/logo-and-name-dark.png";
+import { useNavigate } from "react-router-dom";
+
 
 export function LoginPage() {
   const { t } = useTranslation();
+  const navigate = useNavigate();
 
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -32,8 +35,11 @@ export function LoginPage() {
         return;
       }
 
-      // Success , for now just log it. Next steps: store the token, navigate.
-      console.log("Logged in!", data);
+      // Success , store the JWT so the app stays logged in across refreshes.
+      localStorage.setItem("token", data.access_token);
+      localStorage.setItem("user_id", data.user_id);
+      navigate("/dashboard");
+      // Next (after routing is set up): navigate to /dashboard
     } catch (e) {
       setError("Network error , is the backend running?");
     } finally {
