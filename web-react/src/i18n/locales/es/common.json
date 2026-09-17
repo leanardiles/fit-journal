@@ -7,6 +7,9 @@
   },
   "login": {
     "title": "Inicia sesión y registra tu próximo entrenamiento",
-    "button": "Iniciar sesión"
+    "button": "Iniciar sesión",
+    "emailLabel": "Correo electrónico",
+    "emailPlaceholder": "tu@ejemplo.com",
+    "passwordLabel": "Contraseña"
   }
 }

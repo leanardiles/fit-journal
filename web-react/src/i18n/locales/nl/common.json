@@ -7,6 +7,9 @@
   },
   "login": {
     "title": "Log in en registreer je volgende training",
-    "button": "Inloggen"
+    "button": "Inloggen",
+    "emailLabel": "Email",
+    "emailPlaceholder": "jij@voorbeeld.com",
+    "passwordLabel": "Wachtwoord"
   }
 }

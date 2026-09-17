@@ -7,6 +7,9 @@
   },
   "login": {
     "title": "Sign in and log your next workout",
-    "button": "Log in"
+    "button": "Log in",
+    "emailLabel": "Email",
+    "emailPlaceholder": "you@example.com",
+    "passwordLabel": "Password"
   }
 }
