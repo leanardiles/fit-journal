@@ -57,5 +57,41 @@
     "cancel": "Cancelar",
     "accountDeleted": "Tu cuenta ha sido eliminada.",
     "deleteError": "No se pudo eliminar tu cuenta."
+  },
+  "exercises": {
+    "title": "Tus ejercicios",
+    "empty": "No hay ejercicios para este grupo muscular.",
+    "colExercise": "Ejercicio",
+    "colWeight": "Peso",
+    "colLink": "Enlace",
+    "colDelete": "Eliminar",
+    "viewLink": "Ver",
+    "addButton": "Agregar ejercicio",
+    "newTitle": "Nuevo ejercicio",
+    "fieldName": "Nombre",
+    "fieldMuscle": "Grupo muscular",
+    "fieldWeight": "Peso",
+    "fieldLink": "Enlace",
+    "fieldNotes": "Notas",
+    "namePlaceholder": "Nombre del ejercicio",
+    "linkPlaceholder": "https://...",
+    "notesPlaceholder": "Notas...",
+    "save": "Guardar",
+    "cancel": "Cancelar",
+    "errorNameRequired": "El nombre del ejercicio es obligatorio.",
+    "errorDuplicate": "Ya existe un ejercicio con este nombre.",
+    "errorAddFailed": "No se pudo agregar el ejercicio. Intenta de nuevo.",
+    "deleteError": "No se pudo eliminar el ejercicio. Intenta de nuevo.",
+    "added": "Ejercicio agregado",
+    "deleted": "Ejercicio eliminado",
+    "confirmDelete": "Eliminar",
+    "cancelDelete": "Cancelar",
+    "deleteAria": "Eliminar ejercicio"
+  },
+  "muscles": {
+    "Abs": "Abdominales", "Back": "Espalda", "Biceps": "Bíceps",
+    "Calves": "Pantorrillas", "Chest": "Pecho", "Forearms": "Antebrazos",
+    "Glutes": "Glúteos", "Legs": "Piernas", "Shoulders": "Hombros",
+    "Triceps": "Tríceps"
   }
 }

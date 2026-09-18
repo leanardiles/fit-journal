@@ -1,0 +1,131 @@
+/* Exercises page , two columns: muscle tabs + filtered exercise table.
+   Ported from the Jinja page, written logical-first so it mirrors under
+   dir="rtl" with no extra work. */
+
+.ex-title {
+  font-family: var(--font-body);
+  color: var(--text);
+  font-size: 20px;
+  text-transform: uppercase;
+  letter-spacing: 1.5px;
+  line-height: var(--lh);
+  margin: 0;
+}
+
+.ex-layout {
+  display: flex;
+}
+
+/* Left column , vertical muscle tabs */
+.ex-muscle-col {
+  width: 120px;
+  min-width: 120px;
+  flex-shrink: 0;
+  display: flex;
+  flex-direction: column;
+  border-inline-end: 1px solid var(--border);
+  padding-inline-end: 8px;
+}
+
+.ex-muscle-tab {
+  display: flex;
+  align-items: flex-end;
+  height: var(--lh);
+  padding: 0 12px 5px;               /* horizontally symmetric */
+  background: transparent;
+  border: none;
+  border-inline-start: 2px solid transparent;
+  color: var(--muted);
+  font-family: var(--font-body);
+  font-size: var(--fs);
+  text-align: start;
+  cursor: pointer;
+  transition: color 0.1s;
+}
+
+.ex-muscle-tab:hover { color: var(--text); }
+
+.ex-muscle-tab.active {
+  color: var(--text);
+  border-inline-start-color: var(--red-border);
+}
+
+/* Right column , exercise table */
+.ex-exercise-col {
+  flex: 1;
+  min-width: 0;
+  padding-inline-start: 24px;
+}
+
+.ex-table {
+  width: auto;
+  border-collapse: collapse;
+}
+
+.ex-table th {
+  height: var(--lh);
+  text-align: start;
+  padding-bottom: 4px;
+  font-size: 11px;
+  color: var(--muted);
+  text-transform: uppercase;
+  letter-spacing: 1.2px;
+  font-weight: normal;
+  vertical-align: bottom;
+}
+
+.ex-th-name { min-width: 200px; }
+
+.ex-th-center,
+.ex-td-center {
+  text-align: center;
+  padding-inline-start: 24px;
+}
+
+.ex-table td {
+  height: var(--lh);
+  padding-bottom: 4px;
+  vertical-align: bottom;
+  font-size: var(--fs);
+  color: var(--text);
+  border: none;
+}
+
+.ex-link { color: var(--red); font-size: 13px; text-decoration: none; }
+.ex-link:hover { color: var(--text); }
+
+.ex-muted { color: var(--muted); }
+
+/* Header row , title + Add button */
+.ex-header {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  margin-bottom: var(--space-sm);
+}
+
+/* Delete control + inline confirm */
+.ex-delete-btn {
+  background: transparent;
+  border: none;
+  color: var(--muted);
+  font-size: 15px;
+  cursor: pointer;
+  padding: 0;
+}
+.ex-delete-btn:hover { color: var(--red); }
+
+.ex-confirm { display: inline-flex; gap: 8px; align-items: center; }
+
+.ex-confirm-yes,
+.ex-confirm-no {
+  background: transparent;
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  font-family: var(--font-body);
+  font-size: 13px;
+  padding: 2px 8px;
+  cursor: pointer;
+}
+.ex-confirm-yes { color: var(--red); border-color: var(--red-border); }
+.ex-confirm-no { color: var(--muted); }

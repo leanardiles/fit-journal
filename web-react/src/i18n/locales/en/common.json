@@ -57,5 +57,40 @@
     "cancel": "Cancel",
     "accountDeleted": "Your account has been deleted.",
     "deleteError": "Couldn't delete your account."
+  },
+  "exercises": {
+    "title": "Your exercises",
+    "empty": "No exercises found for this muscle group.",
+    "colExercise": "Exercise",
+    "colWeight": "Weight",
+    "colLink": "Link",
+    "colDelete": "Delete",
+    "viewLink": "View",
+    "addButton": "Add exercise",
+    "newTitle": "New exercise",
+    "fieldName": "Name",
+    "fieldMuscle": "Muscle group",
+    "fieldWeight": "Weight",
+    "fieldLink": "Link",
+    "fieldNotes": "Notes",
+    "namePlaceholder": "Exercise name",
+    "linkPlaceholder": "https://...",
+    "notesPlaceholder": "Any notes...",
+    "save": "Save",
+    "cancel": "Cancel",
+    "errorNameRequired": "Exercise name is required.",
+    "errorDuplicate": "An exercise with this name already exists.",
+    "errorAddFailed": "Couldn't add the exercise. Please try again.",
+    "deleteError": "Couldn't delete the exercise. Please try again.",
+    "added": "Exercise added",
+    "deleted": "Exercise deleted",
+    "confirmDelete": "Delete",
+    "cancelDelete": "Cancel",
+    "deleteAria": "Delete exercise"
+  },
+  "muscles": {
+    "Abs": "Abs", "Back": "Back", "Biceps": "Biceps", "Calves": "Calves",
+    "Chest": "Chest", "Forearms": "Forearms", "Glutes": "Glutes",
+    "Legs": "Legs", "Shoulders": "Shoulders", "Triceps": "Triceps"
   }
 }

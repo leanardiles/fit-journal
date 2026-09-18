@@ -56,5 +56,40 @@
     "cancel": "Annuleren",
     "accountDeleted": "Je account is verwijderd.",
     "deleteError": "Kon je account niet verwijderen."
+  },
+  "exercises": {
+    "title": "Jouw oefeningen",
+    "empty": "Geen oefeningen voor deze spiergroep.",
+    "colExercise": "Oefening",
+    "colWeight": "Gewicht",
+    "colLink": "Link",
+    "colDelete": "Verwijderen",
+    "viewLink": "Bekijken",
+    "addButton": "Oefening toevoegen",
+    "newTitle": "Nieuwe oefening",
+    "fieldName": "Naam",
+    "fieldMuscle": "Spiergroep",
+    "fieldWeight": "Gewicht",
+    "fieldLink": "Link",
+    "fieldNotes": "Notities",
+    "namePlaceholder": "Naam van de oefening",
+    "linkPlaceholder": "https://...",
+    "notesPlaceholder": "Notities...",
+    "save": "Opslaan",
+    "cancel": "Annuleren",
+    "errorNameRequired": "Naam van de oefening is verplicht.",
+    "errorDuplicate": "Er bestaat al een oefening met deze naam.",
+    "errorAddFailed": "Kon de oefening niet toevoegen. Probeer opnieuw.",
+    "deleteError": "Kon de oefening niet verwijderen. Probeer opnieuw.",
+    "added": "Oefening toegevoegd",
+    "deleted": "Oefening verwijderd",
+    "confirmDelete": "Verwijderen",
+    "cancelDelete": "Annuleren",
+    "deleteAria": "Oefening verwijderen"
+  },
+  "muscles": {
+    "Abs": "Buikspieren", "Back": "Rug", "Biceps": "Biceps", "Calves": "Kuiten",
+    "Chest": "Borst", "Forearms": "Onderarmen", "Glutes": "Bilspieren",
+    "Legs": "Benen", "Shoulders": "Schouders", "Triceps": "Triceps"
   }
 }
