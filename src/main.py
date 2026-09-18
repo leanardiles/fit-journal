@@ -349,6 +349,8 @@ def update_profile(user_id: int, profile: schemas.UserProfileUpdate, db: Session
         user.user_height = profile.user_height
     if profile.user_weight is not None:
         user.user_weight = profile.user_weight
+    if profile.user_locale is not None:
+        user.user_locale = profile.user_locale    
     
     db.commit()
     db.refresh(user)
