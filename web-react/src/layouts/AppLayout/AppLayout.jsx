@@ -2,6 +2,7 @@ import { NavLink, Outlet, useNavigate } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import { logout } from "../../api/auth";
 import { useUser } from "../../context/UserContext";
+import { LanguageSwitcher } from "../../components/LanguageSwitcher/LanguageSwitcher";
 import logo from "../../assets/logo-and-name-dark.png";
 import "./AppLayout.css";
 
@@ -16,7 +17,6 @@ export function AppLayout() {
   };
 
   const userName = user?.user_first_name || user?.user_email || "";
-
 
   return (
     <div className="app-shell">
@@ -33,6 +33,7 @@ export function AppLayout() {
         </nav>
 
         <div className="app-user">
+          <LanguageSwitcher />
           {userName && <span className="app-user-name">{userName}</span>}
           <button className="app-logout-btn" onClick={handleLogout}>{t("nav.logout")}</button>
         </div>

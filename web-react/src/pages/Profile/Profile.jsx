@@ -8,13 +8,8 @@ import { useToast } from "../../context/ToastContext";
 import { useUser } from "../../context/UserContext";
 import { Field } from "../../components/Field/Field";
 import { Button } from "../../components/Button/Button";
+import { LOCALE_OPTIONS } from "../../i18n/locales";
 
-const LOCALE_OPTIONS = [
-  { value: "en",    label: "English" },
-  { value: "es",    label: "Español (Latinoamérica)" },
-  { value: "es-AR", label: "Español (Argentina)" },
-  { value: "nl",    label: "Nederlands" },
-];
 
 const KG_PER_LB = 0.45359237;
 const CM_PER_IN = 2.54;

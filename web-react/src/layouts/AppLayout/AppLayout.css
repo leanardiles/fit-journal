@@ -117,3 +117,27 @@
     calc(100% - 64px) 0,   /* margin line, now 64px from the right */
     0 0;
 }  
+
+/* Header language switcher , blends into the header, symmetric padding
+   so it needs no RTL handling. */
+.app-lang-select {
+  background: transparent;
+  border: 1px solid var(--border);
+  color: var(--muted);
+  font-family: var(--font-body);
+  font-size: 14px;
+  padding: 4px 8px;
+  border-radius: var(--radius);
+  cursor: pointer;
+  transition: all 0.12s;
+}
+
+.app-lang-select:hover {
+  color: var(--text);
+  border-color: var(--red-border);
+}
+
+.app-lang-select option {
+  background: var(--bg);
+  color: var(--text);
+}
