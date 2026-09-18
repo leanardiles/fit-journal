@@ -81,6 +81,7 @@
     "errorDuplicate": "Er bestaat al een oefening met deze naam.",
     "errorAddFailed": "Kon de oefening niet toevoegen. Probeer opnieuw.",
     "deleteError": "Kon de oefening niet verwijderen. Probeer opnieuw.",
+    "weightError": "Kon het gewicht niet opslaan. Probeer opnieuw.",
     "added": "Oefening toegevoegd",
     "deleted": "Oefening verwijderd",
     "confirmDelete": "Verwijderen",

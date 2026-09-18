@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import { useTranslation } from "react-i18next";
-import { apiGet, apiPost, apiDelete } from "../../api/client";
+import { useSearchParams } from "react-router-dom";
+import { apiGet, apiPost, apiPut, apiDelete } from "../../api/client";
 import { useUser } from "../../context/UserContext";
 import { useToast } from "../../context/ToastContext";
 import { MUSCLE_GROUPS } from "../../constants/muscles";
@@ -8,10 +9,26 @@ import { Field } from "../../components/Field/Field";
 import { Button } from "../../components/Button/Button";
 import { Select } from "../../components/Select/Select";
 import { Modal } from "../../components/Modal/Modal";
-import { useSearchParams } from "react-router-dom";
 import "./Exercises.css";
 
 const KG_PER_LB = 0.45359237;
+
+// A stored (kg) weight shown in the user's unit; "" for unset/zero.
+function kgToDisplay(kg, isImperial) {
+  if (kg == null || Number(kg) === 0) return "";
+  if (isImperial) {
+    // Round to 1 decimal so half-pound values (17.5) survive the kg round-trip
+    // instead of snapping to a whole number.
+    return String(Math.round((Number(kg) / KG_PER_LB) * 10) / 10);
+  }
+  return String(Number(kg)); // metric: show the exact stored value
+}
+// A displayed value (user's unit) back to canonical kg.
+function displayToKg(display, isImperial) {
+  const num = String(display).trim() === "" ? 0 : Number(display);
+  if (Number.isNaN(num)) return 0;
+  return isImperial ? Number((num * KG_PER_LB).toFixed(2)) : num;
+}
 
 export function Exercises() {
   const { t } = useTranslation();
@@ -23,14 +40,12 @@ export function Exercises() {
   const [exercises, setExercises] = useState([]);
   const [loading, setLoading] = useState(true);
 
-    // Selected muscle lives in the URL (?muscle=Chest) so it survives refresh,
-  // is bookmarkable/shareable, and works with browser back/forward.
+  // Selected muscle lives in the URL (?muscle=Chest): refresh-safe, shareable.
   const [searchParams, setSearchParams] = useSearchParams();
   const muscleParam = searchParams.get("muscle");
   const selectedMuscle = MUSCLE_GROUPS.includes(muscleParam) ? muscleParam : "Legs";
   const selectMuscle = (m) => setSearchParams({ muscle: m });
 
-  // Add-exercise modal
   const [showAddModal, setShowAddModal] = useState(false);
   const [newName, setNewName] = useState("");
   const [newMuscle, setNewMuscle] = useState("Legs");
@@ -40,7 +55,6 @@ export function Exercises() {
   const [addError, setAddError] = useState("");
   const [adding, setAdding] = useState(false);
 
-  // Delete confirmation (which row is awaiting confirm)
   const [confirmingDeleteId, setConfirmingDeleteId] = useState(null);
 
   useEffect(() => {
@@ -55,12 +69,6 @@ export function Exercises() {
     (ex) => ex.exercise_muscle_group === selectedMuscle
   );
 
-  const displayWeight = (kg) => {
-    if (kg == null || kg === "" || Number(kg) === 0) return "—";
-    const value = isImperial ? Math.round(Number(kg) / KG_PER_LB) : Number(kg);
-    return `${value} ${weightUnit}`;
-  };
-
   const openAdd = () => {
     setNewName("");
     setNewMuscle(selectedMuscle);
@@ -74,24 +82,13 @@ export function Exercises() {
   const handleAdd = async () => {
     setAddError("");
     const name = newName.trim();
-    if (!name) {
-      setAddError(t("exercises.errorNameRequired"));
-      return;
-    }
+    if (!name) { setAddError(t("exercises.errorNameRequired")); return; }
     const dup = exercises.some(
       (ex) => ex.exercise_name.trim().toLowerCase() === name.toLowerCase()
     );
-    if (dup) {
-      setAddError(t("exercises.errorDuplicate"));
-      return;
-    }
+    if (dup) { setAddError(t("exercises.errorDuplicate")); return; }
 
-    const weightKg =
-      newWeight === ""
-        ? null
-        : isImperial
-        ? Math.round(Number(newWeight) * KG_PER_LB)
-        : Number(newWeight);
+    const weightKg = newWeight === "" ? null : displayToKg(newWeight, isImperial);
 
     setAdding(true);
     try {
@@ -103,10 +100,7 @@ export function Exercises() {
         exercise_link: newLink.trim() || null,
         comments: newNotes.trim() || null,
       });
-      if (!res.ok) {
-        setAddError(t("exercises.errorAddFailed"));
-        return;
-      }
+      if (!res.ok) { setAddError(t("exercises.errorAddFailed")); return; }
       const created = await res.json();
       setExercises((prev) => [...prev, created]);
       selectMuscle(newMuscle);
@@ -119,14 +113,31 @@ export function Exercises() {
     }
   };
 
+  // Immediate save: optimistic update, revert that row on failure.
+  const saveWeight = async (id, kg) => {
+    const before = exercises.find((ex) => ex.exercise_id === id)?.exercise_user_current_weight ?? null;
+    setExercises((prev) => prev.map((ex) =>
+      ex.exercise_id === id ? { ...ex, exercise_user_current_weight: kg } : ex
+    ));
+    try {
+      const userId = localStorage.getItem("user_id");
+      const res = await apiPut(`/exercises/${id}?user_id=${userId}`, {
+        exercise_user_current_weight: kg,
+      });
+      if (!res.ok) throw new Error();
+    } catch {
+      setExercises((prev) => prev.map((ex) =>
+        ex.exercise_id === id ? { ...ex, exercise_user_current_weight: before } : ex
+      ));
+      showToast(t("exercises.weightError"), "error");
+    }
+  };
+
   const confirmDelete = async (id) => {
     try {
       const userId = localStorage.getItem("user_id");
       const res = await apiDelete(`/exercises/${id}?user_id=${userId}`);
-      if (!res.ok) {
-        showToast(t("exercises.deleteError"), "error");
-        return;
-      }
+      if (!res.ok) { showToast(t("exercises.deleteError"), "error"); return; }
       setExercises((prev) => prev.filter((ex) => ex.exercise_id !== id));
       showToast(t("exercises.deleted"), "success");
     } catch {
@@ -175,9 +186,7 @@ export function Exercises() {
               <thead>
                 <tr>
                   <th className="ex-th-name">{t("exercises.colExercise")}</th>
-                  <th className="ex-th-center">
-                    {t("exercises.colWeight")} ({weightUnit})
-                  </th>
+                  <th className="ex-th-center">{t("exercises.colWeight")} ({weightUnit})</th>
                   <th className="ex-th-center">{t("exercises.colLink")}</th>
                   <th className="ex-th-center">{t("exercises.colDelete")}</th>
                 </tr>
@@ -187,16 +196,16 @@ export function Exercises() {
                   <tr key={ex.exercise_id}>
                     <td>{ex.exercise_name}</td>
                     <td className="ex-td-center">
-                      {displayWeight(ex.exercise_user_current_weight)}
+                      <WeightCell
+                        exercise={ex}
+                        isImperial={isImperial}
+                        ariaLabel={`${t("exercises.colWeight")} (${weightUnit})`}
+                        onSave={saveWeight}
+                      />
                     </td>
                     <td className="ex-td-center">
                       {ex.exercise_link ? (
-                        <a
-                          href={ex.exercise_link}
-                          target="_blank"
-                          rel="noreferrer"
-                          className="ex-link"
-                        >
+                        <a href={ex.exercise_link} target="_blank" rel="noreferrer" className="ex-link">
                           {t("exercises.viewLink")}
                         </a>
                       ) : (
@@ -214,12 +223,8 @@ export function Exercises() {
                           </button>
                         </span>
                       ) : (
-                        <button
-                          className="ex-delete-btn"
-                          onClick={() => setConfirmingDeleteId(ex.exercise_id)}
-                          aria-label={t("exercises.deleteAria")}
-                          title={t("exercises.deleteAria")}
-                        >
+                        <button className="ex-delete-btn" onClick={() => setConfirmingDeleteId(ex.exercise_id)}
+                          aria-label={t("exercises.deleteAria")} title={t("exercises.deleteAria")}>
                           🗑
                         </button>
                       )}
@@ -235,25 +240,16 @@ export function Exercises() {
       <Modal open={showAddModal} onClose={() => setShowAddModal(false)} titleKey="exercises.newTitle">
         <div style={{ display: "flex", flexDirection: "column", gap: "var(--space-md)" }}>
           <Field labelKey="exercises.fieldName" placeholderKey="exercises.namePlaceholder" value={newName} onChange={setNewName} />
-
-          <Select
-            labelKey="exercises.fieldMuscle"
-            value={newMuscle}
-            onChange={setNewMuscle}
-            options={MUSCLE_GROUPS.map((m) => ({ value: m, label: t(`muscles.${m}`) }))}
-          />
-
+          <Select labelKey="exercises.fieldMuscle" value={newMuscle} onChange={setNewMuscle}
+            options={MUSCLE_GROUPS.map((m) => ({ value: m, label: t(`muscles.${m}`) }))} />
           <label style={rowStyle}>
             <span style={labelStyle}>{t("exercises.fieldWeight")} ({weightUnit})</span>
             <input style={inputStyle} type="number" value={newWeight}
               onChange={(e) => setNewWeight(e.target.value)} placeholder="0" />
           </label>
-
           <Field labelKey="exercises.fieldLink" placeholderKey="exercises.linkPlaceholder" value={newLink} onChange={setNewLink} />
           <Field labelKey="exercises.fieldNotes" placeholderKey="exercises.notesPlaceholder" value={newNotes} onChange={setNewNotes} />
-
           {addError && <p style={{ color: "var(--error)", margin: 0, fontFamily: "var(--font-body)" }}>{addError}</p>}
-
           <div style={{ display: "flex", gap: 12 }}>
             <Button labelKey="exercises.save" variant="primary" onClick={handleAdd} />
             <Button labelKey="exercises.cancel" variant="secondary" onClick={() => setShowAddModal(false)} />
@@ -261,5 +257,36 @@ export function Exercises() {
         </div>
       </Modal>
     </div>
+  );
+}
+
+// Inline, edit-in-place weight input. Shows the stored kg in the user's unit,
+// converts back to kg, and saves on blur / Enter only when the value changed.
+function WeightCell({ exercise, isImperial, ariaLabel, onSave }) {
+  const kg = exercise.exercise_user_current_weight;
+  const display = kgToDisplay(kg, isImperial);
+  const [value, setValue] = useState(display);
+
+  // Re-sync if the stored value changes elsewhere (e.g. after a save/revert).
+  useEffect(() => { setValue(display); }, [display]);
+
+  const commit = () => {
+    const kgToStore = displayToKg(value, isImperial);
+    const current = kg == null ? 0 : Number(kg);
+    if (kgToStore !== current) onSave(exercise.exercise_id, kgToStore);
+  };
+
+  return (
+    <input
+      className="ex-weight-input"
+      type="number"
+      inputMode="decimal"
+      value={value}
+      aria-label={ariaLabel}
+      placeholder="0"
+      onChange={(e) => setValue(e.target.value)}
+      onBlur={commit}
+      onKeyDown={(e) => { if (e.key === "Enter") e.currentTarget.blur(); }}
+    />
   );
 }

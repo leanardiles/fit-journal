@@ -82,6 +82,7 @@
     "errorDuplicate": "Ya existe un ejercicio con este nombre.",
     "errorAddFailed": "No se pudo agregar el ejercicio. Intenta de nuevo.",
     "deleteError": "No se pudo eliminar el ejercicio. Intenta de nuevo.",
+    "weightError": "No se pudo guardar el peso. Intenta de nuevo.",
     "added": "Ejercicio agregado",
     "deleted": "Ejercicio eliminado",
     "confirmDelete": "Eliminar",

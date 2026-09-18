@@ -82,6 +82,7 @@
     "errorDuplicate": "An exercise with this name already exists.",
     "errorAddFailed": "Couldn't add the exercise. Please try again.",
     "deleteError": "Couldn't delete the exercise. Please try again.",
+    "weightError": "Couldn't save the weight. Please try again.",
     "added": "Exercise added",
     "deleted": "Exercise deleted",
     "confirmDelete": "Delete",

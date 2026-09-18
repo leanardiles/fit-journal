@@ -10,5 +10,8 @@
   },
   "profile": {
     "confirmPassword": "Introducí tu contraseña para confirmar"
-  }  
+  },
+  "exercises": {
+    "weightError": "No se pudo guardar el peso. Intentá de nuevo."
+  }    
 }
