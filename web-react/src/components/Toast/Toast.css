@@ -4,7 +4,7 @@
 .toast {
   position: fixed;
   bottom: 24px;
-  right: 24px;
+  inset-inline-end: 24px;
   z-index: 1000;
   max-width: 320px;
   padding: 12px 18px;

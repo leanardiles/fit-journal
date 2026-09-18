@@ -107,5 +107,13 @@
     0 0;
   background-attachment: local, local;
 
-  padding: var(--lh) 48px calc(var(--lh) * 3) 96px;
+  padding-block: var(--lh) calc(var(--lh) * 3);   /* top, bottom */
+  padding-inline: 96px 48px;                        /* start, end */
 }
+
+/* background-position has no logical equivalent, so flip the margin line to the right edge explicitly for RTL. */
+[dir="rtl"] .app-content {
+  background-position:
+    calc(100% - 64px) 0,   /* margin line, now 64px from the right */
+    0 0;
+}  
