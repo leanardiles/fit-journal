@@ -1,0 +1,32 @@
+.sticky-note {
+  position: relative;
+  background: #f4d93e;               /* note paper (yellow, matches mobile) */
+  border-radius: 3px;
+  padding: 20px;
+  box-shadow: 0 8px 18px rgba(0, 0, 0, 0.4);
+
+  /* Rebind tokens locally so token-based content reads on the yellow note. */
+  --text: #1a1a1a;
+  --muted: #5c4a1e;
+  --red: #8f2b23;
+  --border: rgba(0, 0, 0, 0.18);
+  --red-border: rgba(143, 43, 35, 0.5);
+  --active-bg: rgba(0, 0, 0, 0.08);
+
+  color: var(--text);
+  font-family: var(--font-body);
+}
+
+/* Masking-tape strip at the top (centered, so it's RTL-safe) */
+.sticky-note::before {
+  content: "";
+  position: absolute;
+  top: -9px;
+  left: 50%;
+  transform: translateX(-50%) rotate(-2deg);
+  width: 60px;
+  height: 18px;
+  background: rgba(255, 255, 255, 0.35);
+  border: 1px solid rgba(255, 255, 255, 0.25);
+  pointer-events: none;
+}

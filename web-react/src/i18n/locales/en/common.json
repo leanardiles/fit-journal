@@ -58,6 +58,24 @@
     "accountDeleted": "Your account has been deleted.",
     "deleteError": "Couldn't delete your account."
   },
+  "dashboard": {
+    "title": "Dashboard",
+    "quickStats": "Quick stats",
+    "thisWeek": "This week",
+    "currentDay": "Current day",
+    "day": "Day {{day}}",
+    "currentRoutine": "Your current routine",
+    "noRoutine": "No routine set up yet.",
+    "createRoutine": "Create routine",
+    "editRoutine": "Edit routine",
+    "today": "today",
+    "restDay": "Rest day",
+    "setsPerMuscle": "Sets per muscle",
+    "last7Days": "Last 7 days",
+    "noSets": "No sets logged in this range.",
+    "sets_one": "{{count}} set",
+    "sets_other": "{{count}} sets"
+  },
   "exercises": {
     "title": "Your exercises",
     "empty": "No exercises found for this muscle group.",

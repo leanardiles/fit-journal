@@ -1,0 +1,59 @@
+.dash-title {
+  font-family: var(--font-body);
+  color: var(--text);
+  font-size: 20px;
+  text-transform: uppercase;
+  letter-spacing: 1.5px;
+  margin: 0 0 var(--space-md);
+}
+
+.dashboard-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+  gap: 32px;
+  align-items: start;
+}
+
+/* Note internals inherit the note's locally-rebound tokens (--text/--red/etc.) */
+.note-heading {
+  font-size: 18px;
+  font-weight: bold;
+  margin-bottom: 10px;
+  color: var(--text);
+}
+
+.note-line { margin-bottom: 4px; color: var(--text); }
+.note-value { color: var(--red); }
+
+.note-day { margin-bottom: 4px; color: var(--text); }
+.note-day.today .note-day-label {
+  text-decoration: underline;
+  text-decoration-color: var(--red);
+  text-underline-offset: 3px;
+}
+.note-day-muscles { color: var(--text); }
+.note-today {
+  margin-inline-start: 6px;
+  font-size: 12px;
+  color: var(--red);
+}
+
+.note-link {
+  color: var(--red);
+  text-decoration: underline;
+  font-size: 14px;
+}
+
+.muscle-rows { margin-top: 10px; }
+.muscle-row {
+  display: flex;
+  justify-content: space-between;
+  gap: var(--space-md);
+  margin-bottom: 4px;
+  color: var(--text);
+}
+.muscle-name { color: var(--text); }
+.muscle-sets {
+  color: var(--red);
+  font-variant-numeric: tabular-nums;
+}

@@ -58,6 +58,24 @@
     "accountDeleted": "Tu cuenta ha sido eliminada.",
     "deleteError": "No se pudo eliminar tu cuenta."
   },
+  "dashboard": {
+    "title": "Panel",
+    "quickStats": "Estadísticas rápidas",
+    "thisWeek": "Esta semana",
+    "currentDay": "Día actual",
+    "day": "Día {{day}}",
+    "currentRoutine": "Tu rutina actual",
+    "noRoutine": "Todavía no configuraste una rutina.",
+    "createRoutine": "Crear rutina",
+    "editRoutine": "Editar rutina",
+    "today": "hoy",
+    "restDay": "Día de descanso",
+    "setsPerMuscle": "Series por músculo",
+    "last7Days": "Últimos 7 días",
+    "noSets": "No hay series registradas en este período.",
+    "sets_one": "{{count}} serie",
+    "sets_other": "{{count}} series"
+  },
   "exercises": {
     "title": "Tus ejercicios",
     "empty": "No hay ejercicios para este grupo muscular.",

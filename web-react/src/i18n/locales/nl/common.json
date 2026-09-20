@@ -57,6 +57,24 @@
     "accountDeleted": "Je account is verwijderd.",
     "deleteError": "Kon je account niet verwijderen."
   },
+  "dashboard": {
+    "title": "Dashboard",
+    "quickStats": "Snelle statistieken",
+    "thisWeek": "Deze week",
+    "currentDay": "Huidige dag",
+    "day": "Dag {{day}}",
+    "currentRoutine": "Je huidige routine",
+    "noRoutine": "Nog geen routine ingesteld.",
+    "createRoutine": "Routine aanmaken",
+    "editRoutine": "Routine bewerken",
+    "today": "vandaag",
+    "restDay": "Rustdag",
+    "setsPerMuscle": "Sets per spier",
+    "last7Days": "Laatste 7 dagen",
+    "noSets": "Geen sets gelogd in deze periode.",
+    "sets_one": "{{count}} set",
+    "sets_other": "{{count}} sets"
+  },
   "exercises": {
     "title": "Jouw oefeningen",
     "empty": "Geen oefeningen voor deze spiergroep.",
