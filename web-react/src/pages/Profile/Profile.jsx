@@ -6,10 +6,12 @@ import { apiGet, apiPut, apiDelete } from "../../api/client";
 import { logout } from "../../api/auth";
 import { useToast } from "../../context/ToastContext";
 import { useUser } from "../../context/UserContext";
+import { LOCALE_OPTIONS } from "../../i18n/locales";
+import { TIMEZONE_GROUPS } from "../../constants/timezones";
 import { Field } from "../../components/Field/Field";
 import { Button } from "../../components/Button/Button";
-import { LOCALE_OPTIONS } from "../../i18n/locales";
-
+import { Select } from "../../components/Select/Select";
+import { Toggle } from "../../components/Toggle/Toggle";
 
 const KG_PER_LB = 0.45359237;
 const CM_PER_IN = 2.54;
@@ -48,7 +50,6 @@ export function Profile() {
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
 
-  // Delete-account (danger zone) state
   const [confirmingDelete, setConfirmingDelete] = useState(false);
   const [deletePassword, setDeletePassword] = useState("");
   const [deleteError, setDeleteError] = useState("");
@@ -80,6 +81,17 @@ export function Profile() {
   const handleLocaleChange = (value) => { update("user_locale", value); i18n.changeLanguage(value); };
   const isImperial = form.user_unit_preference === "imperial";
   const { feet, inches } = cmToFeetInches(heightCm);
+
+    // Timezone options: grouped by region with translated headers. If the user's
+  // stored zone isn't in our list, keep it selectable so saving never silently
+  // changes it.
+  const allZoneValues = TIMEZONE_GROUPS.flatMap((g) => g.zones.map((z) => z.value));
+  const timezoneOptions = [
+    ...(form.user_timezone && !allZoneValues.includes(form.user_timezone)
+      ? [{ value: form.user_timezone, label: form.user_timezone }]
+      : []),
+    ...TIMEZONE_GROUPS.map((g) => ({ label: t(g.labelKey), options: g.zones })),
+  ];
 
   const handleSave = async () => {
     setSaving(true);
@@ -115,18 +127,16 @@ export function Profile() {
       const userId = localStorage.getItem("user_id");
       const res = await apiDelete(`/account/${userId}`, { user_password: deletePassword });
       if (!res.ok) {
-        // Validation error (e.g. wrong password) , show inline so it persists
-        // while the user re-types, consistent with login/register.
         let detail = t("profile.deleteError");
         try { const d = await res.json(); detail = d.detail || detail; } catch { /* no body */ }
         setDeleteError(detail);
         return;
       }
       logout();
-      showToast(t("profile.accountDeleted"), "success");   // success = confirmation = toast
+      showToast(t("profile.accountDeleted"), "success");
       navigate("/login");
     } catch (e) {
-      showToast(t("profile.deleteError"), "error");         // system/network error = toast
+      showToast(t("profile.deleteError"), "error");
     } finally {
       setDeleting(false);
     }
@@ -134,12 +144,11 @@ export function Profile() {
 
   if (loading) return <p>{t("common.loading")}</p>;
 
-  const selectStyle = {
+  const inputStyle = {
     padding: "8px 4px", border: "none", borderBottom: "1px solid var(--border)",
     background: "transparent", color: "var(--text)", fontFamily: "var(--font-body)",
     fontSize: "var(--fs)", outline: "none",
   };
-  const inputStyle = { ...selectStyle };
   const labelStyle = { fontSize: 14, color: "var(--muted)", fontFamily: "var(--font-body)" };
   const rowStyle = { display: "flex", flexDirection: "column", gap: "var(--space-xs)" };
 
@@ -155,23 +164,26 @@ export function Profile() {
       <Field labelKey="profile.name" value={form.user_first_name} onChange={(v) => update("user_first_name", v)} />
       <Field labelKey="profile.age" type="number" value={String(form.user_age)} onChange={(v) => update("user_age", v)} />
 
-      <label style={rowStyle}>
-        <span style={labelStyle}>{t("profile.sex")}</span>
-        <select style={selectStyle} value={form.user_sex} onChange={(e) => update("user_sex", e.target.value)}>
-          <option value="">--</option>
-          <option value="M">{t("profile.sexMale")}</option>
-          <option value="W">{t("profile.sexFemale")}</option>
-          <option value="NB">{t("profile.sexNonBinary")}</option>
-        </select>
-      </label>
+      <Toggle
+        labelKey="profile.sex"
+        value={form.user_sex}
+        onChange={(v) => update("user_sex", v)}
+        options={[
+          { value: "M", label: t("profile.sexMale") },
+          { value: "W", label: t("profile.sexFemale") },
+          { value: "NB", label: t("profile.sexNonBinary") },
+        ]}
+      />
 
-      <label style={rowStyle}>
-        <span style={labelStyle}>{t("profile.units")}</span>
-        <select style={selectStyle} value={form.user_unit_preference} onChange={(e) => update("user_unit_preference", e.target.value)}>
-          <option value="metric">{t("profile.metric")}</option>
-          <option value="imperial">{t("profile.imperial")}</option>
-        </select>
-      </label>
+      <Toggle
+        labelKey="profile.units"
+        value={form.user_unit_preference}
+        onChange={(v) => update("user_unit_preference", v)}
+        options={[
+          { value: "metric", label: t("profile.metric") },
+          { value: "imperial", label: t("profile.imperial") },
+        ]}
+      />
 
       <label style={rowStyle}>
         <span style={labelStyle}>{t("profile.height")}</span>
@@ -199,16 +211,19 @@ export function Profile() {
         )}
       </label>
 
-      <Field labelKey="profile.timezone" value={form.user_timezone} onChange={(v) => update("user_timezone", v)} />
+      <Select
+        labelKey="profile.timezone"
+        value={form.user_timezone}
+        onChange={(v) => update("user_timezone", v)}
+        options={timezoneOptions}
+      />
 
-      <label style={rowStyle}>
-        <span style={labelStyle}>{t("profile.language")}</span>
-        <select style={selectStyle} value={form.user_locale} onChange={(e) => handleLocaleChange(e.target.value)}>
-          {LOCALE_OPTIONS.map((opt) => (
-            <option key={opt.value} value={opt.value}>{opt.label}</option>
-          ))}
-        </select>
-      </label>
+      <Select
+        labelKey="profile.language"
+        value={form.user_locale}
+        onChange={handleLocaleChange}
+        options={LOCALE_OPTIONS}
+      />
 
       <Button labelKey="profile.save" variant="primary" onClick={handleSave} />
 

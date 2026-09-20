@@ -93,5 +93,11 @@
     "Abs": "Abs", "Back": "Back", "Biceps": "Biceps", "Calves": "Calves",
     "Chest": "Chest", "Forearms": "Forearms", "Glutes": "Glutes",
     "Legs": "Legs", "Shoulders": "Shoulders", "Triceps": "Triceps"
+  },
+  "timezones": {
+    "americas": "Americas",
+    "europe": "Europe",
+    "asiaPacific": "Asia / Pacific",
+    "africa": "Africa"
   }
 }

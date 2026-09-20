@@ -94,5 +94,11 @@
     "Calves": "Pantorrillas", "Chest": "Pecho", "Forearms": "Antebrazos",
     "Glutes": "Glúteos", "Legs": "Piernas", "Shoulders": "Hombros",
     "Triceps": "Tríceps"
+  },
+  "timezones": {
+    "americas": "América",
+    "europe": "Europa",
+    "asiaPacific": "Asia / Pacífico",
+    "africa": "África"
   }
 }

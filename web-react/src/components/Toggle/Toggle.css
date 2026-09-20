@@ -1,0 +1,36 @@
+.toggle-field {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-xs);
+  font-family: var(--font-body);
+}
+
+.toggle-label {
+  font-size: 14px;
+  color: var(--muted);
+}
+
+.toggle-group {
+  display: flex;
+  gap: 8px;
+}
+
+.toggle-chip {
+  background: transparent;
+  border: 1px solid var(--border);
+  color: var(--muted);
+  font-family: var(--font-body);
+  font-size: 14px;
+  padding: 4px 14px;
+  border-radius: var(--radius);
+  cursor: pointer;
+  transition: all 0.12s;
+}
+
+.toggle-chip:hover { color: var(--text); }
+
+.toggle-chip.selected {
+  border-color: var(--red-border);
+  color: var(--text);
+  background: var(--active-bg, rgba(150, 30, 30, 0.12));
+}

@@ -92,5 +92,11 @@
     "Abs": "Buikspieren", "Back": "Rug", "Biceps": "Biceps", "Calves": "Kuiten",
     "Chest": "Borst", "Forearms": "Onderarmen", "Glutes": "Bilspieren",
     "Legs": "Benen", "Shoulders": "Schouders", "Triceps": "Triceps"
-  }
+  },
+  "timezones": {
+    "americas": "Amerika",
+    "europe": "Europa",
+    "asiaPacific": "Azië / Pacific",
+    "africa": "Afrika"
+}
 }
