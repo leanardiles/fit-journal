@@ -117,5 +117,28 @@
     "europe": "Europe",
     "asiaPacific": "Asia / Pacific",
     "africa": "Africa"
+  },
+  "calendar": {
+    "title": "Your calendar",
+    "allDays": "All days",
+    "day": "Day {{day}}",
+    "currentDay": "current day",
+    "showingAll": "Showing all days",
+    "showing": "Showing: {{days}}",
+    "exercise": "Exercise",
+    "noRoutine": "No routine set up yet.",
+    "createRoutine": "Create routine",
+    "noExercises": "No exercises for the selected day(s). Add some on the Exercises page.",
+    "noExercisesAll": "No exercises yet. Add some on the Exercises page.",
+    "select": "Select",
+    "autoSelect": "Automatic selection",
+    "clearSelection": "Clear selection",
+    "lockedHint": "Manual day: exercises are fixed by your routine",
+    "generated_one": "Next workout generated: {{count}} exercise selected.",
+    "generated_other": "Next workout generated: {{count}} exercises selected.",
+    "cleared": "Selections cleared.",
+    "toggleError": "Could not update the selection.",
+    "generateError": "Could not generate the next workout.",
+    "clearError": "Could not clear the selections."
   }
 }

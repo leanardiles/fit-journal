@@ -13,5 +13,9 @@
   },
   "exercises": {
     "weightError": "No se pudo guardar el peso. Intentá de nuevo."
+  },
+    "calendar": {
+      "noExercises": "No hay ejercicios para el día seleccionado. Agregá algunos en la página de Ejercicios.",
+      "noExercisesAll": "Todavía no hay ejercicios. Agregá algunos en la página de Ejercicios."
   }    
 }

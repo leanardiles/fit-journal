@@ -118,5 +118,28 @@
     "europe": "Europa",
     "asiaPacific": "Asia / Pacífico",
     "africa": "África"
+  },
+  "calendar": {
+    "title": "Tu calendario",
+    "allDays": "Todos los días",
+    "day": "Día {{day}}",
+    "currentDay": "día actual",
+    "showingAll": "Mostrando todos los días",
+    "showing": "Mostrando: {{days}}",
+    "exercise": "Ejercicio",
+    "noRoutine": "Todavía no configuraste una rutina.",
+    "createRoutine": "Crear rutina",
+    "noExercises": "No hay ejercicios para el día seleccionado. Agrega algunos en la página de Ejercicios.",
+    "noExercisesAll": "Todavía no hay ejercicios. Agrega algunos en la página de Ejercicios.",
+    "select": "Seleccionar",
+    "autoSelect": "Selección automática",
+    "clearSelection": "Borrar selección",
+    "lockedHint": "Día manual: los ejercicios están fijados por tu rutina",
+    "generated_one": "Próximo entrenamiento generado: {{count}} ejercicio seleccionado.",
+    "generated_other": "Próximo entrenamiento generado: {{count}} ejercicios seleccionados.",
+    "cleared": "Selecciones borradas.",
+    "toggleError": "No se pudo actualizar la selección.",
+    "generateError": "No se pudo generar el próximo entrenamiento.",
+    "clearError": "No se pudieron borrar las selecciones."
   }
 }

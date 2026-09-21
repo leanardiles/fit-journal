@@ -116,5 +116,28 @@
     "europe": "Europa",
     "asiaPacific": "Azië / Pacific",
     "africa": "Afrika"
-}
+  },
+  "calendar": {
+    "title": "Jouw kalender",
+    "allDays": "Alle dagen",
+    "day": "Dag {{day}}",
+    "currentDay": "huidige dag",
+    "showingAll": "Alle dagen weergeven",
+    "showing": "Weergave: {{days}}",
+    "exercise": "Oefening",
+    "noRoutine": "Nog geen routine ingesteld.",
+    "createRoutine": "Routine aanmaken",
+    "noExercises": "Geen oefeningen voor de geselecteerde dag(en). Voeg er een paar toe op de pagina Oefeningen.",
+    "noExercisesAll": "Nog geen oefeningen. Voeg er een paar toe op de pagina Oefeningen.",
+    "select": "Selecteren",
+    "autoSelect": "Automatische selectie",
+    "clearSelection": "Selectie wissen",
+    "lockedHint": "Handmatige dag: oefeningen liggen vast in je routine",
+    "generated_one": "Volgende training gegenereerd: {{count}} oefening geselecteerd.",
+    "generated_other": "Volgende training gegenereerd: {{count}} oefeningen geselecteerd.",
+    "cleared": "Selecties gewist.",
+    "toggleError": "Kon de selectie niet bijwerken.",
+    "generateError": "Kon de volgende training niet genereren.",
+    "clearError": "Kon de selecties niet wissen."
+  }
 }

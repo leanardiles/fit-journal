@@ -1,0 +1,175 @@
+.cal-title {
+  font-family: var(--font-body);
+  color: var(--text);
+  font-size: 20px;
+  text-transform: uppercase;
+  letter-spacing: 1.5px;
+  margin: 0 0 var(--space-md);
+}
+
+.cal-day-filter {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-wrap: wrap;
+  margin-bottom: var(--space-sm);
+}
+.cal-filter-btn {
+  background: transparent;
+  border: 1px solid var(--border);
+  color: var(--muted);
+  font-family: var(--font-body);
+  font-size: 14px;
+  padding: 4px 14px;
+  cursor: pointer;
+  border-radius: 8px;
+  transition: all 0.12s;
+}
+.cal-filter-btn:hover { color: var(--text); }
+.cal-filter-btn.active {
+  border-color: var(--red-border);
+  color: var(--text);
+  background: var(--active-bg, rgba(150, 30, 30, 0.12));
+}
+.cal-current-marker {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  color: var(--red);
+  font-size: 12px;
+  margin-inline-start: 4px;
+  white-space: nowrap;
+}
+
+.cal-view-info {
+  font-size: 14px;
+  color: var(--text);
+  margin-bottom: var(--space-md);
+  min-height: 1.4em;
+}
+
+.cal-wrapper { overflow-x: auto; }
+.cal-table { border-collapse: collapse; min-width: 100%; }
+
+.cal-table th {
+  text-align: center;
+  padding: 0 12px 4px;
+  font-size: 11px;
+  color: var(--muted);
+  text-transform: uppercase;
+  letter-spacing: 1.2px;
+  font-weight: normal;
+  vertical-align: bottom;
+  white-space: nowrap;
+}
+.cal-table th.left { text-align: start; padding-inline-start: 0; }
+.cal-wod-day { font-size: 11px; color: var(--muted); text-transform: none; letter-spacing: 0; }
+.cal-wod-date { font-size: 12px; color: var(--text); text-transform: none; letter-spacing: 0; margin-top: 2px; }
+
+.cal-table td {
+  padding: 6px 12px;
+  vertical-align: bottom;
+  font-size: 13px;
+  color: var(--text);
+  border: none;
+  white-space: nowrap;
+}
+.cal-table td.left { padding-inline-start: 0; }
+.cal-exname { min-width: 180px; }
+
+.cal-muscle-row td {
+  color: var(--red);
+  font-size: 13px;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  padding-top: 10px;
+}
+.cal-day-row td {
+  color: var(--text);
+  font-size: 15px;
+  text-transform: uppercase;
+  letter-spacing: 1.5px;
+  padding-top: 14px;
+  padding-bottom: 4px;
+  border-bottom: 1px solid var(--red-border);
+}
+
+.cal-wod-cell { font-size: 12px; text-align: center; min-width: 44px; }
+.cal-wod-cell.completed { color: var(--text); }
+.cal-wod-cell.empty { color: var(--muted); }
+
+.cal-empty { text-align: center; color: var(--muted); font-size: 14px; padding: 40px 0; }
+.cal-empty-block { color: var(--muted); font-size: 14px; }
+.cal-link { color: var(--red); text-decoration: underline; margin-inline-start: 8px; }
+
+/* Sticky exercise-name column stays visible while scrolling the session cols.
+   Sticky cells need an opaque background so scrolled content doesn't show
+   through. inset-inline-start keeps the pin on the correct side under RTL. */
+.cal-table th.sticky-col,
+.cal-table td.sticky-col {
+  position: sticky;
+  background: var(--bg);
+  z-index: 1;
+}
+.cal-table .sticky-name {
+  inset-inline-start: 0;
+  width: 180px; min-width: 180px; max-width: 180px;
+  box-sizing: border-box;
+}
+.cal-muscle-row td,
+.cal-day-row td { position: sticky; inset-inline-start: 0; background: var(--bg); }
+
+.cal-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-end;
+  flex-wrap: wrap;
+  gap: 12px;
+  margin-bottom: var(--space-md);
+}
+.cal-header .cal-title { margin: 0; }
+
+.cal-actions { display: flex; gap: 12px; flex-wrap: wrap; }
+.cal-action-btn {
+  background: transparent;
+  border: 1px solid var(--border);
+  color: var(--text);
+  font-family: var(--font-body);
+  font-size: 13px;
+  padding: 6px 12px;
+  cursor: pointer;
+  border-radius: 6px;
+  transition: all 0.12s;
+}
+.cal-action-btn:hover { border-color: var(--red-border); }
+
+.cal-next-btn {
+  background: transparent;
+  border: 1px solid var(--border);
+  color: var(--text);
+  font-family: var(--font-body);
+  font-size: 13px;
+  min-width: 28px;
+  height: 24px;
+  padding: 0 6px;
+  cursor: pointer;
+  border-radius: 6px;
+  transition: all 0.12s;
+}
+.cal-next-btn:hover { border-color: var(--red-border); }
+.cal-next-btn.selected {
+  border-color: var(--red-border);
+  color: var(--text);
+  background: var(--active-bg, rgba(150, 30, 30, 0.12));
+}
+
+.cal-lock {
+  color: var(--muted);
+  opacity: 0.5;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* second sticky column: sits right after the fixed 180px name column */
+.cal-table .sticky-select { inset-inline-start: 180px; }
