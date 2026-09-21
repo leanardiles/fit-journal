@@ -80,7 +80,7 @@ export function Dashboard() {
   // itself, fall back to the exercise map / session dates we already hold.
   const exerciseMuscle = {};
   exercises.forEach((ex) => {
-    exerciseMuscle[ex.exercise_id] = ex.muscle_group;
+    exerciseMuscle[ex.exercise_id] = ex.exercise_muscle_group ?? ex.muscle_group;
   });
   const sessionDate = {};
   sessions.forEach((s) => {
