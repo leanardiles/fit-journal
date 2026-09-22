@@ -18,9 +18,11 @@ const CM_PER_IN = 2.54;
 
 function cmToFeetInches(cm) {
   if (cm == null || cm === "") return { feet: "", inches: "" };
-  const totalIn = cm / CM_PER_IN;
+  // Round to whole inches FIRST, then split, so 30cm -> 12in -> 1ft 0in
+  // instead of the old 0ft 12in (independent rounding could yield inches === 12).
+  const totalIn = Math.round(cm / CM_PER_IN);
   const feet = Math.floor(totalIn / 12);
-  const inches = Math.round(totalIn - feet * 12);
+  const inches = totalIn - feet * 12;
   return { feet, inches };
 }
 function feetInchesToCm(feet, inches) {
@@ -46,6 +48,10 @@ export function Profile() {
   });
   const [heightCm, setHeightCm] = useState("");
   const [weightKg, setWeightKg] = useState("");
+  // Free-typing display buffers for imperial fields. They only flush to the
+  // canonical cm/kg on blur, so an in-progress entry is never converted mid-type.
+  const [heightImp, setHeightImp] = useState({ feet: "", inches: "" });
+  const [weightLb, setWeightLb] = useState("");
   const [email, setEmail] = useState("");
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
@@ -80,7 +86,24 @@ export function Profile() {
   const update = (key, value) => setForm((prev) => ({ ...prev, [key]: value }));
   const handleLocaleChange = (value) => { update("user_locale", value); i18n.changeLanguage(value); };
   const isImperial = form.user_unit_preference === "imperial";
-  const { feet, inches } = cmToFeetInches(heightCm);
+
+  // Keep the imperial buffers in sync with the canonical values: on load, on a
+  // unit switch to imperial, and after a blur commits a normalized value. Does
+  // not fire while typing (heightCm/weightKg don't change until blur).
+  useEffect(() => {
+    if (!isImperial) return;
+    const { feet, inches } = cmToFeetInches(heightCm);
+    setHeightImp({ feet: feet === "" ? "" : String(feet), inches: inches === "" ? "" : String(inches) });
+  }, [heightCm, isImperial]);
+
+  useEffect(() => {
+    if (!isImperial) return;
+    setWeightLb(weightKg === "" || weightKg == null ? "" : String(kgToLb(weightKg)));
+  }, [weightKg, isImperial]);
+
+  const commitHeight = () => setHeightCm(feetInchesToCm(heightImp.feet, heightImp.inches) ?? "");
+  const commitWeight = () =>
+    setWeightKg(weightLb === "" ? "" : Math.round(Number(weightLb) * KG_PER_LB));
 
     // Timezone options: grouped by region with translated headers. If the user's
   // stored zone isn't in our list, keep it selectable so saving never silently
@@ -97,11 +120,19 @@ export function Profile() {
     setSaving(true);
     try {
       const userId = localStorage.getItem("user_id");
+      // Derive canonical from the live imperial buffers so a not-yet-blurred edit
+      // still saves correctly; metric binds to the canonical state directly.
+      const heightForSave = isImperial
+        ? feetInchesToCm(heightImp.feet, heightImp.inches)
+        : heightCm === "" ? null : Number(heightCm);
+      const weightForSave = isImperial
+        ? weightLb === "" ? null : Math.round(Number(weightLb) * KG_PER_LB)
+        : weightKg === "" ? null : Number(weightKg);
       const payload = {
         ...form,
         user_age: form.user_age === "" ? null : Number(form.user_age),
-        user_height: heightCm === "" ? null : Number(heightCm),
-        user_weight: weightKg === "" ? null : Number(weightKg),
+        user_height: heightForSave,
+        user_weight: weightForSave,
       };
       const res = await apiPut(`/profile/${userId}`, payload);
       if (!res.ok) {
@@ -189,10 +220,12 @@ export function Profile() {
         <span style={labelStyle}>{t("profile.height")}</span>
         {isImperial ? (
           <div style={{ display: "flex", gap: 12 }}>
-            <input style={inputStyle} type="number" placeholder={t("profile.feet")} value={feet}
-              onChange={(e) => setHeightCm(feetInchesToCm(e.target.value, inches) ?? "")} />
-            <input style={inputStyle} type="number" placeholder={t("profile.inches")} value={inches}
-              onChange={(e) => setHeightCm(feetInchesToCm(feet, e.target.value) ?? "")} />
+            <input style={inputStyle} type="number" placeholder={t("profile.feet")} value={heightImp.feet}
+              onChange={(e) => setHeightImp((p) => ({ ...p, feet: e.target.value }))}
+              onBlur={commitHeight} />
+            <input style={inputStyle} type="number" placeholder={t("profile.inches")} value={heightImp.inches}
+              onChange={(e) => setHeightImp((p) => ({ ...p, inches: e.target.value }))}
+              onBlur={commitHeight} />
           </div>
         ) : (
           <input style={inputStyle} type="number" placeholder="cm" value={heightCm}
@@ -203,8 +236,9 @@ export function Profile() {
       <label style={rowStyle}>
         <span style={labelStyle}>{t("profile.weight")}</span>
         {isImperial ? (
-          <input style={inputStyle} type="number" placeholder="lb" value={kgToLb(weightKg)}
-            onChange={(e) => setWeightKg(e.target.value === "" ? "" : Math.round(Number(e.target.value) * KG_PER_LB))} />
+          <input style={inputStyle} type="number" placeholder="lb" value={weightLb}
+            onChange={(e) => setWeightLb(e.target.value)}
+            onBlur={commitWeight} />
         ) : (
           <input style={inputStyle} type="number" placeholder="kg" value={weightKg}
             onChange={(e) => setWeightKg(e.target.value)} />
