@@ -26,7 +26,8 @@
     "success": "Account created! Please log in"
   },
   "common": {
-    "loading": "Loading..."
+    "loading": "Loading...",
+    "day": "Day {{day}}"
   },
   "profile": {
     "title": "Profile",
@@ -63,7 +64,6 @@
     "quickStats": "Quick stats",
     "thisWeek": "This week",
     "currentDay": "Current day",
-    "day": "Day {{day}}",
     "currentRoutine": "Your current routine",
     "noRoutine": "No routine set up yet.",
     "createRoutine": "Create routine",
@@ -121,7 +121,6 @@
   "calendar": {
     "title": "Your calendar",
     "allDays": "All days",
-    "day": "Day {{day}}",
     "currentDay": "current day",
     "showingAll": "Showing all days",
     "showing": "Showing: {{days}}",
@@ -140,5 +139,18 @@
     "toggleError": "Could not update the selection.",
     "generateError": "Could not generate the next workout.",
     "clearError": "Could not clear the selections."
+  },
+  "routine": {
+    "title": "Your current routine",
+    "trainingDays_one": "Training {{count}} day per week",
+    "trainingDays_other": "Training {{count}} days per week",
+    "dayTypeManual": "Manual",
+    "dayTypePerMuscle": "Per muscle",
+    "exercises_one": "{{count}} exercise",
+    "exercises_other": "{{count}} exercises",
+    "seePool": "see pool",
+    "noExercises": "No exercises",
+    "noMuscles": "No muscles",
+    "noRoutine": "You don't have a routine yet."
   }
 }

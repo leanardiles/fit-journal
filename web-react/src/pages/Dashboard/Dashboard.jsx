@@ -122,7 +122,7 @@ export function Dashboard() {
           </div>
           <div className="note-line">
             {t("dashboard.currentDay")}:{" "}
-            <span className="note-value">{t("dashboard.day", { day: currentDay })}</span>
+            <span className="note-value">{t("common.day", { day: currentDay })}</span>
           </div>
         </StickyNote>
 
@@ -141,8 +141,8 @@ export function Dashboard() {
                 .map((day) => {
                   const isToday = day.day_number === currentDay;
                   const label = day.name
-                    ? `${t("dashboard.day", { day: day.day_number })} — ${day.name}`
-                    : t("dashboard.day", { day: day.day_number });
+                    ? `${t("common.day", { day: day.day_number })} — ${day.name}`
+                    : t("common.day", { day: day.day_number });
                   const detail = muscleList(day) || t("dashboard.restDay");
                   return (
                     <div key={day.day_number} className={`note-day${isToday ? " today" : ""}`}>

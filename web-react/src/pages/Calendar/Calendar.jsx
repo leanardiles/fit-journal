@@ -318,7 +318,7 @@ export function Calendar() {
         days: selectedDays
           .map((d) => {
             const lbl = dayLabel(d);
-            return lbl ? `${t("calendar.day", { day: d })} (${lbl})` : t("calendar.day", { day: d });
+            return lbl ? `${t("common.day", { day: d })} (${lbl})` : t("common.day", { day: d });
           })
           .join(", "),
       });
@@ -390,7 +390,7 @@ export function Calendar() {
       const lbl = dayLabel(d);
       bodyRows.push(
         <tr key={`day-${d}`} className="cal-day-row">
-          <td colSpan={colSpan}>{lbl ? `${t("calendar.day", { day: d })} — ${lbl}` : t("calendar.day", { day: d })}</td>
+          <td colSpan={colSpan}>{lbl ? `${t("common.day", { day: d })} — ${lbl}` : t("common.day", { day: d })}</td>
         </tr>
       );
       bodyRows.push(...renderMuscleGrouped(dayRows, `day-${d}`));
@@ -440,7 +440,7 @@ export function Calendar() {
               className={`cal-filter-btn${filterMode === "specific" && selectedDays.includes(d) ? " active" : ""}`}
               onClick={() => toggleDay(d)}
             >
-              {t("calendar.day", { day: d })}
+              {t("common.day", { day: d })}
             </button>
             {d === currentDay && <span className="cal-current-marker">← {t("calendar.currentDay")}</span>}
           </Fragment>

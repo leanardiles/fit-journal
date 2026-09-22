@@ -26,7 +26,8 @@
     "success": "¡Cuenta creada! Inicia sesión"
   },
   "common": {
-    "loading": "Cargando..."
+    "loading": "Cargando...",
+    "day": "Día {{day}}"
   },
   "profile": {
     "title": "Perfil",
@@ -63,7 +64,6 @@
     "quickStats": "Estadísticas rápidas",
     "thisWeek": "Esta semana",
     "currentDay": "Día actual",
-    "day": "Día {{day}}",
     "currentRoutine": "Tu rutina actual",
     "noRoutine": "Todavía no configuraste una rutina.",
     "createRoutine": "Crear rutina",
@@ -122,7 +122,6 @@
   "calendar": {
     "title": "Tu calendario",
     "allDays": "Todos los días",
-    "day": "Día {{day}}",
     "currentDay": "día actual",
     "showingAll": "Mostrando todos los días",
     "showing": "Mostrando: {{days}}",
@@ -141,5 +140,18 @@
     "toggleError": "No se pudo actualizar la selección.",
     "generateError": "No se pudo generar el próximo entrenamiento.",
     "clearError": "No se pudieron borrar las selecciones."
+  },
+  "routine": {
+    "title": "Tu rutina actual",
+    "trainingDays_one": "{{count}} día de entrenamiento por semana",
+    "trainingDays_other": "{{count}} días de entrenamiento por semana",
+    "dayTypeManual": "Manual",
+    "dayTypePerMuscle": "Por músculo",
+    "exercises_one": "{{count}} ejercicio",
+    "exercises_other": "{{count}} ejercicios",
+    "seePool": "ver grupo",
+    "noExercises": "Sin ejercicios",
+    "noMuscles": "Sin músculos",
+    "noRoutine": "Todavía no hay una rutina configurada."
   }
 }

@@ -25,7 +25,8 @@
     "success": "Account aangemaakt! Log in"
   },
   "common": {
-    "loading": "Laden..."
+    "loading": "Laden...",
+    "day": "Dag {{day}}"
   },
   "profile": {
     "title": "Profiel",
@@ -62,7 +63,6 @@
     "quickStats": "Snelle statistieken",
     "thisWeek": "Deze week",
     "currentDay": "Huidige dag",
-    "day": "Dag {{day}}",
     "currentRoutine": "Je huidige routine",
     "noRoutine": "Nog geen routine ingesteld.",
     "createRoutine": "Routine aanmaken",
@@ -120,7 +120,6 @@
   "calendar": {
     "title": "Jouw kalender",
     "allDays": "Alle dagen",
-    "day": "Dag {{day}}",
     "currentDay": "huidige dag",
     "showingAll": "Alle dagen weergeven",
     "showing": "Weergave: {{days}}",
@@ -139,5 +138,18 @@
     "toggleError": "Kon de selectie niet bijwerken.",
     "generateError": "Kon de volgende training niet genereren.",
     "clearError": "Kon de selecties niet wissen."
+  },
+  "routine": {
+    "title": "Je huidige routine",
+    "trainingDays_one": "{{count}} dag per week trainen",
+    "trainingDays_other": "{{count}} dagen per week trainen",
+    "dayTypeManual": "Handmatig",
+    "dayTypePerMuscle": "Per spier",
+    "exercises_one": "{{count}} oefening",
+    "exercises_other": "{{count}} oefeningen",
+    "seePool": "pool bekijken",
+    "noExercises": "Geen oefeningen",
+    "noMuscles": "Geen spieren",
+    "noRoutine": "Je hebt nog geen routine."
   }
 }
