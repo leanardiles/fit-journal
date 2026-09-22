@@ -1,55 +1,105 @@
 /* ============================================================
-   Auth pages (login / register) , notebook styling.
-   Structure inside the card:
-     .auth-header  , logo area, NO ruled lines, red separator beneath
-     .auth-body    , the form, ruled notepad lines behind it
-   Uses design tokens; --lh drives the rule spacing.
+   Auth pages (login / register) , notepad styling.
+   Ruled lines are drawn as per-row BORDERS (not a background image), so text
+   and fields sit on the lines and stay aligned at ANY browser zoom: each rule
+   and its content are the same box, laid out and pixel-snapped together.
+   A vertical red margin line runs down the whole card.
    ============================================================ */
 
-/* Thicker outer border on the auth card. Applied to the Card via this class
-   on its inner wrapper's parent isn't possible, so we target a wrapper. */
 .auth-wrapper {
+  --auth-rule-x: 36px;   /* vertical red line position inside the card */
+  --auth-gutter: 20px;   /* breathing room each side of the writing area */
+
   border: 2px solid var(--border);
   border-radius: var(--radius);
-  overflow: hidden;            /* keep header/body corners tidy inside the border */
-  background: var(--bg);
+  overflow: hidden;
+  background-color: var(--bg);
   width: 360px;
   max-width: 90vw;
+
+  /* vertical red margin line, runs the full card height */
+  background-image: linear-gradient(90deg, var(--margin) 1px, transparent 1px);
+  background-size: 100% 100%;
+  background-position: var(--auth-rule-x) 0;
+  background-repeat: no-repeat;
 }
 
-/* Header , logo only, no ruled lines, red separator at the bottom. */
+[dir="rtl"] .auth-wrapper {
+  background-position: calc(100% - var(--auth-rule-x)) 0;
+}
+
 .auth-header {
   display: flex;
   justify-content: center;
   align-items: center;
-  padding: var(--space-lg);
-  border-bottom: 2px solid var(--red-border);
+  padding-block: var(--space-md);
+  padding-inline: var(--space-lg);
 }
 
 .auth-header img {
-  width: 80%;
-  max-width: 240px;
+  width: 70%;
+  max-width: 200px;
 }
 
-/* Body , the form area, with ruled notepad lines behind it.
-   line-height and the rule spacing both use --lh so text baselines track the
-   rules. Top padding is a whole --lh so the first line aligns to a rule. */
+/* Body spans the full card width , no inline padding here. */
 .auth-body {
-  text-align: start;
-  padding: var(--lh) var(--space-lg) var(--space-lg);
-  line-height: var(--lh);
-  background-image: linear-gradient(var(--line-color) 1px, transparent 1px);
-  background-size: 100% var(--lh);
-  background-position: 0 0;
+  padding: 0;
 }
 
-/* Stack the form controls on the --lh rhythm so they track the rules. */
-.auth-body .auth-form {
+.auth-sheet {
   display: flex;
   flex-direction: column;
+  border-top: 1px solid var(--line-color);   /* first rule, right under the header */
 }
 
-/* Each row occupies rule-height multiples so fields sit on the lines. */
-.auth-body .auth-form > * {
-  margin-block: 0;
+.auth-line {
+  height: var(--lh);
+  box-sizing: border-box;
+  display: flex;
+  align-items: flex-end;
+  padding-bottom: 5px;
+  /* inset the CONTENT right of the red line; the border still spans full width */
+  padding-inline: calc(var(--auth-rule-x) + var(--auth-gutter)) var(--auth-gutter);
+  border-bottom: 1px solid var(--line-color);
+  color: var(--text);
+}
+
+.auth-line--title { justify-content: center; }
+.auth-line--error { color: var(--error); font-size: 14px; }
+.auth-line--link  { justify-content: center; }
+
+/* Button row: center the button; it floats on the row rather than writing on it. */
+.auth-line--action {
+  align-items: center;
+  justify-content: center;
+  padding-bottom: 0;
+}
+
+/* Inline field (label + borderless input) that writes on the row's rule. */
+.auth-field {
+  display: flex;
+  align-items: baseline;
+  gap: var(--space-sm);
+  width: 100%;
+}
+.auth-field-label {
+  flex: 0 0 96px;
+  color: var(--text);
+}
+.auth-field-input {
+  flex: 1;
+  min-width: 0;
+  border: none;
+  background: transparent;
+  outline: none;
+  color: var(--text);
+  font-family: var(--font-body);
+  font-size: var(--fs);
+  padding: 0;
+}
+.auth-field-input::placeholder { color: var(--muted); }
+
+.auth-link {
+  color: var(--text);
+  font-size: 14px;
 }

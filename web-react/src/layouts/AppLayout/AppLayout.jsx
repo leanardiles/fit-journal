@@ -25,11 +25,11 @@ export function AppLayout() {
 
         <nav className="app-nav">
           <NavLink to="/dashboard">{t("nav.dashboard")}</NavLink>
+          <NavLink to="/profile">{t("nav.profile")}</NavLink>
           <NavLink to="/routine">{t("nav.routine")}</NavLink>
           <NavLink to="/exercises">{t("nav.exercises")}</NavLink>
           <NavLink to="/calendar">{t("nav.calendar")}</NavLink>
           <NavLink to="/workout">{t("nav.workout")}</NavLink>
-          <NavLink to="/profile">{t("nav.profile")}</NavLink>
         </nav>
 
         <div className="app-user">

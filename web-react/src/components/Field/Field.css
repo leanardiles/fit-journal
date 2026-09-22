@@ -1,0 +1,39 @@
+.field {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-xs);
+  font-family: var(--font-body);
+}
+.field-label {
+  font-size: 14px;
+  color: var(--text);
+}
+.field-input {
+  padding: 8px 4px;
+  border: none;
+  border-bottom: 1px solid var(--border);
+  background: transparent;
+  color: var(--text);
+  font-family: var(--font-body);
+  font-size: var(--fs);
+  outline: none;
+}
+
+/* Inline: label beside the input (auth pages). Collapses to stacked on phones. */
+.field--inline {
+  flex-direction: row;
+  align-items: center;
+  gap: var(--space-sm);
+}
+.field--inline .field-label {
+  flex: 0 0 auto;
+  min-width: 96px;   /* keeps Email/Password inputs aligned; wide enough for es/nl labels */
+}
+.field--inline .field-input {
+  flex: 1;
+  min-width: 0;
+}
+@media (max-width: 480px) {
+  .field--inline { flex-direction: column; align-items: stretch; }
+  .field--inline .field-label { min-width: 0; }
+}

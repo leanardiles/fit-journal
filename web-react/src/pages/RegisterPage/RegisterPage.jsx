@@ -2,7 +2,6 @@ import { useState } from "react";
 import { useToast } from "../../context/ToastContext";
 import { useTranslation } from "react-i18next";
 import { useNavigate, Link } from "react-router-dom";
-import { Field } from "../../components/Field/Field";
 import { Button } from "../../components/Button/Button";
 import { apiPost } from "../../api/client";
 import logo from "../../assets/logo-and-name-dark.png";
@@ -44,19 +43,49 @@ export function RegisterPage() {
       </div>
 
       <div className="auth-body">
-        <div className="auth-form">
-          <p style={{ color: "var(--text)", margin: 0 }}>{t("register.title")}</p>
+        <div className="auth-sheet">
+          <div className="auth-line" />
+          <div className="auth-line auth-line--title">{t("register.title")}</div>
+          <div className="auth-line" />
 
-          <Field labelKey="login.emailLabel" placeholderKey="login.emailPlaceholder" type="email" value={email} onChange={setEmail} />
-          <Field labelKey="login.passwordLabel" placeholderKey="login.passwordPlaceholder" type="password" value={password} onChange={setPassword} />
+          <div className="auth-line">
+            <label className="auth-field">
+              <span className="auth-field-label">{t("login.emailLabel")}</span>
+              <input
+                className="auth-field-input"
+                type="email"
+                value={email}
+                placeholder={t("login.emailPlaceholder")}
+                onChange={(e) => setEmail(e.target.value)}
+              />
+            </label>
+          </div>
 
-          {error && <p style={{ color: "var(--error)", margin: 0 }}>{error}</p>}
+          <div className="auth-line">
+            <label className="auth-field">
+              <span className="auth-field-label">{t("login.passwordLabel")}</span>
+              <input
+                className="auth-field-input"
+                type="password"
+                value={password}
+                placeholder={t("login.passwordPlaceholder")}
+                onChange={(e) => setPassword(e.target.value)}
+              />
+            </label>
+          </div>
 
-          <Button labelKey="register.button" variant="primary" onClick={handleSubmit} />
+          {error && <div className="auth-line auth-line--error">{error}</div>}
 
-          <Link to="/login" style={{ color: "var(--text)", textAlign: "center", fontSize: 14 }}>
-            {t("register.haveAccount")}
-          </Link>
+          <div className="auth-line" />
+          <div className="auth-line auth-line--action">
+            <Button labelKey="register.button" variant="yellow" onClick={handleSubmit} />
+          </div>
+          <div className="auth-line" />
+
+          <div className="auth-line auth-line--link">
+            <Link to="/login" className="auth-link">{t("register.haveAccount")}</Link>
+          </div>
+          <div className="auth-line" />
         </div>
       </div>
     </div>

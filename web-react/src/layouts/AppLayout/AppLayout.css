@@ -1,37 +1,58 @@
 /* ============================================================
    AppLayout , the notebook shell for all app pages.
-   Ported from the Jinja notebook.css aesthetic:
-   - ruled horizontal lines (like lined paper)
-   - a vertical red "margin" line
-   - a red header separator
-   The ruled background lives on the SCROLLING content element with
-   background-attachment: local, so lines scroll WITH the text (real
-   notepad feel), unlike a fixed frame.
+   - ruled horizontal lines (on the scrolling content, scroll WITH text)
+   - a vertical red "margin" line (on the shell, runs full height incl. header)
    ============================================================ */
 
 .app-shell {
+  --rule-x: 90px;       /* gap from the start edge to the vertical red line */
+  --page-gutter: 48px;  /* breathing room inside the writing area, used on BOTH sides:
+                           red line -> content, and content -> page end */
   min-height: 100vh;
   display: flex;
   flex-direction: column;
-  background: var(--bg);
+  background-color: var(--bg);
   color: var(--text);
   font-family: var(--font-body);
+
+  background-image: linear-gradient(90deg, var(--margin) 2px, transparent 2px);
+  background-size: 100% 100%;
+  background-position: var(--rule-x) 0;
+  background-repeat: no-repeat;
 }
 
-/* Header , transparent, with the red margin-coloured separator below it */
+[dir="rtl"] .app-shell {
+  background-position: calc(100% - var(--rule-x)) 0;
+}
+
 .app-header {
   display: flex;
-  align-items: center;
+  align-items: flex-end;                            /* KNOB 4: bottom-aligns logo + nav + user */
   justify-content: space-between;
-  padding: 12px 24px;
-  border-bottom: 2px solid var(--red-border);
+  padding-block: 22px 10px;                          /* KNOB 3b: top / bottom. Smaller bottom = sits lower */
+  padding-inline: calc(var(--rule-x) + 28px) 48px;   /* KNOB 3a: puts the logo just right of the red line */
   flex-shrink: 0;
 }
 
 .app-header .app-logo {
-  height: 44px;
+  height: 53px;    /* KNOB 2: logo size, was 44px (+20%) */
   width: auto;
   opacity: 0.9;
+}
+
+.app-content {
+  flex: 1;
+  overflow-y: auto;
+  line-height: var(--lh);
+
+  background-image: linear-gradient(var(--line-color) 1px, transparent 1px);
+  background-size: 100% var(--lh);
+  background-position: 0 0;
+  background-attachment: local;
+
+  padding-block: var(--lh) calc(var(--lh) * 3);
+  /* symmetric: gutter to the RIGHT of the red line, and the same gutter before the page end */
+  padding-inline: calc(var(--rule-x) + var(--page-gutter)) var(--page-gutter);
 }
 
 .app-nav {
@@ -87,36 +108,6 @@
   color: var(--text);
   border-color: var(--red);
 }
-
-/* Content , the scrolling area. Ruled lines + vertical margin line live
-   here and scroll WITH the content (background-attachment: local).
-   Text line-height matches the rule spacing so lines sit under the text. */
-.app-content {
-  flex: 1;
-  overflow-y: auto;
-  line-height: var(--lh);
-
-  background-image:
-    linear-gradient(90deg, var(--margin) 2px, transparent 2px),
-    linear-gradient(var(--line-color) 1px, transparent 1px);
-  background-size:
-    100% 100%,
-    100% var(--lh);
-  background-position:
-    64px 0,
-    0 0;
-  background-attachment: local, local;
-
-  padding-block: var(--lh) calc(var(--lh) * 3);   /* top, bottom */
-  padding-inline: 96px 48px;                        /* start, end */
-}
-
-/* background-position has no logical equivalent, so flip the margin line to the right edge explicitly for RTL. */
-[dir="rtl"] .app-content {
-  background-position:
-    calc(100% - 64px) 0,   /* margin line, now 64px from the right */
-    0 0;
-}  
 
 /* Header language switcher , blends into the header, symmetric padding
    so it needs no RTL handling. */

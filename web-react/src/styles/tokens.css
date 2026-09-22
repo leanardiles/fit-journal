@@ -42,6 +42,9 @@
   --space-sm: 8px;
   --space-md: 16px;
   --space-lg: 24px;
+
+  /* Buttons */
+  --yellow: #f4d93e;
 }
 
 /* Light mode , same token names, light values.
