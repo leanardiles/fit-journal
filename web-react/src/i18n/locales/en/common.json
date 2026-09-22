@@ -34,10 +34,11 @@
   },
   "common": {
     "loading": "Loading...",
-    "day": "Day {{day}}"
+    "day": "Day {{day}}",
+    "optional": "(optional)"
   },
   "profile": {
-    "title": "Profile",
+    "title": "My profile",
     "email": "Email",
     "name": "Name",
     "age": "Age",
@@ -67,7 +68,7 @@
     "deleteError": "Couldn't delete your account."
   },
   "dashboard": {
-    "title": "Dashboard",
+    "title": "My Dashboard",
     "quickStats": "Quick stats",
     "thisWeek": "This week",
     "currentDay": "Current day",
@@ -84,7 +85,8 @@
     "sets_other": "{{count}} sets"
   },
   "exercises": {
-    "title": "Your exercises",
+    "title": "My exercises",
+    "selectMuscle": "Select muscle group:",
     "empty": "No exercises found for this muscle group.",
     "colExercise": "Exercise",
     "colWeight": "Weight",
@@ -126,9 +128,9 @@
     "africa": "Africa"
   },
   "calendar": {
-    "title": "Your calendar",
+    "title": "My calendar",
     "allDays": "All days",
-    "currentDay": "current day",
+    "currentDay": "current",
     "showingAll": "Showing all days",
     "showing": "Showing: {{days}}",
     "exercise": "Exercise",
@@ -148,7 +150,7 @@
     "clearError": "Could not clear the selections."
   },
   "routine": {
-    "title": "Your current routine",
+    "title": "My current routine",
     "trainingDays_one": "Training {{count}} day per week",
     "trainingDays_other": "Training {{count}} days per week",
     "dayTypeManual": "Manual",
@@ -186,5 +188,53 @@
     "deleteDay": "Delete this day",
     "confirmDeleteDay": "Delete Day {{day}}? Its exercises will be removed.",
     "errMinOneDay": "A routine needs at least one day."
+  },
+  "workout": {
+    "title": "Log WOD",
+    "generateInstruction": "Generate the workout for your highlighted day, or pick a different day above.",
+    "generateBtn": "Generate WOD",
+    "loading": "Loading...",
+    "current": "current",
+    "confirmSetDay": "Set {{day}} as your current day?",
+    "setDayError": "Could not set the current day. Please try again.",
+    "generateError": "Could not generate the workout. Please try again.",
+    "autoGenError": "Could not auto-generate a selection. Please try again.",
+    "cancel": "Cancel",
+    "colMuscle": "Muscle",
+    "colExercise": "Exercise",
+    "colWeight": "Weight",
+    "colSets": "Sets",
+    "colReps": "Reps",
+    "markExercise": "Mark {{name}} as done",
+    "promptNoRoutine": "You need a routine before you can generate a workout.",
+    "promptNoSelection": "No exercises are selected for this day.",
+    "promptNoLibrary": "No exercises in your library for today's muscles: {{muscles}}.",
+    "promptManualEmpty": "This day has no exercises yet.",
+    "gapNote": "No exercises found for: {{muscles}}.",
+    "linkCreateRoutine": "Create routine",
+    "linkCalendar": "Open calendar",
+    "linkAutoSelect": "Automatic selection",
+    "linkAddExercises": "Add exercises",
+    "linkEditRoutine": "Edit routine",
+    "markComplete": "Mark as Complete",
+    "saving": "Saving...",
+    "noneChecked": "No exercises checked off. Tick the ones you completed.",
+    "missingSets": "Please enter sets for: {{names}}",
+    "saveError": "Could not save the workout. Please try again.",
+    "successMsg": "Workout complete! Well done.",
+    "backToDashboard": "Back to Dashboard",
+    "logManual": "Log Manual",
+    "manualTitle": "Logging a manual workout",
+    "date": "Date",
+    "manualListEmpty": "No exercises added yet — add some from the list.",
+    "wtShort": "wt",
+    "addBtn": "add",
+    "added": "added",
+    "logWod": "Log WOD",
+    "back": "Back",
+    "remove": "Remove {{name}}",
+    "noMuscleExercises": "No {{muscle}} exercises.",
+    "manualNoExercises": "Add at least one exercise.",
+    "manualNoDate": "Pick a date."
   }
 }

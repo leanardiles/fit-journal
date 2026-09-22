@@ -1,0 +1,57 @@
+.pf {
+  max-width: 480px;
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-sm);
+  font-family: var(--font-body);
+}
+
+.pf-title {
+  font-family: var(--font-body);
+  font-size: 20px;
+  color: var(--text);
+  margin: 0 0 var(--space-xs);
+}
+
+/* One aligned row: fixed label column, control fills the rest. */
+.pf-row {
+  display: grid;
+  grid-template-columns: var(--pf-label-w, 140px) 1fr;
+  align-items: center;
+  gap: var(--space-md);
+  min-height: var(--lh);
+}
+.pf-label { font-size: 14px; color: var(--text); }
+.pf-value { color: var(--text); }
+
+.pf-input {
+  width: 100%;
+  max-width: 240px;
+  padding: 6px 4px;
+  border: none;
+  border-bottom: 1px solid var(--border);
+  background: transparent;
+  color: var(--text);
+  font-family: var(--font-body);
+  font-size: var(--fs);
+  outline: none;
+}
+.pf-input:focus { border-bottom-color: var(--red-border); }
+
+.pf-height { display: flex; gap: 12px; }
+.pf-height .pf-input { max-width: 90px; }
+
+/* The shared Toggle/Select render label-less here; keep them flush in the row. */
+.pf-row .toggle-field { margin: 0; }
+
+.pf-actions { margin-top: var(--space-sm); }
+
+/* Stack on narrow screens so labels sit above their fields. */
+@media (max-width: 520px) {
+  .pf-row {
+    grid-template-columns: 1fr;
+    align-items: start;
+    gap: var(--space-xs);
+    min-height: 0;
+  }
+}

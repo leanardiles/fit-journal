@@ -15,10 +15,14 @@
   gap: 8px;
 }
 
+/* Vertical variant: chips stacked in a column, full width, left-aligned. */
+.toggle-group--vertical { flex-direction: column; align-items: stretch; }
+.toggle-group--vertical .toggle-chip { text-align: start; }
+
 .toggle-chip {
   background: transparent;
-  border: 1px solid var(--border);
-  color: var(--muted);
+  border: 1px solid var(--text);
+  color: var(--text);
   font-family: var(--font-body);
   font-size: 14px;
   padding: 4px 14px;
@@ -27,10 +31,10 @@
   transition: all 0.12s;
 }
 
-.toggle-chip:hover { color: var(--text); }
+.toggle-chip:hover { border-color: var(--yellow); }
 
 .toggle-chip.selected {
-  border-color: var(--red-border);
+  border-color: var(--yellow);
   color: var(--text);
-  background: var(--active-bg, rgba(150, 30, 30, 0.12));
+  background: rgba(244, 217, 62, 0.22);
 }

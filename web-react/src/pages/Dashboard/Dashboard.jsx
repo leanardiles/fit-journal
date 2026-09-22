@@ -148,12 +148,12 @@ export function Dashboard() {
                     <div key={day.day_number} className={`note-day${isToday ? " today" : ""}`}>
                       <span className="note-day-label">{label}:</span>{" "}
                       <span className="note-day-muscles">{detail}</span>
-                      {isToday && <span className="note-today">{t("dashboard.today")}</span>}
+                      {isToday && <span className="note-today">({t("dashboard.today")})</span>}
                     </div>
                   );
                 })}
               <div style={{ marginTop: 12 }}>
-                <Link to="/routine" className="note-link">{t("dashboard.editRoutine")}</Link>
+                <Link to="/routine" className="note-btn">{t("dashboard.editRoutine")}</Link>
               </div>
             </>
           )}

@@ -5,30 +5,13 @@ import { apiGet, apiPost, apiPut, apiDelete } from "../../api/client";
 import { useUser } from "../../context/UserContext";
 import { useToast } from "../../context/ToastContext";
 import { MUSCLE_GROUPS } from "../../constants/muscles";
+import { kgToDisplay, displayToKg } from "../../constants/units";
 import { Field } from "../../components/Field/Field";
 import { Button } from "../../components/Button/Button";
 import { Select } from "../../components/Select/Select";
+import { Toggle } from "../../components/Toggle/Toggle";
 import { Modal } from "../../components/Modal/Modal";
 import "./Exercises.css";
-
-const KG_PER_LB = 0.45359237;
-
-// A stored (kg) weight shown in the user's unit; "" for unset/zero.
-function kgToDisplay(kg, isImperial) {
-  if (kg == null || Number(kg) === 0) return "";
-  if (isImperial) {
-    // Round to 1 decimal so half-pound values (17.5) survive the kg round-trip
-    // instead of snapping to a whole number.
-    return String(Math.round((Number(kg) / KG_PER_LB) * 10) / 10);
-  }
-  return String(Number(kg)); // metric: show the exact stored value
-}
-// A displayed value (user's unit) back to canonical kg.
-function displayToKg(display, isImperial) {
-  const num = String(display).trim() === "" ? 0 : Number(display);
-  if (Number.isNaN(num)) return 0;
-  return isImperial ? Number((num * KG_PER_LB).toFixed(2)) : num;
-}
 
 export function Exercises() {
   const { t } = useTranslation();
@@ -147,111 +130,110 @@ export function Exercises() {
     }
   };
 
-  const rowStyle = { display: "flex", flexDirection: "column", gap: "var(--space-xs)", fontFamily: "var(--font-body)" };
-  const labelStyle = { fontSize: 14, color: "var(--text)" };
-  const inputStyle = {
-    padding: "8px 4px", border: "none", borderBottom: "1px solid var(--border)",
-    background: "transparent", color: "var(--text)", fontFamily: "var(--font-body)",
-    fontSize: "var(--fs)", outline: "none",
-  };
-
   return (
     <div>
       <div className="ex-header">
         <h1 className="ex-title">{t("exercises.title")}</h1>
-        <Button labelKey="exercises.addButton" variant="secondary" onClick={openAdd} />
       </div>
 
       <div className="ex-layout">
-        <nav className="ex-muscle-col">
-          {MUSCLE_GROUPS.map((m) => (
-            <button
-              key={m}
-              type="button"
-              className={`ex-muscle-tab${m === selectedMuscle ? " active" : ""}`}
-              onClick={() => selectMuscle(m)}
-            >
-              {t(`muscles.${m}`)}
-            </button>
-          ))}
-        </nav>
+        <div className="ex-muscle-col">
+          <span className="ex-muscle-heading">{t("exercises.selectMuscle")}</span>
+          <Toggle
+            vertical
+            value={selectedMuscle}
+            onChange={selectMuscle}
+            options={MUSCLE_GROUPS.map((m) => ({ value: m, label: t(`muscles.${m}`) }))}
+          />
+        </div>
 
         <div className="ex-exercise-col">
           {loading ? (
             <p className="ex-muted">{t("common.loading")}</p>
-          ) : forMuscle.length === 0 ? (
-            <p className="ex-muted">{t("exercises.empty")}</p>
           ) : (
-            <table className="ex-table">
-              <thead>
-                <tr>
-                  <th className="ex-th-name">{t("exercises.colExercise")}</th>
-                  <th className="ex-th-center">{t("exercises.colWeight")} ({weightUnit})</th>
-                  <th className="ex-th-center">{t("exercises.colLink")}</th>
-                  <th className="ex-th-center">{t("exercises.colDelete")}</th>
-                </tr>
-              </thead>
-              <tbody>
-                {forMuscle.map((ex) => (
-                  <tr key={ex.exercise_id}>
-                    <td>{ex.exercise_name}</td>
-                    <td className="ex-td-center">
-                      <WeightCell
-                        exercise={ex}
-                        isImperial={isImperial}
-                        ariaLabel={`${t("exercises.colWeight")} (${weightUnit})`}
-                        onSave={saveWeight}
-                      />
-                    </td>
-                    <td className="ex-td-center">
-                      {ex.exercise_link ? (
-                        <a href={ex.exercise_link} target="_blank" rel="noreferrer" className="ex-link">
-                          {t("exercises.viewLink")}
-                        </a>
-                      ) : (
-                        <span className="ex-muted">—</span>
-                      )}
-                    </td>
-                    <td className="ex-td-center">
-                      {confirmingDeleteId === ex.exercise_id ? (
-                        <span className="ex-confirm">
-                          <button className="ex-confirm-yes" onClick={() => confirmDelete(ex.exercise_id)}>
-                            {t("exercises.confirmDelete")}
-                          </button>
-                          <button className="ex-confirm-no" onClick={() => setConfirmingDeleteId(null)}>
-                            {t("exercises.cancelDelete")}
-                          </button>
-                        </span>
-                      ) : (
-                        <button className="ex-delete-btn" onClick={() => setConfirmingDeleteId(ex.exercise_id)}
-                          aria-label={t("exercises.deleteAria")} title={t("exercises.deleteAria")}>
-                          🗑
-                        </button>
-                      )}
-                    </td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
+            <>
+              {forMuscle.length === 0 ? (
+                <p className="ex-muted">{t("exercises.empty")}</p>
+              ) : (
+                <table className="ex-table">
+                  <thead>
+                    <tr>
+                      <th className="ex-th-name">{t("exercises.colExercise")}</th>
+                      <th className="ex-th-center">{t("exercises.colWeight")} ({weightUnit})</th>
+                      <th className="ex-th-center">{t("exercises.colLink")}</th>
+                      <th className="ex-th-center">{t("exercises.colDelete")}</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {forMuscle.map((ex) => (
+                      <tr key={ex.exercise_id}>
+                        <td>{ex.exercise_name}</td>
+                        <td className="ex-td-center">
+                          <WeightCell
+                            exercise={ex}
+                            isImperial={isImperial}
+                            ariaLabel={`${t("exercises.colWeight")} (${weightUnit})`}
+                            onSave={saveWeight}
+                          />
+                        </td>
+                        <td className="ex-td-center">
+                          {ex.exercise_link ? (
+                            <a href={ex.exercise_link} target="_blank" rel="noreferrer" className="ex-link">
+                              {t("exercises.viewLink")}
+                            </a>
+                          ) : (
+                            <span className="ex-muted">—</span>
+                          )}
+                        </td>
+                        <td className="ex-td-center">
+                          {confirmingDeleteId === ex.exercise_id ? (
+                            <span className="ex-confirm">
+                              <button className="ex-confirm-yes" onClick={() => confirmDelete(ex.exercise_id)}>
+                                {t("exercises.confirmDelete")}
+                              </button>
+                              <button className="ex-confirm-no" onClick={() => setConfirmingDeleteId(null)}>
+                                {t("exercises.cancelDelete")}
+                              </button>
+                            </span>
+                          ) : (
+                            <button className="ex-delete-btn" onClick={() => setConfirmingDeleteId(ex.exercise_id)}
+                              aria-label={t("exercises.deleteAria")} title={t("exercises.deleteAria")}>
+                              🗑
+                            </button>
+                          )}
+                        </td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              )}
+
+              <div className="ex-add-row">
+                <Button labelKey="exercises.addButton" variant="yellow" onClick={openAdd} />
+              </div>
+            </>
           )}
         </div>
       </div>
 
       <Modal open={showAddModal} onClose={() => setShowAddModal(false)} titleKey="exercises.newTitle">
         <div style={{ display: "flex", flexDirection: "column", gap: "var(--space-md)" }}>
-          <Field labelKey="exercises.fieldName" placeholderKey="exercises.namePlaceholder" value={newName} onChange={setNewName} />
-          <Select labelKey="exercises.fieldMuscle" value={newMuscle} onChange={setNewMuscle}
+          <Field inline labelKey="exercises.fieldName" placeholderKey="exercises.namePlaceholder" value={newName} onChange={setNewName} />
+          <Select inline labelKey="exercises.fieldMuscle" value={newMuscle} onChange={setNewMuscle}
             options={MUSCLE_GROUPS.map((m) => ({ value: m, label: t(`muscles.${m}`) }))} />
-          <label style={rowStyle}>
-            <span style={labelStyle}>{t("exercises.fieldWeight")} ({weightUnit})</span>
-            <input style={inputStyle} type="number" value={newWeight}
+          <label className="field field--inline">
+            <span className="field-label">
+              {t("exercises.fieldWeight")} ({weightUnit})
+              <span className="field-optional">{t("common.optional")}</span>
+            </span>
+            <input className="field-input" type="number" value={newWeight}
               onChange={(e) => setNewWeight(e.target.value)} placeholder="0" />
           </label>
-          <Field labelKey="exercises.fieldLink" placeholderKey="exercises.linkPlaceholder" value={newLink} onChange={setNewLink} />
-          <Field labelKey="exercises.fieldNotes" placeholderKey="exercises.notesPlaceholder" value={newNotes} onChange={setNewNotes} />
+          <Field inline optional labelKey="exercises.fieldLink" placeholderKey="exercises.linkPlaceholder" value={newLink} onChange={setNewLink} />
+          <Field inline optional labelKey="exercises.fieldNotes" placeholderKey="exercises.notesPlaceholder" value={newNotes} onChange={setNewNotes} />
           {addError && <p style={{ color: "var(--error)", margin: 0, fontFamily: "var(--font-body)" }}>{addError}</p>}
           <div style={{ display: "flex", gap: 12 }}>
-            <Button labelKey="exercises.save" variant="primary" onClick={handleAdd} />
+            <Button labelKey="exercises.save" variant="yellow" onClick={handleAdd} />
             <Button labelKey="exercises.cancel" variant="secondary" onClick={() => setShowAddModal(false)} />
           </div>
         </div>

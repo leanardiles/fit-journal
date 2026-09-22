@@ -6,7 +6,7 @@
 
 .app-shell {
   --rule-x: 90px;       /* gap from the start edge to the vertical red line */
-  --page-gutter: 48px;  /* breathing room inside the writing area, used on BOTH sides:
+  --page-gutter: 72px;  /* breathing room inside the writing area, used on BOTH sides:
                            red line -> content, and content -> page end */
   min-height: 100vh;
   display: flex;

@@ -33,10 +33,11 @@
   },
   "common": {
     "loading": "Cargando...",
-    "day": "Día {{day}}"
+    "day": "Día {{day}}",
+    "optional": "(opcional)"
   },
   "profile": {
-    "title": "Perfil",
+    "title": "Mi perfil",
     "email": "Correo electrónico",
     "name": "Nombre",
     "age": "Edad",
@@ -66,7 +67,7 @@
     "deleteError": "No se pudo eliminar tu cuenta."
   },
   "dashboard": {
-    "title": "Panel",
+    "title": "Mi Panel",
     "quickStats": "Estadísticas rápidas",
     "thisWeek": "Esta semana",
     "currentDay": "Día actual",
@@ -83,7 +84,8 @@
     "sets_other": "{{count}} series"
   },
   "exercises": {
-    "title": "Tus ejercicios",
+    "title": "Mis ejercicios",
+    "selectMuscle": "Selecciona el grupo muscular:",
     "empty": "No hay ejercicios para este grupo muscular.",
     "colExercise": "Ejercicio",
     "colWeight": "Peso",
@@ -126,9 +128,9 @@
     "africa": "África"
   },
   "calendar": {
-    "title": "Tu calendario",
+    "title": "Mi calendario",
     "allDays": "Todos los días",
-    "currentDay": "día actual",
+    "currentDay": "actual",
     "showingAll": "Mostrando todos los días",
     "showing": "Mostrando: {{days}}",
     "exercise": "Ejercicio",
@@ -148,7 +150,7 @@
     "clearError": "No se pudieron borrar las selecciones."
   },
   "routine": {
-    "title": "Tu rutina actual",
+    "title": "Mi rutina actual",
     "trainingDays_one": "{{count}} día de entrenamiento por semana",
     "trainingDays_other": "{{count}} días de entrenamiento por semana",
     "dayTypeManual": "Manual",
@@ -186,5 +188,53 @@
     "deleteDay": "Eliminar este día",
     "confirmDeleteDay": "¿Eliminar el día {{day}}? Se quitarán sus ejercicios.",
     "errMinOneDay": "Una rutina necesita al menos un día."
+  },
+  "workout": {
+    "title": "Registrar WOD",
+    "generateInstruction": "Genera el entrenamiento de tu día marcado, o elegi otro día arriba.",
+    "generateBtn": "Generar WOD",
+    "loading": "Cargando...",
+    "current": "actual",
+    "confirmSetDay": "¿Establecer {{day}} como tu día actual?",
+    "setDayError": "No se pudo establecer el día actual. Inténtalo de nuevo.",
+    "generateError": "No se pudo generar el entrenamiento. Inténtalo de nuevo.",
+    "autoGenError": "No se pudo generar una selección automática. Inténtalo de nuevo.",
+    "cancel": "Cancelar",
+    "colMuscle": "Músculo",
+    "colExercise": "Ejercicio",
+    "colWeight": "Peso",
+    "colSets": "Series",
+    "colReps": "Reps",
+    "markExercise": "Marcar {{name}} como hecho",
+    "promptNoRoutine": "Necesitas una rutina antes de generar un entrenamiento.",
+    "promptNoSelection": "No hay ejercicios seleccionados para este día.",
+    "promptNoLibrary": "No tienes ejercicios en tu biblioteca para los músculos de hoy: {{muscles}}.",
+    "promptManualEmpty": "Este día aún no tiene ejercicios.",
+    "gapNote": "No se encontraron ejercicios para: {{muscles}}.",
+    "linkCreateRoutine": "Crear rutina",
+    "linkCalendar": "Abrir calendario",
+    "linkAutoSelect": "Selección automática",
+    "linkAddExercises": "Agregar ejercicios",
+    "linkEditRoutine": "Editar rutina",
+    "markComplete": "Marcar como completado",
+    "saving": "Guardando...",
+    "noneChecked": "No marcaste ningún ejercicio. Marca los que completaste.",
+    "missingSets": "Ingresa las series de: {{names}}",
+    "saveError": "No se pudo guardar el entrenamiento. Inténtalo de nuevo.",
+    "successMsg": "¡Entrenamiento completado! Bien hecho.",
+    "backToDashboard": "Volver al panel",
+    "logManual": "Registrar manual",
+    "manualTitle": "Registrando un entrenamiento manual",
+    "date": "Fecha",
+    "manualListEmpty": "Aún no agregaste ejercicios — agrega algunos de la lista.",
+    "wtShort": "peso",
+    "addBtn": "agregar",
+    "added": "agregado",
+    "logWod": "Registrar WOD",
+    "back": "Volver",
+    "remove": "Quitar {{name}}",
+    "noMuscleExercises": "No hay ejercicios de {{muscle}}.",
+    "manualNoExercises": "Agrega al menos un ejercicio.",
+    "manualNoDate": "Elige una fecha."
   }
 }

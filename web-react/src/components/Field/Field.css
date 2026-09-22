@@ -8,6 +8,12 @@
   font-size: 14px;
   color: var(--text);
 }
+.field-optional {
+  color: var(--muted);
+  font-size: 12px;
+  margin-inline-start: 4px;
+  white-space: nowrap;
+}
 .field-input {
   padding: 8px 4px;
   border: none;

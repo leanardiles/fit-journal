@@ -11,13 +11,17 @@ import "./Field.css";
  *   onChange       - called with the new value when the user types
  *   inline         - label beside the input on one row (collapses to stacked on
  *                    narrow screens). Default false = stacked column.
+ *   optional       - append a muted "(optional)" hint after the label.
  */
-export function Field({ labelKey, placeholderKey, type = "text", value = "", onChange, inline = false }) {
+export function Field({ labelKey, placeholderKey, type = "text", value = "", onChange, inline = false, optional = false }) {
   const { t } = useTranslation();
 
   return (
     <label className={`field${inline ? " field--inline" : ""}`}>
-      <span className="field-label">{t(labelKey)}</span>
+      <span className="field-label">
+        {t(labelKey)}
+        {optional && <span className="field-optional">{t("common.optional")}</span>}
+      </span>
       <input
         className="field-input"
         type={type}

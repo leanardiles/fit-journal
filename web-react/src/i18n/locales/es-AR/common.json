@@ -13,6 +13,7 @@
     "confirmPassword": "Introducí tu contraseña para confirmar"
   },
   "exercises": {
+    "selectMuscle": "Seleccioná el grupo muscular:",
     "weightError": "No se pudo guardar el peso. Intentá de nuevo."
   },
     "calendar": {
@@ -26,5 +27,20 @@
       "byMuscle": "Por grupo muscular",
       "errNoType": "Elegí un tipo para el día {{day}} (por grupo muscular o manual).",
       "errNeedExerciseManual": "Seleccioná al menos un ejercicio para el día {{day}}."
-    }  
+  },
+  "workout": {
+    "generateInstruction": "Generá el entrenamiento de tu día marcado, o elegí otro día arriba.",
+    "setDayError": "No se pudo establecer el día actual. Intentalo de nuevo.",
+    "generateError": "No se pudo generar el entrenamiento. Intentalo de nuevo.",
+    "autoGenError": "No se pudo generar una selección automática. Intentalo de nuevo.",
+    "promptNoRoutine": "Necesitás una rutina antes de generar un entrenamiento.",
+    "promptNoLibrary": "No tenés ejercicios en tu biblioteca para los músculos de hoy: {{muscles}}.",
+    "markComplete": "Marcar como completado",
+    "noneChecked": "No marcaste ningún ejercicio. Marcá los que completaste.",
+    "missingSets": "Ingresá las series de: {{names}}",
+    "saveError": "No se pudo guardar el entrenamiento. Intentalo de nuevo.",
+    "manualListEmpty": "Aún no agregaste ejercicios — agregá algunos de la lista.",
+    "manualNoExercises": "Agregá al menos un ejercicio.",
+    "manualNoDate": "Elegí una fecha."
+  }  
 }

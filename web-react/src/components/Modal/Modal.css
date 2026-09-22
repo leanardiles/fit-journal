@@ -27,4 +27,9 @@
   font-size: 20px;
   text-transform: uppercase;
   letter-spacing: 1.5px;
+  text-align: center;
 }
+
+/* Inline form rows get more space between the label and the field inside modals,
+   so an "(optional)" hint beside the label doesn't crowd the input. */
+.modal-box .field--inline { gap: var(--space-md); }

@@ -14,34 +14,44 @@
   align-items: start;
 }
 
-/* Note internals inherit the note's locally-rebound tokens (--text/--red/etc.) */
+/* Note internals inherit the note's locally-rebound tokens; --text is the note's
+   dark ink, so everything on the note reads black. No red accents. */
 .note-heading {
   font-size: 18px;
   font-weight: bold;
   margin-bottom: 10px;
   color: var(--text);
+  text-transform: uppercase;
 }
 
 .note-line { margin-bottom: 4px; color: var(--text); }
-.note-value { color: var(--red); }
+.note-value { color: var(--text); }
 
 .note-day { margin-bottom: 4px; color: var(--text); }
-.note-day.today .note-day-label {
-  text-decoration: underline;
-  text-decoration-color: var(--red);
-  text-underline-offset: 3px;
-}
+.note-day-label { color: var(--text); }
 .note-day-muscles { color: var(--text); }
 .note-today {
   margin-inline-start: 6px;
   font-size: 12px;
-  color: var(--red);
+  color: var(--text);
 }
 
 .note-link {
-  color: var(--red);
-  text-decoration: underline;
+  color: var(--text);
+  text-decoration: none;
   font-size: 14px;
+}
+
+/* Edit-routine action: bordered button, transparent fill, black text. */
+.note-btn {
+  display: inline-block;
+  color: var(--text);
+  border: 1px solid var(--text);
+  background: transparent;
+  text-decoration: none;
+  font-size: 12px;
+  padding: 2px 10px;
+  border-radius: 6px;
 }
 
 .muscle-rows { margin-top: 10px; }
@@ -54,6 +64,9 @@
 }
 .muscle-name { color: var(--text); }
 .muscle-sets {
-  color: var(--red);
+  color: var(--text);
   font-variant-numeric: tabular-nums;
 }
+
+/* Range toggle inside the notes reads a touch smaller than the app default. */
+.sticky-note .toggle-chip { font-size: 12px; padding: 3px 10px; }

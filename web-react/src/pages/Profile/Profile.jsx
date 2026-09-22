@@ -8,33 +8,11 @@ import { useToast } from "../../context/ToastContext";
 import { useUser } from "../../context/UserContext";
 import { LOCALE_OPTIONS } from "../../i18n/locales";
 import { TIMEZONE_GROUPS } from "../../constants/timezones";
-import { Field } from "../../components/Field/Field";
+import { cmToFeetInches, feetInchesToCm, kgToLb, lbToKg } from "../../constants/units";
 import { Button } from "../../components/Button/Button";
 import { Select } from "../../components/Select/Select";
 import { Toggle } from "../../components/Toggle/Toggle";
-
-const KG_PER_LB = 0.45359237;
-const CM_PER_IN = 2.54;
-
-function cmToFeetInches(cm) {
-  if (cm == null || cm === "") return { feet: "", inches: "" };
-  // Round to whole inches FIRST, then split, so 30cm -> 12in -> 1ft 0in
-  // instead of the old 0ft 12in (independent rounding could yield inches === 12).
-  const totalIn = Math.round(cm / CM_PER_IN);
-  const feet = Math.floor(totalIn / 12);
-  const inches = totalIn - feet * 12;
-  return { feet, inches };
-}
-function feetInchesToCm(feet, inches) {
-  const f = Number(feet) || 0;
-  const i = Number(inches) || 0;
-  if (f === 0 && i === 0) return null;
-  return Math.round((f * 12 + i) * CM_PER_IN);
-}
-function kgToLb(kg) {
-  if (kg == null || kg === "") return "";
-  return Math.round(kg / KG_PER_LB);
-}
+import "./Profile.css";
 
 export function Profile() {
   const { t } = useTranslation();
@@ -103,9 +81,9 @@ export function Profile() {
 
   const commitHeight = () => setHeightCm(feetInchesToCm(heightImp.feet, heightImp.inches) ?? "");
   const commitWeight = () =>
-    setWeightKg(weightLb === "" ? "" : Math.round(Number(weightLb) * KG_PER_LB));
+    setWeightKg(weightLb === "" ? "" : lbToKg(weightLb));
 
-    // Timezone options: grouped by region with translated headers. If the user's
+  // Timezone options: grouped by region with translated headers. If the user's
   // stored zone isn't in our list, keep it selectable so saving never silently
   // changes it.
   const allZoneValues = TIMEZONE_GROUPS.flatMap((g) => g.zones.map((z) => z.value));
@@ -126,7 +104,7 @@ export function Profile() {
         ? feetInchesToCm(heightImp.feet, heightImp.inches)
         : heightCm === "" ? null : Number(heightCm);
       const weightForSave = isImperial
-        ? weightLb === "" ? null : Math.round(Number(weightLb) * KG_PER_LB)
+        ? weightLb === "" ? null : lbToKg(weightLb)
         : weightKg === "" ? null : Number(weightKg);
       const payload = {
         ...form,
@@ -175,6 +153,7 @@ export function Profile() {
 
   if (loading) return <p>{t("common.loading")}</p>;
 
+  // Kept for the Danger Zone block below (inline-styled, unchanged).
   const inputStyle = {
     padding: "8px 4px", border: "none", borderBottom: "1px solid var(--border)",
     background: "transparent", color: "var(--text)", fontFamily: "var(--font-body)",
@@ -184,82 +163,109 @@ export function Profile() {
   const rowStyle = { display: "flex", flexDirection: "column", gap: "var(--space-xs)" };
 
   return (
-    <div style={{ maxWidth: 420, display: "flex", flexDirection: "column", gap: "var(--space-md)" }}>
-      <h1 style={{ fontFamily: "var(--font-body)", color: "var(--text)" }}>{t("profile.title")}</h1>
+    <div className="pf">
+      <h1 className="pf-title">{t("profile.title")}</h1>
 
-      <label style={rowStyle}>
-        <span style={labelStyle}>{t("profile.email")}</span>
-        <span style={{ color: "var(--text)" }}>{email}</span>
-      </label>
+      <div className="pf-row">
+        <span className="pf-label">{t("profile.email")}</span>
+        <span className="pf-value">{email}</span>
+      </div>
 
-      <Field labelKey="profile.name" value={form.user_first_name} onChange={(v) => update("user_first_name", v)} />
-      <Field labelKey="profile.age" type="number" value={String(form.user_age)} onChange={(v) => update("user_age", v)} />
+      <div className="pf-row">
+        <span className="pf-label">{t("profile.name")}</span>
+        <input
+          className="pf-input"
+          type="text"
+          value={form.user_first_name}
+          onChange={(e) => update("user_first_name", e.target.value)}
+        />
+      </div>
 
-      <Toggle
-        labelKey="profile.sex"
-        value={form.user_sex}
-        onChange={(v) => update("user_sex", v)}
-        options={[
-          { value: "M", label: t("profile.sexMale") },
-          { value: "W", label: t("profile.sexFemale") },
-          { value: "NB", label: t("profile.sexNonBinary") },
-        ]}
-      />
+      <div className="pf-row">
+        <span className="pf-label">{t("profile.age")}</span>
+        <input
+          className="pf-input"
+          type="number"
+          value={String(form.user_age)}
+          onChange={(e) => update("user_age", e.target.value)}
+        />
+      </div>
 
-      <Toggle
-        labelKey="profile.units"
-        value={form.user_unit_preference}
-        onChange={(v) => update("user_unit_preference", v)}
-        options={[
-          { value: "metric", label: t("profile.metric") },
-          { value: "imperial", label: t("profile.imperial") },
-        ]}
-      />
+      <div className="pf-row">
+        <span className="pf-label">{t("profile.sex")}</span>
+        <Toggle
+          value={form.user_sex}
+          onChange={(v) => update("user_sex", v)}
+          options={[
+            { value: "M", label: t("profile.sexMale") },
+            { value: "W", label: t("profile.sexFemale") },
+            { value: "NB", label: t("profile.sexNonBinary") },
+          ]}
+        />
+      </div>
 
-      <label style={rowStyle}>
-        <span style={labelStyle}>{t("profile.height")}</span>
+      <div className="pf-row">
+        <span className="pf-label">{t("profile.units")}</span>
+        <Toggle
+          value={form.user_unit_preference}
+          onChange={(v) => update("user_unit_preference", v)}
+          options={[
+            { value: "metric", label: t("profile.metric") },
+            { value: "imperial", label: t("profile.imperial") },
+          ]}
+        />
+      </div>
+
+      <div className="pf-row">
+        <span className="pf-label">{t("profile.height")}</span>
         {isImperial ? (
-          <div style={{ display: "flex", gap: 12 }}>
-            <input style={inputStyle} type="number" placeholder={t("profile.feet")} value={heightImp.feet}
+          <div className="pf-height">
+            <input className="pf-input" type="number" placeholder={t("profile.feet")} value={heightImp.feet}
               onChange={(e) => setHeightImp((p) => ({ ...p, feet: e.target.value }))}
               onBlur={commitHeight} />
-            <input style={inputStyle} type="number" placeholder={t("profile.inches")} value={heightImp.inches}
+            <input className="pf-input" type="number" placeholder={t("profile.inches")} value={heightImp.inches}
               onChange={(e) => setHeightImp((p) => ({ ...p, inches: e.target.value }))}
               onBlur={commitHeight} />
           </div>
         ) : (
-          <input style={inputStyle} type="number" placeholder="cm" value={heightCm}
+          <input className="pf-input" type="number" placeholder="cm" value={heightCm}
             onChange={(e) => setHeightCm(e.target.value)} />
         )}
-      </label>
+      </div>
 
-      <label style={rowStyle}>
-        <span style={labelStyle}>{t("profile.weight")}</span>
+      <div className="pf-row">
+        <span className="pf-label">{t("profile.weight")}</span>
         {isImperial ? (
-          <input style={inputStyle} type="number" placeholder="lb" value={weightLb}
+          <input className="pf-input" type="number" placeholder="lb" value={weightLb}
             onChange={(e) => setWeightLb(e.target.value)}
             onBlur={commitWeight} />
         ) : (
-          <input style={inputStyle} type="number" placeholder="kg" value={weightKg}
+          <input className="pf-input" type="number" placeholder="kg" value={weightKg}
             onChange={(e) => setWeightKg(e.target.value)} />
         )}
-      </label>
+      </div>
 
-      <Select
-        labelKey="profile.timezone"
-        value={form.user_timezone}
-        onChange={(v) => update("user_timezone", v)}
-        options={timezoneOptions}
-      />
+      <div className="pf-row">
+        <span className="pf-label">{t("profile.timezone")}</span>
+        <Select
+          value={form.user_timezone}
+          onChange={(v) => update("user_timezone", v)}
+          options={timezoneOptions}
+        />
+      </div>
 
-      <Select
-        labelKey="profile.language"
-        value={form.user_locale}
-        onChange={handleLocaleChange}
-        options={LOCALE_OPTIONS}
-      />
+      <div className="pf-row">
+        <span className="pf-label">{t("profile.language")}</span>
+        <Select
+          value={form.user_locale}
+          onChange={handleLocaleChange}
+          options={LOCALE_OPTIONS}
+        />
+      </div>
 
-      <Button labelKey="profile.save" variant="primary" onClick={handleSave} />
+      <div className="pf-actions">
+        <Button labelKey="profile.save" variant="yellow" onClick={handleSave} />
+      </div>
 
       {/* ---------- Danger Zone ---------- */}
       <div style={{

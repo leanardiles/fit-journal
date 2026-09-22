@@ -1,5 +1,5 @@
 import { useState, useEffect, useMemo } from "react";
-import { useTranslation } from "react-i18next";
+import { useTranslation, Trans } from "react-i18next";
 import { apiGet, apiPost } from "../../api/client";
 import { useToast } from "../../context/ToastContext";
 import { MUSCLE_GROUPS } from "../../constants/muscles";
@@ -347,7 +347,7 @@ export function Routine() {
                         title={t("routine.deleteDay")}
                         onClick={() => deleteDay(d)}
                       >
-                        ×
+                        🗑
                       </button>
                     )}
                   </div>
@@ -493,7 +493,7 @@ export function Routine() {
             })}
 
             {isEditing && daysPerWeek < 7 && (
-              <button type="button" className="rt-btn rt-add-day" onClick={addDay}>
+              <button type="button" className="rt-btn rt-btn--ghost rt-add-day" onClick={addDay}>
                 + {t("routine.addDay")}
               </button>
             )}
@@ -501,10 +501,10 @@ export function Routine() {
             {saveError && <p className="rt-error">{saveError.msg}</p>}
 
             <div className="rt-save-row">
-              <button className="rt-btn" onClick={handleSave}>
+              <button className="rt-btn rt-btn--primary" onClick={handleSave}>
                 ✓ {t("routine.save")}
               </button>
-              <button className="rt-btn" onClick={handleCancel}>
+              <button className="rt-btn rt-btn--negative" onClick={handleCancel}>
                 ✕ {t("routine.cancel")}
               </button>
             </div>
@@ -534,7 +534,14 @@ export function Routine() {
   return (
     <div>
       <h1 className="rt-title">{t("routine.title")}</h1>
-      <p className="rt-subline">{t("routine.trainingDays", { count: routine.days_per_week })}</p>
+      <p className="rt-subline">
+        <Trans
+          i18nKey="routine.trainingDays"
+          count={routine.days_per_week}
+          values={{ count: routine.days_per_week }}
+          components={{ n: <span style={{ color: "var(--red)", margin: "0 4px" }} /> }}
+        />
+      </p>
 
       <div className="rt-cols">
         {viewDays.map((day) => {
@@ -607,10 +614,10 @@ export function Routine() {
       </div>
 
       <div className="rt-save-row" style={{ marginTop: "var(--space-md)" }}>
-        <button className="rt-btn" onClick={enterEdit}>
+        <button className="rt-btn rt-btn--primary" onClick={enterEdit}>
           ✎ {t("routine.editRoutine")}
         </button>
-        <button className="rt-btn" onClick={startNew}>
+        <button className="rt-btn rt-btn--secondary" onClick={startNew}>
           + {t("routine.newRoutine")}
         </button>
       </div>

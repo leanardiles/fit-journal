@@ -10,13 +10,14 @@ import "./Toggle.css";
  *   value    - selected value (owned by parent)
  *   onChange - called with the new value
  *   options  - [{ value, label }], label already display-ready
+ *   vertical - stack the chips in a column instead of a row (default false)
  */
-export function Toggle({ labelKey, value, onChange, options = [] }) {
+export function Toggle({ labelKey, value, onChange, options = [], vertical = false }) {
   const { t } = useTranslation();
   return (
     <div className="toggle-field">
       {labelKey && <span className="toggle-label">{t(labelKey)}</span>}
-      <div className="toggle-group" role="group">
+      <div className={`toggle-group${vertical ? " toggle-group--vertical" : ""}`} role="group">
         {options.map((opt) => {
           const selected = opt.value === value;
           return (

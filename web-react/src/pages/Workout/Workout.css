@@ -1,0 +1,338 @@
+.wo-title {
+  font-size: 22px;
+  color: var(--text);
+  margin: 0 0 var(--space-md);
+  font-family: var(--font-body);
+}
+.wo-muted { color: var(--muted); font-family: var(--font-body); }
+
+/* Routine day strip (pick / skip which day to train) */
+.wo-day-strip {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-bottom: var(--space-sm);
+}
+.wo-day-chip {
+  background: transparent;
+  border: 1px solid var(--text);
+  color: var(--text);
+  font-family: var(--font-body);
+  font-size: 14px;
+  padding-inline: 12px;
+  height: calc(var(--lh) - 8px);
+  border-radius: 8px;
+  cursor: pointer;
+  transition: color 0.12s, border-color 0.12s;
+  display: inline-flex;
+  align-items: center;
+}
+.wo-day-chip:hover { border-color: var(--yellow); }
+.wo-day-chip.current {
+  border-color: var(--yellow);
+  color: var(--text);
+  background: rgba(244, 217, 62, 0.22);
+}
+.wo-day-tag { color: var(--yellow); font-size: 11px; margin-inline-start: 8px; }
+
+.wo-instruction {
+  color: var(--text);
+  font-family: var(--font-body);
+  font-size: var(--fs);
+  margin: var(--space-sm) 0;
+}
+
+.wo-actions { display: flex; gap: 12px; margin-top: var(--space-md); }
+
+.wo-btn {
+  background: var(--yellow, #f4d93e);
+  color: #1a1a1a;
+  border: none;
+  padding: 8px 20px;
+  border-radius: var(--radius);
+  font-size: var(--fs);
+  font-family: var(--font-body);
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  text-decoration: none;
+}
+.wo-btn.secondary {
+  background: transparent;
+  color: var(--text);
+  border: 1.5px solid var(--yellow);
+}
+.wo-btn.negative {
+  background: transparent;
+  color: var(--muted);
+  border: 1.5px solid var(--red-border);
+}
+.wo-btn.negative:hover { color: var(--text); border-color: var(--red); }
+.wo-btn:disabled { opacity: 0.5; cursor: default; }
+
+/* Persistent reddish prompt (holds links) + auto-generate gap note */
+.wo-prompt {
+  color: rgba(192, 57, 43, 0.9);
+  font-size: var(--fs);
+  line-height: var(--lh);
+  padding: 4px 0;
+  font-family: var(--font-body);
+}
+.wo-gap-note {
+  color: rgba(192, 57, 43, 0.9);
+  font-size: 14px;
+  line-height: var(--lh);
+  padding-bottom: 4px;
+  font-family: var(--font-body);
+}
+.wo-prompt-link {
+  color: rgba(192, 57, 43, 0.95);
+  text-decoration: underline;
+  text-decoration-color: var(--red-border);
+  text-underline-offset: 3px;
+  cursor: pointer;
+}
+.wo-prompt-link:hover { text-decoration-color: var(--red); }
+.wo-linkbtn {
+  background: none;
+  border: none;
+  padding: 0;
+  font-family: var(--font-body);
+  font-size: var(--fs);
+}
+
+/* Date + routine-day line above the table */
+.wo-dateline { margin-bottom: var(--space-xs); font-family: var(--font-body); }
+.wo-date { color: var(--text); }
+.wo-dayinfo { color: var(--muted); margin-inline-start: 12px; font-size: 14px; }
+
+/* Workout table */
+.wo-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-family: var(--font-body);
+  margin-top: var(--space-sm);
+}
+.wo-table th {
+  height: var(--lh);
+  text-align: start;
+  padding-bottom: 4px;
+  font-size: 11px;
+  color: var(--muted);
+  text-transform: uppercase;
+  letter-spacing: 1.2px;
+  font-weight: normal;
+  vertical-align: bottom;
+}
+.wo-table th.center { text-align: center; }
+.wo-check-col { width: 36px; }
+.wo-table td {
+  height: var(--lh);
+  padding-bottom: 4px;
+  vertical-align: bottom;
+  font-size: var(--fs);
+  color: var(--text);
+}
+.wo-table td.center { text-align: center; padding: 0 6px; width: 80px; }
+.wo-muscle-cell {
+  color: var(--red);
+  font-size: 13px;
+  padding-inline-end: 24px;
+  white-space: nowrap;
+  width: 1%;
+}
+.wo-exname-cell { white-space: nowrap; padding-inline-end: 32px; width: 1%; }
+
+.wo-input {
+  background: transparent;
+  border: none;
+  border-bottom: 1px solid var(--border);
+  color: var(--text);
+  font-family: var(--font-body);
+  font-size: var(--fs);
+  width: 60px;
+  padding: 0 4px 4px;
+  outline: none;
+  text-align: center;
+  transition: border-color 0.12s;
+}
+.wo-input:focus { border-bottom-color: var(--red-border); }
+.wo-weight { color: var(--muted); }
+.wo-weight.modified { color: var(--text); }
+
+/* Check circle */
+.wo-check {
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  border: 1.5px solid var(--muted);
+  background: transparent;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.12s;
+  padding: 0;
+  margin-bottom: 4px;
+  color: transparent;
+}
+.wo-check:hover { border-color: var(--text); }
+.wo-check.checked {
+  background: var(--text);
+  border-color: var(--text);
+  color: var(--bg);
+  font-size: 12px;
+  line-height: 1;
+}
+.wo-check.checked::after { content: "✓"; }
+
+/* Dim checked rows, but keep the check circle itself opaque and clickable */
+.wo-table tr.checked-row td { opacity: 0.4; transition: opacity 0.15s; }
+.wo-table tr.checked-row td:last-child { opacity: 1; }
+
+/* Success screen */
+.wo-success-msg {
+  color: rgba(100, 180, 100, 0.85);
+  font-size: var(--fs);
+  font-family: var(--font-body);
+  margin: var(--space-sm) 0;
+}
+
+/* Manual log builder */
+.wo-ml-title {
+  color: var(--text);
+  font-size: 16px;
+  text-transform: uppercase;
+  letter-spacing: 1.5px;
+  min-height: var(--lh);
+  display: flex;
+  align-items: flex-end;
+  padding-bottom: 4px;
+  font-family: var(--font-body);
+}
+.wo-ml-dateline {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-top: 4px;
+  font-family: var(--font-body);
+}
+.wo-ml-datelabel { color: var(--text); }
+.wo-ml-date {
+  background: transparent;
+  border: 1px solid var(--border);
+  color: var(--text);
+  font-family: var(--font-body);
+  font-size: 15px;
+  padding: 2px 8px;
+  border-radius: 6px;
+}
+.wo-ml-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 32px;
+  align-items: start;
+  margin-top: var(--space-md);
+}
+@media (max-width: 760px) {
+  .wo-ml-grid { grid-template-columns: 1fr; }
+}
+.wo-ml-empty { color: var(--text); font-family: var(--font-body); }
+.wo-ml-head {
+  display: flex;
+  align-items: flex-end;
+  gap: 8px;
+  min-height: var(--lh);
+  padding-bottom: 2px;
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  color: var(--muted);
+  font-family: var(--font-body);
+}
+.wo-ml-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  min-height: var(--lh);
+  padding-bottom: 2px;
+  font-family: var(--font-body);
+}
+.wo-ml-muscle {
+  flex: 0 0 76px;
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  color: var(--muted);
+}
+.wo-ml-name { flex: 1; color: var(--text); font-size: 14px; min-width: 0; }
+.wo-ml-input {
+  width: 46px;
+  background: transparent;
+  border: 1px solid var(--border);
+  color: var(--text);
+  font-family: var(--font-body);
+  font-size: 14px;
+  text-align: center;
+  border-radius: 6px;
+  padding: 1px 0;
+}
+.wo-ml-input:focus { border-color: var(--red-border); outline: none; }
+.wo-ml-h { width: 46px; text-align: center; }
+.wo-ml-delcol { width: 20px; }
+.wo-ml-del {
+  background: transparent;
+  border: none;
+  color: var(--red);
+  cursor: pointer;
+  font-size: 18px;
+  line-height: 1;
+  width: 20px;
+}
+.wo-ml-picker {
+  border-inline-start: 2px solid var(--border);
+  padding: 4px 0 6px;
+  padding-inline-start: 12px;
+}
+.wo-ml-tabs { display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 8px; }
+.wo-ml-tab {
+  background: transparent;
+  border: 1px solid var(--text);
+  color: var(--text);
+  font-family: var(--font-body);
+  font-size: 13px;
+  padding: 0 10px;
+  height: calc(var(--lh) - 12px);
+  border-radius: 8px;
+  cursor: pointer;
+}
+.wo-ml-tab:hover { border-color: var(--yellow); }
+.wo-ml-tab.active {
+  border-color: var(--yellow);
+  color: var(--text);
+  background: rgba(244, 217, 62, 0.22);
+}
+.wo-ml-pick-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  min-height: calc(var(--lh) - 2px);
+}
+.wo-ml-add {
+  background: transparent;
+  border: 1px solid var(--red-border);
+  color: var(--red);
+  font-family: var(--font-body);
+  font-size: 12px;
+  padding: 0 8px;
+  height: 20px;
+  border-radius: 6px;
+  cursor: pointer;
+}
+.wo-ml-add:disabled {
+  opacity: 0.4;
+  cursor: default;
+  border-color: var(--border);
+  color: var(--muted);
+}
+.wo-ml-none { color: var(--muted); font-family: var(--font-body); }

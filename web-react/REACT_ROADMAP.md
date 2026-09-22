@@ -46,6 +46,7 @@ Legend: [ ] todo   [~] in progress   [x] done
       position}] in the save payload. Its own state machine (order / groups / groupSeq / picked /
       buildSequence). Legacy logic is in routine.html. Until this exists, manual days save as a flat
       exercise_ids list, and re-saving a previously grouped manual day drops its grouping.
+- [ ] Delete Routine look. Right now, to delete a routine day there is a small X at the end of the routine day line. I want to add a clear delete symbol, consistent to the rest of the app (e.g. Exercises).      
 
 ## i18n showcases (high interview value , do once core flow exists)
 - [ ] Pseudo-localization mode ([!!! Ëxpändëd têxt !!!]) , catch hardcoded strings + layout breaks. HIGHEST

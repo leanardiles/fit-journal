@@ -1,4 +1,4 @@
-/* Exercises page , two columns: muscle tabs + filtered exercise table.
+/* Exercises page , two columns: muscle toggle + filtered exercise table.
    Ported from the Jinja page, written logical-first so it mirrors under
    dir="rtl" with no extra work. */
 
@@ -16,46 +16,28 @@
   display: flex;
 }
 
-/* Left column , vertical muscle tabs */
+/* Left column , vertical muscle toggle (chips stacked, styled by Toggle.css) */
 .ex-muscle-col {
-  width: 120px;
-  min-width: 120px;
+  width: 150px;
+  min-width: 150px;
   flex-shrink: 0;
-  display: flex;
-  flex-direction: column;
-  border-inline-end: 1px solid var(--border);
-  padding-inline-end: 8px;
 }
 
-.ex-muscle-tab {
-  display: flex;
-  align-items: flex-end;
-  height: var(--lh);
-  padding: 0 12px 5px;               /* horizontally symmetric */
-  background: transparent;
-  border: none;
-  border-inline-start: 2px solid transparent;
-  color: var(--muted);
-  font-family: var(--font-body);
-  font-size: var(--fs);
-  text-align: start;
-  cursor: pointer;
-  transition: color 0.1s;
-}
-
-.ex-muscle-tab:hover { color: var(--text); }
-
-.ex-muscle-tab.active {
+.ex-muscle-heading {
+  display: block;
   color: var(--text);
-  border-inline-start-color: var(--red-border);
+  font-size: 13px;
+  margin-bottom: var(--space-xs);
 }
 
 /* Right column , exercise table */
 .ex-exercise-col {
   flex: 1;
   min-width: 0;
-  padding-inline-start: 24px;
+  padding-inline-start: 72px;
 }
+
+.ex-add-row { margin-top: var(--space-md); }
 
 .ex-table {
   width: auto;
@@ -67,7 +49,7 @@
   text-align: start;
   padding-bottom: 4px;
   font-size: 11px;
-  color: var(--muted);
+  color: var(--text);
   text-transform: uppercase;
   letter-spacing: 1.2px;
   font-weight: normal;
@@ -108,7 +90,7 @@
 .ex-delete-btn {
   background: transparent;
   border: none;
-  color: var(--muted);
+  color: var(--text);
   font-size: 15px;
   cursor: pointer;
   padding: 0;

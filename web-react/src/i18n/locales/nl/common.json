@@ -32,10 +32,11 @@
   },
   "common": {
     "loading": "Laden...",
-    "day": "Dag {{day}}"
+    "day": "Dag {{day}}",
+    "optional": "(optioneel)"
   },
   "profile": {
-    "title": "Profiel",
+    "title": "Mijn profiel",
     "email": "E-mail",
     "name": "Naam",
     "age": "Leeftijd",
@@ -65,10 +66,10 @@
     "deleteError": "Kon je account niet verwijderen."
   },
   "dashboard": {
-    "title": "Dashboard",
+    "title": "Mijn Dashboard",
     "quickStats": "Snelle statistieken",
     "thisWeek": "Deze week",
-    "currentDay": "Huidige dag",
+    "currentDay": "Huidige",
     "currentRoutine": "Je huidige routine",
     "noRoutine": "Nog geen routine ingesteld.",
     "createRoutine": "Routine aanmaken",
@@ -82,7 +83,8 @@
     "sets_other": "{{count}} sets"
   },
   "exercises": {
-    "title": "Jouw oefeningen",
+    "title": "Mijn oefeningen",
+    "selectMuscle": "Kies een spiergroep:",
     "empty": "Geen oefeningen voor deze spiergroep.",
     "colExercise": "Oefening",
     "colWeight": "Gewicht",
@@ -124,7 +126,7 @@
     "africa": "Afrika"
   },
   "calendar": {
-    "title": "Jouw kalender",
+    "title": "Mijn kalender",
     "allDays": "Alle dagen",
     "currentDay": "huidige dag",
     "showingAll": "Alle dagen weergeven",
@@ -146,7 +148,7 @@
     "clearError": "Kon de selecties niet wissen."
   },
   "routine": {
-    "title": "Je huidige routine",
+    "title": "Mijn huidige routine",
     "trainingDays_one": "{{count}} dag per week trainen",
     "trainingDays_other": "{{count}} dagen per week trainen",
     "dayTypeManual": "Handmatig",
@@ -184,5 +186,53 @@
     "deleteDay": "Deze dag verwijderen",
     "confirmDeleteDay": "Dag {{day}} verwijderen? De oefeningen worden verwijderd.",
     "errMinOneDay": "Een routine heeft minstens één dag nodig."
+  },
+  "workout": {
+    "title": "WOD loggen",
+    "generateInstruction": "Genereer de workout voor je gemarkeerde dag, of kies hierboven een andere dag.",
+    "generateBtn": "WOD genereren",
+    "loading": "Laden...",
+    "current": "huidige",
+    "confirmSetDay": "{{day}} als je huidige dag instellen?",
+    "setDayError": "Kon de huidige dag niet instellen. Probeer het opnieuw.",
+    "generateError": "Kon de workout niet genereren. Probeer het opnieuw.",
+    "autoGenError": "Kon geen automatische selectie genereren. Probeer het opnieuw.",
+    "cancel": "Annuleren",
+    "colMuscle": "Spier",
+    "colExercise": "Oefening",
+    "colWeight": "Gewicht",
+    "colSets": "Sets",
+    "colReps": "Herh.",
+    "markExercise": "{{name}} als gedaan markeren",
+    "promptNoRoutine": "Je hebt een routine nodig voordat je een workout kunt genereren.",
+    "promptNoSelection": "Er zijn geen oefeningen geselecteerd voor deze dag.",
+    "promptNoLibrary": "Geen oefeningen in je bibliotheek voor de spieren van vandaag: {{muscles}}.",
+    "promptManualEmpty": "Deze dag heeft nog geen oefeningen.",
+    "gapNote": "Geen oefeningen gevonden voor: {{muscles}}.",
+    "linkCreateRoutine": "Routine maken",
+    "linkCalendar": "Kalender openen",
+    "linkAutoSelect": "Automatische selectie",
+    "linkAddExercises": "Oefeningen toevoegen",
+    "linkEditRoutine": "Routine bewerken",
+    "markComplete": "Als voltooid markeren",
+    "saving": "Opslaan...",
+    "noneChecked": "Geen oefeningen aangevinkt. Vink aan wat je hebt gedaan.",
+    "missingSets": "Voer sets in voor: {{names}}",
+    "saveError": "Kon de workout niet opslaan. Probeer het opnieuw.",
+    "successMsg": "Workout voltooid! Goed gedaan.",
+    "backToDashboard": "Terug naar dashboard",
+    "logManual": "Handmatig loggen",
+    "manualTitle": "Een handmatige workout loggen",
+    "date": "Datum",
+    "manualListEmpty": "Nog geen oefeningen toegevoegd — voeg er een paar toe uit de lijst.",
+    "wtShort": "gew.",
+    "addBtn": "toevoegen",
+    "added": "toegevoegd",
+    "logWod": "WOD loggen",
+    "back": "Terug",
+    "remove": "{{name}} verwijderen",
+    "noMuscleExercises": "Geen {{muscle}}-oefeningen.",
+    "manualNoExercises": "Voeg minstens één oefening toe.",
+    "manualNoDate": "Kies een datum."
   }
 }

@@ -16,8 +16,8 @@
 }
 .cal-filter-btn {
   background: transparent;
-  border: 1px solid var(--border);
-  color: var(--muted);
+  border: 1px solid var(--text);
+  color: var(--text);
   font-family: var(--font-body);
   font-size: 14px;
   padding: 4px 14px;
@@ -25,19 +25,16 @@
   border-radius: 8px;
   transition: all 0.12s;
 }
-.cal-filter-btn:hover { color: var(--text); }
+.cal-filter-btn:hover { border-color: var(--yellow); }
 .cal-filter-btn.active {
-  border-color: var(--red-border);
+  border-color: var(--yellow);
   color: var(--text);
-  background: var(--active-bg, rgba(150, 30, 30, 0.12));
+  background: rgba(244, 217, 62, 0.22);
 }
 .cal-current-marker {
-  display: inline-flex;
-  align-items: center;
-  gap: 4px;
-  color: var(--red);
-  font-size: 12px;
-  margin-inline-start: 4px;
+  color: var(--yellow, #f4d93e);
+  font-size: 11px;
+  margin-inline-start: 8px;
   white-space: nowrap;
 }
 
@@ -55,7 +52,7 @@
   text-align: center;
   padding: 0 12px 4px;
   font-size: 11px;
-  color: var(--muted);
+  color: var(--text);
   text-transform: uppercase;
   letter-spacing: 1.2px;
   font-weight: normal;
@@ -63,7 +60,7 @@
   white-space: nowrap;
 }
 .cal-table th.left { text-align: start; padding-inline-start: 0; }
-.cal-wod-day { font-size: 11px; color: var(--muted); text-transform: none; letter-spacing: 0; }
+.cal-wod-day { font-size: 11px; color: var(--text); text-transform: none; letter-spacing: 0; }
 .cal-wod-date { font-size: 12px; color: var(--text); text-transform: none; letter-spacing: 0; margin-top: 2px; }
 
 .cal-table td {
@@ -78,11 +75,12 @@
 .cal-exname { min-width: 180px; }
 
 .cal-muscle-row td {
-  color: var(--red);
-  font-size: 13px;
+  color: var(--yellow);
+  font-size: 15px;
   text-transform: uppercase;
   letter-spacing: 1px;
-  padding-top: 10px;
+  height: var(--lh);
+  padding-bottom: 4px;
 }
 .cal-day-row td {
   color: var(--text);
@@ -103,12 +101,13 @@
 .cal-link { color: var(--red); text-decoration: underline; margin-inline-start: 8px; }
 
 /* Sticky exercise-name column stays visible while scrolling the session cols.
-   Sticky cells need an opaque background so scrolled content doesn't show
-   through. inset-inline-start keeps the pin on the correct side under RTL. */
+   Background is transparent so the notepad's ruled lines show through. Trade-off:
+   when the session columns scroll horizontally, their cells pass under this
+   column. inset-inline-start keeps the pin on the correct side under RTL. */
 .cal-table th.sticky-col,
 .cal-table td.sticky-col {
   position: sticky;
-  background: var(--bg);
+  background: transparent;
   z-index: 1;
 }
 .cal-table .sticky-name {
@@ -117,7 +116,7 @@
   box-sizing: border-box;
 }
 .cal-muscle-row td,
-.cal-day-row td { position: sticky; inset-inline-start: 0; background: var(--bg); }
+.cal-day-row td { position: sticky; inset-inline-start: 0; background: transparent; }
 
 .cal-header {
   display: flex;
@@ -145,7 +144,7 @@
 
 .cal-next-btn {
   background: transparent;
-  border: 1px solid var(--border);
+  border: 1px solid var(--text);
   color: var(--text);
   font-family: var(--font-body);
   font-size: 13px;
@@ -156,11 +155,11 @@
   border-radius: 6px;
   transition: all 0.12s;
 }
-.cal-next-btn:hover { border-color: var(--red-border); }
+.cal-next-btn:hover { border-color: var(--yellow); }
 .cal-next-btn.selected {
-  border-color: var(--red-border);
+  border-color: var(--yellow);
   color: var(--text);
-  background: var(--active-bg, rgba(150, 30, 30, 0.12));
+  background: rgba(244, 217, 62, 0.22);
 }
 
 .cal-lock {
@@ -172,4 +171,11 @@
 }
 
 /* second sticky column: sits right after the fixed 180px name column */
-.cal-table .sticky-select { inset-inline-start: 180px; }
+.cal-table .sticky-select {
+  inset-inline-start: 180px;
+  width: 52px;
+  min-width: 52px;
+  max-width: 52px;
+  padding-inline: 6px;
+  white-space: normal;
+}

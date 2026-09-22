@@ -435,15 +435,14 @@ export function Calendar() {
           {t("calendar.allDays")}
         </button>
         {dayNumbers.map((d) => (
-          <Fragment key={d}>
-            <button
-              className={`cal-filter-btn${filterMode === "specific" && selectedDays.includes(d) ? " active" : ""}`}
-              onClick={() => toggleDay(d)}
-            >
-              {t("common.day", { day: d })}
-            </button>
-            {d === currentDay && <span className="cal-current-marker">← {t("calendar.currentDay")}</span>}
-          </Fragment>
+          <button
+            key={d}
+            className={`cal-filter-btn${filterMode === "specific" && selectedDays.includes(d) ? " active" : ""}`}
+            onClick={() => toggleDay(d)}
+          >
+            {t("common.day", { day: d })}
+            {d === currentDay && <span className="cal-current-marker">{t("calendar.currentDay")}</span>}
+          </button>
         ))}
       </div>
 
