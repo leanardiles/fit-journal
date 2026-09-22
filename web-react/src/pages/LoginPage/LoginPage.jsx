@@ -2,6 +2,7 @@ import { useState } from "react";
 import { useTranslation } from "react-i18next";
 import { useNavigate, Link } from "react-router-dom";
 import { Button } from "../../components/Button/Button";
+import { PasswordToggle } from "../../components/PasswordToggle/PasswordToggle";
 import { apiPost } from "../../api/client";
 import logo from "../../assets/logo-and-name-dark.png";
 import "../../layouts/AuthLayout/AuthLayout.css";
@@ -12,6 +13,7 @@ export function LoginPage() {
 
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [showPassword, setShowPassword] = useState(false);
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
 
@@ -65,12 +67,23 @@ export function LoginPage() {
               <span className="auth-field-label">{t("login.passwordLabel")}</span>
               <input
                 className="auth-field-input"
-                type="password"
+                type={showPassword ? "text" : "password"}
                 value={password}
                 placeholder={t("login.passwordPlaceholder")}
                 onChange={(e) => setPassword(e.target.value)}
               />
+              <PasswordToggle
+                shown={showPassword}
+                onToggle={() => setShowPassword((s) => !s)}
+                showLabel={t("auth.showPassword")}
+                hideLabel={t("auth.hidePassword")}
+              />
             </label>
+          </div>
+
+          {/* placeholder , wires to a password-reset flow later */}
+          <div className="auth-line auth-line--right">
+            <button type="button" className="auth-forgot">{t("login.forgotPassword")}</button>
           </div>
 
           {error && <div className="auth-line auth-line--error">{error}</div>}

@@ -1,7 +1,8 @@
 {
   "login": {
     "title": "Iniciá sesión y registrá tu próximo entrenamiento",
-    "noAccount": "¿No tenés cuenta? Registrate"
+    "noAccount": "¿No tenés cuenta? Registrate",
+    "forgotPassword": "¿Te olvidaste la contraseña?"
 
   },
   "register": {

@@ -1,5 +1,9 @@
 {
   "appName": "FitJournal",
+  "auth": {
+    "showPassword": "Wachtwoord tonen",
+    "hidePassword": "Wachtwoord verbergen"
+  },
   "nav": {
     "dashboard": "Dashboard",
     "profile": "Profiel",
@@ -15,14 +19,16 @@
     "emailLabel": "E-mail",
     "emailPlaceholder": "jij@voorbeeld.com",
     "passwordLabel": "Wachtwoord",
-    "noAccount": "Geen account? Registreer"
-
+    "noAccount": "Geen account? Registreer",
+    "forgotPassword": "Wachtwoord vergeten?"
   },
   "register": {
     "title": "Maak je account aan",
     "button": "Registreren",
     "haveAccount": "Heb je al een account? Inloggen",
-    "success": "Account aangemaakt! Log in"
+    "success": "Account aangemaakt! Log in",
+    "repeatPasswordLabel": "Wachtwoord herhalen",
+    "passwordMismatch": "Wachtwoorden komen niet overeen."
   },
   "common": {
     "loading": "Laden...",

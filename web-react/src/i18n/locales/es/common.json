@@ -1,5 +1,9 @@
 {
   "appName": "FitJournal",
+  "auth": {
+    "showPassword": "Mostrar contraseña",
+    "hidePassword": "Ocultar contraseña"
+  },
   "nav": {
     "dashboard": "Panel",
     "profile": "Perfil",
@@ -16,14 +20,16 @@
     "emailLabel": "Correo electrónico",
     "emailPlaceholder": "tu@ejemplo.com",
     "passwordLabel": "Contraseña",
-    "noAccount": "¿No tienes cuenta? Regístrate"
-
+    "noAccount": "¿No tienes cuenta? Regístrate",
+    "forgotPassword": "¿Olvidaste tu contraseña?"
   },
   "register": {
     "title": "Crea tu cuenta",
     "button": "Registrarse",
     "haveAccount": "¿Ya tienes cuenta? Inicia sesión",
-    "success": "¡Cuenta creada! Inicia sesión"
+    "success": "¡Cuenta creada! Inicia sesión",
+    "repeatPasswordLabel": "Repetir contraseña",
+    "passwordMismatch": "Las contraseñas no coinciden."
   },
   "common": {
     "loading": "Cargando...",
