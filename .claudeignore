@@ -1,20 +1,33 @@
+# ==========================================================
+# .claudeignore — paths kept out of Claude's context.
+# Purpose: never expose secrets, credentials, or private keys.
+# ==========================================================
+
 # Environment and secrets
-.env
-.env.*
-
-# AWS credentials
-.aws/
-aws-exports.js
-
-# Database
-*.sqlite
-*.db
+.env*
 
 # Private keys and certificates
 *.pem
 *.key
 *.p12
 *.jks
+
+# Cloud and SSH credentials
+.aws/
+.ssh/
+aws-exports.js
+
+# Secret directories (any depth)
+**/secrets/
+**/credentials/
+
+# Config files that may hold connection strings or secrets
+docker-compose.yml
+config/database.yml
+
+# Databases
+*.sqlite
+*.db
 
 # Android signing
 android/keystore/
