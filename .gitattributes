@@ -1,0 +1,28 @@
+# Line-ending policy: text files are LF-canonical in the repo (matches Linux/CI).
+* text=auto
+
+# Windows batch files must stay CRLF.
+*.bat  text eol=crlf
+*.cmd  text eol=crlf
+
+# Shell scripts must stay LF.
+*.sh   text eol=lf
+
+# Explicit text types (diff-able).
+*.svg  text
+
+# Binary: never touch line endings.
+*.png  binary
+*.jpg  binary
+*.jpeg binary
+*.gif  binary
+*.ico  binary
+*.webp binary
+*.pdf  binary
+*.jar  binary
+*.jks  binary
+*.keystore binary
+*.woff  binary
+*.woff2 binary
+*.ttf  binary
+*.eot  binary
