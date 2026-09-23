@@ -60,7 +60,9 @@ templates = Jinja2Templates(directory=TEMPLATES_DIR)
 app.add_middleware(
     CORSMiddleware,
     allow_origins=[
-        "https://app.fit-journal.com",   # production (web app)
+        "https://app.fit-journal.com",   # leaving this until Jinjs is retired
+        "https://fit-journal.com",
+        "https://www.fit-journal.com",
         "http://localhost:8000",          # local dev (backend origin)
         "http://127.0.0.1:8000",          # local dev (backend origin)
         "http://localhost:5173",          # local dev (React / Vite frontend)
