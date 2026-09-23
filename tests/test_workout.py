@@ -336,3 +336,69 @@ def test_skip_day_then_complete_advances_from_chosen(auth):
 
     state = auth["client"].get(f"/v1/workout/state/{uid}", headers=auth["headers"]).json()
     assert state["current_day_number"] == 3   # advanced from the day logged (2 -> 3)
+
+# --- next-workout manual selection (toggle + clear) -------------------------
+
+def test_next_workout_toggle_and_clear(auth):
+    """Toggling selects/deselects an exercise for the next workout; clear removes all."""
+    uid = auth["user_id"]
+    ex = _make_exercise(auth, "Bench Press", "Chest")
+
+    def toggle(selected):
+        return auth["client"].post(
+            "/v1/next-workout/toggle",
+            headers=auth["headers"],
+            json={"user_id": uid, "exercise_id": ex, "is_selected": selected},
+        )
+
+    # On -> appears as selected
+    assert toggle(True).status_code == 200
+    assert ex in _selected_ids(auth)
+
+    # Off -> no longer selected
+    assert toggle(False).status_code == 200
+    assert ex not in _selected_ids(auth)
+
+    # On again, then clear-all wipes the selection rows
+    toggle(True)
+    r = auth["client"].delete(f"/v1/next-workout/clear/{uid}", headers=auth["headers"])
+    assert r.status_code == 200, r.text
+    remaining = auth["client"].get(
+        f"/v1/next-workout/selections/{uid}", headers=auth["headers"]
+    ).json()
+    assert remaining == []
+
+
+# --- calendar/dashboard reads (sessions + logs-by-sessions) -----------------
+
+def test_sessions_and_logs_by_sessions(auth):
+    """Completing a workout creates a session that the calendar read endpoints return."""
+    uid = auth["user_id"]
+    ex = _make_exercise(auth, "Bench Press", "Chest")
+    _save(auth, [_pm_day(1, "Chest", [ex])])
+    auth["client"].get(f"/v1/workout/state/{uid}", headers=auth["headers"])  # ensure state
+    _generate(auth, day_number=1)
+
+    completed = auth["client"].post(
+        f"/v1/workout/complete/{uid}",
+        headers=auth["headers"],
+        json={"day_number": 1, "exercises": [
+            {"exercise_id": ex, "sets_completed": 3, "reps_completed": 10, "weight_used": 60.0},
+        ]},
+    )
+    assert completed.status_code == 200, completed.text
+    session_id = completed.json()["session_id"]
+
+    # sessions endpoint (calendar columns) includes the completed session
+    sessions = auth["client"].get(
+        f"/v1/workout/sessions/{uid}", headers=auth["headers"]
+    ).json()
+    assert any(s["session_id"] == session_id for s in sessions)
+
+    # logs-by-sessions (calendar cell fill) returns the exercise logged in it
+    logs = auth["client"].post(
+        f"/v1/workout/logs-by-sessions/{uid}",
+        headers=auth["headers"],
+        json={"session_ids": [session_id]},
+    ).json()
+    assert any(l["exercise_id"] == ex for l in logs)
