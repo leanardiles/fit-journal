@@ -1,3 +1,6 @@
+from database import SessionLocal
+import models
+
 """
 Routine save/read and validation tests for the training-day model.
 
@@ -25,6 +28,13 @@ def _make_second_user(client):
     """Register + log in a second user; return {user_id, headers}."""
     email, password = "second@example.com", "testpass123"
     client.post("/v1/register", json={"user_email": email, "user_password": password})
+    session = SessionLocal()
+    try:
+        u = session.query(models.User).filter(models.User.user_email == email).first()
+        u.user_email_verified = True
+        session.commit()
+    finally:
+        session.close()
     login = client.post("/v1/login", json={"user_email": email, "user_password": password}).json()
     return {
         "user_id": login["user_id"],

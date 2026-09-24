@@ -255,6 +255,13 @@ def test_manual_log_rejects_unowned_exercise(auth):
     """A manual log referencing another user's exercise is rejected."""
     client = auth["client"]
     client.post("/v1/register", json={"user_email": "mlother@example.com", "user_password": "testpass123"})
+    session = SessionLocal()
+    try:
+        u = session.query(models.User).filter(models.User.user_email == "mlother@example.com").first()
+        u.user_email_verified = True
+        session.commit()
+    finally:
+        session.close()
     other = client.post("/v1/login", json={"user_email": "mlother@example.com", "user_password": "testpass123"}).json()
     other_headers = {"Authorization": f"Bearer {other['access_token']}"}
     other_ex = client.post(

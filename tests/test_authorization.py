@@ -5,11 +5,22 @@ that was found and fixed; these tests confirm the fix holds across resources.
 """
 
 import pytest
+from database import SessionLocal
+import models
 
 
 def _make_second_user(client, email="userb@example.com", password="testpass123"):
     """Register + log in a second user (B); return their user_id and headers."""
     client.post("/v1/register", json={"user_email": email, "user_password": password})
+
+    session = SessionLocal()
+    try:
+        u = session.query(models.User).filter(models.User.user_email == email).first()
+        u.user_email_verified = True
+        session.commit()
+    finally:
+        session.close()
+
     login = client.post("/v1/login", json={"user_email": email, "user_password": password})
     data = login.json()
     return {
