@@ -21,6 +21,7 @@ from pydantic import BaseModel
 # Local imports
 import models
 import schemas
+import emailer
 from config import settings
 from database import engine, get_db
 from i18n import t, resolve_request_locale
@@ -112,6 +113,24 @@ def create_access_token(data: dict):
 
 # HTTP Bearer scheme for Swagger UI
 security = HTTPBearer()
+
+def _issue_auth_token(db: Session, user: models.User, purpose, secret: str, ttl_minutes: int):
+    """
+    Store a new single-use auth secret (SHA-256 hashed) for this user + purpose,
+    superseding any previous unused one. The caller emails the plaintext `secret`.
+    """
+    db.query(models.AuthToken).filter(
+        models.AuthToken.user_id == user.user_id,
+        models.AuthToken.purpose == purpose,
+        models.AuthToken.used_at.is_(None),
+    ).delete(synchronize_session=False)
+    db.add(models.AuthToken(
+        user_id=user.user_id,
+        purpose=purpose,
+        token_hash=emailer.hash_secret(secret),
+        expires_at=datetime.utcnow() + timedelta(minutes=ttl_minutes),
+    ))
+    db.commit()
 
 def get_current_user(
     credentials: HTTPAuthorizationCredentials = Depends(security),
@@ -272,6 +291,15 @@ def register(user: schemas.UserCreate, request: Request, db: Session = Depends(g
     db.bulk_save_objects(user_exercises)
     
     db.commit()
+
+    # Issue an email-verification code and send it (emailer prints it when EMAIL_ENABLED=false)
+    code = emailer.generate_code()
+    _issue_auth_token(db, new_user, models.AuthTokenPurposeEnum.email_verify,
+                      code, settings.email_verify_code_ttl_minutes)
+    try:
+        emailer.send_verification_code(new_user.user_email, code)
+    except Exception as e:
+        print(f"[WARN] verification email failed for {new_user.user_email}: {e}")
     
     return new_user
 
@@ -295,6 +323,14 @@ def login(user: schemas.UserLogin, request: Request, db: Session = Depends(get_d
     if not db_user.user_is_active:
         raise HTTPException(status_code=403, detail=t("errors.auth.accountInactive", locale))
 
+    # Require a verified email before login
+    if not db_user.user_email_verified:
+        raise HTTPException(
+            status_code=403,
+            detail={"code": "email_not_verified",
+                    "message": "Please verify your email address before logging in."},
+        )
+    
     # Create JWT token
     access_token = create_access_token(
         data={
@@ -310,6 +346,108 @@ def login(user: schemas.UserLogin, request: Request, db: Session = Depends(get_d
         "user_email": db_user.user_email,
         "access_token": access_token
     }
+
+@api_v1.post("/verify-email")
+def verify_email(data: schemas.EmailVerifyRequest, request: Request, db: Session = Depends(get_db)):
+    """Confirm signup with the 6-digit code; on success mark verified and return a JWT."""
+    user = db.query(models.User).filter(models.User.user_email == data.user_email).first()
+    if not user:
+        raise HTTPException(status_code=400, detail="Invalid or expired code.")
+    if user.user_email_verified:
+        raise HTTPException(status_code=400, detail="This email is already verified.")
+
+    tok = (
+        db.query(models.AuthToken)
+        .filter(
+            models.AuthToken.user_id == user.user_id,
+            models.AuthToken.purpose == models.AuthTokenPurposeEnum.email_verify,
+            models.AuthToken.used_at.is_(None),
+        )
+        .order_by(models.AuthToken.created_at.desc())
+        .first()
+    )
+    if not tok or tok.expires_at < datetime.utcnow():
+        raise HTTPException(status_code=400, detail="Invalid or expired code.")
+    if tok.attempts >= 5:
+        raise HTTPException(status_code=429, detail="Too many attempts. Request a new code.")
+
+    if tok.token_hash != emailer.hash_secret(data.code):
+        tok.attempts += 1
+        db.commit()
+        raise HTTPException(status_code=400, detail="Invalid or expired code.")
+
+    user.user_email_verified = True
+    tok.used_at = datetime.utcnow()
+    db.commit()
+
+    access_token = create_access_token(data={"sub": str(user.user_id), "email": user.user_email})
+    return {
+        "message": "Email verified",
+        "token_type": "bearer",
+        "user_id": user.user_id,
+        "user_email": user.user_email,
+        "access_token": access_token,
+    }
+
+
+@api_v1.post("/resend-verification")
+def resend_verification(data: schemas.ResendVerificationRequest, request: Request, db: Session = Depends(get_db)):
+    """Re-send a code. Always 200 with the same message (no email enumeration)."""
+    user = db.query(models.User).filter(models.User.user_email == data.user_email).first()
+    if user and not user.user_email_verified:
+        code = emailer.generate_code()
+        _issue_auth_token(db, user, models.AuthTokenPurposeEnum.email_verify,
+                          code, settings.email_verify_code_ttl_minutes)
+        try:
+            emailer.send_verification_code(user.user_email, code)
+        except Exception as e:
+            print(f"[WARN] resend verification failed for {user.user_email}: {e}")
+    return {"message": "If that account exists and is unverified, a new code has been sent."}
+
+
+@api_v1.post("/forgot-password")
+def forgot_password(data: schemas.ForgotPasswordRequest, request: Request, db: Session = Depends(get_db)):
+    """Start a reset. Always 200 with the same message (no email enumeration)."""
+    user = db.query(models.User).filter(models.User.user_email == data.user_email).first()
+    if user:
+        token = emailer.generate_token()
+        _issue_auth_token(db, user, models.AuthTokenPurposeEnum.password_reset,
+                          token, settings.password_reset_ttl_minutes)
+        try:
+            emailer.send_password_reset(user.user_email, token)
+        except Exception as e:
+            print(f"[WARN] password reset email failed for {user.user_email}: {e}")
+    return {"message": "If that account exists, a password reset link has been sent."}
+
+
+@api_v1.post("/reset-password")
+def reset_password(data: schemas.ResetPasswordRequest, request: Request, db: Session = Depends(get_db)):
+    """Complete a reset with the emailed token (single-use, time-limited)."""
+    if len(data.new_password) < 8:
+        raise HTTPException(status_code=400, detail="Password must be at least 8 characters.")
+
+    token_hash = emailer.hash_secret(data.token)
+    tok = (
+        db.query(models.AuthToken)
+        .filter(
+            models.AuthToken.purpose == models.AuthTokenPurposeEnum.password_reset,
+            models.AuthToken.token_hash == token_hash,
+            models.AuthToken.used_at.is_(None),
+        )
+        .first()
+    )
+    if not tok or tok.expires_at < datetime.utcnow():
+        raise HTTPException(status_code=400, detail="This reset link is invalid or has expired.")
+
+    user = db.query(models.User).filter(models.User.user_id == tok.user_id).first()
+    if not user:
+        raise HTTPException(status_code=400, detail="This reset link is invalid or has expired.")
+
+    user.user_password = hash_password(data.new_password)
+    user.user_email_verified = True   # they just proved control of the inbox
+    tok.used_at = datetime.utcnow()
+    db.commit()
+    return {"message": "Your password has been updated. You can now log in."}
 
 
 # ========== PROFILE ROUTES ==========

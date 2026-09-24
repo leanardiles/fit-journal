@@ -37,3 +37,6 @@ python-jose[cryptography]==3.3.0
 
 # Lambda Deployment
 mangum==0.21.0
+
+# SES SDK
+boto3>=1.34

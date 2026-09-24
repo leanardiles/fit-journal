@@ -95,6 +95,15 @@ class Settings(BaseSettings):
     db_name: str
     db_echo: bool = False
 
+    # --- Email (SES) ---
+    ses_region: str = "us-east-1"
+    email_from: str = "noreply@fit-journal.com"
+    email_reply_to: str = "info@fit-journal.com"
+    email_enabled: bool = True            # set EMAIL_ENABLED=false locally to print instead of send
+    frontend_base_url: str = "https://fit-journal.com"   # base for password-reset links
+    email_verify_code_ttl_minutes: int = 15
+    password_reset_ttl_minutes: int = 60
+
     # --- Locale (exposed on settings for convenience; sourced from module consts) ---
     default_locale: str = DEFAULT_LOCALE
     supported_locales: list[str] = SUPPORTED_LOCALES

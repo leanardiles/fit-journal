@@ -31,6 +31,9 @@ class DayTypeEnum(str, enum.Enum):
     per_muscle = "per_muscle"
     manual = "manual"
 
+class AuthTokenPurposeEnum(str, enum.Enum):
+    email_verify = "email_verify"
+    password_reset = "password_reset"
 
 # ========== MODELS ==========
 
@@ -51,6 +54,7 @@ class User(Base):
     user_locale = Column(String(35), nullable=True)   # BCP 47 tag; NULL = auto-detect
     user_subscription = Column(Integer, default=0)  # TINYINT in MySQL, this is not being used for the time being
     user_is_active = Column(Boolean, default=True)
+    user_email_verified = Column(Boolean, nullable=False, default=False, server_default=text("0"))
     user_created_at = Column(TIMESTAMP, server_default=func.current_timestamp())
     user_updated_at = Column(TIMESTAMP, server_default=func.current_timestamp(), onupdate=func.current_timestamp())
     next_workout_selections = relationship("NextWorkoutSelection", cascade="all, delete-orphan")
@@ -272,3 +276,23 @@ class WorkoutSession(Base):
     
     # Relationship
     user = relationship("User")
+
+class AuthToken(Base):
+    """
+    Short-lived secrets for email verification (6-digit code) and password
+    reset (URL token). Only a SHA-256 hash of the value is stored, never the
+    plaintext. Rows are single-use (used_at) and time-limited (expires_at);
+    reissuing supersedes the previous unused row for that (user, purpose).
+    """
+    __tablename__ = "auth_tokens"
+
+    auth_token_id = Column(Integer, primary_key=True, autoincrement=True)
+    user_id = Column(Integer, ForeignKey("users.user_id", ondelete="CASCADE"), nullable=False, index=True)
+    purpose = Column(Enum(AuthTokenPurposeEnum), nullable=False)
+    token_hash = Column(String(64), nullable=False)   # sha256 hex digest
+    expires_at = Column(TIMESTAMP, nullable=False)
+    used_at = Column(TIMESTAMP, nullable=True)
+    attempts = Column(Integer, nullable=False, default=0)
+    created_at = Column(TIMESTAMP, server_default=text("CURRENT_TIMESTAMP"))
+
+    user = relationship("User")    

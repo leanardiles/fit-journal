@@ -27,9 +27,36 @@
     "title": "Crea tu cuenta",
     "button": "Registrarse",
     "haveAccount": "¿Ya tienes cuenta? Inicia sesión",
-    "success": "¡Cuenta creada! Inicia sesión",
+    "success": "¡Cuenta creada! Te enviamos un código de verificación a tu correo.",
     "repeatPasswordLabel": "Repetir contraseña",
     "passwordMismatch": "Las contraseñas no coinciden."
+  },
+    "verify": {
+    "title": "Verifica tu correo",
+    "codeLabel": "Código de verificación",
+    "codePlaceholder": "123456",
+    "button": "Verificar",
+    "resend": "Reenviar código",
+    "resendSent": "Si la cuenta existe y no está verificada, se envió un nuevo código.",
+    "invalid": "Código inválido o vencido.",
+    "backToLogin": "Volver a iniciar sesión"
+  },
+  "forgot": {
+    "title": "Restablecer tu contraseña",
+    "instruction": "Ingresa tu correo y te enviaremos un enlace para restablecerla.",
+    "button": "Enviar enlace",
+    "sent": "Si esa cuenta existe, se envió un enlace para restablecer la contraseña. Revisa tu bandeja de entrada.",
+    "backToLogin": "Volver a iniciar sesión"
+  },
+  "reset": {
+    "title": "Establece una nueva contraseña",
+    "passwordLabel": "Nueva contraseña",
+    "repeatLabel": "Repite la nueva contraseña",
+    "button": "Actualizar contraseña",
+    "mismatch": "Las contraseñas no coinciden.",
+    "tooShort": "La contraseña debe tener al menos 8 caracteres.",
+    "invalidToken": "Este enlace de restablecimiento es inválido o venció.",
+    "backToLogin": "Volver a iniciar sesión"
   },
   "common": {
     "loading": "Cargando...",

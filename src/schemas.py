@@ -17,6 +17,20 @@ class UserLogin(UserBase):
 class AccountDeleteRequest(BaseModel):
     user_password: str
 
+class EmailVerifyRequest(BaseModel):
+    user_email: EmailStr
+    code: str
+
+class ResendVerificationRequest(BaseModel):
+    user_email: EmailStr
+
+class ForgotPasswordRequest(BaseModel):
+    user_email: EmailStr
+
+class ResetPasswordRequest(BaseModel):
+    token: str
+    new_password: str    
+
 class UserResponse(UserBase):
     user_id: int
     user_first_name: Optional[str] = None

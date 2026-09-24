@@ -28,9 +28,36 @@
     "title": "Create your account",
     "button": "Register",
     "haveAccount": "Already have an account? Log in",
-    "success": "Account created! Please log in",
+    "success": "Account created. We sent a verification code to your email.",
     "repeatPasswordLabel": "Repeat password",
     "passwordMismatch": "Passwords do not match."
+  },
+    "verify": {
+    "title": "Verify your email",
+    "codeLabel": "Verification code",
+    "codePlaceholder": "123456",
+    "button": "Verify",
+    "resend": "Resend code",
+    "resendSent": "If the account exists and is unverified, a new code has been sent.",
+    "invalid": "Invalid or expired code.",
+    "backToLogin": "Back to log in"
+  },
+  "forgot": {
+    "title": "Reset your password",
+    "instruction": "Enter your email and we will send you a reset link.",
+    "button": "Send reset link",
+    "sent": "If that account exists, a reset link has been sent. Check your inbox.",
+    "backToLogin": "Back to log in"
+  },
+  "reset": {
+    "title": "Set a new password",
+    "passwordLabel": "New password",
+    "repeatLabel": "Repeat new password",
+    "button": "Update password",
+    "mismatch": "Passwords do not match.",
+    "tooShort": "Password must be at least 8 characters.",
+    "invalidToken": "This reset link is invalid or has expired.",
+    "backToLogin": "Back to log in"
   },
   "common": {
     "loading": "Loading...",

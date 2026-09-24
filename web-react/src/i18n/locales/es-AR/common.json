@@ -9,6 +9,18 @@
     "title": "Creá tu cuenta",
     "haveAccount": "¿Ya tenés cuenta? Iniciá sesión"
   },
+    "verify": {
+    "title": "Verificá tu correo"
+  },
+  "forgot": {
+    "instruction": "Ingresá tu correo y te enviaremos un enlace para restablecerla.",
+    "button": "Enviar enlace",
+    "sent": "Si esa cuenta existe, se envió un enlace para restablecer la contraseña. Revisá tu bandeja de entrada."
+  },
+  "reset": {
+    "title": "Establecé una nueva contraseña",
+    "repeatLabel": "Repetí la nueva contraseña"
+  },
   "profile": {
     "confirmPassword": "Introducí tu contraseña para confirmar"
   },

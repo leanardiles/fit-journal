@@ -26,9 +26,36 @@
     "title": "Maak je account aan",
     "button": "Registreren",
     "haveAccount": "Heb je al een account? Inloggen",
-    "success": "Account aangemaakt! Log in",
+    "success": "Account aangemaakt. We hebben een verificatiecode naar je e-mail gestuurd.",
     "repeatPasswordLabel": "Wachtwoord herhalen",
     "passwordMismatch": "Wachtwoorden komen niet overeen."
+  },
+    "verify": {
+    "title": "Verifieer je e-mail",
+    "codeLabel": "Verificatiecode",
+    "codePlaceholder": "123456",
+    "button": "Verifiëren",
+    "resend": "Code opnieuw versturen",
+    "resendSent": "Als het account bestaat en niet geverifieerd is, is er een nieuwe code verstuurd.",
+    "invalid": "Ongeldige of verlopen code.",
+    "backToLogin": "Terug naar inloggen"
+  },
+  "forgot": {
+    "title": "Wachtwoord opnieuw instellen",
+    "instruction": "Voer je e-mailadres in en we sturen je een resetlink.",
+    "button": "Resetlink versturen",
+    "sent": "Als dat account bestaat, is er een resetlink verstuurd. Controleer je inbox.",
+    "backToLogin": "Terug naar inloggen"
+  },
+  "reset": {
+    "title": "Stel een nieuw wachtwoord in",
+    "passwordLabel": "Nieuw wachtwoord",
+    "repeatLabel": "Herhaal nieuw wachtwoord",
+    "button": "Wachtwoord bijwerken",
+    "mismatch": "Wachtwoorden komen niet overeen.",
+    "tooShort": "Wachtwoord moet minstens 8 tekens bevatten.",
+    "invalidToken": "Deze resetlink is ongeldig of verlopen.",
+    "backToLogin": "Terug naar inloggen"
   },
   "common": {
     "loading": "Laden...",

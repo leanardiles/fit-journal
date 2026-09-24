@@ -30,6 +30,8 @@ os.environ["DB_NAME"] = "fitjournaldb_test"
 # Ensure a SECRET_KEY exists for JWT operations during tests
 os.environ.setdefault("SECRET_KEY", "test-secret-key-not-for-production")
 
+os.environ.setdefault("EMAIL_ENABLED", "false")   # tests never call SES
+
 # --- 3. Now it's safe to import the app and its DB objects -------------------
 import pytest
 from fastapi.testclient import TestClient
@@ -88,6 +90,16 @@ def auth(client):
     password = "testpass123"
 
     client.post("/v1/register", json={"user_email": email, "user_password": password})
+
+    # New accounts start unverified; flip the flag so the gated login works in tests
+    session = SessionLocal()
+    try:
+        u = session.query(models.User).filter(models.User.user_email == email).first()
+        u.user_email_verified = True
+        session.commit()
+    finally:
+        session.close()
+        
     login = client.post("/v1/login", json={"user_email": email, "user_password": password})
     data = login.json()
 

@@ -24,7 +24,12 @@ export function LoginPage() {
       const res = await apiPost("/login", { user_email: email, user_password: password });
       const data = await res.json();
       if (!res.ok) {
-        setError(data.detail || "Login failed");
+        const detail = data.detail;
+        if (res.status === 403 && detail && typeof detail === "object" && detail.code === "email_not_verified") {
+          navigate("/verify-email", { state: { email } });
+          return;
+        }
+        setError(typeof detail === "string" ? detail : (detail?.message || "Login failed"));
         return;
       }
       localStorage.setItem("token", data.access_token);
@@ -83,7 +88,7 @@ export function LoginPage() {
 
           {/* placeholder , wires to a password-reset flow later */}
           <div className="auth-line auth-line--right">
-            <button type="button" className="auth-forgot">{t("login.forgotPassword")}</button>
+            <button type="button" className="auth-forgot" onClick={() => navigate("/forgot-password")}>{t("login.forgotPassword")}</button>
           </div>
 
           {error && <div className="auth-line auth-line--error">{error}</div>}
