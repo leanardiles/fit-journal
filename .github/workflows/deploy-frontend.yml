@@ -1,0 +1,51 @@
+name: Deploy frontend to S3 + CloudFront
+
+on:
+  workflow_dispatch:
+
+permissions:
+  id-token: write
+  contents: read
+
+env:
+  AWS_REGION: us-east-1
+  S3_BUCKET: fitjournal-frontend-prod
+  CLOUDFRONT_DISTRIBUTION_ID: E32LE9KL5K4UTP
+  VITE_API_URL: https://app.fit-journal.com/v1
+
+jobs:
+  deploy-web:
+    name: Build and deploy the React app
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: web-react
+
+    steps:
+      - name: Check out the repository
+        uses: actions/checkout@v4
+
+      - name: Set up Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+          cache: "npm"
+          cache-dependency-path: web-react/package-lock.json
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Build
+        run: npm run build
+
+      - name: Configure AWS credentials via OIDC
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          role-to-assume: arn:aws:iam::280946458595:role/fitjournal-github-actions-deploy
+          aws-region: ${{ env.AWS_REGION }}
+
+      - name: Sync dist/ to S3
+        run: aws s3 sync dist/ "s3://${{ env.S3_BUCKET }}/" --delete
+
+      - name: Invalidate CloudFront
+        run: aws cloudfront create-invalidation --distribution-id "${{ env.CLOUDFRONT_DISTRIBUTION_ID }}" --paths "/*"
