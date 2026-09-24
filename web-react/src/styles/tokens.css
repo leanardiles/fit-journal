@@ -20,6 +20,10 @@
   /* Surfaces / lines */
   --bg:         #171717;
   --line-color: #242424;
+  /* notebook punch-hole recess (theme-aware) */
+  --hole-core: rgba(0, 0, 0, 0.72);
+  --hole-mid:  rgba(0, 0, 0, 0.42);
+  --hole-soft: rgba(0, 0, 0, 0.14);
   --border:     rgba(255, 255, 255, 0.06);
 
   /* Text */
@@ -52,6 +56,10 @@
 body.light {
   --bg:         #f5f0e8;
   --line-color: #79a5d2;
+  /* notebook punch-hole recess (warm, sits on the cream paper) */
+  --hole-core: rgba(60, 50, 35, 0.34);
+  --hole-mid:  rgba(60, 50, 35, 0.18);
+  --hole-soft: rgba(60, 50, 35, 0.05);
   --border:     rgba(0, 0, 0, 0.08);
 
   --text:  #2a2a2a;

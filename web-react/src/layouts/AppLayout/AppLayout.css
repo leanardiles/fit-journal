@@ -45,14 +45,31 @@
   overflow-y: auto;
   line-height: var(--lh);
 
-  background-image: linear-gradient(var(--line-color) 1px, transparent 1px);
-  background-size: 100% var(--lh);
-  background-position: 0 0;
-  background-attachment: local;
+  /* Layer 1: punched holes down the left margin, locked to the ruled-line grid.
+     First hole centered on line 3 (y = 2 * --lh), then one every 10 lines.
+     Layer 2: the ruled horizontal lines. Both scroll with the text (local). */
+  background-image:
+    url('/notebook-hole-dark.png'),
+    linear-gradient(var(--line-color) 1px, transparent 1px);
+  background-repeat: repeat-y, repeat;
+  background-position:
+    0 calc(var(--lh) * -2.5),   /* holes: half a line below line 3, centered in the row */
+    0 0;                      /* ruled lines */
+  background-size:
+    var(--rule-x) calc(var(--lh) * 10),   /* hole column = left margin; repeat every 10 lines */
+    100% var(--lh);
+  background-attachment: local, local;
 
   padding-block: var(--lh) calc(var(--lh) * 3);
   /* symmetric: gutter to the RIGHT of the red line, and the same gutter before the page end */
   padding-inline: calc(var(--rule-x) + var(--page-gutter)) var(--page-gutter);
+}
+
+/* RTL: mirror the punch holes into the right-hand margin. */
+[dir="rtl"] .app-content {
+  background-position:
+    100% calc(var(--lh) * -2.5),
+    0 0;
 }
 
 .app-nav {
