@@ -9,6 +9,8 @@ import enCommon from "./locales/en/common.json";
 import esCommon from "./locales/es/common.json";
 import esARCommon from "./locales/es-AR/common.json";
 import nlCommon from "./locales/nl/common.json";
+import frCommon from "./locales/fr/common.json";
+
 
 i18n
   .use(LanguageDetector)        // detect the user's language (browser, localStorage, etc.)
@@ -19,6 +21,7 @@ i18n
       "es":    { common: esCommon },
       "es-AR": { common: esARCommon },
       "nl":    { common: nlCommon },
+      "fr":    { common: frCommon },
     },
     // Explicit fallback chains (mirrors the backend locale model):
     //   es-AR -> es -> en   (Argentina overrides base LatAm Spanish, then English)
