@@ -1,4 +1,5 @@
 import { getToken } from "./auth";
+import i18n from "../i18n/config";
 
 // Central API base URL , comes from Vite env (.env.development / .env.production).
 export const API_URL = import.meta.env.VITE_API_URL;
@@ -9,6 +10,7 @@ export async function apiPost(path, body) {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
+      "Accept-Language": i18n.language || "en",
       ...(token ? { Authorization: `Bearer ${token}` } : {}),
     },
     body: JSON.stringify(body),
@@ -20,6 +22,7 @@ export async function apiPost(path, body) {
 export async function apiGet(path) {
   const res = await fetch(`${API_URL}${path}`, {
     headers: {
+      "Accept-Language": i18n.language || "en",
       "Authorization": `Bearer ${getToken()}`,
     },
   });
@@ -32,6 +35,7 @@ export async function apiPut(path, body) {
     method: "PUT",
     headers: {
       "Content-Type": "application/json",
+      "Accept-Language": i18n.language || "en",
       "Authorization": `Bearer ${getToken()}`,
     },
     body: JSON.stringify(body),
@@ -44,6 +48,7 @@ export async function apiDelete(path, body) {
     method: "DELETE",
     headers: {
       "Content-Type": "application/json",
+      "Accept-Language": i18n.language || "en",
       "Authorization": `Bearer ${getToken()}`,
     },
     body: body ? JSON.stringify(body) : undefined,

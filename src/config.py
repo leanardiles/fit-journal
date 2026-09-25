@@ -42,7 +42,7 @@ load_dotenv(_ENV_PATH)
 
 DEFAULT_LOCALE = "en"
 
-SUPPORTED_LOCALES = ["en", "en-US", "en-GB", "es", "es-ES", "es-419", "nl"]
+SUPPORTED_LOCALES = ["en", "en-US", "en-GB", "es", "es-ES", "es-419", "es-AR", "nl"]
 
 # Each locale -> ordered fallbacks (excluding itself). The ultimate fallback is
 # DEFAULT_LOCALE ("en"). es-AR is intentionally deferred; when added it slots in
@@ -54,6 +54,7 @@ LOCALE_FALLBACKS = {
     "es":     ["en"],
     "es-ES":  ["es", "en"],
     "es-419": ["es", "en"],
+    "es-AR": ["es", "en"],
     "nl":     ["en"],
 }
 
