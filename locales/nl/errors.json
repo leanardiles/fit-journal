@@ -1,0 +1,13 @@
+{
+  "auth": {
+    "invalidCredentials": "Onjuist e-mailadres of wachtwoord.",
+    "emailAlreadyRegistered": "Dat e-mailadres is al geregistreerd.",
+    "accountInactive": "Je account is niet actief.",
+    "notAuthenticated": "Je bent niet ingelogd.",
+    "invalidToken": "Je sessie is verlopen. Log opnieuw in."
+  },
+  "common": {
+    "notFound": "Niet gevonden.",
+    "serverError": "Er ging iets mis. Probeer het opnieuw."
+  }
+}

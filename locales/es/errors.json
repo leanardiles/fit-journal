@@ -2,6 +2,7 @@
   "auth": {
     "invalidCredentials": "Correo electrónico o contraseña incorrectos.",
     "emailAlreadyRegistered": "Ese correo electrónico ya está registrado.",
+    "accountInactive": "Tu cuenta está inactiva.",
     "notAuthenticated": "No has iniciado sesión.",
     "invalidToken": "Tu sesión ha caducado. Inicia sesión de nuevo."
   },

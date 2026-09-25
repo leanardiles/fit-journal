@@ -32,7 +32,7 @@
       "noExercises": "No hay ejercicios para el día seleccionado. Agregá algunos en la página de Ejercicios.",
       "noExercisesAll": "Todavía no hay ejercicios. Agregá algunos en la página de Ejercicios."
   }    ,
-    "rutine": {
+    "routine": {
       "noMuscleExercises": "Todavía no tenés ejercicios de {{muscle}}. Agregalos en la página de Ejercicios.",
       "errNoLibraryExercises": "No tenés ejercicios de {{muscle}}. Agregalos primero en la página de Ejercicios.",
       "errNeedExercise": "Seleccioná al menos un ejercicio de {{muscle}} para el día {{day}}.",

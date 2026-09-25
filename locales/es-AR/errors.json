@@ -1,0 +1,8 @@
+{
+  "auth": {
+    "invalidToken": "Tu sesión ha caducado. Iniciá sesión de nuevo."
+  },
+  "common": {
+    "serverError": "Algo salió mal. Intentalo de nuevo."
+  }
+}
