@@ -104,6 +104,7 @@ class Settings(BaseSettings):
     frontend_base_url: str = "https://fit-journal.com"   # base for password-reset links
     email_verify_code_ttl_minutes: int = 15
     password_reset_ttl_minutes: int = 60
+    resend_api_key: str = ""   # RESEND_API_KEY; only needed when email_enabled is true
 
     # --- Locale (exposed on settings for convenience; sourced from module consts) ---
     default_locale: str = DEFAULT_LOCALE
