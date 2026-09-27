@@ -19,13 +19,15 @@ export function Button({ labelKey, onClick, variant = "primary" }) {
   return (
     <button
       onClick={onClick}
+      disabled={disabled}
       style={{
         ...styles[variant],
         padding: "8px 20px",
         borderRadius: "var(--radius)",
         fontSize: "var(--fs)",
         fontFamily: "var(--font-body)",
-        cursor: "pointer",
+        cursor: disabled ? "not-allowed" : "pointer",
+        opacity: disabled ? 0.6 : 1,
       }}
     >
       {t(labelKey)}
