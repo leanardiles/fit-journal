@@ -102,8 +102,8 @@ def _shell(inner_html: str) -> str:
         <table role="presentation" width="480" cellpadding="0" cellspacing="0" style="width:480px; max-width:480px; background-color:{CARD}; border:1px solid {BORDER}; border-radius:12px;">
           <tr>
             <td align="center" style="padding:28px 32px 8px 32px;">
-              <img src="{LOGO_URL}" alt="{APP_NAME}" width="170"
-                   style="display:block; border:0; color:{RED}; font-family:Georgia,serif; font-size:24px; font-weight:bold;">
+              <img src="{LOGO_URL}" alt="{APP_NAME}" width="90"
+                   style="display:block; border:0; width:90px; height:auto; color:{RED}; font-family:Georgia,serif; font-size:24px; font-weight:bold;">
             </td>
           </tr>
           <tr>
