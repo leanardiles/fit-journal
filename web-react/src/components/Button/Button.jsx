@@ -7,7 +7,8 @@ import { useTranslation } from "react-i18next";
  *   onClick  - click handler
  *   variant  - "primary" | "secondary" | "yellow" (visual style)
  */
-export function Button({ labelKey, onClick, variant = "primary" }) {
+
+export function Button({ labelKey, onClick, variant = "primary", disabled = false }) {  
   const { t } = useTranslation();
 
   const styles = {
