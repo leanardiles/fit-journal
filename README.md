@@ -98,7 +98,7 @@ cd src
 uvicorn main:app --reload
 ```
 
-API docs: `http://127.0.0.1:8000/docs` · legacy Jinja web: `http://127.0.0.1:8000/web/login`
+API docs: `http://127.0.0.1:8000/docs`
 
 **Web frontend (React)**
 

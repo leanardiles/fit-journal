@@ -111,7 +111,7 @@ export function RegisterPage() {
 
           <div className="auth-line" />
           <div className="auth-line auth-line--action">
-            <Button labelKey="register.button" variant="yellow" onClick={handleSubmit} />
+            <Button labelKey="register.button" variant="yellow" onClick={handleSubmit} disabled={loading} />
           </div>
           <div className="auth-line" />
 
