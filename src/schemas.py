@@ -1,4 +1,4 @@
-from pydantic import BaseModel, EmailStr
+from pydantic import BaseModel, ConfigDict, EmailStr
 from typing import Optional
 from datetime import datetime
 from datetime import date
@@ -37,8 +37,7 @@ class UserResponse(UserBase):
     user_last_name: Optional[str] = None
     user_created_at: datetime
 
-    class Config:
-        from_attributes = True
+    model_config = ConfigDict(from_attributes=True)
 
 # ========== PROFILE SCHEMAS ==========
 
@@ -54,8 +53,7 @@ class UserProfileResponse(BaseModel):
     user_timezone: Optional[str] = "America/New_York"
     user_locale: Optional[str] = None
 
-    class Config:
-        from_attributes = True
+    model_config = ConfigDict(from_attributes=True)
 
 class UserProfileUpdate(BaseModel):
     user_first_name: Optional[str] = None
@@ -92,8 +90,7 @@ class ExerciseResponse(ExerciseBase):
     exercise_times_performed: int
     exercise_created_at: datetime
 
-    class Config:
-        from_attributes = True
+    model_config = ConfigDict(from_attributes=True)
 
 
 # ========== ROUTINE SCHEMAS ==========
@@ -159,8 +156,7 @@ class WorkoutStateResponse(BaseModel):
     current_day_number: int
     last_workout_date: Optional[date] = None
     
-    class Config:
-        from_attributes = True
+    model_config = ConfigDict(from_attributes=True)
 
 class WorkoutLogCreate(BaseModel):
     exercise_id: int
@@ -182,5 +178,4 @@ class WorkoutLogResponse(BaseModel):
     weight_used: Optional[float]
     workout_date: date
     
-    class Config:
-        from_attributes = True
+    model_config = ConfigDict(from_attributes=True)

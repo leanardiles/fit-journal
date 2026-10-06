@@ -57,8 +57,9 @@ class User(Base):
     user_email_verified = Column(Boolean, nullable=False, default=False, server_default=text("0"))
     user_created_at = Column(TIMESTAMP, server_default=func.current_timestamp())
     user_updated_at = Column(TIMESTAMP, server_default=func.current_timestamp(), onupdate=func.current_timestamp())
-    next_workout_selections = relationship("NextWorkoutSelection", cascade="all, delete-orphan")
-
+    next_workout_selections = relationship(
+        "NextWorkoutSelection", back_populates="user", cascade="all, delete-orphan"
+    )
 
     # Relationships (ADD THE NEW ONES HERE)
     exercises = relationship("Exercise", back_populates="user", cascade="all, delete-orphan")
@@ -260,7 +261,7 @@ class NextWorkoutSelection(Base):
     updated_at = Column(TIMESTAMP, server_default=text('CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP'))
     
     # Relationships
-    user = relationship("User")
+    user = relationship("User", back_populates="next_workout_selections")
     exercise = relationship("Exercise")
 
 
