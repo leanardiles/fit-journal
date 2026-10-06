@@ -548,7 +548,7 @@ def create_exercise(user_id: int, exercise: schemas.ExerciseCreate, db: Session 
     if not user:
         raise HTTPException(status_code=404, detail="User not found")
     
-    new_exercise = models.Exercise(**exercise.dict(), user_id=user_id)
+    new_exercise = models.Exercise(**exercise.model_dump(), user_id=user_id)
     db.add(new_exercise)
     db.commit()
     db.refresh(new_exercise)
@@ -566,7 +566,7 @@ def update_exercise(exercise_id: int, user_id: int, exercise: schemas.ExerciseUp
         raise HTTPException(status_code=404, detail="Exercise not found")
     
     # Only update fields that are not None
-    update_data = exercise.dict(exclude_none=True)
+    update_data = exercise.model_dump(exclude_none=True)
     for key, value in update_data.items():
         setattr(db_exercise, key, value)
     
