@@ -1,0 +1,26 @@
+version: 1
+source_locale: en
+target_locales:
+  - fr
+
+buckets:
+  json:
+    include:
+      - "web-react/src/i18n/locales/en/common.json"
+    target_path_pattern: "web-react/src/i18n/locales/{locale}/{basename}"  
+
+translation:
+  formality: prefer_less
+
+context:
+  enabled: true
+  scan_paths:
+    - "web-react/src/**/*.{js,jsx}"
+
+sync:
+  max_characters: 10000
+
+tms:
+  enabled: true
+  server: http://localhost:8100
+  project_id: fitjournal

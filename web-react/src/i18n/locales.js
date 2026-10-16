@@ -5,5 +5,6 @@ export const LOCALE_OPTIONS = [
   { value: "es",    label: "Español (Latinoamérica)" },
   { value: "es-AR", label: "Español (Argentina)" },
   { value: "nl",    label: "Nederlands" },
+  { value: "fr",    label: "Français" },
   // { value: "ar", label: "العربية" },   // future: also flips dir to rtl
 ];
