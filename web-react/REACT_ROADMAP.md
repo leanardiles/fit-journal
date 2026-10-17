@@ -70,6 +70,14 @@ Legend: [ ] todo   [~] in progress   [x] done
 
 ## Theming / design
 - [ ] Light mode: add -light logo assets + a theme toggle (tokens already structured for it)
+- [ ] Adaptable-UI revamp (web): responsive + accessible across mobile/tablet/desktop.
+      Baseline today: viewport meta set, 7 ad-hoc media queries (480/520/760/1024px),
+      but no rem/clamp, ~93 hardcoded px font-sizes, ~47 fixed px widths.
+      Phase 1 foundation: move --fs/--lh/--space-* and a new type scale to rem (user
+      font-size scaling), replace hardcoded font-size px with tokens.
+      Phase 2 per-page pass: Dashboard, Routine, Workout, Exercises, Calendar, Profile;
+      kill fixed widths, consolidate to one breakpoint set, test each at 3 widths.
+      Phase 3 polish: clamp() fluid headings, document the responsive rules in the design system.
 
 ## Robustness / correctness (accumulated details)
 - [x] apiPost missing auth header , FIXED. It was written for the public login/register endpoints, so
