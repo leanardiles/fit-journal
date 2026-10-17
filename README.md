@@ -16,13 +16,13 @@ A self-hosted fitness tracker with a paper-notebook aesthetic, available as a we
 
 FitJournal lets you build a weekly training routine, generate daily workouts, log what you actually did, and review your history. It is a full-stack project: a React single-page web app and a native Android client, both talking to one FastAPI backend deployed serverless on AWS.
 
-Two things set it apart. The interface is a "paper notebook" design system (ruled lines, handwritten font, red margin line) applied consistently across the app, with light and dark modes. And it is internationalized from the ground up: an explicit BCP 47 locale model with fallback chains (`es-AR` to `es` to `en`), so adding a language is a data change, not a code change.
+Two things set it apart. The interface is a "paper notebook" design system (ruled lines, handwritten font, red margin line) applied consistently across the app, with light and dark modes. And it is internationalized from the ground up: an explicit BCP 47 locale model with fallback chains (`es-AR` to `es-419` to `en`), so adding a language is a data change, not a code change.
 
 ## Tech Stack
 
 **Web (React SPA, live at [fit-journal.com](https://fit-journal.com))**
 - React 19 + Vite, React Router
-- `react-i18next` internationalization (en / es / es-AR / nl) with explicit fallback chains
+- `react-i18next` internationalization (en / es-419 / es-AR / nl) with explicit fallback chains
 - Reusable component library documented in Storybook
 - Hosted on S3 + CloudFront, see [web-react/README.md](web-react/README.md)
 

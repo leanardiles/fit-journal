@@ -8,7 +8,7 @@ Legend: [ ] todo   [~] in progress   [x] done
 ---
 
 ## Core flow (build order)
-- [x] react-i18next foundation + locale hierarchy (en / es / es-AR / nl) + fallback chains
+- [x] react-i18next foundation + locale hierarchy (en / es-419 / es-AR / nl) + fallback chains
 - [x] Component library: Button, Field, Card, Select, Modal, Toggle, StickyNote (design tokens) + Storybook
       stories (Button/Field/Card/Select/Toggle/Modal/StickyNote have stories)
 - [x] Design tokens (tokens.css) ported from notebook.css (dark; light-ready structure)
@@ -86,9 +86,8 @@ Legend: [ ] todo   [~] in progress   [x] done
       uses), instead of converting on each change. (Reported while testing Routine, but the field lives on
       Profile , Routine has no height input.)
 - [ ] Validate stored user_locale against SUPPORTED_LOCALES on read; fall back if unsupported.
-      (Why: dropping a locale from config doesn't fix DB rows that still hold it, e.g. user 3
-      showed es-419 after es-419 was removed from the model. Config/schema changes don't
-      retroactively clean existing data.)
+      (Why: dropping a locale from config doesn't fix DB rows that still hold it. Config/schema
+      changes don't retroactively clean existing data.)
 - [ ] Handle expired/invalid JWT (401 from an authenticated call) , clear token + redirect to login.
 - [ ] Duplicate-fetch avoidance: confirm Context fetches profile once (done); watch for similar
       patterns as more pages fetch data.
@@ -112,16 +111,16 @@ Legend: [ ] todo   [~] in progress   [x] done
       (needed so imperial 2-decimal weights round-trip exactly through canonical kg storage). Run the same
       ALTER on prod at ship time. Consider widening `weight_used` (logs) and `user_weight` (profile) too,
       and update the SQLAlchemy models to DECIMAL(6,3) to match.
-- [ ] Delete orphaned locales/es-419/ folder on the backend.
+- [x] Spanish locale renamed es -> es-419 (frontend + backend); es-419 is now the canonical Latin American Spanish code matching DeepL, with es kept as an alias. The old orphaned-folder cleanup no longer applies.
 - [ ] Externalize the remaining ~25 HTTPException strings (only login/register wired so far).
 - [ ] Post-auth locale resolution: use stored user_locale first (resolve_request_locale supports it).
-- [ ] Move DB migrations into the CI pipeline (the prod es-419 / user_locale / weight-precision pain proved why).
-- [ ] Data cleanup: user 3's stored user_locale = es-419 (stale); set to es-AR or NULL.
+- [ ] Move DB migrations into the CI pipeline (the prod locale / user_locale / weight-precision pain proved why).
+- [x] user_locale cleanup: legacy es rows migrate to es-419 via scripts/migrate_user_locale_es_to_es419.sql. es-419 is now a valid locale, so the earlier user 3 es-419 note is moot.
 
 ## Notes / conventions
 - Two src/ folders (backend src/ vs web-react/src/). Two sets of locales.
-- Frontend catalogs are thin regional overrides (es-AR only holds what differs from es).
-- Base es is tuteo (broad LatAm); voseo lives in es-AR. FOLLOW-UP: Calendar base es shipped a voseo
+- Frontend catalogs are thin regional overrides (es-AR only holds what differs from es-419).
+- Base es-419 is tuteo (broad LatAm); voseo lives in es-AR. FOLLOW-UP: Calendar base es-419 shipped a voseo
   imperative ("Agregá"); tuteo-ize it (or push to es-AR) during the i18n polish pass so the base stays neutral.
 - API base URL comes from Vite env (.env.development=local, .env.production=prod).
 - All user-facing text routes through t(); values may match English where natural (e.g. Dutch "Dashboard").

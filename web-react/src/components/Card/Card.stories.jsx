@@ -34,7 +34,7 @@ export const LoginForm = {
 // The composed form across every locale — the whole mini-form localized.
 export const AllLocales = {
   render: () => {
-    const locales = ["en", "es", "es-AR", "nl"];
+    const locales = ["en", "es-419", "es-AR", "nl"];
     return (
       <div style={{ display: "flex", gap: 20, flexWrap: "wrap" }}>
         {locales.map((lng) => (

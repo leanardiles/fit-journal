@@ -1,7 +1,7 @@
 import { useTranslation } from "react-i18next";
 import { apiPut } from "../../api/client";
 import { useToast } from "../../context/ToastContext";
-import { LOCALE_OPTIONS } from "../../i18n/locales";
+import { LOCALE_OPTIONS, normalizeLocale } from "../../i18n/locales";
 
 /**
  * Global language switcher for the app header.
@@ -14,11 +14,15 @@ export function LanguageSwitcher() {
   const { i18n, t } = useTranslation();
   const { showToast } = useToast();
 
-  // Active language, guarded so an unexpected tag (e.g. "en-US" from the
-  // browser detector) still selects a sensible option instead of blank.
-  const current = LOCALE_OPTIONS.some((o) => o.value === i18n.language)
-    ? i18n.language
-    : i18n.resolvedLanguage || "en";
+  // Active option. Legacy/region Spanish (es, es-MX, ...) normalizes to es-419;
+  // any other unexpected tag (e.g. "en-US" from the detector) falls back to a
+  // sensible option instead of showing blank.
+  const norm = normalizeLocale(i18n.language);
+  const current = LOCALE_OPTIONS.some((o) => o.value === norm)
+    ? norm
+    : i18n.resolvedLanguage && LOCALE_OPTIONS.some((o) => o.value === i18n.resolvedLanguage)
+      ? i18n.resolvedLanguage
+      : "en";
 
   const handleChange = async (value) => {
     i18n.changeLanguage(value); // instant UI switch (also caches to localStorage)

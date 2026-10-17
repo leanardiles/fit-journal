@@ -27,7 +27,7 @@ export const Secondary = {
 // (and lets you eyeball text-length differences between languages).
 export const AllLocales = {
   render: () => {
-    const locales = ["en", "es", "es-AR", "nl"];
+    const locales = ["en", "es-419", "es-AR", "nl"];
     return (
       <div style={{ display: "flex", flexDirection: "column", gap: 16 }}>
         {locales.map((lng) => {

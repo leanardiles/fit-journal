@@ -24,7 +24,7 @@ export const Password = {
 // Showcase: the same field label across every locale, to eyeball text length.
 export const AllLocales = {
   render: () => {
-    const locales = ["en", "es", "es-AR", "nl"];
+    const locales = ["en", "es-419", "es-AR", "nl"];
     return (
       <div style={{ display: "flex", flexDirection: "column", gap: 16, maxWidth: 320 }}>
         {locales.map((lng) => {

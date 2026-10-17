@@ -10,7 +10,7 @@ PDFs later). Frontend UI strings are handled client-side (React / i18next).
 Key format: dotted, feature-first, matching the catalog file + nesting, e.g.
     t("errors.auth.invalidCredentials", "es-419")
 resolves errors.json -> {"auth": {"invalidCredentials": ...}} walking
-es-419 -> es -> en until a value is found.
+es-419 -> en until a value is found.
 """
 
 import json
@@ -106,7 +106,7 @@ def resolve_request_locale(
         return user_locale
 
     # 2. Accept-Language header — take the first tag we support (exact, then
-    #    language-only, e.g. "es-CL" -> "es").
+    #    language-only, e.g. "es-CL" -> "es", the Latin American Spanish alias).
     if accept_language:
         for part in accept_language.split(","):
             tag = part.split(";")[0].strip()
