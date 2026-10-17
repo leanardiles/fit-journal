@@ -3,10 +3,11 @@ import { initReactI18next } from "react-i18next";
 import LanguageDetector from "i18next-browser-languagedetector";
 
 // Import the catalogs.
-// Base 'es' holds general Latin American Spanish; es-AR overrides it where
-// Argentina differs (e.g. voseo) and inherits the rest via the fallback chain.
+// Base 'es-419' holds general Latin American Spanish (DeepL's code for it).
+// es-AR overrides it where Argentina differs (e.g. voseo) and inherits the rest
+// via the fallback chain. Plain 'es' and other es-XX tags alias to es-419.
 import enCommon from "./locales/en/common.json";
-import esCommon from "./locales/es/common.json";
+import es419Common from "./locales/es-419/common.json";
 import esARCommon from "./locales/es-AR/common.json";
 import nlCommon from "./locales/nl/common.json";
 import frCommon from "./locales/fr/common.json";
@@ -17,17 +18,23 @@ i18n
   .use(initReactI18next)        // wire i18next into React
   .init({
     resources: {
-      "en":    { common: enCommon },
-      "es":    { common: esCommon },
-      "es-AR": { common: esARCommon },
-      "nl":    { common: nlCommon },
-      "fr":    { common: frCommon },
+      "en":     { common: enCommon },
+      "es-419": { common: es419Common },
+      "es-AR":  { common: esARCommon },
+      "nl":     { common: nlCommon },
+      "fr":     { common: frCommon },
     },
     // Explicit fallback chains (mirrors the backend locale model):
-    //   es-AR -> es -> en   (Argentina overrides base LatAm Spanish, then English)
+    //   es-AR  -> es-419 -> en   (Argentina overrides base LatAm Spanish, then English)
+    //   es-419 -> en
+    //   es     -> es-419 -> en   (legacy/alias; also catches es-XX browsers such as
+    //                             es-MX, es-CL, which land on es-419 via the language
+    //                             part, so no Spanish speaker falls through to English)
     //   everything else -> en
     fallbackLng: {
-      "es-AR": ["es", "en"],
+      "es-AR":   ["es-419", "en"],
+      "es-419":  ["en"],
+      "es":      ["es-419", "en"],
       "default": ["en"],
     },
     defaultNS: "common",        // default namespace, so t("login.button") works

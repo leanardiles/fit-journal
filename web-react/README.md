@@ -71,15 +71,16 @@ data change (a new catalog file), not a code change.
 
 ### Locale model
 
-Base `es` holds general Latin American Spanish; regions override from it and
+Base `es-419` holds general Latin American Spanish; regions override from it and
 inherit the rest via an explicit fallback chain (mirrors the backend model).
 
-| Locale | Role                              | Fallback chain      |
-|--------|-----------------------------------|---------------------|
-| `en`   | Base + ultimate fallback          | `en`                |
-| `es`   | Base Spanish (general LatAm)      | `es -> en`          |
-| `es-AR`| Argentina overrides (e.g. voseo)  | `es-AR -> es -> en` |
-| `nl`   | Dutch                             | `nl -> en`          |
+| Locale  | Role                                  | Fallback chain          |
+|---------|---------------------------------------|-------------------------|
+| `en`    | Base + ultimate fallback              | `en`                    |
+| `es-419`| Base Spanish (general LatAm)          | `es-419 -> en`          |
+| `es-AR` | Argentina overrides (e.g. voseo)      | `es-AR -> es-419 -> en` |
+| `nl`    | Dutch                                 | `nl -> en`              |
+| `es`    | Legacy alias (also es-MX, es-CL, ...) | `es -> es-419 -> en`    |
 
 Regional files are THIN: they contain only the strings that genuinely differ;
 everything else cascades down the chain. This keeps overrides small and makes
@@ -92,7 +93,7 @@ web-react/src/i18n/
   config.js            # i18next init: resources + explicit fallback chains
   locales/
     en/common.json     # base (full)
-    es/common.json     # LatAm Spanish (full)
+    es-419/common.json # LatAm Spanish (full)
     es-AR/common.json  # Argentina (thin overrides only)
     nl/common.json     # Dutch (full)
 ```

@@ -6,7 +6,7 @@ import { apiGet, apiPut, apiDelete } from "../../api/client";
 import { logout } from "../../api/auth";
 import { useToast } from "../../context/ToastContext";
 import { useUser } from "../../context/UserContext";
-import { LOCALE_OPTIONS } from "../../i18n/locales";
+import { LOCALE_OPTIONS, normalizeLocale } from "../../i18n/locales";
 import { TIMEZONE_GROUPS } from "../../constants/timezones";
 import { cmToFeetInches, feetInchesToCm, kgToLb, lbToKg } from "../../constants/units";
 import { Button } from "../../components/Button/Button";
@@ -52,7 +52,7 @@ export function Profile() {
             user_sex: data.user_sex || "",
             user_unit_preference: data.user_unit_preference || "metric",
             user_timezone: data.user_timezone || "",
-            user_locale: data.user_locale || i18n.language || "en",
+            user_locale: normalizeLocale(data.user_locale || i18n.language || "en"),
           });
           setHeightCm(data.user_height ?? "");
           setWeightKg(data.user_weight ?? "");

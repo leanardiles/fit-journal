@@ -45,16 +45,17 @@ DEFAULT_LOCALE = "en"
 SUPPORTED_LOCALES = ["en", "en-US", "en-GB", "es", "es-ES", "es-419", "es-AR", "nl", "fr"]
 
 # Each locale -> ordered fallbacks (excluding itself). The ultimate fallback is
-# DEFAULT_LOCALE ("en"). es-AR is intentionally deferred; when added it slots in
-# as "es-AR": ["es-419", "es", "en"] with no code change.
+# DEFAULT_LOCALE ("en"). es-419 holds the Latin American Spanish content (DeepL's
+# code for it); plain "es" (and es-XX reduced to it), es-ES and es-AR all resolve
+# through es-419 before English, so no Spanish speaker falls through to English.
 LOCALE_FALLBACKS = {
     "en":     [],
     "en-US":  ["en"],
     "en-GB":  ["en"],
-    "es":     ["en"],
-    "es-ES":  ["es", "en"],
-    "es-419": ["es", "en"],
-    "es-AR":  ["es", "en"],
+    "es-419": ["en"],            # holds the Latin American Spanish content
+    "es":     ["es-419", "en"],  # alias: plain es (and es-XX reduced to it) -> LatAm
+    "es-ES":  ["es-419", "en"],  # European Spanish not maintained; use LatAm over English
+    "es-AR":  ["es-419", "en"],  # Argentina thin overrides -> LatAm Spanish
     "nl":     ["en"],
     "fr":     ["en"],
 }
@@ -66,7 +67,8 @@ def resolve_locale_chain(locale: str) -> list[str]:
     always ending at DEFAULT_LOCALE. Unknown locales fall back to the default.
 
     Examples:
-        resolve_locale_chain("es-419") -> ["es-419", "es", "en"]
+        resolve_locale_chain("es-419") -> ["es-419", "en"]
+        resolve_locale_chain("es-AR")  -> ["es-AR", "es-419", "en"]
         resolve_locale_chain("en-GB")  -> ["en-GB", "en"]
         resolve_locale_chain("pt-BR")  -> ["en"]   (unknown -> default)
     """
