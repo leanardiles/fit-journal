@@ -47,7 +47,7 @@
 .wo-actions { display: flex; gap: 12px; margin-top: var(--space-md); }
 
 .wo-btn {
-  background: var(--yellow, #f4d93e);
+  background: var(--yellow);
   color: #1a1a1a;
   border: none;
   padding: 8px 20px;

@@ -112,7 +112,7 @@
 
 .rt-pool-ex { display: flex; align-items: center; gap: 8px; padding: 3px 0; cursor: pointer; }
 .rt-pool-ex span { font-size: var(--fs-base); color: var(--text); }
-.rt-checkbox { width: 14px; height: 14px; accent-color: var(--yellow, #f4d93e); cursor: pointer; }
+.rt-checkbox { width: 14px; height: 14px; accent-color: var(--yellow); cursor: pointer; }
 .rt-pool-empty { font-size: var(--fs-xs); color: var(--red); padding: 4px 0; }
 
 .rt-error { color: var(--red); font-size: var(--fs-base); margin: var(--space-sm) 0; }
@@ -130,7 +130,7 @@
   transition: all 0.12s;
 }
 .rt-btn:hover { border-color: var(--red-border); }
-.rt-btn--primary { background: var(--yellow, #f4d93e); color: #1a1a1a; border: none; }
+.rt-btn--primary { background: var(--yellow); color: #1a1a1a; border: none; }
 .rt-btn--primary:hover { border: none; filter: brightness(0.96); }
 .rt-btn--secondary { border-color: var(--yellow); color: var(--text); }
 .rt-btn--secondary:hover { border-color: var(--yellow); }
