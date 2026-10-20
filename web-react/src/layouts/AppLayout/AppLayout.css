@@ -15,9 +15,15 @@
 
 .app-shell {
   --rule-x: 0px;                   /* no left margin rule on narrow */
-  --page-gutter: var(--space-md);  /* tight gutters so text gets the width */
+  --page-gutter: var(--space-lg);  /* breathing room at the edges on phones */
 
-  min-height: 100vh;
+  /* Pin the shell to the viewport so .app-content is the only thing that
+     scrolls. With min-height the shell grows past the viewport instead, the
+     document scrolls, and the header and nav scroll away with it.
+     dvh tracks the collapsing browser chrome on mobile; vh is the fallback. */
+  height: 100vh;
+  height: 100dvh;
+  overflow: hidden;
   display: flex;
   flex-direction: column;
   background-color: var(--bg);
@@ -65,6 +71,10 @@
 
 .app-content {
   flex: 1;
+  /* A flex item defaults to min-height: auto, which resolves to its content
+     height, so it refuses to shrink and overflow-y never engages. This is the
+     vertical twin of the min-width: 0 fix on the dashboard grid. */
+  min-height: 0;
   overflow-y: auto;
   line-height: var(--lh);
 
@@ -76,8 +86,7 @@
   background-attachment: local;
 
   padding-block-start: var(--lh);
-  /* clear the fixed bottom bar and the iOS home indicator */
-  padding-block-end: calc(var(--lh) * 2 + 64px + env(safe-area-inset-bottom, 0px));
+  padding-block-end: calc(var(--lh) * 2);
   padding-inline: var(--page-gutter);
 }
 

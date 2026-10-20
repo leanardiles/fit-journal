@@ -1,11 +1,13 @@
 /* Bottom tab bar, narrow screens only (under 600px).
    The red top border carries the notebook margin-line colour into the mobile
-   chrome, so the aesthetic survives dropping the left-margin apparatus. */
+   chrome, so the aesthetic survives dropping the left-margin apparatus.
+
+   A row of the app shell, not a floating bar: the shell is pinned to the
+   viewport and .app-content is the only scroller, so this sits below the
+   scroll area by construction. No fixed positioning, no z-index, and no
+   magic padding on the content to keep text out from under it. */
 .bottom-nav {
-  position: fixed;
-  inset-inline: 0;
-  bottom: 0;
-  z-index: 50;
+  flex-shrink: 0;
 
   display: flex;
   align-items: center;

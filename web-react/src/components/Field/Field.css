@@ -25,7 +25,9 @@
   outline: none;
 }
 
-/* Inline: label beside the input (auth pages). Collapses to stacked on phones. */
+/* Inline: label beside the input, at every width. Stacking the two on phones
+   costs a full line per field and leaves the form tall and mostly empty, so
+   the label column shrinks instead of the row breaking. */
 .field--inline {
   flex-direction: row;
   align-items: center;
@@ -33,13 +35,13 @@
 }
 .field--inline .field-label {
   flex: 0 0 auto;
-  min-width: 96px;   /* keeps Email/Password inputs aligned; wide enough for es/nl labels */
+  min-width: 88px;   /* narrow: enough for es/nl labels, wrapping to two lines if needed */
 }
 .field--inline .field-input {
   flex: 1;
-  min-width: 0;
+  min-width: 0;      /* without this the input refuses to shrink and the row overflows */
 }
-@media (max-width: 480px) {
-  .field--inline { flex-direction: column; align-items: stretch; }
-  .field--inline .field-label { min-width: 0; }
+
+@media (min-width: 600px) {
+  .field--inline .field-label { min-width: 96px; }
 }

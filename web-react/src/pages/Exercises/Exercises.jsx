@@ -11,6 +11,7 @@ import { Button } from "../../components/Button/Button";
 import { Select } from "../../components/Select/Select";
 import { Toggle } from "../../components/Toggle/Toggle";
 import { Modal } from "../../components/Modal/Modal";
+import { useMediaQuery } from "../../hooks/useMediaQuery";
 import "./Exercises.css";
 
 export function Exercises() {
@@ -18,6 +19,13 @@ export function Exercises() {
   const { user } = useUser();
   const { showToast } = useToast();
   const isImperial = user?.user_unit_preference === "imperial";
+
+  // Below 600px the vertical chip column costs 150px of a 360px screen, so the
+  // picker becomes a dropdown. The breakpoint is read in JS rather than CSS
+  // because a <select> and a group of buttons are different widgets, not one
+  // widget with two styles.
+  const isNarrow = useMediaQuery("(max-width: 599.98px)");
+  const muscleOptions = MUSCLE_GROUPS.map((m) => ({ value: m, label: t(`muscles.${m}`) }));
   const weightUnit = isImperial ? "lb" : "kg";
 
   const [exercises, setExercises] = useState([]);
@@ -138,13 +146,25 @@ export function Exercises() {
 
       <div className="ex-layout">
         <div className="ex-muscle-col">
-          <span className="ex-muscle-heading">{t("exercises.selectMuscle")}</span>
-          <Toggle
-            vertical
-            value={selectedMuscle}
-            onChange={selectMuscle}
-            options={MUSCLE_GROUPS.map((m) => ({ value: m, label: t(`muscles.${m}`) }))}
-          />
+          {isNarrow ? (
+            <Select
+              inline
+              labelKey="exercises.selectMuscle"
+              value={selectedMuscle}
+              onChange={selectMuscle}
+              options={muscleOptions}
+            />
+          ) : (
+            <>
+              <span className="ex-muscle-heading">{t("exercises.selectMuscle")}</span>
+              <Toggle
+                vertical
+                value={selectedMuscle}
+                onChange={selectMuscle}
+                options={muscleOptions}
+              />
+            </>
+          )}
         </div>
 
         <div className="ex-exercise-col">

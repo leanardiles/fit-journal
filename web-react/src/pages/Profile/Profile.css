@@ -15,13 +15,22 @@
   margin: 0 0 var(--space-xs);
 }
 
-/* One aligned row: fixed label column, control fills the rest. */
+/* One aligned row: fixed label column, control fills the rest. The label
+   column narrows on phones rather than dropping to its own line, so the form
+   keeps its two-column rhythm at every width. */
 .pf-row {
   display: grid;
-  grid-template-columns: var(--pf-label-w, 140px) 1fr;
+  grid-template-columns: var(--pf-label-w, 104px) 1fr;
   align-items: center;
-  gap: var(--space-md);
+  gap: var(--space-sm);
   min-height: var(--lh);
+}
+
+@media (min-width: 600px) {
+  .pf-row {
+    grid-template-columns: var(--pf-label-w, 140px) 1fr;
+    gap: var(--space-md);
+  }
 }
 .pf-label { font-size: var(--fs-base); color: var(--muted); }
 .pf-value { color: var(--text); }
@@ -47,13 +56,3 @@
 .pf-row .toggle-field { margin: 0; }
 
 .pf-actions { margin-top: var(--space-sm); }
-
-/* Stack on narrow screens so labels sit above their fields. */
-@media (max-width: 520px) {
-  .pf-row {
-    grid-template-columns: 1fr;
-    align-items: start;
-    gap: var(--space-xs);
-    min-height: 0;
-  }
-}

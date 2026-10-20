@@ -14,6 +14,12 @@
   align-items: start;
 }
 
+/* Grid items default to min-width: auto, which resolves to min-content: the
+   track refuses to shrink below the longest unbreakable word and the grid
+   overflows by a few pixels. min-width: 0 lets the card shrink to its track;
+   the wrap rule on the note gives long strings permission to break. */
+.dashboard-grid > * { min-width: 0; }
+
 /* Note internals inherit the note's locally-rebound tokens; --text is the note's
    dark ink, so everything on the note reads black. No red accents. */
 .note-heading {

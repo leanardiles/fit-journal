@@ -12,15 +12,31 @@
   margin: 0;
 }
 
+/* Base: narrow. The muscle picker is a dropdown row stacked above the table,
+   so the table gets the full column width instead of the ~150px left after a
+   fixed sidebar and its 72px gutter. */
 .ex-layout {
   display: flex;
+  flex-direction: column;
+  gap: var(--space-md);
 }
 
-/* Left column , vertical muscle toggle (chips stacked, styled by Toggle.css) */
 .ex-muscle-col {
-  width: 150px;
-  min-width: 150px;
-  flex-shrink: 0;
+  width: auto;
+  min-width: 0;
+}
+
+/* 600px up: muscle chips return as a fixed sidebar beside the table. */
+@media (min-width: 600px) {
+  .ex-layout {
+    flex-direction: row;
+    gap: 0;
+  }
+  .ex-muscle-col {
+    width: 150px;
+    min-width: 150px;
+    flex-shrink: 0;
+  }
 }
 
 .ex-muscle-heading {
@@ -34,14 +50,25 @@
 .ex-exercise-col {
   flex: 1;
   min-width: 0;
-  padding-inline-start: 72px;
+  padding-inline-start: 0;
+}
+
+@media (min-width: 600px) {
+  .ex-exercise-col { padding-inline-start: 72px; }
 }
 
 .ex-add-row { margin-top: var(--space-md); }
 
+/* Narrow: width 100% lets the browser fit the four columns to the available
+   space by wrapping cell text, instead of sizing to content and overflowing.
+   Wide: back to content width so the table does not stretch across the page. */
 .ex-table {
-  width: auto;
+  width: 100%;
   border-collapse: collapse;
+}
+
+@media (min-width: 600px) {
+  .ex-table { width: auto; }
 }
 
 .ex-table th {
@@ -56,12 +83,20 @@
   vertical-align: bottom;
 }
 
-.ex-th-name { min-width: 200px; }
+/* The 200px floor is what forces the overflow at narrow: a grid of fixed
+   minimums cannot shrink. Released below 600px so the name column wraps. */
+.ex-th-name { min-width: 0; }
 
 .ex-th-center,
 .ex-td-center {
   text-align: center;
-  padding-inline-start: 24px;
+  padding-inline-start: var(--space-sm);
+}
+
+@media (min-width: 600px) {
+  .ex-th-name { min-width: 200px; }
+  .ex-th-center,
+  .ex-td-center { padding-inline-start: 24px; }
 }
 
 .ex-table td {
