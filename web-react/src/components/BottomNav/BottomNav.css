@@ -1,0 +1,83 @@
+/* Bottom tab bar, narrow screens only (under 600px).
+   The red top border carries the notebook margin-line colour into the mobile
+   chrome, so the aesthetic survives dropping the left-margin apparatus. */
+.bottom-nav {
+  position: fixed;
+  inset-inline: 0;
+  bottom: 0;
+  z-index: 50;
+
+  display: flex;
+  align-items: center;
+
+  padding-inline: var(--space-sm);
+  padding-block-start: var(--space-sm);
+  padding-block-end: calc(var(--space-sm) + env(safe-area-inset-bottom, 0px));
+
+  background-color: var(--bg);
+  border-block-start: 2px solid var(--margin);
+}
+
+/* flex: 1 splits the bar into six equal columns, so the tap target is the
+   whole column rather than the 24px glyph. min-width keeps the 44px floor
+   (plan 2.5) if the viewport ever drops below ~280px. */
+.bn-item {
+  position: relative;
+  flex: 1 1 0;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 44px;
+  min-height: 44px;
+  color: var(--muted);
+  text-decoration: none;
+  border-radius: var(--radius);
+  transition: color 0.12s;
+}
+
+/* Hover only where a real pointer exists. On touch, :hover sticks after a tap
+   and leaves the last-tapped item looking selected. */
+@media (hover: hover) {
+  .bn-item:hover { color: var(--text); }
+}
+
+/* Selection is signalled by weight, contrast and an underline, never by hue.
+   Colour alone would fail WCAG 1.4.1 Use of Color; these three cues survive
+   greyscale, colour blindness and a dimmed screen. */
+.bn-item.active { color: var(--text); }
+
+.bn-item.active .bn-icon { stroke-width: 2.6; }
+
+/* Pencil underline, absolutely positioned so turning it on never reflows the
+   bar. Centred with a transform, so it needs no RTL counterpart. */
+.bn-item.active::after {
+  content: "";
+  position: absolute;
+  bottom: 5px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 18px;
+  height: 2px;
+  border-radius: 1px;
+  background-color: currentColor;
+}
+
+/* The icon contract: geometry comes from NavIcons.jsx, paint comes from here.
+   currentColor is what makes the muted / hover / active states work. */
+.bn-icon {
+  width: 24px;
+  height: 24px;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 1.75;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  /* Matches the colour transition on .bn-item, so weight and contrast change
+     together rather than one snapping ahead of the other. */
+  transition: stroke-width 0.12s;
+}
+
+/* From 600px up the top header owns navigation again. */
+@media (min-width: 600px) {
+  .bottom-nav { display: none; }
+}

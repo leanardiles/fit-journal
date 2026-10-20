@@ -1,80 +1,51 @@
 /* ============================================================
    AppLayout , the notebook shell for all app pages.
-   - ruled horizontal lines (on the scrolling content, scroll WITH text)
-   - a vertical red "margin" line (on the shell, runs full height incl. header)
+
+   MOBILE-FIRST. The base rules are the narrow layout (under 600px): the
+   left-margin apparatus (red vertical line + punch holes) is dropped and
+   primary navigation moves to the fixed BottomNav. The ruled horizontal
+   lines stay at every width, since they are the cheapest and strongest
+   notebook cue and cost no horizontal space.
+
+   The @media (min-width: 600px) block layers the full notebook back on.
+   Breakpoints: 600px (narrow -> medium), 1024px (medium -> wide).
    ============================================================ */
 
+/* ---------- Base: narrow (under 600px) ---------- */
+
 .app-shell {
-  --rule-x: 90px;       /* gap from the start edge to the vertical red line */
-  --page-gutter: 72px;  /* breathing room inside the writing area, used on BOTH sides:
-                           red line -> content, and content -> page end */
+  --rule-x: 0px;                   /* no left margin rule on narrow */
+  --page-gutter: var(--space-md);  /* tight gutters so text gets the width */
+
   min-height: 100vh;
   display: flex;
   flex-direction: column;
   background-color: var(--bg);
   color: var(--text);
   font-family: var(--font-body);
-
-  background-image: linear-gradient(90deg, var(--margin) 2px, transparent 2px);
-  background-size: 100% 100%;
-  background-position: var(--rule-x) 0;
-  background-repeat: no-repeat;
-}
-
-[dir="rtl"] .app-shell {
-  background-position: calc(100% - var(--rule-x)) 0;
 }
 
 .app-header {
   display: flex;
-  align-items: flex-end;                            /* KNOB 4: bottom-aligns logo + nav + user */
+  align-items: center;
   justify-content: space-between;
-  padding-block: 22px 10px;                          /* KNOB 3b: top / bottom. Smaller bottom = sits lower */
-  padding-inline: calc(var(--rule-x) + 28px) 48px;   /* KNOB 3a: puts the logo just right of the red line */
+  flex-wrap: wrap;                 /* never overflow, even under text expansion */
+  gap: var(--space-sm);
+  row-gap: var(--space-sm);
+  padding-block: var(--space-md) var(--space-sm);
+  padding-inline: var(--page-gutter);
   flex-shrink: 0;
 }
 
 .app-header .app-logo {
-  height: 53px;    /* KNOB 2: logo size, was 44px (+20%) */
+  height: 38px;
   width: auto;
   opacity: 0.9;
 }
 
-.app-content {
-  flex: 1;
-  overflow-y: auto;
-  line-height: var(--lh);
-
-  /* Layer 1: punched holes down the left margin, locked to the ruled-line grid.
-     First hole centered on line 3 (y = 2 * --lh), then one every 10 lines.
-     Layer 2: the ruled horizontal lines. Both scroll with the text (local). */
-  background-image:
-    url('/notebook-hole-dark.png'),
-    linear-gradient(var(--line-color) 1px, transparent 1px);
-  background-repeat: repeat-y, repeat;
-  background-position:
-    0 calc(var(--lh) * -2.5),   /* holes: half a line below line 3, centered in the row */
-    0 0;                      /* ruled lines */
-  background-size:
-    var(--rule-x) calc(var(--lh) * 10),   /* hole column = left margin; repeat every 10 lines */
-    100% var(--lh);
-  background-attachment: local, local;
-
-  padding-block: var(--lh) calc(var(--lh) * 3);
-  /* symmetric: gutter to the RIGHT of the red line, and the same gutter before the page end */
-  padding-inline: calc(var(--rule-x) + var(--page-gutter)) var(--page-gutter);
-}
-
-/* RTL: mirror the punch holes into the right-hand margin. */
-[dir="rtl"] .app-content {
-  background-position:
-    100% calc(var(--lh) * -2.5),
-    0 0;
-}
-
+/* Primary nav lives in the BottomNav on narrow screens. */
 .app-nav {
-  display: flex;
-  gap: 24px;
+  display: none;
 }
 
 .app-nav a {
@@ -85,23 +56,35 @@
   transition: color 0.12s;
 }
 
-.app-nav a:hover {
-  text-decoration: underline;
-  text-decoration-color: var(--red);
-  text-underline-offset: 4px;
-}
-
-/* Active nav link (react-router NavLink adds .active) */
+.app-nav a:hover,
 .app-nav a.active {
   text-decoration: underline;
   text-decoration-color: var(--red);
   text-underline-offset: 4px;
 }
 
+.app-content {
+  flex: 1;
+  overflow-y: auto;
+  line-height: var(--lh);
+
+  /* ruled horizontal lines only; they scroll with the text (local) */
+  background-image: linear-gradient(var(--line-color) 1px, transparent 1px);
+  background-repeat: repeat;
+  background-position: 0 0;
+  background-size: 100% var(--lh);
+  background-attachment: local;
+
+  padding-block-start: var(--lh);
+  /* clear the fixed bottom bar and the iOS home indicator */
+  padding-block-end: calc(var(--lh) * 2 + 64px + env(safe-area-inset-bottom, 0px));
+  padding-inline: var(--page-gutter);
+}
+
 .app-user {
   display: flex;
   align-items: center;
-  gap: 24px;
+  gap: var(--space-md);
 }
 
 .app-user-name {
@@ -126,26 +109,70 @@
   border-color: var(--red);
 }
 
-/* Header language switcher , blends into the header, symmetric padding
-   so it needs no RTL handling. */
-.app-lang-select {
-  background: transparent;
-  border: 1px solid var(--border);
-  color: var(--muted);
-  font-family: var(--font-body);
-  font-size: var(--fs-base);
-  padding: 4px 8px;
-  border-radius: var(--radius);
-  cursor: pointer;
-  transition: all 0.12s;
-}
+/* ---------- 600px and up: the full notebook + top navigation ---------- */
 
-.app-lang-select:hover {
-  color: var(--text);
-  border-color: var(--red-border);
-}
+@media (min-width: 600px) {
+  .app-shell {
+    --rule-x: 90px;       /* gap from the start edge to the vertical red line */
+    --page-gutter: 72px;  /* breathing room inside the writing area, both sides */
 
-.app-lang-select option {
-  background: var(--bg);
-  color: var(--text);
+    /* vertical red "margin" line, full height including the header */
+    background-image: linear-gradient(90deg, var(--margin) 2px, transparent 2px);
+    background-size: 100% 100%;
+    background-position: var(--rule-x) 0;
+    background-repeat: no-repeat;
+  }
+
+  [dir="rtl"] .app-shell {
+    background-position: calc(100% - var(--rule-x)) 0;
+  }
+
+  .app-header {
+    align-items: flex-end;         /* bottom-aligns logo + nav + user */
+    padding-block: 22px 10px;
+    padding-inline: calc(var(--rule-x) + 28px) 48px;
+    /* flex-wrap (inherited from the base) drops the nav to a second line
+       between 600 and ~916px, where the single row does not fit. */
+  }
+
+  .app-header .app-logo {
+    height: 53px;
+  }
+
+  .app-nav {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 24px;
+  }
+
+  .app-content {
+    /* Layer 1: punched holes down the left margin, locked to the ruled-line
+       grid (first hole centered on line 3, then every 10 lines).
+       Layer 2: the ruled horizontal lines. */
+    background-image:
+      url('/notebook-hole-dark.png'),
+      linear-gradient(var(--line-color) 1px, transparent 1px);
+    background-repeat: repeat-y, repeat;
+    background-position:
+      0 calc(var(--lh) * -2.5),
+      0 0;
+    background-size:
+      var(--rule-x) calc(var(--lh) * 10),
+      100% var(--lh);
+    background-attachment: local, local;
+
+    padding-block-end: calc(var(--lh) * 3);
+    padding-inline: calc(var(--rule-x) + var(--page-gutter)) var(--page-gutter);
+  }
+
+  /* RTL: mirror the punch holes into the right-hand margin. */
+  [dir="rtl"] .app-content {
+    background-position:
+      100% calc(var(--lh) * -2.5),
+      0 0;
+  }
+
+  .app-user {
+    gap: 24px;
+  }
 }

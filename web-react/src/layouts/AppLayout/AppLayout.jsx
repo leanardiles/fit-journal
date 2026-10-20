@@ -3,6 +3,7 @@ import { useTranslation } from "react-i18next";
 import { logout } from "../../api/auth";
 import { useUser } from "../../context/UserContext";
 import logo from "../../assets/logo-and-name-dark.png";
+import { BottomNav } from "../../components/BottomNav/BottomNav";
 import "./AppLayout.css";
 
 export function AppLayout() {
@@ -40,6 +41,8 @@ export function AppLayout() {
       <main className="app-content">
         <Outlet />
       </main>
+
+      <BottomNav />
     </div>
   );
 }
