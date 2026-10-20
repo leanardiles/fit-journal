@@ -11,19 +11,31 @@ import es419Common from "./locales/es-419/common.json";
 import esARCommon from "./locales/es-AR/common.json";
 import nlCommon from "./locales/nl/common.json";
 import frCommon from "./locales/fr/common.json";
+import { pseudo } from "./pseudo";
 
+
+// Supported locales and their catalogs.
+const resources = {
+  "en":     { common: enCommon },
+  "es-419": { common: es419Common },
+  "es-AR":  { common: esARCommon },
+  "nl":     { common: nlCommon },
+  "fr":     { common: frCommon },
+};
+
+// Dev-only pseudo-locale (en-XA): reuse the English catalog and register the
+// pseudo postProcessor, which distorts strings to surface expansion and
+// hardcoded-string bugs. Never added in production.
+if (import.meta.env.DEV) {
+  resources["en-XA"] = { common: enCommon };
+  i18n.use(pseudo);
+}
 
 i18n
   .use(LanguageDetector)        // detect the user's language (browser, localStorage, etc.)
   .use(initReactI18next)        // wire i18next into React
   .init({
-    resources: {
-      "en":     { common: enCommon },
-      "es-419": { common: es419Common },
-      "es-AR":  { common: esARCommon },
-      "nl":     { common: nlCommon },
-      "fr":     { common: frCommon },
-    },
+    resources,
     // Explicit fallback chains (mirrors the backend locale model):
     //   es-AR  -> es-419 -> en   (Argentina overrides base LatAm Spanish, then English)
     //   es-419 -> en
@@ -41,6 +53,7 @@ i18n
     interpolation: {
       escapeValue: false,       // React already escapes, so i18next shouldn't
     },
+    postProcess: import.meta.env.DEV ? ["pseudo"] : [],
   });
 
 export default i18n;

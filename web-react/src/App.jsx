@@ -15,10 +15,27 @@ import { AppLayout } from "./layouts/AppLayout/AppLayout";
 import { AuthLayout } from "./layouts/AuthLayout/AuthLayout";   // ← ADD THIS
 import { ProtectedRoute } from "./components/ProtectedRoute/ProtectedRoute";
 import { UserProvider } from "./context/UserContext";
+import { useEffect } from "react";
+import i18n from "./i18n/config";
+import { DevL10nPanel } from "./components/DevL10nPanel/DevL10nPanel";
 
 
 
 function App() {
+  // Keep <html lang> and dir in sync with the active locale; the dev RTL toggle
+  // can then flip dir for mirroring tests.
+  useEffect(() => {
+    const RTL = ["ar", "he", "fa", "ur"];
+    const apply = (lng) => {
+      const el = document.documentElement;
+      el.setAttribute("lang", lng || "en");
+      el.setAttribute("dir", RTL.some((r) => (lng || "").startsWith(r)) ? "rtl" : "ltr");
+    };
+    apply(i18n.language);
+    i18n.on("languageChanged", apply);
+    return () => i18n.off("languageChanged", apply);
+  }, []);
+
   return (
     <BrowserRouter>
       <ToastProvider>
@@ -44,6 +61,7 @@ function App() {
             <Route path="/workout" element={<Workout />} />
           </Route>
         </Routes>
+        {import.meta.env.DEV && <DevL10nPanel />}
       </ToastProvider>
     </BrowserRouter>
   );
