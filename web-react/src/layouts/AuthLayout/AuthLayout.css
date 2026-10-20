@@ -65,7 +65,7 @@
 }
 
 .auth-line--title { justify-content: center; }
-.auth-line--error { color: var(--error); font-size: 14px; }
+.auth-line--error { color: var(--error); font-size: var(--fs-base); }
 .auth-line--link  { justify-content: center; }
 
 /* Button row: center the button; it floats on the row rather than writing on it. */
@@ -103,7 +103,7 @@
 
 .auth-link {
   color: var(--text);
-  font-size: 14px;
+  font-size: var(--fs-base);
 }
 
 .auth-eye {
@@ -129,7 +129,7 @@
   padding: 0;
   color: var(--muted);
   font-family: var(--font-body);
-  font-size: 14px;
+  font-size: var(--fs-base);
   cursor: pointer;
 }
 .auth-forgot:hover { color: var(--text); }

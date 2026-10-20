@@ -30,6 +30,17 @@
   --text:  #cccccc;
   --muted: #8a8a8a;
 
+  /* Type scale (rem; root stays at the browser default so it honors user font size) */
+  --fs-xs:      0.75rem;    /* 12px  <- 11, 12 */
+  --fs-sm:      0.8125rem;  /* 13px  <- 13 */
+  --fs-base:    0.875rem;   /* 14px  <- 14, 15 */
+  --fs-md:      1rem;       /* 16px  <- 16 */
+  --fs-lg:      1.125rem;   /* 18px  <- 18 */
+  --fs-xl:      1.25rem;    /* 20px  <- 20, 22 */
+  --fs-2xl:     1.5rem;     /* 24px  <- 24 */
+  --fs-3xl:     2.25rem;    /* 36px  <- 36 */
+  --fs-display: 3.5rem;     /* 56px  <- 56 */
+
   /* Brand accent (the notebook "red margin" family) */
   --red:        rgba(192, 57, 43, 0.85);
   --red-border: rgba(150, 30, 30, 0.40);

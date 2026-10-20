@@ -24,7 +24,7 @@
   align-items: center;
   gap: 12px;
   flex-wrap: wrap;
-  font-size: 18px;
+  font-size: var(--fs-lg);
   color: var(--text);
   margin-bottom: 8px;
   padding-inline-start: 6px;
@@ -41,7 +41,7 @@
   border-bottom: 1px solid var(--border);
   color: var(--text);
   font-family: var(--font-body);
-  font-size: 14px;
+  font-size: var(--fs-base);
   padding: 0 4px 2px;
   padding-inline-start: 20px;
   width: 180px;
@@ -57,7 +57,7 @@
   border: 1px solid var(--text);
   color: var(--text);
   font-family: var(--font-body);
-  font-size: 14px;
+  font-size: var(--fs-base);
   padding: 4px 12px;
   cursor: pointer;
   border-radius: 8px;
@@ -66,10 +66,10 @@
 .rt-muscle-btn:hover { border-color: var(--yellow); }
 .rt-muscle-btn.selected { border-color: var(--yellow); color: var(--text); background: rgba(244, 217, 62, 0.22); }
 
-.rt-selected-tag { font-size: 12px; color: var(--muted); margin-bottom: 6px; }
+.rt-selected-tag { font-size: var(--fs-xs); color: var(--muted); margin-bottom: 6px; }
 .rt-selected-tag span { color: var(--text); margin-inline-start: 4px; }
 
-.rt-expander { color: var(--text); font-size: 15px; cursor: pointer; user-select: none; padding: 4px 0; }
+.rt-expander { color: var(--text); font-size: var(--fs-base); cursor: pointer; user-select: none; padding: 4px 0; }
 .rt-expander:hover { color: var(--text); }
 
 .rt-pool-edit {
@@ -85,13 +85,13 @@
 .rt-pool-col { flex: 0 0 auto; min-width: 170px; }
 .rt-pool-muscle-row { display: flex; align-items: center; gap: 14px; margin-bottom: 6px; flex-wrap: wrap; }
 .rt-pool-muscle-name {
-  font-size: 15px;
+  font-size: var(--fs-base);
   text-transform: uppercase;
   letter-spacing: 1px;
   color: var(--text);
 }
 .rt-stepper { display: inline-flex; align-items: center; gap: 8px; }
-.rt-step-label { font-size: 11px; color: var(--muted); }
+.rt-step-label { font-size: var(--fs-xs); color: var(--muted); }
 .rt-step-btn {
   background: transparent;
   border: 1px solid var(--border);
@@ -108,14 +108,14 @@
   padding: 0;
 }
 .rt-step-btn:hover { color: var(--text); border-color: var(--red-border); }
-.rt-step-val { min-width: 16px; text-align: center; color: var(--text); font-size: 14px; }
+.rt-step-val { min-width: 16px; text-align: center; color: var(--text); font-size: var(--fs-base); }
 
 .rt-pool-ex { display: flex; align-items: center; gap: 8px; padding: 3px 0; cursor: pointer; }
-.rt-pool-ex span { font-size: 14px; color: var(--text); }
+.rt-pool-ex span { font-size: var(--fs-base); color: var(--text); }
 .rt-checkbox { width: 14px; height: 14px; accent-color: var(--yellow, #f4d93e); cursor: pointer; }
-.rt-pool-empty { font-size: 12px; color: var(--red); padding: 4px 0; }
+.rt-pool-empty { font-size: var(--fs-xs); color: var(--red); padding: 4px 0; }
 
-.rt-error { color: var(--red); font-size: 14px; margin: var(--space-sm) 0; }
+.rt-error { color: var(--red); font-size: var(--fs-base); margin: var(--space-sm) 0; }
 
 .rt-save-row { display: flex; gap: 12px; flex-wrap: wrap; }
 .rt-btn {
@@ -123,7 +123,7 @@
   border: 1px solid var(--border);
   color: var(--text);
   font-family: var(--font-body);
-  font-size: 14px;
+  font-size: var(--fs-base);
   padding: 6px 14px;
   cursor: pointer;
   border-radius: 6px;
@@ -149,7 +149,7 @@
   border: 1px solid var(--text);
   color: var(--text);
   font-family: var(--font-body);
-  font-size: 13px;
+  font-size: var(--fs-sm);
   padding: 4px 12px;
   cursor: pointer;
   border-radius: 8px;
@@ -173,14 +173,14 @@
   padding: 6px 10px;
   color: var(--muted);
   font-family: var(--font-body);
-  font-size: 14px;
+  font-size: var(--fs-base);
   cursor: pointer;
   border-inline-start: 2px solid transparent;
   user-select: none;
 }
 .rt-manual-tab:hover { color: var(--text); }
 .rt-manual-tab.active { color: var(--text); border-inline-start-color: var(--red-border); }
-.rt-manual-cnt { color: var(--red); font-size: 11px; }
+.rt-manual-cnt { color: var(--red); font-size: var(--fs-xs); }
 .rt-manual-list {
   flex: 1;
   padding-inline-start: 20px;
@@ -195,7 +195,7 @@
   background: transparent;
   border: none;
   color: var(--text);
-  font-size: 15px;
+  font-size: var(--fs-base);
   line-height: 1;
   cursor: pointer;
   padding: 0 4px;
@@ -209,7 +209,7 @@
 .rt-title {
   font-family: var(--font-body);
   color: var(--text);
-  font-size: 20px;
+  font-size: var(--fs-lg);
   text-transform: uppercase;
   letter-spacing: 1.5px;
   line-height: var(--lh);
@@ -241,9 +241,9 @@
 .rt-day-head {
   display: inline-block;
   color: var(--text);
-  font-size: 18px;
+  font-size: var(--fs-lg);
 }
-.rt-daytype { color: var(--red); font-size: 12px; }
+.rt-daytype { color: var(--red); font-size: var(--fs-xs); }
 .rt-ex-row {
   display: flex;
   gap: 2px;
@@ -254,16 +254,16 @@
 .rt-muscle {
   flex: 0 0 76px;
   min-width: 76px;
-  font-size: 11px;
+  font-size: var(--fs-xs);
   text-transform: uppercase;
   letter-spacing: 1px;
   color: var(--muted);
 }
-.rt-ex { flex: 1; color: var(--text); font-size: 12px; }
+.rt-ex { flex: 1; color: var(--text); font-size: var(--fs-xs); }
 .rt-ex.muted { color: var(--muted); }
 .rt-seepool {
   color: var(--text);
-  font-size: 15px;
+  font-size: var(--fs-base);
   cursor: pointer;
   user-select: none;
   min-height: var(--lh);

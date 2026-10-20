@@ -5,12 +5,12 @@
   font-family: var(--font-body);
 }
 .field-label {
-  font-size: 14px;
+  font-size: var(--fs-base);
   color: var(--text);
 }
 .field-optional {
   color: var(--muted);
-  font-size: 12px;
+  font-size: var(--fs-xs);
   margin-inline-start: 4px;
   white-space: nowrap;
 }

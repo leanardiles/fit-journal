@@ -24,7 +24,7 @@
   margin: 0 0 var(--space-md);
   font-family: var(--font-body);
   color: var(--text);
-  font-size: 20px;
+  font-size: var(--fs-lg);
   text-transform: uppercase;
   letter-spacing: 1.5px;
   text-align: center;

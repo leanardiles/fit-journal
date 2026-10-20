@@ -8,8 +8,10 @@
 
 .pf-title {
   font-family: var(--font-body);
-  font-size: 20px;
+  font-size: var(--fs-lg);
   color: var(--text);
+  text-transform: uppercase;
+  letter-spacing: 1.5px;
   margin: 0 0 var(--space-xs);
 }
 
@@ -21,7 +23,7 @@
   gap: var(--space-md);
   min-height: var(--lh);
 }
-.pf-label { font-size: 14px; color: var(--text); }
+.pf-label { font-size: var(--fs-base); color: var(--muted); }
 .pf-value { color: var(--text); }
 
 .pf-input {

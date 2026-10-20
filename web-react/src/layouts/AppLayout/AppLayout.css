@@ -114,7 +114,7 @@
   border: 1px solid var(--red-border);
   color: var(--muted);
   font-family: var(--font-body);
-  font-size: 14px;
+  font-size: var(--fs-base);
   padding: 4px 14px;
   border-radius: var(--radius);
   cursor: pointer;
@@ -133,7 +133,7 @@
   border: 1px solid var(--border);
   color: var(--muted);
   font-family: var(--font-body);
-  font-size: 14px;
+  font-size: var(--fs-base);
   padding: 4px 8px;
   border-radius: var(--radius);
   cursor: pointer;

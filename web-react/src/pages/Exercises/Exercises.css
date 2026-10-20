@@ -5,7 +5,7 @@
 .ex-title {
   font-family: var(--font-body);
   color: var(--text);
-  font-size: 20px;
+  font-size: var(--fs-lg);
   text-transform: uppercase;
   letter-spacing: 1.5px;
   line-height: var(--lh);
@@ -26,7 +26,7 @@
 .ex-muscle-heading {
   display: block;
   color: var(--text);
-  font-size: 13px;
+  font-size: var(--fs-sm);
   margin-bottom: var(--space-xs);
 }
 
@@ -48,7 +48,7 @@
   height: var(--lh);
   text-align: start;
   padding-bottom: 4px;
-  font-size: 11px;
+  font-size: var(--fs-xs);
   color: var(--text);
   text-transform: uppercase;
   letter-spacing: 1.2px;
@@ -73,7 +73,7 @@
   border: none;
 }
 
-.ex-link { color: var(--red); font-size: 13px; text-decoration: none; }
+.ex-link { color: var(--red); font-size: var(--fs-sm); text-decoration: none; }
 .ex-link:hover { color: var(--text); }
 
 .ex-muted { color: var(--muted); }
@@ -91,7 +91,7 @@
   background: transparent;
   border: none;
   color: var(--text);
-  font-size: 15px;
+  font-size: var(--fs-base);
   cursor: pointer;
   padding: 0;
 }
@@ -105,7 +105,7 @@
   border: 1px solid var(--border);
   border-radius: var(--radius);
   font-family: var(--font-body);
-  font-size: 13px;
+  font-size: var(--fs-sm);
   padding: 2px 8px;
   cursor: pointer;
 }

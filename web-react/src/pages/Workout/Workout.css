@@ -1,5 +1,7 @@
 .wo-title {
-  font-size: 22px;
+  font-size: var(--fs-lg);
+  text-transform: uppercase;
+  letter-spacing: 1.5px;
   color: var(--text);
   margin: 0 0 var(--space-md);
   font-family: var(--font-body);
@@ -18,7 +20,7 @@
   border: 1px solid var(--text);
   color: var(--text);
   font-family: var(--font-body);
-  font-size: 14px;
+  font-size: var(--fs-base);
   padding-inline: 12px;
   height: calc(var(--lh) - 8px);
   border-radius: 8px;
@@ -33,7 +35,7 @@
   color: var(--text);
   background: rgba(244, 217, 62, 0.22);
 }
-.wo-day-tag { color: var(--yellow); font-size: 11px; margin-inline-start: 8px; }
+.wo-day-tag { color: var(--yellow); font-size: var(--fs-xs); margin-inline-start: 8px; }
 
 .wo-instruction {
   color: var(--text);
@@ -80,7 +82,7 @@
 }
 .wo-gap-note {
   color: rgba(192, 57, 43, 0.9);
-  font-size: 14px;
+  font-size: var(--fs-base);
   line-height: var(--lh);
   padding-bottom: 4px;
   font-family: var(--font-body);
@@ -104,7 +106,7 @@
 /* Date + routine-day line above the table */
 .wo-dateline { margin-bottom: var(--space-xs); font-family: var(--font-body); }
 .wo-date { color: var(--text); }
-.wo-dayinfo { color: var(--muted); margin-inline-start: 12px; font-size: 14px; }
+.wo-dayinfo { color: var(--muted); margin-inline-start: 12px; font-size: var(--fs-base); }
 
 /* Workout table */
 .wo-table {
@@ -117,7 +119,7 @@
   height: var(--lh);
   text-align: start;
   padding-bottom: 4px;
-  font-size: 11px;
+  font-size: var(--fs-xs);
   color: var(--muted);
   text-transform: uppercase;
   letter-spacing: 1.2px;
@@ -136,7 +138,7 @@
 .wo-table td.center { text-align: center; padding: 0 6px; width: 80px; }
 .wo-muscle-cell {
   color: var(--red);
-  font-size: 13px;
+  font-size: var(--fs-sm);
   padding-inline-end: 24px;
   white-space: nowrap;
   width: 1%;
@@ -181,7 +183,7 @@
   background: var(--text);
   border-color: var(--text);
   color: var(--bg);
-  font-size: 12px;
+  font-size: var(--fs-xs);
   line-height: 1;
 }
 .wo-check.checked::after { content: "✓"; }
@@ -201,7 +203,7 @@
 /* Manual log builder */
 .wo-ml-title {
   color: var(--text);
-  font-size: 16px;
+  font-size: var(--fs-md);
   text-transform: uppercase;
   letter-spacing: 1.5px;
   min-height: var(--lh);
@@ -223,7 +225,7 @@
   border: 1px solid var(--border);
   color: var(--text);
   font-family: var(--font-body);
-  font-size: 15px;
+  font-size: var(--fs-base);
   padding: 2px 8px;
   border-radius: 6px;
 }
@@ -244,7 +246,7 @@
   gap: 8px;
   min-height: var(--lh);
   padding-bottom: 2px;
-  font-size: 11px;
+  font-size: var(--fs-xs);
   text-transform: uppercase;
   letter-spacing: 1px;
   color: var(--muted);
@@ -260,19 +262,19 @@
 }
 .wo-ml-muscle {
   flex: 0 0 76px;
-  font-size: 11px;
+  font-size: var(--fs-xs);
   text-transform: uppercase;
   letter-spacing: 1px;
   color: var(--muted);
 }
-.wo-ml-name { flex: 1; color: var(--text); font-size: 14px; min-width: 0; }
+.wo-ml-name { flex: 1; color: var(--text); font-size: var(--fs-base); min-width: 0; }
 .wo-ml-input {
   width: 46px;
   background: transparent;
   border: 1px solid var(--border);
   color: var(--text);
   font-family: var(--font-body);
-  font-size: 14px;
+  font-size: var(--fs-base);
   text-align: center;
   border-radius: 6px;
   padding: 1px 0;
@@ -285,7 +287,7 @@
   border: none;
   color: var(--red);
   cursor: pointer;
-  font-size: 18px;
+  font-size: var(--fs-lg);
   line-height: 1;
   width: 20px;
 }
@@ -300,7 +302,7 @@
   border: 1px solid var(--text);
   color: var(--text);
   font-family: var(--font-body);
-  font-size: 13px;
+  font-size: var(--fs-sm);
   padding: 0 10px;
   height: calc(var(--lh) - 12px);
   border-radius: 8px;
@@ -323,7 +325,7 @@
   border: 1px solid var(--red-border);
   color: var(--red);
   font-family: var(--font-body);
-  font-size: 12px;
+  font-size: var(--fs-xs);
   padding: 0 8px;
   height: 20px;
   border-radius: 6px;

@@ -1,7 +1,7 @@
 .dash-title {
   font-family: var(--font-body);
   color: var(--text);
-  font-size: 20px;
+  font-size: var(--fs-lg);
   text-transform: uppercase;
   letter-spacing: 1.5px;
   margin: 0 0 var(--space-md);
@@ -17,7 +17,7 @@
 /* Note internals inherit the note's locally-rebound tokens; --text is the note's
    dark ink, so everything on the note reads black. No red accents. */
 .note-heading {
-  font-size: 18px;
+  font-size: var(--fs-lg);
   font-weight: bold;
   margin-bottom: 10px;
   color: var(--text);
@@ -32,14 +32,14 @@
 .note-day-muscles { color: var(--text); }
 .note-today {
   margin-inline-start: 6px;
-  font-size: 12px;
+  font-size: var(--fs-xs);
   color: var(--text);
 }
 
 .note-link {
   color: var(--text);
   text-decoration: none;
-  font-size: 14px;
+  font-size: var(--fs-base);
 }
 
 /* Edit-routine action: bordered button, transparent fill, black text. */
@@ -49,7 +49,7 @@
   border: 1px solid var(--text);
   background: transparent;
   text-decoration: none;
-  font-size: 12px;
+  font-size: var(--fs-xs);
   padding: 2px 10px;
   border-radius: 6px;
 }
@@ -69,4 +69,4 @@
 }
 
 /* Range toggle inside the notes reads a touch smaller than the app default. */
-.sticky-note .toggle-chip { font-size: 12px; padding: 3px 10px; }
+.sticky-note .toggle-chip { font-size: var(--fs-xs); padding: 3px 10px; }
