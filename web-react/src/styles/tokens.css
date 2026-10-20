@@ -28,7 +28,7 @@
 
   /* Text */
   --text:  #cccccc;
-  --muted: #555555;
+  --muted: #8a8a8a;
 
   /* Brand accent (the notebook "red margin" family) */
   --red:        rgba(192, 57, 43, 0.85);
@@ -63,7 +63,7 @@ body.light {
   --border:     rgba(0, 0, 0, 0.08);
 
   --text:  #2a2a2a;
-  --muted: #999999;
+  --muted: #6b6b6b;
 
   --red:        rgba(160, 40, 40, 0.85);
   --red-border: rgba(150, 30, 30, 0.35);
