@@ -90,3 +90,6 @@ package/
 # Claude Code local tooling
 .claude/
 .claudeignore
+
+# Local-only planning doc (not for GitHub)
+docs/FitJournal_Adaptive_UI_Plan_FINAL.md
