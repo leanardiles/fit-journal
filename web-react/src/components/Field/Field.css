@@ -25,6 +25,132 @@
   outline: none;
 }
 
+/* ---- Dropdown identity -------------------------------------------------
+   A text field and a menu trigger must not look the same. The chevron is
+   what says a menu will open; the fill says the control is interactive.
+   appearance: none drops the native arrow, which cannot be styled and
+   differs across browsers and operating systems.
+   Must stay after .field-input: the border shorthand here resets the
+   bottom-only rule that .field-input sets, and both are single-class
+   selectors, so source order decides. */
+.field-select {
+  -webkit-appearance: none;
+  appearance: none;
+
+  padding-block: 8px;
+  padding-inline: 10px 32px;          /* logical, so RTL flips the chevron gutter */
+
+  border: 1px solid var(--control-border);
+  border-radius: var(--radius);
+
+  background-color: var(--control-bg);
+  background-image: var(--control-chevron);
+  background-repeat: no-repeat;
+  background-position: right 10px center;
+
+  cursor: pointer;
+  transition: background-color 0.12s, border-color 0.12s;
+}
+
+/* background-position is physical, so this is the one piece RTL must mirror. */
+[dir="rtl"] .field-select { background-position: left 10px center; }
+
+.field-select:hover { background-color: var(--control-bg-hover); }
+.field-select:focus-visible { border-color: var(--red-border); }
+
+/* Honoured by the native popup on Windows Chrome and ignored on macOS, which
+   is the best the old model allowed. Overridden inside the @supports block. */
+.field-select option {
+  background-color: var(--bg);
+  color: var(--text);
+}
+
+/* ---- Open menu: customizable select ------------------------------------
+   A native select's popup is painted by the OS outside the page's box tree,
+   so it has always arrived in the system font with the system accent colour.
+   appearance: base-select opts the popup into the normal CSS model, making it
+   a real element we can style, anchor and animate.
+
+   Shipped in Chrome and Edge 135 and Safari 27; Firefox has it behind a flag.
+   The @supports wrapper is load-bearing rather than decorative: without it
+   Firefox would pick up rules it cannot honour, and Chrome would paint two
+   chevrons, since the UA supplies its own ::picker-icon once base-select is
+   on and ours is a background image. Browsers without it keep the closed
+   control exactly as styled above plus the native popup, which is a clean
+   degradation. */
+@supports (appearance: base-select) {
+  .field-select,
+  .field-select::picker(select) {
+    appearance: base-select;
+  }
+
+  /* The UA draws the arrow now, so drop ours and reclaim its gutter. */
+  .field-select {
+    background-image: none;
+    padding-inline: 10px;
+  }
+
+  .field-select::picker-icon {
+    color: var(--muted);
+    transition: rotate 0.15s;
+  }
+  .field-select:open::picker-icon { rotate: 180deg; }
+
+  /* anchor-size ties the menu to the width of the field that opened it, so it
+     unfolds from the control rather than appearing as a separate panel. */
+  .field-select::picker(select) {
+    min-width: anchor-size(width);
+    margin-block-start: var(--space-xs);
+    padding: var(--space-xs);
+
+    background-color: var(--bg);
+    border: 1px solid var(--control-border);
+    border-radius: var(--radius);
+    box-shadow: 0 8px 18px rgba(0, 0, 0, 0.4);
+
+    font-family: var(--font-body);
+    font-size: var(--fs);
+    color: var(--text);
+
+    /* The picker lives in the top layer, so display and overlay have to be
+       told to animate discretely or it would pop in fully formed. */
+    opacity: 0;
+    translate: 0 -4px;
+    transition:
+      opacity 0.14s ease,
+      translate 0.14s ease,
+      display 0.14s allow-discrete,
+      overlay 0.14s allow-discrete;
+  }
+
+  .field-select:open::picker(select) {
+    opacity: 1;
+    translate: 0 0;
+  }
+
+  /* The entry state. Must follow the rule it starts from. */
+  @starting-style {
+    .field-select:open::picker(select) {
+      opacity: 0;
+      translate: 0 -4px;
+    }
+  }
+
+  .field-select option {
+    padding: 6px 10px;
+    border-radius: 6px;
+    background-color: transparent;
+  }
+  .field-select option:hover { background-color: var(--control-bg-hover); }
+  .field-select option:checked { background-color: var(--active-bg); }
+  .field-select option::checkmark { color: var(--red); }
+
+  @media (prefers-reduced-motion: reduce) {
+    .field-select::picker(select),
+    .field-select::picker-icon { transition: none; }
+  }
+}
+
 /* Inline: label beside the input, at every width. Stacking the two on phones
    costs a full line per field and leaves the form tall and mostly empty, so
    the label column shrinks instead of the row breaking. */

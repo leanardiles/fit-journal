@@ -1,5 +1,5 @@
 import { useTranslation } from "react-i18next";
-import "../Field/Field.css"; // inline mode reuses the shared .field / .field--inline layout
+import "../Field/Field.css"; // shares the .field layout and the .field-select identity
 
 /**
  * Reusable, i18n-aware labeled select.
@@ -10,14 +10,17 @@ import "../Field/Field.css"; // inline mode reuses the shared .field / .field--i
  *   options  - either a flat list [{ value, label }] or grouped
  *              [{ label, options: [{ value, label }] }] (renders <optgroup>).
  *              Labels are display-ready (caller translates).
- *   inline   - label beside the select on one row (matches Field's inline mode,
- *              collapses to stacked on narrow screens). Default false = stacked.
+ *   inline   - label beside the select on one row (matches Field's inline
+ *              mode). Default false = label stacked above.
+ *
+ * Both modes render the same markup and differ only by one class, so the
+ * dropdown styling lives in Field.css and is defined once.
  */
 export function Select({ labelKey, value, onChange, options = [], inline = false }) {
   const { t } = useTranslation();
 
   const renderOption = (opt) => (
-    <option key={opt.value} value={opt.value} style={{ background: "var(--bg)", color: "var(--text)" }}>
+    <option key={opt.value} value={opt.value}>
       {opt.label}
     </option>
   );
@@ -32,34 +35,13 @@ export function Select({ labelKey, value, onChange, options = [], inline = false
     )
   );
 
-  // Inline: reuse Field's classes so labels line up with Field rows in the same form.
-  if (inline) {
-    return (
-      <label className="field field--inline">
-        {labelKey && <span className="field-label">{t(labelKey)}</span>}
-        <select className="field-input" value={value} onChange={(e) => onChange?.(e.target.value)}>
-          {optionsMarkup}
-        </select>
-      </label>
-    );
-  }
-
   return (
-    <label style={{ display: "flex", flexDirection: "column", gap: "var(--space-xs)", fontFamily: "var(--font-body)" }}>
-      {labelKey && <span style={{ fontSize: 14, color: "var(--text)" }}>{t(labelKey)}</span>}
+    <label className={`field${inline ? " field--inline" : ""}`}>
+      {labelKey && <span className="field-label">{t(labelKey)}</span>}
       <select
+        className="field-input field-select"
         value={value}
         onChange={(e) => onChange?.(e.target.value)}
-        style={{
-          padding: "8px 4px",
-          border: "none",
-          borderBottom: "1px solid var(--border)",
-          background: "transparent",
-          color: "var(--text)",
-          fontFamily: "var(--font-body)",
-          fontSize: "var(--fs)",
-          outline: "none",
-        }}
       >
         {optionsMarkup}
       </select>

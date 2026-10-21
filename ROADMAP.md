@@ -2,7 +2,7 @@
 
 FitJournal is a personal fitness tracking application. This roadmap tracks planned features, technical debt, and the path from local development to AWS production deployment.
 
-**Last updated:** 5 October 2026
+**Last updated:** 20 October 2026
 
 ---
 
@@ -41,6 +41,7 @@ The short list — what's most likely to be worked on in the next session or two
 |---|---|---|---|---|
 | Exercise grouping (supersets) on mobile | Mobile | 🟡 P2 | M | The last routine-editor feature gap vs web: manual days on web can group exercises into ordered supersets/blocks (A1, A2, B1…) that Log WOD renders in order. Mobile's manual days are a flat list — no grouping. Add the same opt-in grouping (group_index + position, already persisted by the backend and returned by get_routine) to the mobile routine editor's manual picker, and render grouped manual days in order in the mobile WOD/log screens. Most complex remaining parity piece and fully optional for launch (the app works without it). |
 | Play Store launch prep | Mobile | 🟠 P1 | L | The non-code requirements to publish on Google Play. (1) Privacy policy — a hosted, publicly-accessible URL stating what data is collected and how it's used (the app stores email + fitness data); required by the Data Safety form. (2) Data Safety form — declare data collection/sharing/security in the Play Console. (3) $25 one-time Google Play developer account. (4) Closed testing requirement — new personal developer accounts must run a closed test with ~12 testers for ~14 days before production access. (5) Target SDK / app signing / store listing assets (icon, screenshots, description). Account-deletion flow is now in place (see Done), so this is unblocked. The deletion URL for the Data Safety form is https://app.fit-journal.com/web/delete-account. |
+| Retire the legacy Jinja frontend (cutover) | Backend / Web | 🟡 P2 | M | The React SPA (fit-journal.com) now covers all pages, but the backend still serves the old Jinja frontend at app.fit-journal.com. Cut over and remove it: delete `templates/` (12 Jinja pages) and `static/` (css/images/js), delete the FastAPI routes that render them, and point app.fit-journal.com at the React app or redirect it to fit-journal.com. Confirm React parity first (Workout/Log WOD is now rebuilt). One dependency to preserve: the Play Store Data Safety form points at https://app.fit-journal.com/web/delete-account (the Jinja delete-account page), so that URL must keep working, redirected to the React delete-account flow, or the Play listing breaks. Do on a dedicated branch, not the UI-revamp branch. |
 
 ---
 
