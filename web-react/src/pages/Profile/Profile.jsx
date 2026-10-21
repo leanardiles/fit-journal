@@ -8,7 +8,7 @@ import { useToast } from "../../context/ToastContext";
 import { useUser } from "../../context/UserContext";
 import { LOCALE_OPTIONS, normalizeLocale } from "../../i18n/locales";
 import { TIMEZONE_GROUPS } from "../../constants/timezones";
-import { cmToFeetInches, feetInchesToCm, kgToLb, lbToKg } from "../../constants/units";
+import { cmToFeetInches, feetInchesToCm, kgToLb, lbToKg, unitSymbol } from "../../constants/units";
 import { Button } from "../../components/Button/Button";
 import { Select } from "../../components/Select/Select";
 import { Toggle } from "../../components/Toggle/Toggle";
@@ -64,6 +64,13 @@ export function Profile() {
   const update = (key, value) => setForm((prev) => ({ ...prev, [key]: value }));
   const handleLocaleChange = (value) => { update("user_locale", value); i18n.changeLanguage(value); };
   const isImperial = form.user_unit_preference === "imperial";
+
+  // Unit symbols follow the chosen language, not the English abbreviations.
+  const uCm = unitSymbol(i18n.language, "centimeter");
+  const uKg = unitSymbol(i18n.language, "kilogram");
+  const uLb = unitSymbol(i18n.language, "pound");
+  const uFt = unitSymbol(i18n.language, "foot");
+  const uIn = unitSymbol(i18n.language, "inch");
 
   // Keep the imperial buffers in sync with the canonical values: on load, on a
   // unit switch to imperial, and after a blur commits a normalized value. Does
@@ -220,28 +227,48 @@ export function Profile() {
         <span className="pf-label">{t("profile.height")}</span>
         {isImperial ? (
           <div className="pf-height">
-            <input className="pf-input" type="number" placeholder={t("profile.feet")} value={heightImp.feet}
-              onChange={(e) => setHeightImp((p) => ({ ...p, feet: e.target.value }))}
-              onBlur={commitHeight} />
-            <input className="pf-input" type="number" placeholder={t("profile.inches")} value={heightImp.inches}
-              onChange={(e) => setHeightImp((p) => ({ ...p, inches: e.target.value }))}
-              onBlur={commitHeight} />
+            <span className="pf-measure">
+              <input className="pf-input" type="number" placeholder={t("profile.feet")} value={heightImp.feet}
+                aria-label={`${t("profile.height")} (${t("profile.feet")})`}
+                onChange={(e) => setHeightImp((p) => ({ ...p, feet: e.target.value }))}
+                onBlur={commitHeight} />
+              <span className="pf-unit">{uFt}</span>
+            </span>
+            <span className="pf-measure">
+              <input className="pf-input" type="number" placeholder={t("profile.inches")} value={heightImp.inches}
+                aria-label={`${t("profile.height")} (${t("profile.inches")})`}
+                onChange={(e) => setHeightImp((p) => ({ ...p, inches: e.target.value }))}
+                onBlur={commitHeight} />
+              <span className="pf-unit">{uIn}</span>
+            </span>
           </div>
         ) : (
-          <input className="pf-input" type="number" placeholder="cm" value={heightCm}
-            onChange={(e) => setHeightCm(e.target.value)} />
+          <span className="pf-measure">
+            <input className="pf-input" type="number" value={heightCm}
+              aria-label={`${t("profile.height")} (${uCm})`}
+              onChange={(e) => setHeightCm(e.target.value)} />
+            <span className="pf-unit">{uCm}</span>
+          </span>
         )}
       </div>
 
       <div className="pf-row">
         <span className="pf-label">{t("profile.weight")}</span>
         {isImperial ? (
-          <input className="pf-input" type="number" placeholder="lb" value={weightLb}
-            onChange={(e) => setWeightLb(e.target.value)}
-            onBlur={commitWeight} />
+          <span className="pf-measure">
+            <input className="pf-input" type="number" value={weightLb}
+              aria-label={`${t("profile.weight")} (${uLb})`}
+              onChange={(e) => setWeightLb(e.target.value)}
+              onBlur={commitWeight} />
+            <span className="pf-unit">{uLb}</span>
+          </span>
         ) : (
-          <input className="pf-input" type="number" placeholder="kg" value={weightKg}
-            onChange={(e) => setWeightKg(e.target.value)} />
+          <span className="pf-measure">
+            <input className="pf-input" type="number" value={weightKg}
+              aria-label={`${t("profile.weight")} (${uKg})`}
+              onChange={(e) => setWeightKg(e.target.value)} />
+            <span className="pf-unit">{uKg}</span>
+          </span>
         )}
       </div>
 

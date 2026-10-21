@@ -52,3 +52,24 @@ export function feetInchesToCm(feet, inches) {
   if (f === 0 && i === 0) return null;
   return Math.round((f * 12 + i) * CM_PER_IN);
 }
+/**
+ * Short symbol for a measurement unit in the given locale, e.g. cm, kg, lb.
+ *
+ * Taken from Intl rather than a translated string per unit. The symbols come
+ * from CLDR, so adding a language needs no new keys and cannot get them
+ * wrong, and locales that abbreviate differently are handled for free.
+ * The unit name must be one of the sanctioned ECMA-402 identifiers
+ * ("centimeter", "kilogram", "pound", "foot", "inch").
+ */
+export function unitSymbol(locale, unit) {
+  try {
+    const parts = new Intl.NumberFormat(locale, {
+      style: "unit",
+      unit,
+      unitDisplay: "short",
+    }).formatToParts(0);
+    return parts.find((p) => p.type === "unit")?.value ?? "";
+  } catch {
+    return ""; // unknown unit or no Intl unit support: show the value alone
+  }
+}
