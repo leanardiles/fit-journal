@@ -69,6 +69,10 @@
     "optional": "(optional)"
   },
   "profile": {
+    "weightWithUnit": "Weight in {{unit}}",
+    "heightInches": "Height, inches",
+    "heightFeet": "Height, feet",
+    "heightCm": "Height in {{unit}}",
     "title": "My profile",
     "email": "Email",
     "name": "Name",
@@ -116,6 +120,7 @@
     "sets_other": "{{count}} sets"
   },
   "exercises": {
+    "colWeightWithUnit": "Weight ({{unit}})",
     "title": "My exercises",
     "selectMuscle": "Select muscle group:",
     "empty": "No exercises found for this muscle group.",
@@ -224,6 +229,10 @@
     "errMinOneDay": "A routine needs at least one day."
   },
   "workout": {
+    "wtWithUnit": "wt ({{unit}})",
+    "weightFor": "Weight in {{unit}} for {{name}}",
+    "repsFor": "Reps for {{name}}",
+    "setsFor": "Sets for {{name}}",
     "title": "Log WOD",
     "generateInstruction": "Generate the workout for your highlighted day, or pick a different day above.",
     "generateBtn": "Generate WOD",

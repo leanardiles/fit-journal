@@ -4,6 +4,7 @@ import { Link } from "react-router-dom";
 import { apiGet, apiPost } from "../../api/client";
 import { useUser } from "../../context/UserContext";
 import { useToast } from "../../context/ToastContext";
+import { formatList } from "../../i18n/format";
 import { kgToDisplay, displayToKg } from "../../constants/units";
 import { MUSCLE_GROUPS } from "../../constants/muscles";
 import "./Workout.css";
@@ -67,7 +68,7 @@ const isDone = (row) => {
   }, []);
 
   const hasRoutine = routine && (routine.days || []).length > 0;
-  const muscleList = (arr) => (arr || []).map((m) => t(`muscles.${m}`)).join(", ");
+  const muscleList = (arr) => formatList((arr || []).map((m) => t(`muscles.${m}`)));
   const dayLabel = (n) => {
     const d = (routine?.days || []).find((x) => x.day_number === n);
     const base = t("common.day", { day: n });
@@ -255,7 +256,7 @@ const isDone = (row) => {
     if (manualRows.length === 0) { showToast(t("workout.manualNoExercises"), "error"); return; }
     if (!manualDate) { showToast(t("workout.manualNoDate"), "error"); return; }
     const missing = manualRows.filter((r) => !r.sets || parseInt(r.sets, 10) <= 0).map((r) => r.name);
-    if (missing.length) { showToast(t("workout.missingSets", { names: missing.join(", ") }), "error"); return; }
+    if (missing.length) { showToast(t("workout.missingSets", { names: formatList(missing, { type: "conjunction" }) }), "error"); return; }
 
     const userId = localStorage.getItem("user_id");
     setMlSaving(true);
@@ -462,7 +463,7 @@ const isDone = (row) => {
                         className="wo-input"
                         value={r.sets ?? ""}
                         placeholder="–"
-                        aria-label={`${t("workout.colSets")} — ${ex.exercise_name}`}
+                        aria-label={t("workout.setsFor", { name: ex.exercise_name })}
                         onChange={(e) => setRow(ex.exercise_id, { sets: e.target.value })}
                       />
                     </td>
@@ -475,7 +476,7 @@ const isDone = (row) => {
                         className="wo-input"
                         value={r.reps ?? ""}
                         placeholder="–"
-                        aria-label={`${t("workout.colReps")} — ${ex.exercise_name}`}
+                        aria-label={t("workout.repsFor", { name: ex.exercise_name })}
                         onChange={(e) => setRow(ex.exercise_id, { reps: e.target.value })}
                       />
                     </td>
@@ -488,7 +489,7 @@ const isDone = (row) => {
                         className={`wo-input wo-weight${r.weightTouched ? " modified" : ""}`}
                         value={r.weight ?? ""}
                         placeholder="0"
-                        aria-label={`${t("workout.colWeight")} (${weightUnit}) — ${ex.exercise_name}`}
+                        aria-label={t("workout.weightFor", { unit: weightUnit, name: ex.exercise_name })}
                         onChange={(e) => setRow(ex.exercise_id, { weight: e.target.value, weightTouched: true })}
                       />
                     </td>
@@ -535,7 +536,7 @@ const isDone = (row) => {
                     <span className="wo-ml-name" />
                     <span className="wo-ml-h">{t("workout.colSets")}</span>
                     <span className="wo-ml-h">{t("workout.colReps")}</span>
-                    <span className="wo-ml-h">{`${t("workout.wtShort")} (${weightUnit})`}</span>
+                    <span className="wo-ml-h">{t("workout.wtWithUnit", { unit: weightUnit })}</span>
                     <span className="wo-ml-delcol" />
                   </div>
                   {manualRows.map((r) => (
@@ -549,7 +550,7 @@ const isDone = (row) => {
                         className="wo-ml-input"
                         value={r.sets}
                         placeholder="–"
-                        aria-label={`${t("workout.colSets")} — ${r.name}`}
+                        aria-label={t("workout.setsFor", { name: r.name })}
                         onChange={(e) => setManualField(r.exercise_id, "sets", e.target.value)}
                       />
                       <input
@@ -559,7 +560,7 @@ const isDone = (row) => {
                         className="wo-ml-input"
                         value={r.reps}
                         placeholder="–"
-                        aria-label={`${t("workout.colReps")} — ${r.name}`}
+                        aria-label={t("workout.repsFor", { name: r.name })}
                         onChange={(e) => setManualField(r.exercise_id, "reps", e.target.value)}
                       />
                       <input
@@ -569,7 +570,7 @@ const isDone = (row) => {
                         className="wo-ml-input"
                         value={r.weight}
                         placeholder="–"
-                        aria-label={`${t("workout.colWeight")} (${weightUnit}) — ${r.name}`}
+                        aria-label={t("workout.weightFor", { unit: weightUnit, name: r.name })}
                         onChange={(e) => setManualField(r.exercise_id, "weight", e.target.value)}
                       />
                       <button

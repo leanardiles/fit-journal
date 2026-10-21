@@ -229,14 +229,14 @@ export function Profile() {
           <div className="pf-height">
             <span className="pf-measure">
               <input className="pf-input" type="number" placeholder={t("profile.feet")} value={heightImp.feet}
-                aria-label={`${t("profile.height")} (${t("profile.feet")})`}
+                aria-label={t("profile.heightFeet")}
                 onChange={(e) => setHeightImp((p) => ({ ...p, feet: e.target.value }))}
                 onBlur={commitHeight} />
               <span className="pf-unit">{uFt}</span>
             </span>
             <span className="pf-measure">
               <input className="pf-input" type="number" placeholder={t("profile.inches")} value={heightImp.inches}
-                aria-label={`${t("profile.height")} (${t("profile.inches")})`}
+                aria-label={t("profile.heightInches")}
                 onChange={(e) => setHeightImp((p) => ({ ...p, inches: e.target.value }))}
                 onBlur={commitHeight} />
               <span className="pf-unit">{uIn}</span>
@@ -245,7 +245,7 @@ export function Profile() {
         ) : (
           <span className="pf-measure">
             <input className="pf-input" type="number" value={heightCm}
-              aria-label={`${t("profile.height")} (${uCm})`}
+              aria-label={t("profile.heightCm", { unit: uCm })}
               onChange={(e) => setHeightCm(e.target.value)} />
             <span className="pf-unit">{uCm}</span>
           </span>
@@ -257,7 +257,7 @@ export function Profile() {
         {isImperial ? (
           <span className="pf-measure">
             <input className="pf-input" type="number" value={weightLb}
-              aria-label={`${t("profile.weight")} (${uLb})`}
+              aria-label={t("profile.weightWithUnit", { unit: uLb })}
               onChange={(e) => setWeightLb(e.target.value)}
               onBlur={commitWeight} />
             <span className="pf-unit">{uLb}</span>
@@ -265,7 +265,7 @@ export function Profile() {
         ) : (
           <span className="pf-measure">
             <input className="pf-input" type="number" value={weightKg}
-              aria-label={`${t("profile.weight")} (${uKg})`}
+              aria-label={t("profile.weightWithUnit", { unit: uKg })}
               onChange={(e) => setWeightKg(e.target.value)} />
             <span className="pf-unit">{uKg}</span>
           </span>

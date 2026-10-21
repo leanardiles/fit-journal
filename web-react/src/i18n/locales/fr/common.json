@@ -69,6 +69,10 @@
     "optional": "(facultatif)"
   },
   "profile": {
+    "weightWithUnit": "Poids en {{unit}}",
+    "heightInches": "Taille, pouces",
+    "heightFeet": "Taille, pieds",
+    "heightCm": "Taille en {{unit}}",
     "title": "Mon profil",
     "email": "E-mail",
     "name": "Nom",
@@ -116,6 +120,7 @@
     "sets_other": "{{count}} séries"
   },
   "exercises": {
+    "colWeightWithUnit": "Poids ({{unit}})",
     "title": "Mes exercices",
     "selectMuscle": "Choisis un groupe musculaire :",
     "empty": "Aucun exercice n'a été trouvé pour ce groupe musculaire.",
@@ -149,9 +154,9 @@
   },
   "muscles": {
     "Abs": "Abdos",
-    "Back": "Retour",
+    "Back": "Dos",
     "Biceps": "Biceps",
-    "Calves": "Veaux",
+    "Calves": "Mollets",
     "Chest": "Poitrine",
     "Forearms": "Avant-bras",
     "Glutes": "Fessiers",
@@ -231,6 +236,10 @@
     "errMinOneDay": "Une routine, ça prend au moins une journée."
   },
   "workout": {
+    "wtWithUnit": "poids ({{unit}})",
+    "weightFor": "Poids en {{unit}} pour {{name}}",
+    "repsFor": "Répétitions pour {{name}}",
+    "setsFor": "Séries pour {{name}}",
     "title": "Journal des entraînements du jour",
     "generateInstruction": "Génère la séance d'entraînement pour le jour que tu as sélectionné, ou choisis un autre jour parmi ceux proposés ci-dessus.",
     "generateBtn": "Générer un WOD",

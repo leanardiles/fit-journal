@@ -3,6 +3,7 @@ import { useTranslation } from "react-i18next";
 import { Link } from "react-router-dom";
 import { apiGet } from "../../api/client";
 import { StickyNote } from "../../components/StickyNote/StickyNote";
+import { formatList } from "../../i18n/format";
 import { Toggle } from "../../components/Toggle/Toggle";
 import "./Dashboard.css";
 
@@ -72,7 +73,7 @@ export function Dashboard() {
       day.day_type === "manual"
         ? [...new Set((day.exercises || []).map((e) => e.muscle_group))]
         : (day.muscles || []).map((m) => m.muscle_group);
-    return groups.map((g) => t(`muscles.${g}`)).join(", ");
+    return formatList(groups.map((g) => t(`muscles.${g}`)));
   };
 
   // --- Sets per muscle (windowed) -------------------------------------------

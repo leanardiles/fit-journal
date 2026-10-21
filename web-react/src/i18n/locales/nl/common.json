@@ -68,6 +68,10 @@
     "optional": "(optioneel)"
   },
   "profile": {
+    "weightWithUnit": "Gewicht in {{unit}}",
+    "heightInches": "Lengte, inches",
+    "heightFeet": "Lengte, voet",
+    "heightCm": "Lengte in {{unit}}",
     "title": "Mijn profiel",
     "email": "E-mail",
     "name": "Naam",
@@ -115,6 +119,7 @@
     "sets_other": "{{count}} sets"
   },
   "exercises": {
+    "colWeightWithUnit": "Gewicht ({{unit}})",
     "title": "Mijn oefeningen",
     "selectMuscle": "Kies een spiergroep:",
     "empty": "Geen oefeningen voor deze spiergroep.",
@@ -223,6 +228,10 @@
     "errMinOneDay": "Een routine heeft minstens één dag nodig."
   },
   "workout": {
+    "wtWithUnit": "gew. ({{unit}})",
+    "weightFor": "Gewicht in {{unit}} voor {{name}}",
+    "repsFor": "Herhalingen voor {{name}}",
+    "setsFor": "Sets voor {{name}}",
     "title": "WOD loggen",
     "generateInstruction": "Genereer de workout voor je gemarkeerde dag, of kies hierboven een andere dag.",
     "generateBtn": "WOD genereren",

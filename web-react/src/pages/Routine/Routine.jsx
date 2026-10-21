@@ -2,6 +2,7 @@ import { useState, useEffect, useMemo } from "react";
 import { useTranslation, Trans } from "react-i18next";
 import { apiGet, apiPost } from "../../api/client";
 import { useToast } from "../../context/ToastContext";
+import { formatList } from "../../i18n/format";
 import { MUSCLE_GROUPS } from "../../constants/muscles";
 import "./Routine.css";
 
@@ -389,7 +390,7 @@ export function Routine() {
                         {t("routine.selected")}:{" "}
                         <span>
                           {selectedMuscles.length
-                            ? selectedMuscles.map((m) => t(`muscles.${m}`)).join(", ")
+                            ? formatList(selectedMuscles.map((m) => t(`muscles.${m}`)))
                             : t("routine.none")}
                         </span>
                       </div>

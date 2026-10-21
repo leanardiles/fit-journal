@@ -68,6 +68,10 @@
     "optional": "(opcional)"
   },
   "profile": {
+    "weightWithUnit": "Peso en {{unit}}",
+    "heightInches": "Altura, pulgadas",
+    "heightFeet": "Altura, pies",
+    "heightCm": "Altura en {{unit}}",
     "title": "Mi perfil",
     "email": "Correo electrónico",
     "name": "Nombre",
@@ -115,6 +119,7 @@
     "sets_other": "{{count}} series"
   },
   "exercises": {
+    "colWeightWithUnit": "Peso ({{unit}})",
     "title": "Mis ejercicios",
     "selectMuscle": "Selecciona el grupo muscular:",
     "empty": "No hay ejercicios para este grupo muscular.",
@@ -224,6 +229,10 @@
     "errMinOneDay": "Una rutina necesita al menos un día."
   },
   "workout": {
+    "wtWithUnit": "peso ({{unit}})",
+    "weightFor": "Peso en {{unit}} de {{name}}",
+    "repsFor": "Repeticiones de {{name}}",
+    "setsFor": "Series de {{name}}",
     "title": "Registrar WOD",
     "generateInstruction": "Genera el entrenamiento de tu día marcado, o elegi otro día arriba.",
     "generateBtn": "Generar WOD",

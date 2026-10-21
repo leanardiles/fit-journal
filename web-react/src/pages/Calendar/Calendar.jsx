@@ -3,6 +3,7 @@ import { useTranslation } from "react-i18next";
 import { Link } from "react-router-dom";
 import { apiGet, apiPost, apiDelete } from "../../api/client";
 import { useToast } from "../../context/ToastContext";
+import { formatList } from "../../i18n/format";
 import "./Calendar.css";
 
 const COLUMNS_TO_SHOW = 10;
@@ -157,9 +158,7 @@ export function Calendar() {
     const day = getDayObj(n);
     if (!day) return "";
     if (day.name) return day.name;
-    return dayMuscles(n)
-      .map((m) => t(`muscles.${m}`))
-      .join(", ");
+    return formatList(dayMuscles(n).map((m) => t(`muscles.${m}`)));
   };
 
   const allViewRows = () => {
@@ -315,12 +314,13 @@ export function Calendar() {
   const viewInfo = isAllView
     ? t("calendar.showingAll")
     : t("calendar.showing", {
-        days: selectedDays
-          .map((d) => {
+        days: formatList(
+          selectedDays.map((d) => {
             const lbl = dayLabel(d);
             return lbl ? t("common.dayNamedInline", { day: d, name: lbl }) : t("common.day", { day: d });
-          })
-          .join(", "),
+          }),
+          { type: "conjunction" }
+        ),
       });
 
   const renderRow = (ex, keyPrefix) => (

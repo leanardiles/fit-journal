@@ -192,7 +192,7 @@ export function Exercises() {
                           <WeightCell
                             exercise={ex}
                             isImperial={isImperial}
-                            ariaLabel={`${t("exercises.colWeight")} (${weightUnit})`}
+                            ariaLabel={t("exercises.colWeightWithUnit", { unit: weightUnit })}
                             onSave={saveWeight}
                           />
                         </td>
