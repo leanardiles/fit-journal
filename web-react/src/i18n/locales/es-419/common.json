@@ -63,6 +63,8 @@
   "common": {
     "loading": "Cargando...",
     "day": "Día {{day}}",
+    "dayNamed": "Día {{day}} — {{name}}",
+    "dayNamedInline": "Día {{day}} ({{name}})",
     "optional": "(opcional)"
   },
   "profile": {

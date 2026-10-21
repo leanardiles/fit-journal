@@ -318,7 +318,7 @@ export function Calendar() {
         days: selectedDays
           .map((d) => {
             const lbl = dayLabel(d);
-            return lbl ? `${t("common.day", { day: d })} (${lbl})` : t("common.day", { day: d });
+            return lbl ? t("common.dayNamedInline", { day: d, name: lbl }) : t("common.day", { day: d });
           })
           .join(", "),
       });
@@ -399,7 +399,7 @@ export function Calendar() {
         <tr key={`day-${d}`} className="cal-day-row">
           {showSelect && <td className="sticky-col sticky-select" />}
           <td className="left sticky-col sticky-name">
-            {lbl ? `${t("common.day", { day: d })} — ${lbl}` : t("common.day", { day: d })}
+            {lbl ? t("common.dayNamed", { day: d, name: lbl }) : t("common.day", { day: d })}
           </td>
           {columns.map((s) => (
             <td key={s.session_id} />

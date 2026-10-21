@@ -64,6 +64,8 @@
   "common": {
     "loading": "Chargement en cours...",
     "day": "Jour {{day}}",
+    "dayNamed": "Jour {{day}} — {{name}}",
+    "dayNamedInline": "Jour {{day}} ({{name}})",
     "optional": "(facultatif)"
   },
   "profile": {

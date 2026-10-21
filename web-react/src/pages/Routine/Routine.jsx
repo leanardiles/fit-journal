@@ -547,7 +547,7 @@ export function Routine() {
       <div className="rt-cols">
         {viewDays.map((day) => {
           const head = day.name
-            ? `${t("common.day", { day: day.day_number })} — ${day.name}`
+            ? t("common.dayNamed", { day: day.day_number, name: day.name })
             : t("common.day", { day: day.day_number });
           const rows = exRows(day);
           const open = !!openPools[day.day_number];

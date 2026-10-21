@@ -421,7 +421,10 @@ const isDone = (row) => {
           <div className="wo-dateline">
             <span className="wo-date">{dateHeader}</span>
             <span className="wo-dayinfo">
-              {`${t("common.day", { day: workout.day_number })} — ${workout.day_name || muscleList(workout.muscle_groups)}`}
+              {t("common.dayNamed", {
+                day: workout.day_number,
+                name: workout.day_name || muscleList(workout.muscle_groups),
+              })}
             </span>
           </div>
 

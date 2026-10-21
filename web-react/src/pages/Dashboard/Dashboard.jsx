@@ -141,7 +141,7 @@ export function Dashboard() {
                 .map((day) => {
                   const isToday = day.day_number === currentDay;
                   const label = day.name
-                    ? `${t("common.day", { day: day.day_number })} — ${day.name}`
+                    ? t("common.dayNamed", { day: day.day_number, name: day.name })
                     : t("common.day", { day: day.day_number });
                   const detail = muscleList(day) || t("dashboard.restDay");
                   return (
