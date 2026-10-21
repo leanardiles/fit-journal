@@ -79,6 +79,22 @@
   transition: stroke-width 0.12s;
 }
 
+/* The workout tab is set, not drawn. Sized a little below the icons' 24px so
+   three capitals carry the same optical weight as a glyph, and in the brand
+   face so it reads as written on the page rather than labelled. */
+.bn-text {
+  font-family: var(--font-body);
+  font-size: var(--fs-base);
+  line-height: 1;
+  letter-spacing: 0.5px;
+  white-space: nowrap;
+}
+
+/* The icons mark selection by thickening their stroke; the word does the
+   same thing by weight. Patrick Hand ships a single weight, so this is
+   synthesised, which suits a hand-drawn face. */
+.bn-item.active .bn-text { font-weight: 700; }
+
 /* From 600px up the top header owns navigation again. */
 @media (min-width: 600px) {
   .bottom-nav { display: none; }

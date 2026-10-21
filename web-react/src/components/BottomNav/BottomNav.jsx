@@ -6,7 +6,6 @@ import {
   IconRoutine,
   IconExercises,
   IconCalendar,
-  IconWorkout,
 } from "../icons/NavIcons";
 import "./BottomNav.css";
 
@@ -18,7 +17,8 @@ const ITEMS = [
   { to: "/routine", labelKey: "nav.routine", Icon: IconRoutine },
   { to: "/exercises", labelKey: "nav.exercises", Icon: IconExercises },
   { to: "/calendar", labelKey: "nav.calendar", Icon: IconCalendar },
-  { to: "/workout", labelKey: "nav.workout", Icon: IconWorkout },
+  // Set as text rather than drawn: see the note in NavIcons.jsx.
+  { to: "/workout", labelKey: "nav.workout", textKey: "nav.workoutShort" },
 ];
 
 export function BottomNav() {
@@ -26,7 +26,7 @@ export function BottomNav() {
 
   return (
     <nav className="bottom-nav" aria-label={t("nav.primary")}>
-      {ITEMS.map(({ to, labelKey, Icon }) => (
+      {ITEMS.map(({ to, labelKey, Icon, textKey }) => (
         // Icon-only links still need an accessible name, so the translated
         // label goes on aria-label and surfaces again as the hover tooltip.
         <NavLink
@@ -36,7 +36,7 @@ export function BottomNav() {
           aria-label={t(labelKey)}
           title={t(labelKey)}
         >
-          <Icon className="bn-icon" />
+          {Icon ? <Icon className="bn-icon" /> : <span className="bn-text">{t(textKey)}</span>}
         </NavLink>
       ))}
     </nav>

@@ -78,14 +78,8 @@ export function IconCalendar({ className }) {
   );
 }
 
-// Flexed arm: fist on top, bicep bulging left, forearm down to the base line.
-export function IconWorkout({ className }) {
-  return (
-    <Glyph className={className}>
-      <path d="M10.2 10.2V6.4c0-1.1.9-2 2-2h1.5c1.1 0 2 .9 2 2v3.6" />
-      <path d="M4.8 19.6v-3c0-3.6 2.7-6.5 6.3-6.5 1.8 0 3.4.7 4.6 2" />
-      <path d="M15.7 12.1c1.9 1.3 3.1 3.5 3.1 6v1.5" />
-      <path d="M4.8 19.6h14" />
-    </Glyph>
-  );
-}
+// Workout has no icon: a flexed arm's outline is, at 24px, indistinguishable
+// from a boot, and the detail that separates them (knuckles, the bicep crease)
+// disappears at that size. The tab is set as the word WOD in the brand's
+// handwriting instead, which is unambiguous and already the term the app uses
+// in every locale. See .bn-text in BottomNav.css.
