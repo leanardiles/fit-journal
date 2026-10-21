@@ -449,7 +449,7 @@ const isDone = (row) => {
                 return (
                   <tr key={ex.exercise_id} className={done ? "done-row" : ""}>
                     <td className="wo-muscle-cell">{label}</td>
-                    <td className={`wo-exname-cell${done ? " done" : ""}`}>{ex.exercise_name}</td>
+                    <td className="wo-exname-cell">{ex.exercise_name}</td>
                     <td className="center">
                       <input
                         type="number"
@@ -571,7 +571,7 @@ const isDone = (row) => {
                       />
                       <button
                         type="button"
-                        className="wo-ml-del"
+                        className="btn-remove"
                         aria-label={t("workout.remove", { name: r.name })}
                         onClick={() => removeManual(r.exercise_id)}
                       >

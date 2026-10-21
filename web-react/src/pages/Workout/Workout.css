@@ -142,7 +142,7 @@
   white-space: nowrap;
   width: 1%;
 }
-.wo-exname-cell { white-space: nowrap; padding-inline-end: 32px; width: 1%; }
+.wo-exname-cell { white-space: nowrap; padding-inline-end: 20px; width: 1%; }
 
 .wo-input {
   background: transparent;
@@ -161,22 +161,34 @@
 .wo-weight { color: var(--muted); }
 .wo-weight.modified { color: var(--text); }
 
-/* Done is signalled by crossing the exercise name off, the way you would on
-   paper. The line is semi-transparent while the text stays at full strength:
-   a completed row is still editable, so its values must stay legible. The
-   name only, never the numbers, which are the values being read back. */
-.wo-exname-cell.done {
-  text-decoration: line-through;
-  text-decoration-color: var(--muted);
-  text-decoration-thickness: 2px;
-}
-
-/* A hint of warmth on the row, under the strikethrough rather than instead
-   of it. Replaces the old 0.4 opacity dim, which read as disabled and made
-   the numbers the user had just typed hard to read. */
-.wo-table tr.done-row td {
-  background-color: var(--active-bg);
+/* Rows start washed in yellow: planned, not yet done. Entering a set count
+   clears the wash, so the yellow left on screen is exactly the work left to
+   do, and the page empties out as the session goes on. */
+.wo-table tbody td {
+  background-color: var(--pending-bg);
   transition: background-color 0.15s;
+}
+.wo-table tbody tr.done-row td { background-color: transparent; }
+
+/* The strike runs through the muscle and the exercise name as one rule.
+   Drawn as a background line rather than text-decoration: a decoration stops
+   at each cell's own text, so it would break at the column boundary and at
+   the muscle cell's trailing padding. Two full-width background lines in
+   adjacent cells of a collapsed table meet with no seam.
+   The offset is measured up from the cell bottom, because these cells are
+   bottom-aligned. It has to clear more than the padding: the cells inherit
+   line-height var(--lh) from .app-content, which is 34px against a 17px
+   font, so half-leading lifts the glyphs well above the bottom of their
+   line box and the baseline lands about 16px up. --strike-y is the one dial;
+   raise it to move the rule up. */
+.wo-table { --strike-y: 20px; }
+
+.wo-table tr.done-row .wo-muscle-cell,
+.wo-table tr.done-row .wo-exname-cell {
+  background-image: linear-gradient(var(--muted), var(--muted));
+  background-size: 100% 2px;
+  background-repeat: no-repeat;
+  background-position: 0 calc(100% - var(--strike-y));
 }
 
 /* Success screen */
@@ -276,15 +288,6 @@
 .wo-ml-input:focus { border-color: var(--red-border); outline: none; }
 .wo-ml-h { width: 46px; text-align: center; }
 .wo-ml-delcol { width: 20px; }
-.wo-ml-del {
-  background: transparent;
-  border: none;
-  color: var(--red);
-  cursor: pointer;
-  font-size: var(--fs-lg);
-  line-height: 1;
-  width: 20px;
-}
 .wo-ml-picker {
   border-inline-start: 2px solid var(--border);
   padding: 4px 0 6px;
