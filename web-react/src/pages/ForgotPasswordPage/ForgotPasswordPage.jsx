@@ -14,7 +14,7 @@ export function ForgotPasswordPage() {
 
   const [email, setEmail] = useState("");
   const [error, setError] = useState("");
-  const [loading, setLoading] = useState(false);
+  const [, setLoading] = useState(false);
 
   const handleSubmit = async () => {
     setError(""); setLoading(true);
@@ -22,7 +22,7 @@ export function ForgotPasswordPage() {
       await apiPost("/forgot-password", { user_email: email });
       showToast(t("forgot.sent"), "success");
       navigate("/login");
-    } catch (e) {
+    } catch {
       setError("Network error , is the backend running?");
     } finally {
       setLoading(false);

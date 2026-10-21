@@ -18,4 +18,10 @@ export default defineConfig([globalIgnores(['dist']), {
     globals: globals.browser,
     parserOptions: { ecmaFeatures: { jsx: true } },
   },
+}, {
+  // Build and test tooling runs in Node, not the browser, so process and
+  // __dirname are legitimate there. Without this the linter reports correct
+  // code as undefined globals.
+  files: ['*.config.{js,mjs}', 'e2e/**/*.{js,jsx}'],
+  languageOptions: { globals: globals.node },
 }, ...storybook.configs["flat/recommended"]])

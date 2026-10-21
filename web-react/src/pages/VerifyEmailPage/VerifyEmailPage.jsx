@@ -16,7 +16,7 @@ export function VerifyEmailPage() {
   const [email, setEmail] = useState(location.state?.email || "");
   const [code, setCode] = useState("");
   const [error, setError] = useState("");
-  const [loading, setLoading] = useState(false);
+  const [, setLoading] = useState(false);
 
   const handleVerify = async () => {
     setError(""); setLoading(true);
@@ -30,7 +30,7 @@ export function VerifyEmailPage() {
       localStorage.setItem("token", data.access_token);
       localStorage.setItem("user_id", data.user_id);
       navigate("/dashboard");
-    } catch (e) {
+    } catch {
       setError("Network error , is the backend running?");
     } finally {
       setLoading(false);
@@ -42,7 +42,7 @@ export function VerifyEmailPage() {
     try {
       await apiPost("/resend-verification", { user_email: email });
       showToast(t("verify.resendSent"), "success");
-    } catch (e) {
+    } catch {
       setError("Network error , is the backend running?");
     }
   };

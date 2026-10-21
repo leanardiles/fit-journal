@@ -44,7 +44,7 @@ export function Exercises() {
   const [newLink, setNewLink] = useState("");
   const [newNotes, setNewNotes] = useState("");
   const [addError, setAddError] = useState("");
-  const [adding, setAdding] = useState(false);
+  const [, setAdding] = useState(false);
 
   const [confirmingDeleteId, setConfirmingDeleteId] = useState(null);
 

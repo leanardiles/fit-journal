@@ -15,7 +15,7 @@ export function LoginPage() {
   const [password, setPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
   const [error, setError] = useState("");
-  const [loading, setLoading] = useState(false);
+  const [, setLoading] = useState(false);
 
   const handleSubmit = async () => {
     setError("");
@@ -35,7 +35,7 @@ export function LoginPage() {
       localStorage.setItem("token", data.access_token);
       localStorage.setItem("user_id", data.user_id);
       navigate("/dashboard");
-    } catch (e) {
+    } catch {
       setError("Network error , is the backend running?");
     } finally {
       setLoading(false);

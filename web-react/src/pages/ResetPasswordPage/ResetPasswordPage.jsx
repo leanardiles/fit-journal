@@ -17,7 +17,7 @@ export function ResetPasswordPage() {
   const [repeat, setRepeat] = useState("");
   const [showPassword, setShowPassword] = useState(false);
   const [error, setError] = useState("");
-  const [loading, setLoading] = useState(false);
+  const [, setLoading] = useState(false);
 
   const handleSubmit = async () => {
     setError("");
@@ -32,7 +32,7 @@ export function ResetPasswordPage() {
         return;
       }
       navigate("/login");
-    } catch (e) {
+    } catch {
       setError("Network error , is the backend running?");
     } finally {
       setLoading(false);

@@ -17,7 +17,7 @@ import "./Profile.css";
 export function Profile() {
   const { t } = useTranslation();
   const { showToast } = useToast();
-  const { user, setUser } = useUser();
+  const { setUser } = useUser();
   const navigate = useNavigate();
 
   const [form, setForm] = useState({
@@ -32,7 +32,7 @@ export function Profile() {
   const [weightLb, setWeightLb] = useState("");
   const [email, setEmail] = useState("");
   const [loading, setLoading] = useState(true);
-  const [saving, setSaving] = useState(false);
+  const [, setSaving] = useState(false);
 
   const [confirmingDelete, setConfirmingDelete] = useState(false);
   const [deletePassword, setDeletePassword] = useState("");
@@ -122,7 +122,7 @@ export function Profile() {
       const updated = await res.json();
       if (setUser) setUser(updated);
       showToast(t("profile.saved"), "success");
-    } catch (e) {
+    } catch {
       showToast(t("profile.saveError"), "error");
     } finally {
       setSaving(false);
@@ -144,7 +144,7 @@ export function Profile() {
       logout();
       showToast(t("profile.accountDeleted"), "success");
       navigate("/login");
-    } catch (e) {
+    } catch {
       showToast(t("profile.deleteError"), "error");
     } finally {
       setDeleting(false);
