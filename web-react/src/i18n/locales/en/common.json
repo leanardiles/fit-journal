@@ -269,5 +269,8 @@
     "noMuscleExercises": "No {{muscle}} exercises.",
     "manualNoExercises": "Add at least one exercise.",
     "manualNoDate": "Pick a date."
+  },
+  "errors": {
+    "network": "Could not reach the server. Check your connection and try again."
   }
 }

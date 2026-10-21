@@ -33,7 +33,7 @@ export function ResetPasswordPage() {
       }
       navigate("/login");
     } catch {
-      setError("Network error , is the backend running?");
+      setError(t("errors.network"));
     } finally {
       setLoading(false);
     }

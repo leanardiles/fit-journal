@@ -36,7 +36,7 @@ export function LoginPage() {
       localStorage.setItem("user_id", data.user_id);
       navigate("/dashboard");
     } catch {
-      setError("Network error , is the backend running?");
+      setError(t("errors.network"));
     } finally {
       setLoading(false);
     }

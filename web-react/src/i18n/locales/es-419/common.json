@@ -269,5 +269,8 @@
     "noMuscleExercises": "No hay ejercicios de {{muscle}}.",
     "manualNoExercises": "Agrega al menos un ejercicio.",
     "manualNoDate": "Elige una fecha."
+  },
+  "errors": {
+    "network": "No se pudo conectar con el servidor. Revisa tu conexión e inténtalo de nuevo."
   }
 }

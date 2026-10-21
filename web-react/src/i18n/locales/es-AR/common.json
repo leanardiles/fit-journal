@@ -54,5 +54,8 @@
     "manualListEmpty": "Aún no agregaste ejercicios — agregá algunos de la lista.",
     "manualNoExercises": "Agregá al menos un ejercicio.",
     "manualNoDate": "Elegí una fecha."
-  }  
+  },
+  "errors": {
+    "network": "No se pudo conectar con el servidor. Revisá tu conexión e intentá de nuevo."
+  }
 }

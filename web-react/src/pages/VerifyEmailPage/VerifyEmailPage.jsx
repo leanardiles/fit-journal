@@ -31,7 +31,7 @@ export function VerifyEmailPage() {
       localStorage.setItem("user_id", data.user_id);
       navigate("/dashboard");
     } catch {
-      setError("Network error , is the backend running?");
+      setError(t("errors.network"));
     } finally {
       setLoading(false);
     }
@@ -43,7 +43,7 @@ export function VerifyEmailPage() {
       await apiPost("/resend-verification", { user_email: email });
       showToast(t("verify.resendSent"), "success");
     } catch {
-      setError("Network error , is the backend running?");
+      setError(t("errors.network"));
     }
   };
 

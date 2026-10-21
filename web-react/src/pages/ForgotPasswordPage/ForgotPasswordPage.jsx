@@ -23,7 +23,7 @@ export function ForgotPasswordPage() {
       showToast(t("forgot.sent"), "success");
       navigate("/login");
     } catch {
-      setError("Network error , is the backend running?");
+      setError(t("errors.network"));
     } finally {
       setLoading(false);
     }

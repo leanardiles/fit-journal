@@ -268,5 +268,8 @@
     "noMuscleExercises": "Geen {{muscle}}-oefeningen.",
     "manualNoExercises": "Voeg minstens één oefening toe.",
     "manualNoDate": "Kies een datum."
+  },
+  "errors": {
+    "network": "Kan de server niet bereiken. Controleer je verbinding en probeer het opnieuw."
   }
 }

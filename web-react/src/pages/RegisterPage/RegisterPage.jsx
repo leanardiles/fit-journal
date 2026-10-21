@@ -38,7 +38,7 @@ export function RegisterPage() {
       showToast(t("register.success"), "success");
       navigate("/verify-email", { state: { email } });
     } catch {
-      setError("Network error , is the backend running?");
+      setError(t("errors.network"));
     } finally {
       setLoading(false);
     }
