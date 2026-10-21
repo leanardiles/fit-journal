@@ -26,6 +26,28 @@
   min-width: 0;
 }
 
+/* The narrow-width muscle filter centres its value. Scoped to this column so
+   the dropdowns elsewhere (profile timezone and language, the add-exercise
+   form) keep their start alignment, where a centred value would look odd
+   against a left-aligned label column.
+   Symmetric inline padding matters: .field-select reserves 32px on the end
+   for the chevron, so centring text inside asymmetric padding would land it
+   visibly left of centre. */
+.ex-muscle-col .field-select {
+  text-align: center;
+  padding-inline: 32px;
+}
+
+/* In base-select mode the control lays its content out as a row, so the
+   value is centred by centring that row rather than by text-align. */
+@supports (appearance: base-select) {
+  .ex-muscle-col .field-select {
+    justify-content: center;
+    gap: var(--space-sm);
+    padding-inline: var(--space-md);
+  }
+}
+
 /* 600px up: muscle chips return as a fixed sidebar beside the table. */
 @media (min-width: 600px) {
   .ex-layout {
@@ -122,16 +144,6 @@
 }
 
 /* Delete control + inline confirm */
-.ex-delete-btn {
-  background: transparent;
-  border: none;
-  color: var(--text);
-  font-size: var(--fs-base);
-  cursor: pointer;
-  padding: 0;
-}
-.ex-delete-btn:hover { color: var(--red); }
-
 .ex-confirm { display: inline-flex; gap: 8px; align-items: center; }
 
 .ex-confirm-yes,

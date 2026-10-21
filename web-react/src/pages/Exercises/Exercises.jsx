@@ -216,9 +216,9 @@ export function Exercises() {
                               </button>
                             </span>
                           ) : (
-                            <button className="ex-delete-btn" onClick={() => setConfirmingDeleteId(ex.exercise_id)}
+                            <button className="btn-remove" onClick={() => setConfirmingDeleteId(ex.exercise_id)}
                               aria-label={t("exercises.deleteAria")} title={t("exercises.deleteAria")}>
-                              🗑
+                              ×
                             </button>
                           )}
                         </td>
