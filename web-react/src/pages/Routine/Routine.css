@@ -171,17 +171,9 @@
 .rt-days-selector.locked .rt-day-num { color: var(--muted); border-color: var(--border); cursor: default; }
 .rt-days-selector.locked .rt-day-num.selected { border-color: var(--yellow); color: var(--text); background: rgba(244, 217, 62, 0.22); }
 
-.rt-day-del {
-  background: transparent;
-  border: none;
-  color: var(--text);
-  font-size: var(--fs-base);
-  line-height: 1;
-  cursor: pointer;
-  padding: 0 4px;
-  margin-inline-start: auto;
-}
-.rt-day-del:hover { color: var(--red); }
+/* Appearance comes from .btn-remove in styles/buttons.css; only the
+   placement is specific to this row. */
+.rt-day-del { margin-inline-start: auto; }
 
 .rt-add-day { margin-top: 4px; margin-bottom: var(--space-md); }
 

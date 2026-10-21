@@ -41,3 +41,20 @@
 /* Dismissive actions. Matches the header logout button. */
 .btn--negative { border-color: var(--red-border); color: var(--muted); }
 .btn--negative:hover { color: var(--text); border-color: var(--red); }
+
+/* Remove control: a bare red glyph for dropping a row from a list or table.
+   Borderless because it sits inside dense rows where a bordered button would
+   add visual noise per line, and red because the action is destructive. */
+.btn-remove {
+  background: transparent;
+  border: none;
+  padding: 0;
+  width: 20px;
+  color: var(--red);
+  font-family: var(--font-body);
+  font-size: var(--fs-lg);
+  line-height: 1;
+  cursor: pointer;
+  transition: filter 0.12s;
+}
+.btn-remove:hover { filter: brightness(1.3); }

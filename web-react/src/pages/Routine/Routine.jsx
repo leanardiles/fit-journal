@@ -343,11 +343,12 @@ export function Routine() {
                     {isEditing && daysPerWeek > 1 && (
                       <button
                         type="button"
-                        className="rt-day-del"
+                        className="btn-remove rt-day-del"
+                        aria-label={t("routine.deleteDay")}
                         title={t("routine.deleteDay")}
                         onClick={() => deleteDay(d)}
                       >
-                        🗑
+                        ×
                       </button>
                     )}
                   </div>

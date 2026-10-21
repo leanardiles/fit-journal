@@ -40,6 +40,10 @@
   /* Structural rule between regions of a table or layout. Heavier than
      --border, which is for the hairline under an input. */
   --divider:          rgba(255, 255, 255, 0.18);
+
+  /* Wash marking a row as still to do. Yellow is the brand's sticky-note
+     colour, so pending reads as a note to self rather than as a warning. */
+  --pending-bg:       rgba(244, 217, 62, 0.10);
   --control-chevron:  url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%238a8a8a' stroke-width='2.5' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M6 9l6 6 6-6'/%3E%3C/svg%3E");
 
   /* Type scale (rem; root stays at the browser default so it honors user font size) */
@@ -94,6 +98,8 @@ body.light {
   --control-bg-hover: rgba(60, 50, 35, 0.11);
   --control-border:   rgba(60, 50, 35, 0.20);
   --divider:          rgba(60, 50, 35, 0.24);
+  /* Denser on cream paper, where a 10 percent yellow would not register. */
+  --pending-bg:       rgba(214, 170, 20, 0.18);
   --control-chevron:  url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%236b6b6b' stroke-width='2.5' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M6 9l6 6 6-6'/%3E%3C/svg%3E");
 
   --red:        rgba(160, 40, 40, 0.85);
