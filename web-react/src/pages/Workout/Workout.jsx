@@ -590,7 +590,7 @@ const isDone = (row) => {
                   {mlSaving ? t("workout.saving") : `✓ ${t("workout.logWod")}`}
                 </button>
                 <button type="button" className="wo-btn negative" onClick={goGenerate} disabled={mlSaving}>
-                  {`← ${t("workout.back")}`}
+                  <span className="mirror-rtl" aria-hidden="true">←</span> {t("workout.back")}
                 </button>
               </div>
             </div>
@@ -647,7 +647,9 @@ const isDone = (row) => {
         <div className="wo-success">
           <p className="wo-success-msg">🎉 {t("workout.successMsg")}</p>
           <div className="wo-actions">
-            <Link to="/dashboard" className="wo-btn">← {t("workout.backToDashboard")}</Link>
+            <Link to="/dashboard" className="wo-btn">
+              <span className="mirror-rtl" aria-hidden="true">←</span> {t("workout.backToDashboard")}
+            </Link>
           </div>
         </div>
       )}

@@ -114,6 +114,18 @@ body.light {
 /* Hidden from view, still announced. For a label a sighted user infers from
    context but assistive tech has no way to derive. Not display: none, which
    would remove it from the accessibility tree along with the pixels. */
+/* Mirror a directional glyph under RTL. Back points left in English and
+   right in Arabic or Hebrew, so the arrow has to flip with the text
+   direction. Only for glyphs that encode direction: an icon that merely
+   contains an angle, such as a dropdown chevron pointing down, must NOT be
+   mirrored, and neither must logos, clock faces or media play buttons.
+   inline-block is required, because transform has no effect on a plain
+   inline box. */
+[dir="rtl"] .mirror-rtl {
+  display: inline-block;
+  transform: scaleX(-1);
+}
+
 .sr-only {
   position: absolute;
   width: 1px;

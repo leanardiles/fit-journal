@@ -9,8 +9,9 @@ import "./Field.css";
  *   type           - input type ("text" | "email" | "password"), default "text"
  *   value          - current value (owned by the parent)
  *   onChange       - called with the new value when the user types
- *   inline         - label beside the input on one row (collapses to stacked on
- *                    narrow screens). Default false = stacked column.
+ *   inline         - label beside the input on one row, at every width. The
+ *                    label column narrows rather than the row breaking.
+ *                    Default false = stacked column.
  *   optional       - append a muted "(optional)" hint after the label.
  */
 export function Field({ labelKey, placeholderKey, type = "text", value = "", onChange, inline = false, optional = false }) {
