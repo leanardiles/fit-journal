@@ -38,6 +38,7 @@ See the [root README](../README.md) for backend setup.
 | `npm run test:watch`      | Vitest unit tests in watch mode                |
 | `npm run test:e2e`        | Playwright end-to-end tests                    |
 | `npm run test:e2e:ui`     | Playwright tests in the interactive UI runner  |
+| `npm run test:e2e:report` | Open the last Playwright HTML report           |
 | `npm run storybook`       | Component explorer (Storybook) -> localhost:6006 |
 | `npm run build-storybook` | Static Storybook build                         |
 
@@ -49,7 +50,8 @@ Two layers of tests:
 
 - **Unit (Vitest):** the unit-conversion helpers in `src/constants/units.js`
   (kg to display, display to kg, kg/lb, cm to feet/inches and back), which
-  guard the canonical-kg storage model. Run with `npm test`.
+  guard the canonical-kg storage model, plus `src/i18n/i18n.test.js` over the
+  catalogs. Run with `npm test`.
 - **End-to-end (Playwright):** a happy path in `e2e/` that seeds a throwaway
   user via the API, logs in through the UI, and verifies every protected page
   renders. Run with `npm run test:e2e` (needs the backend running; it reads
@@ -80,7 +82,9 @@ inherit the rest via an explicit fallback chain (mirrors the backend model).
 | `es-419`| Base Spanish (general LatAm)          | `es-419 -> en`          |
 | `es-AR` | Argentina overrides (e.g. voseo)      | `es-AR -> es-419 -> en` |
 | `nl`    | Dutch                                 | `nl -> en`              |
+| `fr`    | French                                | `fr -> en`              |
 | `es`    | Legacy alias (also es-MX, es-CL, ...) | `es -> es-419 -> en`    |
+| `en-XA` | Pseudo-locale, dev builds only        | not shipped             |
 
 Regional files are THIN: they contain only the strings that genuinely differ;
 everything else cascades down the chain. This keeps overrides small and makes
@@ -96,6 +100,8 @@ web-react/src/i18n/
     es-419/common.json # LatAm Spanish (full)
     es-AR/common.json  # Argentina (thin overrides only)
     nl/common.json     # Dutch (full)
+    fr/common.json     # French (full)
+  pseudo.js            # dev-only en-XA postProcessor
 ```
 
 ### Using translations in a component
@@ -116,8 +122,28 @@ literal text, so localization is inherited by composition.
 
 1. Create `src/i18n/locales/<tag>/common.json` (thin if it's a regional variant).
 2. Register it in `src/i18n/config.js` (`resources` + `fallbackLng` chain).
+3. Add it to `LOCALE_OPTIONS` in `src/i18n/locales.js`, or it will work but
+   never appear in the language picker. If the tag is a regional variant,
+   extend `normalizeLocale` in the same file so a stored or detected tag maps
+   onto the option the UI shows selected.
 
 No component changes required.
+
+### Pseudo-locale (`en-XA`)
+
+A dev-only locale that accents every string, brackets it and pads it, to
+surface two classes of bug before a translator ever sees the app: text that
+would overflow once translated, and text that is hardcoded rather than
+translated (anything that stays plain English is a missed string).
+
+Padding is tiered rather than a flat percentage, because expansion is
+length-inverse: short strings such as buttons and nav items can grow 100%,
+while long body text grows around 30%. The `DevL10nPanel` toggles the
+pseudo-locale, an RTL preview and the expansion intensity at runtime.
+
+It never ships. The locale, the panel and the postProcessor are all behind
+`import.meta.env.DEV`, which Vite folds to `false` at build time so the whole
+branch is eliminated, and `en-XA` is absent from `LOCALE_OPTIONS`.
 
 ## Components & Storybook
 

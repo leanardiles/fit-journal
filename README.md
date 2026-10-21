@@ -1,6 +1,6 @@
 # FitJournal
 
-A self-hosted fitness tracker with a paper-notebook aesthetic, available as a web app and a native Android app, sharing one serverless backend. The interface is fully internationalized (English, Spanish, Argentine Spanish, Dutch).
+A self-hosted fitness tracker with a paper-notebook aesthetic, available as a web app and a native Android app, sharing one serverless backend. The interface is fully internationalized (English, Spanish, Argentine Spanish, Dutch, French).
 
 > 🎥 **Demo video coming soon.**
 >
@@ -22,7 +22,7 @@ Two things set it apart. The interface is a "paper notebook" design system (rule
 
 **Web (React SPA, live at [fit-journal.com](https://fit-journal.com))**
 - React 19 + Vite, React Router
-- `react-i18next` internationalization (en / es-419 / es-AR / nl) with explicit fallback chains
+- `react-i18next` internationalization (en / es-419 / es-AR / nl / fr) with explicit fallback chains
 - Reusable component library documented in Storybook
 - Hosted on S3 + CloudFront, see [web-react/README.md](web-react/README.md)
 
@@ -60,7 +60,7 @@ Both clients talk to the same JWT-authenticated API; only the backend touches th
 
 ## Features
 
-- Fully internationalized UI (English, Spanish, Argentine Spanish, Dutch) with locale fallback chains
+- Fully internationalized UI (English, Spanish, Argentine Spanish, Dutch, French) with locale fallback chains
 - Custom training routines (1 to 7 days/week, multiple muscle groups per day)
 - Automatic workout generation that rotates through least-used exercises
 - Per-exercise workout logging with weight tracking over time (canonical kg storage, metric or imperial display)
@@ -68,7 +68,7 @@ Both clients talk to the same JWT-authenticated API; only the backend touches th
 - Personal exercise library (101 starter exercises, fully editable per user)
 - JWT authentication shared across web and mobile
 - Timezone-aware logging; metric/imperial unit preferences
-- Notebook-style UI with light and dark modes
+- Notebook-style UI with light and dark modes, responsive from phone to desktop (bottom tab bar below 600 px)
 - Android app with drag-to-reorder, inline editing, and offline-aware token handling
 
 ## Running Locally
@@ -122,14 +122,14 @@ Full pipeline and architecture reasoning in [docs/ARCHITECTURE.md](docs/ARCHITEC
 
 ## Testing
 
-**Backend:** a pytest suite (64 tests) covers authentication, authorization, exercise and routine CRUD (including exercise updates and canonical-kg weight round-trips), profile, workout generation and completion, next-workout selection toggle and clear, session and calendar reads, the routine reconcile logic, manual-day exercise grouping, manual (off-routine) workout logging, day-cursor handling, account deletion, and page loads, all run against a disposable MySQL test database. The suite runs in CI (GitHub Actions) against a MySQL service container before every deploy; a failing test blocks the deploy.
+**Backend:** a pytest suite (88 tests) covers authentication, authorization, exercise and routine CRUD (including exercise updates and canonical-kg weight round-trips), profile, workout generation and completion, next-workout selection toggle and clear, session and calendar reads, the routine reconcile logic, manual-day exercise grouping, manual (off-routine) workout logging, day-cursor handling, account deletion, and page loads, all run against a disposable MySQL test database. The suite runs in CI (GitHub Actions) against a MySQL service container before every deploy; a failing test blocks the deploy.
 
 ```bash
 pip install pytest httpx
 pytest -v        # backend suite (needs a MySQL test DB)
 ```
 
-**Web (React):** Vitest unit tests for the unit-conversion helpers, plus a Playwright end-to-end happy path (seed a user via the API, log in through the UI, and verify every protected page renders).
+**Web (React):** Vitest unit tests for the unit-conversion helpers and the i18n catalogs, plus a Playwright end-to-end happy path (seed a user via the API, log in through the UI, and verify every protected page renders).
 
 ```bash
 cd web-react
@@ -156,7 +156,7 @@ cd mobile
 
 ## Status
 
-Actively developed. The React web app is **live in production** at [fit-journal.com](https://fit-journal.com) (S3 + CloudFront), internationalized in English, Spanish, Argentine Spanish, and Dutch, with a Storybook component library. The FastAPI backend runs on AWS Lambda with a CI/CD pipeline (GitHub Actions) that runs the backend test suite before each deploy.
+Actively developed. The React web app is **live in production** at [fit-journal.com](https://fit-journal.com) (S3 + CloudFront), internationalized in English, Spanish, Argentine Spanish, Dutch and French, with a Storybook component library. The FastAPI backend runs on AWS Lambda with a CI/CD pipeline (GitHub Actions) that runs the backend test suite before each deploy.
 
 The legacy Jinja web frontend is being retired now that the React app is live; the backend still serves it at `app.fit-journal.com` until the cutover is complete. The Android app is being migrated to the new routine model (the web app now builds routines day-by-day, each day either a rotating per-muscle pool or a fixed manual list with optional supersets, plus off-routine manual logging), then Play Store launch prep. See [ROADMAP.md](ROADMAP.md).
 
