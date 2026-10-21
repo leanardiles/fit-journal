@@ -149,7 +149,7 @@ cd mobile
 
 - [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md): system design, deployment, key decisions
 - [docs/SCHEMA.md](docs/SCHEMA.md): database schema
-- [docs/design-system.md](docs/design-system.md): UI/UX design system
+- [docs/design-system-mobile.md](docs/design-system-mobile.md): Android design system (web values live in `web-react/src/styles/tokens.css`)
 - [web-react/README.md](web-react/README.md): React frontend setup and i18n
 - [README_mobile.md](README_mobile.md): Android app setup
 - [ROADMAP.md](ROADMAP.md): planned features and technical debt
