@@ -2,7 +2,7 @@ import { NavLink, Outlet, useNavigate } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import { logout } from "../../api/auth";
 import { useUser } from "../../context/UserContext";
-import logo from "../../assets/logo-and-name-dark.png";
+import logo from "../../assets/logo-and-name-dark.webp";
 import { BottomNav } from "../../components/BottomNav/BottomNav";
 import "./AppLayout.css";
 

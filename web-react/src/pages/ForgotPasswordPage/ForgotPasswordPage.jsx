@@ -4,7 +4,7 @@ import { useNavigate, Link } from "react-router-dom";
 import { useToast } from "../../context/ToastContext";
 import { Button } from "../../components/Button/Button";
 import { apiPost } from "../../api/client";
-import logo from "../../assets/logo-and-name-dark.png";
+import logo from "../../assets/logo-and-name-dark.webp";
 import "../../layouts/AuthLayout/AuthLayout.css";
 
 export function ForgotPasswordPage() {

@@ -4,7 +4,7 @@ import { useNavigate, useSearchParams, Link } from "react-router-dom";
 import { Button } from "../../components/Button/Button";
 import { PasswordToggle } from "../../components/PasswordToggle/PasswordToggle";
 import { apiPost } from "../../api/client";
-import logo from "../../assets/logo-and-name-dark.png";
+import logo from "../../assets/logo-and-name-dark.webp";
 import "../../layouts/AuthLayout/AuthLayout.css";
 
 export function ResetPasswordPage() {
