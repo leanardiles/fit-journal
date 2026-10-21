@@ -12,6 +12,14 @@ const dirname = typeof __dirname !== 'undefined' ? __dirname : path.dirname(file
 // More info at: https://storybook.js.org/docs/next/writing-tests/integrations/vitest-addon
 export default defineConfig({
   plugins: [react()],
+  
+  // Native file watching misses writes that arrive through a mounted or
+  // remote filesystem, so the dev server never learns the file changed and
+  // no amount of refreshing helps. Polling catches them.
+  server: {
+    watch: { usePolling: true, interval: 300 },
+  },
+
   test: {
     projects: [
       {
