@@ -12,13 +12,19 @@
   grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
   gap: 32px;
   align-items: start;
+  justify-items: center;
 }
 
-/* Grid items default to min-width: auto, which resolves to min-content: the
-   track refuses to shrink below the longest unbreakable word and the grid
-   overflows by a few pixels. min-width: 0 lets the card shrink to its track;
-   the wrap rule on the note gives long strings permission to break. */
-.dashboard-grid > * { min-width: 0; }
+/* Notes sit at 78% of their track rather than filling it, so they read as
+   objects placed on the page instead of panels occupying it. Centred, so the
+   leftover space falls evenly on both sides. One number to tune.
+   min-width: 0 is separate and load-bearing: grid items default to
+   min-content width, so without it the track refuses to shrink below the
+   longest unbreakable word and the grid overflows by a few pixels. */
+.dashboard-grid > * {
+  width: 82%;
+  min-width: 0;
+}
 
 /* Note internals inherit the note's locally-rebound tokens; --text is the note's
    dark ink, so everything on the note reads black. No red accents. */
@@ -36,12 +42,6 @@
 .note-day { margin-bottom: 4px; color: var(--text); }
 .note-day-label { color: var(--text); }
 .note-day-muscles { color: var(--text); }
-.note-today {
-  margin-inline-start: 6px;
-  font-size: var(--fs-xs);
-  color: var(--text);
-}
-
 .note-link {
   color: var(--text);
   text-decoration: none;

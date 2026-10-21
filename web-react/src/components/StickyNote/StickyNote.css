@@ -18,16 +18,27 @@
   overflow-wrap: break-word;
 }
 
-/* Masking-tape strip at the top (centered, so it's RTL-safe) */
+/* Masking-tape strip at the top. Position, angle and width come from custom
+   properties so each note can differ. */
 .sticky-note::before {
   content: "";
   position: absolute;
   top: -9px;
-  left: 50%;
-  transform: translateX(-50%) rotate(-2deg);
-  width: 60px;
+  left: var(--tape-x, 50%);
+  transform: translateX(-50%) rotate(var(--tape-tilt, -2deg));
+  width: var(--tape-w, 60px);
   height: 18px;
   background: rgba(255, 255, 255, 0.35);
   border: 1px solid rgba(255, 255, 255, 0.25);
   pointer-events: none;
 }
+
+/* Tape is never stuck in the same spot twice, so a fixed position reads as
+   printed rather than placed. A four-step cycle gives that variety without
+   randomness, which would shift on every render and make the page restless.
+   nth-of-type rather than a dashboard selector, so notes vary wherever they
+   appear as siblings. */
+.sticky-note:nth-of-type(4n + 1) { --tape-x: 36%; --tape-tilt: -4deg; --tape-w: 58px; }
+.sticky-note:nth-of-type(4n + 2) { --tape-x: 58%; --tape-tilt: 3deg;  --tape-w: 66px; }
+.sticky-note:nth-of-type(4n + 3) { --tape-x: 47%; --tape-tilt: -1deg; --tape-w: 52px; }
+.sticky-note:nth-of-type(4n + 4) { --tape-x: 65%; --tape-tilt: 5deg;  --tape-w: 62px; }

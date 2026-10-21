@@ -325,14 +325,16 @@ export function Calendar() {
 
   const renderRow = (ex, keyPrefix) => (
     <tr key={`${keyPrefix}-r-${ex.exercise_id}`}>
-      <td className="left cal-exname sticky-col sticky-name">{ex.exercise_name}</td>
       {showSelect && (
         <td className="center sticky-col sticky-select">
+          {/* Unselected, the button renders empty, so without aria-label it has
+              no accessible name at all: one violation per row. */}
           {ex.selectable ? (
             <button
               className={`cal-next-btn${selections[ex.exercise_id] ? " selected" : ""}`}
               onClick={() => handleToggle(ex.exercise_id)}
               aria-pressed={!!selections[ex.exercise_id]}
+              aria-label={t("calendar.selectFor", { name: ex.exercise_name })}
             >
               {selections[ex.exercise_id] ? "✓" : ""}
             </button>
@@ -343,6 +345,7 @@ export function Calendar() {
           ) : null}
         </td>
       )}
+      <td className="left cal-exname sticky-col sticky-name">{ex.exercise_name}</td>
       {columns.map((s) => {
         const v = cellValue(ex.exercise_id, s.session_id);
         return (
@@ -362,7 +365,11 @@ export function Calendar() {
         current = ex.muscle_group;
         out.push(
           <tr key={`${keyPrefix}-m-${current}`} className="cal-muscle-row">
-            <td colSpan={colSpan}>{t(`muscles.${current}`)}</td>
+            {showSelect && <td className="sticky-col sticky-select" />}
+            <td className="left sticky-col sticky-name">{t(`muscles.${current}`)}</td>
+            {columns.map((s) => (
+              <td key={s.session_id} />
+            ))}
           </tr>
         );
       }
@@ -390,7 +397,13 @@ export function Calendar() {
       const lbl = dayLabel(d);
       bodyRows.push(
         <tr key={`day-${d}`} className="cal-day-row">
-          <td colSpan={colSpan}>{lbl ? `${t("common.day", { day: d })} — ${lbl}` : t("common.day", { day: d })}</td>
+          {showSelect && <td className="sticky-col sticky-select" />}
+          <td className="left sticky-col sticky-name">
+            {lbl ? `${t("common.day", { day: d })} — ${lbl}` : t("common.day", { day: d })}
+          </td>
+          {columns.map((s) => (
+            <td key={s.session_id} />
+          ))}
         </tr>
       );
       bodyRows.push(...renderMuscleGrouped(dayRows, `day-${d}`));
@@ -414,17 +427,15 @@ export function Calendar() {
     <div>
       <div className="cal-header">
         <h1 className="cal-title">{t("calendar.title")}</h1>
-        <div className="cal-actions">
-          <button className="cal-action-btn" onClick={handleAutoGenerate}>
-            🤖 {t("calendar.autoSelect")}
-          </button>
-          <button className="cal-action-btn" onClick={handleClear}>
-            {t("calendar.clearSelection")}
-          </button>
-        </div>
       </div>
 
-      <div className="cal-day-filter">
+      <p className="cal-filter-label" id="cal-day-filter-label">
+        {t("calendar.selectDayPrompt")}
+      </p>
+
+      {/* Labelling the group ties the prompt to the chips, so the set is
+          announced as one named control rather than loose buttons. */}
+      <div className="cal-day-filter" role="group" aria-labelledby="cal-day-filter-label">
         <button
           className={`cal-filter-btn${isAllView ? " active" : ""}`}
           onClick={() => {
@@ -432,7 +443,8 @@ export function Calendar() {
             setSelectedDays([]);
           }}
         >
-          {t("calendar.allDays")}
+          <span className="cal-chip-long">{t("calendar.allDays")}</span>
+          <span className="cal-chip-short" aria-hidden="true">{t("calendar.allShort")}</span>
         </button>
         {dayNumbers.map((d) => (
           <button
@@ -440,7 +452,8 @@ export function Calendar() {
             className={`cal-filter-btn${filterMode === "specific" && selectedDays.includes(d) ? " active" : ""}`}
             onClick={() => toggleDay(d)}
           >
-            {t("common.day", { day: d })}
+            <span className="cal-chip-long">{t("common.day", { day: d })}</span>
+            <span className="cal-chip-short" aria-hidden="true">{d}</span>
             {d === currentDay && <span className="cal-current-marker">{t("calendar.currentDay")}</span>}
           </button>
         ))}
@@ -448,12 +461,27 @@ export function Calendar() {
 
       <div className="cal-view-info">{viewInfo}</div>
 
+      <div className="cal-actions">
+        <button className="btn btn--secondary" onClick={handleAutoGenerate}>
+          {t("calendar.autoSelect")}
+        </button>
+        <button className="btn btn--negative" onClick={handleClear}>
+          {t("calendar.clearSelection")}
+        </button>
+      </div>
+
       <div className="cal-wrapper">
-        <table className="cal-table">
+        <table className={`cal-table${showSelect ? " has-select" : ""}`}>
           <thead>
             <tr>
+              {showSelect && (
+                <th className="sticky-col sticky-select">
+                  {/* The column is self-evident to a sighted user, but a table
+                      column still needs a header a screen reader can announce. */}
+                  <span className="sr-only">{t("calendar.select")}</span>
+                </th>
+              )}
               <th className="left sticky-col sticky-name">{t("calendar.exercise")}</th>
-              {showSelect && <th className="sticky-col sticky-select">{t("calendar.select")}</th>}
               {columns.map((s) => {
                 const date = parseLocalDate(s.workout_date);
                 return (

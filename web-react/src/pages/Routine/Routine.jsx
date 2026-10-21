@@ -493,7 +493,7 @@ export function Routine() {
             })}
 
             {isEditing && daysPerWeek < 7 && (
-              <button type="button" className="rt-btn rt-btn--ghost rt-add-day" onClick={addDay}>
+              <button type="button" className="btn btn--ghost rt-add-day" onClick={addDay}>
                 + {t("routine.addDay")}
               </button>
             )}
@@ -501,10 +501,10 @@ export function Routine() {
             {saveError && <p className="rt-error">{saveError.msg}</p>}
 
             <div className="rt-save-row">
-              <button className="rt-btn rt-btn--primary" onClick={handleSave}>
+              <button className="btn btn--primary" onClick={handleSave}>
                 ✓ {t("routine.save")}
               </button>
-              <button className="rt-btn rt-btn--negative" onClick={handleCancel}>
+              <button className="btn btn--negative" onClick={handleCancel}>
                 ✕ {t("routine.cancel")}
               </button>
             </div>
@@ -521,7 +521,7 @@ export function Routine() {
       <div>
         <h1 className="rt-title">{t("routine.title")}</h1>
         <p className="rt-empty">{t("routine.noRoutine")}</p>
-        <button className="rt-btn" onClick={startNew}>
+        <button className="btn" onClick={startNew}>
           + {t("routine.createRoutine")}
         </button>
       </div>
@@ -614,10 +614,10 @@ export function Routine() {
       </div>
 
       <div className="rt-save-row" style={{ marginTop: "var(--space-md)" }}>
-        <button className="rt-btn rt-btn--primary" onClick={enterEdit}>
+        <button className="btn btn--primary" onClick={enterEdit}>
           ✎ {t("routine.editRoutine")}
         </button>
-        <button className="rt-btn rt-btn--secondary" onClick={startNew}>
+        <button className="btn btn--secondary" onClick={startNew}>
           + {t("routine.newRoutine")}
         </button>
       </div>

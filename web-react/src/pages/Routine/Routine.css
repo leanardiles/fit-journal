@@ -118,29 +118,9 @@
 .rt-error { color: var(--red); font-size: var(--fs-base); margin: var(--space-sm) 0; }
 
 .rt-save-row { display: flex; gap: 12px; flex-wrap: wrap; }
-.rt-btn {
-  background: transparent;
-  border: 1px solid var(--border);
-  color: var(--text);
-  font-family: var(--font-body);
-  font-size: var(--fs-base);
-  padding: 6px 14px;
-  cursor: pointer;
-  border-radius: 6px;
-  transition: all 0.12s;
-}
-.rt-btn:hover { border-color: var(--red-border); }
-.rt-btn--primary { background: var(--yellow); color: #1a1a1a; border: none; }
-.rt-btn--primary:hover { border: none; filter: brightness(0.96); }
-.rt-btn--secondary { border-color: var(--yellow); color: var(--text); }
-.rt-btn--secondary:hover { border-color: var(--yellow); }
-/* Tertiary: light "add another" utility. A dashed red border reads as an add
-   affordance and stays visibly lighter than Cancel's solid secondary border. */
-.rt-btn--ghost { border-style: dashed; border-color: var(--red-border); color: var(--red); }
-.rt-btn--ghost:hover { border-color: var(--red); }
-/* Negative: dismissive actions (Cancel / Back). Matches the header logout button. */
-.rt-btn--negative { border-color: var(--red-border); color: var(--muted); }
-.rt-btn--negative:hover { color: var(--text); border-color: var(--red); }
+
+/* The button family moved to styles/buttons.css so other pages can use it.
+   Only the page-specific placement stays here (see .rt-add-day). */
 
 /* ---------- day-type toggle ---------- */
 .rt-daytype-group { display: flex; gap: 8px; margin: 2px 0 10px; flex-wrap: wrap; }

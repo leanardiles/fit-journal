@@ -127,7 +127,6 @@
   vertical-align: bottom;
 }
 .wo-table th.center { text-align: center; }
-.wo-check-col { width: 36px; }
 .wo-table td {
   height: var(--lh);
   padding-bottom: 4px;
@@ -138,7 +137,7 @@
 .wo-table td.center { text-align: center; padding: 0 6px; width: 80px; }
 .wo-muscle-cell {
   color: var(--red);
-  font-size: var(--fs-sm);
+  font-size: var(--fs-xs);
   padding-inline-end: 24px;
   white-space: nowrap;
   width: 1%;
@@ -162,35 +161,23 @@
 .wo-weight { color: var(--muted); }
 .wo-weight.modified { color: var(--text); }
 
-/* Check circle */
-.wo-check {
-  width: 18px;
-  height: 18px;
-  border-radius: 50%;
-  border: 1.5px solid var(--muted);
-  background: transparent;
-  cursor: pointer;
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  transition: all 0.12s;
-  padding: 0;
-  margin-bottom: 4px;
-  color: transparent;
+/* Done is signalled by crossing the exercise name off, the way you would on
+   paper. The line is semi-transparent while the text stays at full strength:
+   a completed row is still editable, so its values must stay legible. The
+   name only, never the numbers, which are the values being read back. */
+.wo-exname-cell.done {
+  text-decoration: line-through;
+  text-decoration-color: var(--muted);
+  text-decoration-thickness: 2px;
 }
-.wo-check:hover { border-color: var(--text); }
-.wo-check.checked {
-  background: var(--text);
-  border-color: var(--text);
-  color: var(--bg);
-  font-size: var(--fs-xs);
-  line-height: 1;
-}
-.wo-check.checked::after { content: "✓"; }
 
-/* Dim checked rows, but keep the check circle itself opaque and clickable */
-.wo-table tr.checked-row td { opacity: 0.4; transition: opacity 0.15s; }
-.wo-table tr.checked-row td:last-child { opacity: 1; }
+/* A hint of warmth on the row, under the strikethrough rather than instead
+   of it. Replaces the old 0.4 opacity dim, which read as disabled and made
+   the numbers the user had just typed hard to read. */
+.wo-table tr.done-row td {
+  background-color: var(--active-bg);
+  transition: background-color 0.15s;
+}
 
 /* Success screen */
 .wo-success-msg {
@@ -220,15 +207,22 @@
   font-family: var(--font-body);
 }
 .wo-ml-datelabel { color: var(--text); }
+/* Same identity as the dropdowns: clicking it opens a picker, so it should
+   not look like a plain text field. Uses the shared --control-* tokens. */
 .wo-ml-date {
-  background: transparent;
-  border: 1px solid var(--border);
+  background-color: var(--control-bg);
+  border: 1px solid var(--control-border);
+  border-radius: var(--radius);
   color: var(--text);
   font-family: var(--font-body);
   font-size: var(--fs-base);
-  padding: 2px 8px;
-  border-radius: 6px;
+  padding: 4px 8px;
+  cursor: pointer;
+  transition: background-color 0.12s, border-color 0.12s;
 }
+.wo-ml-date:hover { background-color: var(--control-bg-hover); }
+.wo-ml-date:focus-visible { border-color: var(--red-border); }
+.wo-ml-date::-webkit-calendar-picker-indicator { cursor: pointer; }
 .wo-ml-grid {
   display: grid;
   grid-template-columns: 1fr 1fr;

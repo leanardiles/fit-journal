@@ -48,7 +48,7 @@
     "promptNoRoutine": "Necesitás una rutina antes de generar un entrenamiento.",
     "promptNoLibrary": "No tenés ejercicios en tu biblioteca para los músculos de hoy: {{muscles}}.",
     "markComplete": "Marcar como completado",
-    "noneChecked": "No marcaste ningún ejercicio. Marcá los que completaste.",
+    "noSetsEntered": "Ingresá el número de series de al menos un ejercicio.",
     "missingSets": "Ingresá las series de: {{names}}",
     "saveError": "No se pudo guardar el entrenamiento. Intentalo de nuevo.",
     "manualListEmpty": "Aún no agregaste ejercicios — agregá algunos de la lista.",

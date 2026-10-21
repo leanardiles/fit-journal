@@ -7,23 +7,59 @@
   margin: 0 0 var(--space-md);
 }
 
+/* flex-wrap is the safety net: six day chips fit one row at 360px, a seventh
+   wraps rather than overflowing. */
 .cal-day-filter {
   display: flex;
   align-items: center;
-  gap: 10px;
+  gap: var(--space-sm);
   flex-wrap: wrap;
   margin-bottom: var(--space-sm);
 }
+
+/* Base: narrow. Square chips showing the bare day number, which is both
+   shorter than Day N and a larger touch target than the wide pill. */
 .cal-filter-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 34px;
+  min-height: 34px;
+  padding: 4px 8px;
+
   background: transparent;
   border: 1px solid var(--text);
   color: var(--text);
   font-family: var(--font-body);
   font-size: var(--fs-base);
-  padding: 4px 14px;
   cursor: pointer;
   border-radius: 8px;
   transition: all 0.12s;
+}
+
+/* The short form is what shows; the long form stays in the accessibility tree
+   so the chip is still announced as Day 3 rather than as 3. */
+.cal-chip-long {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+}
+.cal-chip-short { display: inline; }
+
+@media (min-width: 600px) {
+  .cal-day-filter { gap: 10px; }
+  .cal-filter-btn { min-width: 0; min-height: 0; padding: 4px 14px; }
+  .cal-chip-long {
+    position: static;
+    width: auto;
+    height: auto;
+    overflow: visible;
+    clip-path: none;
+  }
+  .cal-chip-short { display: none; }
 }
 .cal-filter-btn:hover { border-color: var(--yellow); }
 .cal-filter-btn.active {
@@ -31,11 +67,35 @@
   color: var(--text);
   background: rgba(244, 217, 62, 0.22);
 }
+/* Narrow: the word collapses to a dot, which costs 6px instead of ~45px but
+   keeps the current day distinguishable. The text is pushed out of view
+   rather than removed, so screen readers still announce it. Selected and
+   current are different states, and the yellow fill only marks selected. */
 .cal-current-marker {
-  color: var(--yellow);
-  font-size: var(--fs-xs);
-  margin-inline-start: 8px;
+  display: inline-block;
+  width: 6px;
+  height: 6px;
+  margin-inline-start: 4px;
+  border-radius: 50%;
+  background-color: var(--yellow);
+  overflow: hidden;
+  text-indent: 110%;
   white-space: nowrap;
+  font-size: 0;
+}
+
+@media (min-width: 600px) {
+  .cal-current-marker {
+    width: auto;
+    height: auto;
+    border-radius: 0;
+    background-color: transparent;
+    overflow: visible;
+    text-indent: 0;
+    font-size: var(--fs-xs);
+    color: var(--yellow);
+    margin-inline-start: 8px;
+  }
 }
 
 .cal-view-info {
@@ -46,11 +106,24 @@
 }
 
 .cal-wrapper { overflow-x: auto; }
-.cal-table { border-collapse: collapse; min-width: 100%; }
+.cal-table {
+  /* One dial for table density, now free of the notebook rhythm. The table
+     paints its own opaque background, so the page's ruled lines stop at its
+     edges and row height no longer has to be a multiple of --lh. That is the
+     whole point: the table can show more rows than the paper has lines. */
+  --cal-row-h: 26px;
+  background-color: var(--bg);
+  border-collapse: collapse;
+  min-width: 100%;
+}
 
+/* A rule under the header separates the column labels from the logs, the
+   horizontal counterpart to the divider at the end of the name column. Same
+   --divider token, so both read as one structural weight. */
 .cal-table th {
+  border-bottom: 1px solid var(--divider);
   text-align: center;
-  padding: 0 12px 4px;
+  padding: 0 12px 5px;
   font-size: var(--fs-xs);
   color: var(--text);
   text-transform: uppercase;
@@ -60,11 +133,28 @@
   white-space: nowrap;
 }
 .cal-table th.left { text-align: start; padding-inline-start: 0; }
-.cal-wod-day { font-size: var(--fs-xs); color: var(--text); text-transform: none; letter-spacing: 0; }
-.cal-wod-date { font-size: var(--fs-xs); color: var(--text); text-transform: none; letter-spacing: 0; margin-top: 2px; }
+/* These inherit the notebook's 34px line-height from .app-content, which is
+   what put a whole ruled line between the weekday and the date. An explicit
+   line-height overrides it so the two read as one stacked label. */
+.cal-wod-day,
+.cal-wod-date {
+  font-size: var(--fs-xs);
+  color: var(--text);
+  text-transform: none;
+  letter-spacing: 0;
+  line-height: 1.15;
+}
+.cal-wod-date { margin-top: 0; }
 
+/* Row height is one ruled line. Cells inherit line-height var(--lh) from
+   .app-content, which is 34px, so each row was a full line tall plus 12px of
+   padding, about 46px. An explicit line-height hands the height back to
+   --cal-row-h, which is the single dial for the density of the whole table. */
 .cal-table td {
-  padding: 6px 12px;
+  height: var(--cal-row-h);
+  line-height: 1.3;
+  padding-block: 4px;
+  padding-inline: 12px;
   vertical-align: bottom;
   font-size: var(--fs-sm);
   color: var(--text);
@@ -74,20 +164,25 @@
 .cal-table td.left { padding-inline-start: 0; }
 .cal-exname { min-width: 180px; }
 
+/* Section headings get a little air, weighted upward: 10 percent of a row
+   above and 5 percent below, so the break registers before the label does.
+   Taken from the dial rather than fixed px, so the proportion holds if the
+   table density changes. */
 .cal-muscle-row td {
   color: var(--yellow);
   font-size: var(--fs-base);
   text-transform: uppercase;
   letter-spacing: 1px;
-  height: var(--lh);
-  padding-bottom: 4px;
+  height: calc(var(--cal-row-h) * 1.15);
+  padding-top: calc(4px + var(--cal-row-h) * 0.1);
+  padding-bottom: calc(4px + var(--cal-row-h) * 0.05);
 }
 .cal-day-row td {
   color: var(--text);
   font-size: var(--fs-base);
   text-transform: uppercase;
   letter-spacing: 1.5px;
-  padding-top: 14px;
+  padding-top: var(--space-md);
   padding-bottom: 4px;
   border-bottom: 1px solid var(--red-border);
 }
@@ -100,23 +195,36 @@
 .cal-empty-block { color: var(--muted); font-size: var(--fs-base); }
 .cal-link { color: var(--red); text-decoration: underline; margin-inline-start: 8px; }
 
-/* Sticky exercise-name column stays visible while scrolling the session cols.
-   Background is transparent so the notepad's ruled lines show through. Trade-off:
-   when the session columns scroll horizontally, their cells pass under this
-   column. inset-inline-start keeps the pin on the correct side under RTL. */
+/* The pinned columns need an opaque fill. Transparent let the notepad's ruled
+   lines show through, but it also let the scrolling session cells show through,
+   so their text rendered on top of the exercise names. Opaque is the trade the
+   other way: the ruled lines stop at the divider and resume with the logs.
+   inset-inline-start keeps the pin on the correct side under RTL. */
 .cal-table th.sticky-col,
 .cal-table td.sticky-col {
   position: sticky;
-  background: transparent;
+  background-color: var(--bg);
   z-index: 1;
 }
+/* A rule at the end of the name column marks where the logs begin. It reads
+   as the boundary the session columns scroll under, since this column is
+   pinned and they are not. */
 .cal-table .sticky-name {
   inset-inline-start: 0;
   width: 180px; min-width: 180px; max-width: 180px;
   box-sizing: border-box;
+  border-inline-end: 1px solid var(--divider);
 }
-.cal-muscle-row td,
-.cal-day-row td { position: sticky; inset-inline-start: 0; background: transparent; }
+/* These label rows used one cell with colSpan across the whole table, which
+   cannot be pinned: a sticky box is never offset beyond its containing block,
+   and a full-span cell is already as wide as the scroll area, so the offset
+   resolved to no movement at all and the label scrolled away.
+   They are ordinary rows now whose log cells are simply empty, so the label
+   lands in the pinned name column and inherits the pinning that already
+   works there. Empty cells rather than colSpan also keep the column count
+   consistent for assistive technology. */
+.cal-muscle-row .sticky-name,
+.cal-day-row .sticky-name { white-space: normal; }
 
 .cal-header {
   display: flex;
@@ -128,32 +236,46 @@
 }
 .cal-header .cal-title { margin: 0; }
 
-.cal-actions { display: flex; gap: 12px; flex-wrap: wrap; }
-.cal-action-btn {
-  background: transparent;
-  border: 1px solid var(--border);
+/* Prompt labelling the day chips below it. */
+.cal-filter-label {
+  font-size: var(--fs-base);
   color: var(--text);
-  font-family: var(--font-body);
-  font-size: var(--fs-sm);
-  padding: 6px 12px;
-  cursor: pointer;
-  border-radius: 6px;
-  transition: all 0.12s;
+  margin: 0 0 var(--space-xs);
 }
-.cal-action-btn:hover { border-color: var(--red-border); }
+
+/* Sits directly above the table, so the gap below is tighter than above. */
+.cal-actions {
+  display: flex;
+  gap: 12px;
+  flex-wrap: wrap;
+  margin-bottom: var(--space-sm);
+}
 
 .cal-next-btn {
+  position: relative;
   background: transparent;
   border: 1px solid var(--text);
   color: var(--text);
   font-family: var(--font-body);
-  font-size: var(--fs-sm);
-  min-width: 28px;
-  height: 24px;
-  padding: 0 6px;
+  font-size: var(--fs-xs);
+  min-width: 22px;
+  width: 22px;
+  height: 22px;
+  padding: 0;
   cursor: pointer;
-  border-radius: 6px;
+  border-radius: 5px;
   transition: all 0.12s;
+}
+
+/* The box is 22px but the thumb gets the whole cell. An invisible overlay
+   grows the hit area without growing the control. It is sized from the row
+   dial rather than a fixed inset, so tightening the rows can never make two
+   neighbouring targets overlap and steal each other's taps. */
+.cal-next-btn::before {
+  content: "";
+  position: absolute;
+  inset-block: calc((var(--cal-row-h) - 22px) / -2);
+  inset-inline: -9px;
 }
 .cal-next-btn:hover { border-color: var(--yellow); }
 .cal-next-btn.selected {
@@ -170,12 +292,15 @@
   justify-content: center;
 }
 
-/* second sticky column: sits right after the fixed 180px name column */
+/* The select column leads, so it pins at the edge and the name column pins
+   just past it. Without the has-select qualifier the name would hold a 40px
+   offset in the all-days view, where no select column is rendered. */
 .cal-table .sticky-select {
-  inset-inline-start: 180px;
-  width: 52px;
-  min-width: 52px;
-  max-width: 52px;
-  padding-inline: 6px;
+  inset-inline-start: 0;
+  width: 40px;
+  min-width: 40px;
+  max-width: 40px;
+  padding-inline: 4px;
   white-space: normal;
 }
+.cal-table.has-select .sticky-name { inset-inline-start: 40px; }

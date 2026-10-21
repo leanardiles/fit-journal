@@ -1,6 +1,9 @@
-:root {
-  color-scheme: light dark;
-}
+/* The app owns its theme through the body.light class, so native controls
+   must follow that rather than the operating system. With "light dark" the
+   browser picked from the OS, which is why a date picker or scrollbar could
+   render light while the app was dark. */
+:root { color-scheme: dark; }
+body.light { color-scheme: light; }
 
 /* App root container. The rest of this file was Vite-starter boilerplate
    (a duplicate token set, an 18px root font that inflated the rem scale, and

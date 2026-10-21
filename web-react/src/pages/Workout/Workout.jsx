@@ -33,7 +33,16 @@ export function Workout() {
   const [prompt, setPrompt] = useState(null); // { type, muscles? }
   const [gapNote, setGapNote] = useState(null); // string[] | null
   const [workout, setWorkout] = useState(null); // built workout data
-  const [rows, setRows] = useState({}); // { [exId]: { weight, sets, reps, checked, weightTouched } }
+  const [rows, setRows] = useState({}); // { [exId]: { weight, sets, reps, weightTouched } }
+
+// An exercise counts as done once it has a positive set count. Derived, not
+// stored: clearing the field or typing 0 undoes it with no second piece of
+// state to keep in sync. Sets is the right signal because nothing prefills
+// it, unlike weight, which is seeded from the exercise's current weight.
+const isDone = (row) => {
+  const sets = parseInt(row?.sets, 10);
+  return Number.isFinite(sets) && sets > 0;
+};
 
   // Manual (off-routine) logging
   const [manualDate, setManualDate] = useState("");
@@ -140,7 +149,6 @@ export function Workout() {
           weight: kgToDisplay(ex.exercise_user_current_weight, isImperial),
           sets: "",
           reps: "",
-          checked: false,
           weightTouched: false,
         };
       });
@@ -180,27 +188,14 @@ export function Workout() {
   };
 
   const setRow = (exId, patch) => setRows((prev) => ({ ...prev, [exId]: { ...prev[exId], ...patch } }));
-  const toggleCheck = (exId) => setRows((prev) => ({ ...prev, [exId]: { ...prev[exId], checked: !prev[exId].checked } }));
 
   const completeWorkout = async () => {
     if (!workout) return;
-    const checked = workout.exercises.filter((ex) => rows[ex.exercise_id]?.checked);
-    if (checked.length === 0) { showToast(t("workout.noneChecked"), "error"); return; }
+    const done = workout.exercises.filter((ex) => isDone(rows[ex.exercise_id]));
+    if (done.length === 0) { showToast(t("workout.noSetsEntered"), "error"); return; }
 
-    // Every checked exercise needs a sets value.
-    const missing = checked
-      .filter((ex) => {
-        const s = rows[ex.exercise_id]?.sets;
-        return !s || parseInt(s, 10) <= 0;
-      })
-      .map((ex) => ex.exercise_name);
-    if (missing.length) {
-      showToast(t("workout.missingSets", { names: missing.join(", ") }), "error");
-      return;
-    }
-
-    // Only the checked rows; weight is sent back as canonical kg (null when blank).
-    const payloadExercises = checked.map((ex) => {
+    // Only the done rows; weight is sent back as canonical kg (null when blank).
+    const payloadExercises = done.map((ex) => {
       const r = rows[ex.exercise_id] || {};
       return {
         exercise_id: ex.exercise_id,
@@ -442,32 +437,19 @@ export function Workout() {
               <tr>
                 <th>{t("workout.colMuscle")}</th>
                 <th>{t("workout.colExercise")}</th>
-                <th className="center">{t("workout.colWeight")} ({weightUnit})</th>
                 <th className="center">{t("workout.colSets")}</th>
                 <th className="center">{t("workout.colReps")}</th>
-                <th className="center wo-check-col">✓</th>
+                <th className="center">{t("workout.colWeight")} ({weightUnit})</th>
               </tr>
             </thead>
             <tbody>
               {renderRows().map(({ ex, label }) => {
                 const r = rows[ex.exercise_id] || {};
+                const done = isDone(r);
                 return (
-                  <tr key={ex.exercise_id} className={r.checked ? "checked-row" : ""}>
+                  <tr key={ex.exercise_id} className={done ? "done-row" : ""}>
                     <td className="wo-muscle-cell">{label}</td>
-                    <td className="wo-exname-cell">{ex.exercise_name}</td>
-                    <td className="center">
-                      <input
-                        type="number"
-                        inputMode="decimal"
-                        min="0"
-                        step="0.5"
-                        className={`wo-input wo-weight${r.weightTouched ? " modified" : ""}`}
-                        value={r.weight ?? ""}
-                        placeholder="0"
-                        aria-label={`${t("workout.colWeight")} (${weightUnit}) — ${ex.exercise_name}`}
-                        onChange={(e) => setRow(ex.exercise_id, { weight: e.target.value, weightTouched: true })}
-                      />
-                    </td>
+                    <td className={`wo-exname-cell${done ? " done" : ""}`}>{ex.exercise_name}</td>
                     <td className="center">
                       <input
                         type="number"
@@ -495,12 +477,16 @@ export function Workout() {
                       />
                     </td>
                     <td className="center">
-                      <button
-                        type="button"
-                        className={`wo-check${r.checked ? " checked" : ""}`}
-                        aria-pressed={!!r.checked}
-                        aria-label={t("workout.markExercise", { name: ex.exercise_name })}
-                        onClick={() => toggleCheck(ex.exercise_id)}
+                      <input
+                        type="number"
+                        inputMode="decimal"
+                        min="0"
+                        step="0.5"
+                        className={`wo-input wo-weight${r.weightTouched ? " modified" : ""}`}
+                        value={r.weight ?? ""}
+                        placeholder="0"
+                        aria-label={`${t("workout.colWeight")} (${weightUnit}) — ${ex.exercise_name}`}
+                        onChange={(e) => setRow(ex.exercise_id, { weight: e.target.value, weightTouched: true })}
                       />
                     </td>
                   </tr>

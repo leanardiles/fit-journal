@@ -1,0 +1,43 @@
+/* ============================================================
+   Buttons , shared
+
+   Promoted out of Routine.css, which held the most developed set.
+   Keeping it there meant any other page wanting the same vocabulary had to
+   copy it, which is how Calendar ended up with a bespoke cal-action-btn
+   that followed no convention at all.
+
+   The vocabulary, by intent rather than by colour:
+     (base)     neutral action
+     --primary  the affirmative action of the view (solid yellow)
+     --secondary affirmative but not the main one (yellow outline)
+     --ghost    a light add-another utility (dashed red outline)
+     --negative dismissive or destructive (red outline, muted ink)
+   ============================================================ */
+
+.btn {
+  background: transparent;
+  border: 1px solid var(--border);
+  color: var(--text);
+  font-family: var(--font-body);
+  font-size: var(--fs-base);
+  padding: 6px 14px;
+  cursor: pointer;
+  border-radius: 6px;
+  transition: all 0.12s;
+}
+.btn:hover { border-color: var(--red-border); }
+
+.btn--primary { background: var(--yellow); color: #1a1a1a; border: none; }
+.btn--primary:hover { border: none; filter: brightness(0.96); }
+
+.btn--secondary { border-color: var(--yellow); color: var(--text); }
+.btn--secondary:hover { border-color: var(--yellow); }
+
+/* A dashed red border reads as an add affordance and stays visibly lighter
+   than the solid borders around it. */
+.btn--ghost { border-style: dashed; border-color: var(--red-border); color: var(--red); }
+.btn--ghost:hover { border-color: var(--red); }
+
+/* Dismissive actions. Matches the header logout button. */
+.btn--negative { border-color: var(--red-border); color: var(--muted); }
+.btn--negative:hover { color: var(--text); border-color: var(--red); }

@@ -115,7 +115,7 @@ export function Dashboard() {
 
       <div className="dashboard-grid">
         {/* Quick stats */}
-        <StickyNote tilt={-1.5}>
+        <StickyNote>
           <div className="note-heading">{t("dashboard.quickStats")}</div>
           <div className="note-line">
             {t("dashboard.thisWeek")}: <span className="note-value">{workoutsThisWeek}</span>
@@ -127,7 +127,7 @@ export function Dashboard() {
         </StickyNote>
 
         {/* Current routine */}
-        <StickyNote tilt={1}>
+        <StickyNote>
           <div className="note-heading">{t("dashboard.currentRoutine")}</div>
           {!hasRoutine ? (
             <div className="note-line">
@@ -148,7 +148,6 @@ export function Dashboard() {
                     <div key={day.day_number} className={`note-day${isToday ? " today" : ""}`}>
                       <span className="note-day-label">{label}:</span>{" "}
                       <span className="note-day-muscles">{detail}</span>
-                      {isToday && <span className="note-today">({t("dashboard.today")})</span>}
                     </div>
                   );
                 })}
@@ -160,7 +159,7 @@ export function Dashboard() {
         </StickyNote>
 
         {/* Sets per muscle */}
-        <StickyNote tilt={-0.5}>
+        <StickyNote>
           <div className="note-heading">{t("dashboard.setsPerMuscle")}</div>
           <Toggle value={range} onChange={setRange} options={rangeOptions} />
           {muscleRows.length === 0 ? (

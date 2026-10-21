@@ -10,7 +10,7 @@ import "./StickyNote.css";
  */
 export function StickyNote({ tilt = 0, children }) {
   return (
-    <div className="sticky-note" style={{ transform: `rotate(${tilt}deg)` }}>
+    <div className="sticky-note" style={tilt ? { transform: `rotate(${tilt}deg)` } : undefined}>
       {children}
     </div>
   );
