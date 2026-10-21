@@ -112,8 +112,8 @@
     "setsPerMuscle": "Séries par muscle",
     "last7Days": "Ces 7 derniers jours",
     "noSets": "Aucune série n'a été enregistrée dans cette fourchette.",
-    "sets_one": "Ensemble {{count}}",
-    "sets_other": "{{count}} définit"
+    "sets_one": "{{count}} série",
+    "sets_other": "{{count}} séries"
   },
   "exercises": {
     "title": "Mes exercices",
@@ -183,7 +183,7 @@
     "autoSelect": "Sélection automatique",
     "clearSelection": "Effacer la sélection",
     "lockedHint": "Journée manuelle : les exercices sont déterminés par ta routine",
-    "generated_one": "Prochaine séance d'entraînement générée : exercice {{count}} sélectionné.",
+    "generated_one": "Prochaine séance d'entraînement générée : {{count}} exercice sélectionné.",
     "generated_other": "Prochaine séance d'entraînement générée : {{count}} exercices sélectionnés.",
     "cleared": "Les sélections ont été effacées.",
     "toggleError": "Impossible de mettre à jour la sélection.",
@@ -192,12 +192,12 @@
   },
   "routine": {
     "title": "Ma routine du moment",
-    "trainingDays_one": "Entraînement {{count}} jour(s) par semaine",
-    "trainingDays_other": "Entraînement {{count}} jours par semaine",
+    "trainingDays_one": "{{count}} jour d'entraînement par semaine",
+    "trainingDays_other": "{{count}} jours d'entraînement par semaine",
     "dayTypeManual": "Manuel",
     "dayTypePerMuscle": "Par muscle",
-    "exercises_one": "Exercice {{count}}",
-    "exercises_other": "Exercices sur {{count}}",
+    "exercises_one": "{{count}} exercice",
+    "exercises_other": "{{count}} exercices",
     "seePool": "voir la piscine",
     "noExercises": "Pas d'exercices",
     "noMuscles": "Pas de muscles",
