@@ -199,6 +199,78 @@ def test_complete_workout_increments_pool_counter(auth):
 
     assert _counter(uid, c1) == 1   # incremented on completion
 
+def _complete(auth, day_number=1, exercises=None, workout_date=None):
+    payload = {"day_number": day_number, "exercises": exercises or []}
+    if workout_date is not None:
+        payload["workout_date"] = workout_date
+    return auth["client"].post(
+        f"/v1/workout/complete/{auth['user_id']}",
+        headers=auth["headers"],
+        json=payload,
+    )
+
+
+def _setup_one_exercise_day(auth):
+    """A one-day, one-exercise routine with a generated workout ready to complete."""
+    ex = _make_exercise(auth, "Bench Press", "Chest")
+    _save(auth, [{
+        "day_number": 1,
+        "day_type": "per_muscle",
+        "muscles": [{"muscle_group": "Chest", "exercise_count": 1}],
+        "exercise_ids": [ex],
+    }])
+    auth["client"].get(f"/v1/workout/state/{auth['user_id']}", headers=auth["headers"])
+    _generate(auth, day_number=1)
+    return ex
+
+
+def test_complete_workout_accepts_a_past_date(auth):
+    """A workout done yesterday but logged today is stored under the date given."""
+    ex = _setup_one_exercise_day(auth)
+    resp = _complete(
+        auth,
+        exercises=[{"exercise_id": ex, "sets_completed": 3, "reps_completed": 10, "weight_used": 50.0}],
+        workout_date="2020-06-15",
+    )
+    assert resp.status_code == 200, resp.text
+
+    logs = auth["client"].get(
+        f"/v1/workout/logs/{auth['user_id']}", headers=auth["headers"]
+    ).json()
+    mine = [l for l in logs if l["exercise_id"] == ex]
+    assert len(mine) == 1
+    assert mine[0]["workout_date"] == "2020-06-15"
+
+
+def test_complete_workout_rejects_a_future_date(auth):
+    """A future workout date is rejected, as it is for manual logs."""
+    ex = _setup_one_exercise_day(auth)
+    resp = _complete(
+        auth,
+        exercises=[{"exercise_id": ex, "sets_completed": 3, "reps_completed": 10, "weight_used": 50.0}],
+        workout_date="2099-01-01",
+    )
+    assert resp.status_code == 400, resp.text
+
+
+def test_complete_workout_without_a_date_uses_today(auth):
+    """Omitting the date keeps the previous behaviour, which is what the
+    Android app relies on."""
+    from datetime import date
+    ex = _setup_one_exercise_day(auth)
+    resp = _complete(
+        auth,
+        exercises=[{"exercise_id": ex, "sets_completed": 3, "reps_completed": 10, "weight_used": 50.0}],
+    )
+    assert resp.status_code == 200, resp.text
+
+    logs = auth["client"].get(
+        f"/v1/workout/logs/{auth['user_id']}", headers=auth["headers"]
+    ).json()
+    mine = [l for l in logs if l["exercise_id"] == ex]
+    assert mine[0]["workout_date"] == date.today().isoformat()
+
+
 # --- manual (off-routine) workout logging -----------------------------------
 
 def _log_manual(auth, workout_date, exercises):

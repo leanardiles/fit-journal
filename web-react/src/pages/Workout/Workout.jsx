@@ -36,6 +36,10 @@ export function Workout() {
   const [mode, setMode] = useState("generate"); // "generate" | "workout" | "success"
   const [generating, setGenerating] = useState(false);
   const [saving, setSaving] = useState(false);
+  // The date the workout is logged under. Defaults to today, because that is
+  // the common case, but a workout done yesterday and logged this morning
+  // should not be filed under today.
+  const [workoutDate, setWorkoutDate] = useState(todayStr());
   const [prompt, setPrompt] = useState(null); // { type, muscles? }
   const [gapNote, setGapNote] = useState(null); // string[] | null
   const [workout, setWorkout] = useState(null); // built workout data
@@ -217,6 +221,7 @@ const isDone = (row) => {
       const res = await apiPost(`/workout/complete/${userId}`, {
         day_number: workout.day_number,
         exercises: payloadExercises,
+        workout_date: workoutDate,
       });
       if (!res.ok) { showToast(t("workout.saveError"), "error"); return; }
       setMode("success");
@@ -323,12 +328,6 @@ const isDone = (row) => {
     return out;
   };
 
-  const dateHeader = new Intl.DateTimeFormat(i18n.language, {
-    weekday: "long",
-    day: "numeric",
-    month: "long",
-  }).format(new Date());
-
   const renderPrompt = () => {
     if (!prompt) return null;
     const muscles = muscleList(prompt.muscles);
@@ -372,9 +371,47 @@ const isDone = (row) => {
 
   if (loading) return <p className="wo-muted">{t("common.loading")}</p>;
 
+  // The header date control. Both flows log to a date, so they share one
+  // field rather than each screen placing its own.
+  const dateField =
+    mode === "manual"
+      ? { id: "wo-ml-date", value: manualDate, set: setManualDate }
+      : { id: "wo-date", value: workoutDate, set: setWorkoutDate };
+  const showHeadDate = mode === "manual" || (mode === "workout" && !!workout);
+
   return (
     <div className="wo">
-      <h1 className="wo-title">{t("workout.title")}</h1>
+      <div className="wo-head">
+        <h1 className="wo-title">
+          {t("workout.title")}{" "}
+          {/* Kept in the DOM when idle so the date never shifts between the
+              generated and the manual screen. Hidden from screen readers too. */}
+          <span className={mode === "manual" ? "wo-title-tag" : "wo-title-tag is-idle"}>
+            ({t("workout.manual")})
+          </span>
+        </h1>
+        {showHeadDate && (
+          <div className="wo-head-date">
+            <label className="wo-date-label" htmlFor={dateField.id}>{t("workout.date")}</label>
+            <input
+              id={dateField.id}
+              type="date"
+              className="wo-date-input"
+              value={dateField.value}
+              max={todayStr()}
+              onChange={(e) => dateField.set(e.target.value)}
+            />
+          </div>
+        )}
+        {mode === "workout" && workout && (
+          <span className="wo-dayinfo">
+            {t("common.dayNamed", {
+              day: workout.day_number,
+              name: workout.day_name || muscleList(workout.muscle_groups),
+            })}
+          </span>
+        )}
+      </div>
 
       {mode === "generate" && (
         <div className="wo-generate">
@@ -424,16 +461,6 @@ const isDone = (row) => {
 
       {mode === "workout" && workout && (
         <div className="wo-workout">
-          <div className="wo-dateline">
-            <span className="wo-date">{dateHeader}</span>
-            <span className="wo-dayinfo">
-              {t("common.dayNamed", {
-                day: workout.day_number,
-                name: workout.day_name || muscleList(workout.muscle_groups),
-              })}
-            </span>
-          </div>
-
           {gapNote && (
             <div className="wo-gap-note">
               {t("workout.gapNote", { muscles: muscleList(gapNote) })}{" "}
@@ -520,19 +547,6 @@ const isDone = (row) => {
 
       {mode === "manual" && (
         <div className="wo-manual">
-          <div className="wo-ml-title">{t("workout.manualTitle")}</div>
-          <div className="wo-ml-dateline">
-            <label className="wo-ml-datelabel" htmlFor="wo-ml-date">{t("workout.date")}</label>
-            <input
-              id="wo-ml-date"
-              type="date"
-              className="wo-ml-date"
-              value={manualDate}
-              max={todayStr()}
-              onChange={(e) => setManualDate(e.target.value)}
-            />
-          </div>
-
           <div className="wo-ml-grid">
             <div className="wo-ml-col-left">
               {manualRows.length === 0 ? (

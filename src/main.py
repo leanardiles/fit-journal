@@ -941,16 +941,21 @@ def complete_workout(user_id: int, workout_data: schemas.WorkoutComplete, db: Se
     Mark workout as complete
     Main orchestration function - delegates to helpers
     """
-    from datetime import date
-    
     # Validate and get required data
     user, days_per_week = validate_user_and_routine(user_id, db)
-    
+
+    # Resolve the workout date once and pass it down, rather than letting the
+    # session and each log row call get_user_date separately: a workout
+    # completed around midnight could otherwise split across two dates.
+    workout_date = workout_data.workout_date or get_user_date(user_id, db)
+    if workout_date > get_user_date(user_id, db):
+        raise HTTPException(status_code=400, detail="Workout date can't be in the future.")
+
     # Create workout session
-    session = create_workout_session(user_id, workout_data.day_number, db)
-    
+    session = create_workout_session(user_id, workout_data.day_number, db, workout_date)
+
     # Log all exercises
-    completed_exercise_ids = log_workout_exercises(session, workout_data.exercises, user_id, workout_data.day_number, db)
+    completed_exercise_ids = log_workout_exercises(session, workout_data.exercises, user_id, workout_data.day_number, db, workout_date)
     
     # Clean up and update state
     cleanup_after_workout(user_id, completed_exercise_ids, workout_data.day_number, days_per_week, db)
@@ -986,14 +991,10 @@ def get_user_date(user_id: int, db: Session) -> date:
     user = db.query(models.User).filter(models.User.user_id == user_id).first()
     tz_str = user.user_timezone if user and user.user_timezone else 'America/New_York'
     tz = pytz.timezone(tz_str)
-    result = datetime.now(tz).date()
-    print(f"DEBUG get_user_date: user_id={user_id}, tz={tz_str}, date={result}")
-    return result
+    return datetime.now(tz).date()
 
-def create_workout_session(user_id: int, day_number: int, db: Session):
+def create_workout_session(user_id: int, day_number: int, db: Session, workout_date: date):
     """Create a new workout session with incremented order"""
-    from datetime import date
-    
     # Get next session order
     last_session = db.query(models.WorkoutSession).filter(
         models.WorkoutSession.user_id == user_id
@@ -1005,7 +1006,7 @@ def create_workout_session(user_id: int, day_number: int, db: Session):
     session = models.WorkoutSession(
         user_id=user_id,
         routine_day_number=day_number,
-        workout_date=get_user_date(user_id, db),
+        workout_date=workout_date,
         session_order=next_session_order
     )
     db.add(session)
@@ -1014,10 +1015,8 @@ def create_workout_session(user_id: int, day_number: int, db: Session):
     return session
 
 
-def log_workout_exercises(session, exercises_data, user_id: int, day_number: int, db: Session):
+def log_workout_exercises(session, exercises_data, user_id: int, day_number: int, db: Session, workout_date: date):
     """Log all exercises and update exercise metadata"""
-    from datetime import date
-    
     completed_exercise_ids = []
     
     for exercise_data in exercises_data:
@@ -1031,7 +1030,7 @@ def log_workout_exercises(session, exercises_data, user_id: int, day_number: int
             sets_completed=exercise_data.sets_completed,
             reps_completed=exercise_data.reps_completed,
             weight_used=exercise_data.weight_used,
-            workout_date=get_user_date(user_id, db),
+            workout_date=workout_date,
             session_id=session.session_id
         )
         db.add(log)

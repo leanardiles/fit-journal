@@ -1563,13 +1563,6 @@
           "fr": {"hash": "6c1b635ac2ee", "status": "translated", "translated_at": "2026-10-16T21:32:28.683Z"}
         }
       },
-      "workout.manualTitle": {
-        "source_hash": "7b3064fe77ce",
-        "source_text": "Logging a manual workout",
-        "translations": {
-          "fr": {"hash": "7b3064fe77ce", "status": "translated", "translated_at": "2026-10-16T21:32:28.683Z"}
-        }
-      },
       "workout.markComplete": {
         "source_hash": "5b81a08b0d08",
         "source_text": "Mark as Complete",

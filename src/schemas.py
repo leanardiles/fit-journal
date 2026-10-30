@@ -167,6 +167,9 @@ class WorkoutLogCreate(BaseModel):
 class WorkoutComplete(BaseModel):
     day_number: int
     exercises: list[WorkoutLogCreate]
+    # Optional so existing callers, including the Android app, keep working
+    # unchanged. Omitted means today in the user's timezone.
+    workout_date: Optional[date] = None
 
 class WorkoutLogResponse(BaseModel):
     log_id: int

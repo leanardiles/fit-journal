@@ -1,10 +1,55 @@
+/* Title and date share one line to buy back vertical space. */
+.wo-head {
+  display: flex;
+  align-items: baseline;
+  flex-wrap: wrap;
+  gap: 4px 18px;
+  margin-bottom: var(--space-md);
+}
 .wo-title {
   font-size: var(--fs-lg);
   text-transform: uppercase;
   letter-spacing: 1.5px;
   color: var(--text);
-  margin: 0 0 var(--space-md);
+  margin: 0;
+  line-height: 1.3;
   font-family: var(--font-body);
+}
+.wo-title-tag {
+  font-size: var(--fs-base);
+  text-transform: none;
+  letter-spacing: 0;
+  color: var(--muted);
+}
+.wo-title-tag.is-idle { visibility: hidden; }
+.wo-head-date {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+/* At narrow widths the word Date would push the field onto its own line,
+   which defeats the point. The label stays for screen readers. */
+.wo-head-date .wo-date-label {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  margin: -1px;
+  padding: 0;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+}
+@media (min-width: 600px) {
+  .wo-head { gap: 4px 28px; }
+  .wo-dayinfo { display: inline; }
+  .wo-head-date .wo-date-label {
+    position: static;
+    width: auto;
+    height: auto;
+    margin: 0;
+    overflow: visible;
+    clip-path: none;
+  }
 }
 .wo-muted { color: var(--muted); font-family: var(--font-body); }
 
@@ -103,10 +148,14 @@
   font-size: var(--fs);
 }
 
-/* Date + routine-day line above the table */
-.wo-dateline { margin-bottom: var(--space-xs); font-family: var(--font-body); }
-.wo-date { color: var(--text); }
-.wo-dayinfo { color: var(--muted); margin-inline-start: 12px; font-size: var(--fs-base); }
+/* Which routine day this is. Context rather than instruction, so it is the
+   first thing dropped when the header line gets tight. */
+.wo-dayinfo {
+  display: none;
+  color: var(--muted);
+  font-size: var(--fs-base);
+  font-family: var(--font-body);
+}
 
 /* Workout table */
 .wo-table {
@@ -248,28 +297,10 @@
 }
 
 /* Manual log builder */
-.wo-ml-title {
-  color: var(--text);
-  font-size: var(--fs-md);
-  text-transform: uppercase;
-  letter-spacing: 1.5px;
-  min-height: var(--lh);
-  display: flex;
-  align-items: flex-end;
-  padding-bottom: 4px;
-  font-family: var(--font-body);
-}
-.wo-ml-dateline {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  margin-top: 4px;
-  font-family: var(--font-body);
-}
-.wo-ml-datelabel { color: var(--text); }
+.wo-date-label { color: var(--text); }
 /* Same identity as the dropdowns: clicking it opens a picker, so it should
    not look like a plain text field. Uses the shared --control-* tokens. */
-.wo-ml-date {
+.wo-date-input {
   background-color: var(--control-bg);
   border: 1px solid var(--control-border);
   border-radius: var(--radius);
@@ -280,9 +311,9 @@
   cursor: pointer;
   transition: background-color 0.12s, border-color 0.12s;
 }
-.wo-ml-date:hover { background-color: var(--control-bg-hover); }
-.wo-ml-date:focus-visible { border-color: var(--red-border); }
-.wo-ml-date::-webkit-calendar-picker-indicator { cursor: pointer; }
+.wo-date-input:hover { background-color: var(--control-bg-hover); }
+.wo-date-input:focus-visible { border-color: var(--red-border); }
+.wo-date-input::-webkit-calendar-picker-indicator { cursor: pointer; }
 .wo-ml-grid {
   display: grid;
   grid-template-columns: 1fr 1fr;
