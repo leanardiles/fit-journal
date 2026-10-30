@@ -127,6 +127,17 @@
   vertical-align: bottom;
 }
 .wo-table th.center { text-align: center; }
+
+/* The unit sits on its own line under the column name, so the header stops
+   setting the column's width. Both need an explicit line-height: these cells
+   inherit var(--lh) from .app-content, which is 34px, and two stacked 34px
+   lines would make the header three times taller than it needs to be. */
+.wo-col-main,
+.wo-col-unit {
+  display: block;
+  line-height: 1.15;
+}
+.wo-col-unit { color: var(--muted); }
 .wo-table td {
   height: var(--lh);
   padding-bottom: 4px;
@@ -134,15 +145,46 @@
   font-size: var(--fs);
   color: var(--text);
 }
-.wo-table td.center { text-align: center; padding: 0 6px; width: 80px; }
+/* Base: narrow. Three number columns at 80px around a 60px input cannot sit
+   beside the exercise name on a phone, so the table overflowed and had to be
+   scrolled sideways. 56px still clears the 44px touch target. */
+.wo-table td.center { text-align: center; padding: 0 4px; width: 56px; }
+/* Muscle and the three number columns size to their content; the exercise
+   name absorbs whatever is left and clips. width 1% is the table-layout idiom
+   for shrink to content. */
 .wo-muscle-cell {
   color: var(--red);
   font-size: var(--fs-xs);
-  padding-inline-end: 24px;
+  padding-inline-end: 10px;
   white-space: nowrap;
   width: 1%;
 }
-.wo-exname-cell { white-space: nowrap; padding-inline-end: 20px; width: 1%; }
+
+/* width 100% claims the leftover space, and max-width 0 removes the cell's
+   intrinsic minimum so the table algorithm is allowed to squeeze it. Without
+   max-width the longest exercise name would still dictate the column and the
+   table would overflow again. */
+.wo-exname-cell {
+  width: 100%;
+  max-width: 0;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  padding-inline-end: 10px;
+}
+
+/* 600px up there is room for the full name, so the clipping is switched off
+   entirely and the column goes back to sizing itself to its content. */
+@media (min-width: 600px) {
+  .wo-muscle-cell { padding-inline-end: 24px; }
+  .wo-exname-cell {
+    width: 1%;
+    max-width: none;
+    overflow: visible;
+    text-overflow: clip;
+    padding-inline-end: 20px;
+  }
+}
 
 .wo-input {
   background: transparent;
@@ -151,13 +193,19 @@
   color: var(--text);
   font-family: var(--font-body);
   font-size: var(--fs);
-  width: 60px;
-  padding: 0 4px 4px;
+  width: 44px;
+  padding: 0 2px 4px;
   outline: none;
   text-align: center;
   transition: border-color 0.12s;
 }
 .wo-input:focus { border-bottom-color: var(--red-border); }
+
+/* 600px up there is room for the roomier original sizing. */
+@media (min-width: 600px) {
+  .wo-table td.center { padding: 0 6px; width: 80px; }
+  .wo-input { width: 60px; padding: 0 4px 4px; }
+}
 .wo-weight { color: var(--muted); }
 .wo-weight.modified { color: var(--text); }
 

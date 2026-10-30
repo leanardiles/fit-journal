@@ -5,7 +5,7 @@ import { apiGet, apiPost } from "../../api/client";
 import { useUser } from "../../context/UserContext";
 import { useToast } from "../../context/ToastContext";
 import { formatList } from "../../i18n/format";
-import { kgToDisplay, displayToKg } from "../../constants/units";
+import { kgToDisplay, displayToKg, unitSymbol } from "../../constants/units";
 import { MUSCLE_GROUPS } from "../../constants/muscles";
 import "./Workout.css";
 
@@ -21,7 +21,12 @@ export function Workout() {
   const { user } = useUser();
   const { showToast } = useToast();
   const isImperial = user?.user_unit_preference === "imperial";
-  const weightUnit = isImperial ? "lb" : "kg";
+  // Symbol comes from CLDR via Intl rather than being hardcoded, so a locale
+  // that abbreviates differently gets its own form without a new key. The
+  // literal is a fallback: unitSymbol returns an empty string if the runtime
+  // lacks the unit, and an empty weight header is worse than an English one.
+  const weightUnit =
+    unitSymbol(i18n.language, isImperial ? "pound" : "kilogram") || (isImperial ? "lb" : "kg");
 
   const [routine, setRoutine] = useState(null);
   const [currentDay, setCurrentDay] = useState(1);
@@ -443,7 +448,10 @@ const isDone = (row) => {
                 <th>{t("workout.colExercise")}</th>
                 <th className="center">{t("workout.colSets")}</th>
                 <th className="center">{t("workout.colReps")}</th>
-                <th className="center">{t("workout.colWeight")} ({weightUnit})</th>
+                <th className="center">
+                  <span className="wo-col-main">{t("workout.colWeight")}</span>
+                  <span className="wo-col-unit">{weightUnit}</span>
+                </th>
               </tr>
             </thead>
             <tbody>
@@ -453,7 +461,7 @@ const isDone = (row) => {
                 return (
                   <tr key={ex.exercise_id} className={done ? "done-row" : ""}>
                     <td className="wo-muscle-cell">{label}</td>
-                    <td className="wo-exname-cell">{ex.exercise_name}</td>
+                    <td className="wo-exname-cell" title={ex.exercise_name}>{ex.exercise_name}</td>
                     <td className="center">
                       <input
                         type="number"
