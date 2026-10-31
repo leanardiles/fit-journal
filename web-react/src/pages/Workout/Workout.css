@@ -27,29 +27,9 @@
   align-items: center;
   gap: 10px;
 }
-/* At narrow widths the word Date would push the field onto its own line,
-   which defeats the point. The label stays for screen readers. */
-.wo-head-date .wo-date-label {
-  position: absolute;
-  width: 1px;
-  height: 1px;
-  margin: -1px;
-  padding: 0;
-  overflow: hidden;
-  clip-path: inset(50%);
-  white-space: nowrap;
-}
 @media (min-width: 600px) {
   .wo-head { gap: 4px 28px; }
   .wo-dayinfo { display: inline; }
-  .wo-head-date .wo-date-label {
-    position: static;
-    width: auto;
-    height: auto;
-    margin: 0;
-    overflow: visible;
-    clip-path: none;
-  }
 }
 .wo-muted { color: var(--muted); font-family: var(--font-body); }
 

@@ -1452,8 +1452,8 @@
         }
       },
       "workout.date": {
-        "source_hash": "99c40ab40592",
-        "source_text": "Date",
+        "source_hash": "b51489bde8d8",
+        "source_text": "Date:",
         "translations": {
           "fr": {"hash": "99c40ab40592", "status": "translated", "translated_at": "2026-10-16T21:32:28.683Z"}
         }
