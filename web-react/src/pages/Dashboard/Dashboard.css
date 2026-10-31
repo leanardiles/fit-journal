@@ -44,6 +44,14 @@
 .note-value { color: var(--text); }
 
 .note-day { margin-bottom: 4px; color: var(--text); }
+/* Today's routine day, marked on the label only so the row does not read as
+   heavier than the others. --text is the note's dark ink, so this is black. */
+.note-day.today .note-day-label {
+  text-decoration: underline;
+  text-decoration-color: var(--text);
+  text-decoration-thickness: 1px;
+  text-underline-offset: 3px;
+}
 .note-day-label { color: var(--text); }
 .note-day-muscles { color: var(--text); }
 .note-link {

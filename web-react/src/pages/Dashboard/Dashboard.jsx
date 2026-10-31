@@ -147,7 +147,8 @@ export function Dashboard() {
                   const detail = muscleList(day) || t("dashboard.restDay");
                   return (
                     <div key={day.day_number} className={`note-day${isToday ? " today" : ""}`}>
-                      <span className="note-day-label">{label}:</span>{" "}
+                      <span className="note-day-label">{label}:</span>
+                      {isToday && <span className="sr-only"> ({t("dashboard.today")})</span>}{" "}
                       <span className="note-day-muscles">{detail}</span>
                     </div>
                   );
