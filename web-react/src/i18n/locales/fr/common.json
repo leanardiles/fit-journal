@@ -70,8 +70,8 @@
   },
   "profile": {
     "weightWithUnit": "Poids en {{unit}}",
-    "heightInches": "Taille, pouces",
-    "heightFeet": "Taille, pieds",
+    "heightInches": "Taille en pouces",
+    "heightFeet": "Taille en pieds",
     "heightCm": "Taille en {{unit}}",
     "title": "Mon profil",
     "email": "E-mail",
@@ -174,7 +174,7 @@
     "title": "Mon agenda",
     "allDays": "Tous les jours",
     "allShort": "Tous",
-    "selectDayPrompt": "Sélectionnez le jour à afficher :",
+    "selectDayPrompt": "Sélectionne le jour à afficher :",
     "selectFor": "Sélectionner {{name}} pour la prochaine séance",
     "currentDay": "actuel",
     "showingAll": "Afficher tous les jours",
@@ -236,7 +236,7 @@
     "errMinOneDay": "Une routine, ça prend au moins une journée."
   },
   "workout": {
-    "wtWithUnit": "poids ({{unit}})",
+    "wtWithUnit": "Poids ({{unit}})",
     "weightFor": "Poids en {{unit}} pour {{name}}",
     "repsFor": "Répétitions pour {{name}}",
     "setsFor": "Séries pour {{name}}",
@@ -254,8 +254,8 @@
     "colExercise": "Exercice",
     "colWeight": "Poids",
     "colSets": "Ensembles",
-    "noSetsEntered": "Saisis le nombre d'ensembles pour au moins un exercice.",
-    "missingSets": "Saisis les ensembles pour : {{names}}",
+    "noSetsEntered": "Saisis le nombre de séries pour au moins un exercice.",
+    "missingSets": "Saisis les séries pour : {{names}}",
     "colReps": "Reps",
     "promptNoRoutine": "Tu dois d'abord définir un programme d'entraînement avant de pouvoir créer une séance.",
     "promptNoSelection": "Aucun exercice n'a été sélectionné pour aujourd'hui.",
@@ -273,7 +273,7 @@
     "successMsg": "Entraînement terminé ! Bravo.",
     "backToDashboard": "Retour au tableau de bord",
     "logManual": "Manuel d'utilisation",
-    "date": "Date :",
+    "date": "Date :",
     "manualListEmpty": "Aucun exercice n'a encore été ajouté — ajoute-en quelques-uns à partir de la liste.",
     "wtShort": "wt",
     "addBtn": "ajouter",
@@ -283,9 +283,10 @@
     "remove": "Supprime {{name}}",
     "noMuscleExercises": "Pas d'exercices sur {{muscle}}.",
     "manualNoExercises": "Ajoute au moins un exercice.",
-    "manualNoDate": "Choisis une date."
+    "manualNoDate": "Choisis une date.",
+    "manual": "Saisie manuelle"
   },
   "errors": {
-    "network": "Impossible de joindre le serveur. Vérifiez votre connexion et réessayez."
+    "network": "Impossible de joindre le serveur. Vérifie ta connexion et réessaie."
   }
 }

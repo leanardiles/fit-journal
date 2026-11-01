@@ -23,7 +23,8 @@
     "emailPlaceholder": "jij@voorbeeld.com",
     "passwordLabel": "Wachtwoord",
     "noAccount": "Geen account? Registreer",
-    "forgotPassword": "Wachtwoord vergeten?"
+    "forgotPassword": "Wachtwoord vergeten?",
+    "passwordPlaceholder": "••••••••••"
   },
   "register": {
     "title": "Maak je account aan",
@@ -282,7 +283,8 @@
     "remove": "{{name}} verwijderen",
     "noMuscleExercises": "Geen {{muscle}}-oefeningen.",
     "manualNoExercises": "Voeg minstens één oefening toe.",
-    "manualNoDate": "Kies een datum."
+    "manualNoDate": "Kies een datum.",
+    "manual": "Handmatig"
   },
   "errors": {
     "network": "Kan de server niet bereiken. Controleer je verbinding en probeer het opnieuw."
