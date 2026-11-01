@@ -2,6 +2,7 @@ version: 1
 source_locale: en
 target_locales:
   - fr
+  - nl
 
 buckets:
   json:
