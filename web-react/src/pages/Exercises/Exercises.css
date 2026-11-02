@@ -150,10 +150,11 @@
 .ex-confirm-no {
   background: transparent;
   border: 1px solid var(--border);
-  border-radius: var(--radius);
+  border-radius: 6px;
   font-family: var(--font-body);
-  font-size: var(--fs-sm);
+  font-size: var(--fs-xs);
   padding: 2px 8px;
+  min-height: 24px;
   cursor: pointer;
 }
 .ex-confirm-yes { color: var(--red); border-color: var(--red-border); }

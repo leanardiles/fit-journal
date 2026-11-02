@@ -5,7 +5,7 @@
   border: 1px solid var(--text);
   color: var(--text);
   font-family: var(--font-body);
-  font-size: var(--fs);
+  font-size: var(--fs-base);
   width: 34px;
   height: 34px;
   cursor: pointer;
@@ -96,8 +96,8 @@
   background: transparent;
   border: 1px solid var(--border);
   color: var(--muted);
-  width: 22px;
-  height: 22px;
+  width: 24px;
+  height: 24px;
   border-radius: 6px;
   cursor: pointer;
   font-family: var(--font-body);
@@ -117,7 +117,8 @@
 
 .rt-error { color: var(--red); font-size: var(--fs-base); margin: var(--space-sm) 0; }
 
-.rt-save-row { display: flex; gap: 12px; flex-wrap: wrap; }
+/* Centred, matching the action pair under the workout table. */
+.rt-save-row { display: flex; gap: 12px; flex-wrap: wrap; justify-content: center; }
 
 /* The button family moved to styles/buttons.css so other pages can use it.
    Only the page-specific placement stays here (see .rt-add-day). */
@@ -129,7 +130,7 @@
   border: 1px solid var(--text);
   color: var(--text);
   font-family: var(--font-body);
-  font-size: var(--fs-sm);
+  font-size: var(--fs-base);
   padding: 4px 12px;
   cursor: pointer;
   border-radius: 8px;

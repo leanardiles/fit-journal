@@ -10,33 +10,45 @@
      (base)     neutral action
      --primary  the affirmative action of the view (solid yellow)
      --secondary affirmative but not the main one (yellow outline)
-     --ghost    a light add-another utility (dashed red outline)
      --negative dismissive or destructive (red outline, muted ink)
    ============================================================ */
 
+/* line-height is declared, not inherited: .app-content sets var(--lh), 34px,
+   which silently decided every button's height and made the padding below
+   look like it was doing work it was not. min-height then states the touch
+   target outright (WCAG 2.5.5), which the 34px line box was providing by
+   accident. inline-flex centres the label inside that box, and
+   text-decoration covers the variants used on router Links.
+   The label is --fs-md, 16px, with the roomier padding the old Workout
+   buttons had. Not --fs, the 17px the old ones used: that one is a fixed
+   pixel value, so it ignores the reader's browser font size, and the rem
+   scale is 1px away. Chips stay at 14px, which keeps the hierarchy between
+   an action and a filter. */
 .btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
   background: transparent;
   border: 1px solid var(--border);
   color: var(--text);
   font-family: var(--font-body);
-  font-size: var(--fs-base);
-  padding: 6px 14px;
+  font-size: var(--fs-md);
+  line-height: 1.2;
+  min-height: 44px;
+  padding: 8px 20px;
   cursor: pointer;
   border-radius: 6px;
+  text-decoration: none;
   transition: all 0.12s;
 }
 .btn:hover { border-color: var(--red-border); }
+.btn:disabled { opacity: 0.5; cursor: default; }
 
 .btn--primary { background: var(--yellow); color: #1a1a1a; border: none; }
 .btn--primary:hover { border: none; filter: brightness(0.96); }
 
 .btn--secondary { border-color: var(--yellow); color: var(--text); }
 .btn--secondary:hover { border-color: var(--yellow); }
-
-/* A dashed red border reads as an add affordance and stays visibly lighter
-   than the solid borders around it. */
-.btn--ghost { border-style: dashed; border-color: var(--red-border); color: var(--red); }
-.btn--ghost:hover { border-color: var(--red); }
 
 /* Dismissive actions. Matches the header logout button. */
 .btn--negative { border-color: var(--red-border); color: var(--muted); }

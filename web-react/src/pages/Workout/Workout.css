@@ -71,31 +71,9 @@
 
 .wo-actions { display: flex; gap: 12px; margin-top: var(--space-md); }
 
-.wo-btn {
-  background: var(--yellow);
-  color: #1a1a1a;
-  border: none;
-  padding: 8px 20px;
-  border-radius: var(--radius);
-  font-size: var(--fs);
-  font-family: var(--font-body);
-  cursor: pointer;
-  display: inline-flex;
-  align-items: center;
-  text-decoration: none;
-}
-.wo-btn.secondary {
-  background: transparent;
-  color: var(--text);
-  border: 1.5px solid var(--yellow);
-}
-.wo-btn.negative {
-  background: transparent;
-  color: var(--muted);
-  border: 1.5px solid var(--red-border);
-}
-.wo-btn.negative:hover { color: var(--text); border-color: var(--red); }
-.wo-btn:disabled { opacity: 0.5; cursor: default; }
+/* The button family lives in styles/buttons.css. This page used to carry its
+   own copy, which is how the same two actions ended up 17px here and 14px on
+   Routine. */
 
 /* Persistent reddish prompt (holds links) + auto-generate gap note */
 .wo-prompt {
@@ -284,7 +262,6 @@
    below it, so the affirmative yellow never stacks directly on itself. */
 .wo-workout > .wo-actions { justify-content: center; }
 .wo-add-row { margin: var(--space-sm) 0 var(--space-md); }
-.wo-add-btn { font-size: var(--fs-base); padding: 4px 12px; }
 
 .wo-pick-search {
   width: 100%;
@@ -405,9 +382,9 @@
   border: 1px solid var(--text);
   color: var(--text);
   font-family: var(--font-body);
-  font-size: var(--fs-sm);
+  font-size: var(--fs-base);
   padding: 0 10px;
-  height: calc(var(--lh) - 12px);
+  height: calc(var(--lh) - 8px);
   border-radius: 8px;
   cursor: pointer;
 }
@@ -423,20 +400,26 @@
   gap: 10px;
   min-height: calc(var(--lh) - 2px);
 }
+/* The micro form of btn--secondary: adding is affirmative, so it carries the
+   yellow border rather than the red one that means remove or dismiss. Too
+   small for the shared .btn, which states a 44px target. */
 .wo-ml-add {
   background: transparent;
-  border: 1px solid var(--red-border);
-  color: var(--red);
+  border: 1px solid var(--yellow);
+  color: var(--text);
   font-family: var(--font-body);
   font-size: var(--fs-xs);
   padding: 0 8px;
-  height: 20px;
+  height: 24px;
   border-radius: 6px;
   cursor: pointer;
+  transition: background-color 0.12s;
 }
+.wo-ml-add:hover { background: rgba(244, 217, 62, 0.18); }
 .wo-ml-add:disabled {
   opacity: 0.4;
   cursor: default;
+  background: transparent;
   border-color: var(--border);
   color: var(--muted);
 }

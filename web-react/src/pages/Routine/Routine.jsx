@@ -495,7 +495,7 @@ export function Routine() {
             })}
 
             {isEditing && daysPerWeek < 7 && (
-              <button type="button" className="btn btn--ghost rt-add-day" onClick={addDay}>
+              <button type="button" className="btn btn--secondary rt-add-day" onClick={addDay}>
                 + {t("routine.addDay")}
               </button>
             )}

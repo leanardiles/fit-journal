@@ -259,16 +259,16 @@
   color: var(--text);
   font-family: var(--font-body);
   font-size: var(--fs-xs);
-  min-width: 22px;
-  width: 22px;
-  height: 22px;
+  min-width: 24px;
+  width: 24px;
+  height: 24px;
   padding: 0;
   cursor: pointer;
-  border-radius: 5px;
+  border-radius: 6px;
   transition: all 0.12s;
 }
 
-/* The box is 22px but the thumb gets the whole cell. An invisible overlay
+/* The box is 24px but the thumb gets the whole cell. An invisible overlay
    grows the hit area without growing the control. It is sized from the row
    dial rather than a fixed inset, so tightening the rows can never make two
    neighbouring targets overlap and steal each other's taps. */

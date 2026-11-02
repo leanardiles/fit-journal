@@ -574,7 +574,7 @@ const isDone = (row) => {
           <div className="wo-actions">
             <button
               type="button"
-              className="wo-btn"
+              className="btn btn--primary"
               onClick={() => generateWorkout(false)}
               disabled={generating}
             >
@@ -582,7 +582,7 @@ const isDone = (row) => {
             </button>
             <button
               type="button"
-              className="wo-btn secondary"
+              className="btn btn--secondary"
               onClick={openManual}
               disabled={generating}
             >
@@ -684,7 +684,7 @@ const isDone = (row) => {
 
           {/* Plans survive contact with the gym only so often. */}
           <div className="wo-add-row">
-            <button type="button" className="btn btn--secondary wo-add-btn" onClick={() => setPickerOpen(true)}>
+            <button type="button" className="btn btn--secondary" onClick={() => setPickerOpen(true)}>
               {`+ ${t("workout.addExerciseBtn")}`}
             </button>
           </div>
@@ -692,10 +692,10 @@ const isDone = (row) => {
           {renderPicker()}
 
           <div className="wo-actions">
-            <button type="button" className="wo-btn" onClick={completeWorkout} disabled={saving}>
+            <button type="button" className="btn btn--primary" onClick={completeWorkout} disabled={saving}>
               {saving ? t("workout.saving") : `✓ ${t("workout.markComplete")}`}
             </button>
-            <button type="button" className="wo-btn negative" onClick={goGenerate} disabled={saving}>
+            <button type="button" className="btn btn--negative" onClick={goGenerate} disabled={saving}>
               {`✕ ${t("workout.cancel")}`}
             </button>
           </div>
@@ -766,10 +766,10 @@ const isDone = (row) => {
               )}
 
               <div className="wo-actions">
-                <button type="button" className="wo-btn" onClick={saveManual} disabled={mlSaving}>
+                <button type="button" className="btn btn--primary" onClick={saveManual} disabled={mlSaving}>
                   {mlSaving ? t("workout.saving") : `✓ ${t("workout.logWod")}`}
                 </button>
-                <button type="button" className="wo-btn negative" onClick={goGenerate} disabled={mlSaving}>
+                <button type="button" className="btn btn--negative" onClick={goGenerate} disabled={mlSaving}>
                   <span className="mirror-rtl" aria-hidden="true">←</span> {t("workout.back")}
                 </button>
               </div>
@@ -827,7 +827,7 @@ const isDone = (row) => {
         <div className="wo-success">
           <p className="wo-success-msg">🎉 {t("workout.successMsg")}</p>
           <div className="wo-actions">
-            <Link to="/dashboard" className="wo-btn">
+            <Link to="/dashboard" className="btn btn--primary">
               <span className="mirror-rtl" aria-hidden="true">←</span> {t("workout.backToDashboard")}
             </Link>
           </div>
