@@ -7,8 +7,7 @@
   margin: 0 0 var(--space-md);
 }
 
-/* flex-wrap is the safety net: six day chips fit one row at 360px, a seventh
-   wraps rather than overflowing. */
+/* The prompt and the chips share one wrapping row at every width. */
 .cal-day-filter {
   display: flex;
   align-items: center;
@@ -236,11 +235,13 @@
 }
 .cal-header .cal-title { margin: 0; }
 
-/* Prompt labelling the day chips below it. */
+/* Prompt labelling the day chips, inline beside them at every width. It is
+   the first item in the chips' own wrap context, so chips that do not fit
+   continue on the next line rather than scrolling sideways. */
 .cal-filter-label {
   font-size: var(--fs-base);
   color: var(--text);
-  margin: 0 0 var(--space-xs);
+  margin: 0;
 }
 
 /* Sits directly above the table, so the gap below is tighter than above. */

@@ -429,13 +429,14 @@ export function Calendar() {
         <h1 className="cal-title">{t("calendar.title")}</h1>
       </div>
 
-      <p className="cal-filter-label" id="cal-day-filter-label">
-        {t("calendar.selectDayPrompt")}
-      </p>
-
       {/* Labelling the group ties the prompt to the chips, so the set is
-          announced as one named control rather than loose buttons. */}
+          announced as one named control rather than loose buttons. The prompt
+          sits inside the group, the way a legend sits inside a fieldset, so it
+          shares the chips' wrap context. */}
       <div className="cal-day-filter" role="group" aria-labelledby="cal-day-filter-label">
+        <span className="cal-filter-label" id="cal-day-filter-label">
+          {t("calendar.selectDayPrompt")}
+        </span>
         <button
           className={`cal-filter-btn${isAllView ? " active" : ""}`}
           onClick={() => {
