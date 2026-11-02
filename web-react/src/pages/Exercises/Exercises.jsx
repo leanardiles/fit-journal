@@ -229,7 +229,7 @@ export function Exercises() {
               )}
 
               <div className="ex-add-row">
-                <Button labelKey="exercises.addButton" variant="yellow" onClick={openAdd} />
+                <Button labelKey="exercises.addButton" variant="secondary" onClick={openAdd} />
               </div>
             </>
           )}
@@ -253,8 +253,8 @@ export function Exercises() {
           <Field inline optional labelKey="exercises.fieldNotes" placeholderKey="exercises.notesPlaceholder" value={newNotes} onChange={setNewNotes} />
           {addError && <p style={{ color: "var(--error)", margin: 0, fontFamily: "var(--font-body)" }}>{addError}</p>}
           <div style={{ display: "flex", gap: 12 }}>
-            <Button labelKey="exercises.save" variant="yellow" onClick={handleAdd} />
-            <Button labelKey="exercises.cancel" variant="secondary" onClick={() => setShowAddModal(false)} />
+            <Button labelKey="exercises.save" variant="primary" onClick={handleAdd} />
+            <Button labelKey="exercises.cancel" variant="negative" onClick={() => setShowAddModal(false)} />
           </div>
         </div>
       </Modal>

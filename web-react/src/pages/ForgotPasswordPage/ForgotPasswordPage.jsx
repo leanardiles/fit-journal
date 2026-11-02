@@ -53,7 +53,7 @@ export function ForgotPasswordPage() {
 
           <div className="auth-line" />
           <div className="auth-line auth-line--action">
-            <Button labelKey="forgot.button" variant="yellow" onClick={handleSubmit} />
+            <Button labelKey="forgot.button" variant="primary" onClick={handleSubmit} />
           </div>
           <div className="auth-line" />
           <div className="auth-line auth-line--link">

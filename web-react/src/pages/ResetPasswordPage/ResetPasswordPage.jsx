@@ -72,7 +72,7 @@ export function ResetPasswordPage() {
 
           <div className="auth-line" />
           <div className="auth-line auth-line--action">
-            <Button labelKey="reset.button" variant="yellow" onClick={handleSubmit} />
+            <Button labelKey="reset.button" variant="primary" onClick={handleSubmit} />
           </div>
           <div className="auth-line" />
           <div className="auth-line auth-line--link">

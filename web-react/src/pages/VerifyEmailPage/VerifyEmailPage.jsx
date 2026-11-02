@@ -78,7 +78,7 @@ export function VerifyEmailPage() {
 
           <div className="auth-line" />
           <div className="auth-line auth-line--action">
-            <Button labelKey="verify.button" variant="yellow" onClick={handleVerify} />
+            <Button labelKey="verify.button" variant="primary" onClick={handleVerify} />
           </div>
           <div className="auth-line auth-line--right">
             <button type="button" className="auth-forgot" onClick={handleResend}>{t("verify.resend")}</button>

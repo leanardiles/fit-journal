@@ -291,7 +291,7 @@ export function Profile() {
       </div>
 
       <div className="pf-actions">
-        <Button labelKey="profile.save" variant="yellow" onClick={handleSave} />
+        <Button labelKey="profile.save" variant="primary" onClick={handleSave} />
       </div>
 
       {/* ---------- Danger Zone ---------- */}
