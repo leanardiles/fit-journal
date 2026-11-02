@@ -7,6 +7,8 @@ import { useToast } from "../../context/ToastContext";
 import { formatList } from "../../i18n/format";
 import { kgToDisplay, displayToKg, unitSymbol } from "../../constants/units";
 import { MUSCLE_GROUPS } from "../../constants/muscles";
+import { Modal } from "../../components/Modal/Modal";
+import { Select } from "../../components/Select/Select";
 import "./Workout.css";
 
 // Today's date as YYYY-MM-DD in the browser's local time (not UTC).
@@ -44,6 +46,13 @@ export function Workout() {
   const [gapNote, setGapNote] = useState(null); // string[] | null
   const [workout, setWorkout] = useState(null); // built workout data
   const [rows, setRows] = useState({}); // { [exId]: { weight, sets, reps, weightTouched } }
+  // Edits to the generated list, kept locally: nothing is written back to the
+  // routine, so regenerating starts clean.
+  const [removedIds, setRemovedIds] = useState([]);
+  const [extraIds, setExtraIds] = useState([]);
+  const [pickerOpen, setPickerOpen] = useState(false);
+  const [pickMuscle, setPickMuscle] = useState("all");
+  const [pickQuery, setPickQuery] = useState("");
 
 // An exercise counts as done once it has a positive set count. Derived, not
 // stored: clearing the field or typing 0 undoes it with no second piece of
@@ -164,6 +173,8 @@ const isDone = (row) => {
       });
       setWorkout(wd);
       setRows(initRows);
+      setRemovedIds([]);
+      setExtraIds([]);
 
       // Empty-group note only for auto-generation; manual selections are deliberate.
       if (afterAuto) {
@@ -199,9 +210,46 @@ const isDone = (row) => {
 
   const setRow = (exId, patch) => setRows((prev) => ({ ...prev, [exId]: { ...prev[exId], ...patch } }));
 
+  // What the user is actually looking at: the generated list minus what they
+  // removed, plus anything they added. Rendering and the payload both read
+  // this, so the two cannot drift apart.
+  const activeExercises = () => {
+    if (!workout) return [];
+    const gone = new Set(removedIds);
+    const extras = extraIds
+      .map((id) => exercises.find((ex) => ex.exercise_id === id))
+      .filter(Boolean);
+    return [...workout.exercises.filter((ex) => !gone.has(ex.exercise_id)), ...extras];
+  };
+
+  const removeFromWorkout = (exId) => {
+    setExtraIds((prev) => prev.filter((id) => id !== exId));
+    setRemovedIds((prev) => (prev.includes(exId) ? prev : [...prev, exId]));
+    setRow(exId, { sets: "", reps: "" });
+  };
+
+  // Adding back something removed restores it in place rather than appending
+  // a second copy of the same exercise.
+  const addToWorkout = (ex) => {
+    const id = ex.exercise_id;
+    setRemovedIds((prev) => prev.filter((x) => x !== id));
+    if (!(workout?.exercises || []).some((e) => e.exercise_id === id)) {
+      setExtraIds((prev) => (prev.includes(id) ? prev : [...prev, id]));
+    }
+    setRows((prev) => ({
+      ...prev,
+      [id]: prev[id] ?? {
+        weight: kgToDisplay(ex.exercise_user_current_weight, isImperial),
+        sets: "",
+        reps: "",
+        weightTouched: false,
+      },
+    }));
+  };
+
   const completeWorkout = async () => {
     if (!workout) return;
-    const done = workout.exercises.filter((ex) => isDone(rows[ex.exercise_id]));
+    const done = activeExercises().filter((ex) => isDone(rows[ex.exercise_id]));
     if (done.length === 0) { showToast(t("workout.noSetsEntered"), "error"); return; }
 
     // Only the done rows; weight is sent back as canonical kg (null when blank).
@@ -292,7 +340,7 @@ const isDone = (row) => {
   // Ordered rows: manual grouped days as A1/A2/B1..., otherwise grouped by muscle.
   const renderRows = () => {
     if (!workout) return [];
-    const exs = workout.exercises;
+    const exs = activeExercises();
     const dayExs = workout.day_exercises || [];
     const isManualGrouped =
       workout.day_type === "manual" &&
@@ -314,6 +362,12 @@ const isDone = (row) => {
         giCount[gi] += 1;
         out.push({ ex, label: `${giLetter[gi]}${giCount[gi]}` });
       });
+      // Hand-added exercises are not part of the day, so they have no group
+      // letter. They follow the grouped rows, labelled by muscle.
+      const placed = new Set(out.map((o) => o.ex.exercise_id));
+      exs
+        .filter((ex) => !placed.has(ex.exercise_id))
+        .forEach((ex) => out.push({ ex, label: t(`muscles.${ex.exercise_muscle_group}`) }));
       return out;
     }
 
@@ -326,6 +380,87 @@ const isDone = (row) => {
       byMuscle[mg].forEach((ex) => out.push({ ex, label: t(`muscles.${mg}`) }));
     });
     return out;
+  };
+
+  const fold = (s) =>
+    (s || "")
+      .toLocaleLowerCase(i18n.language)
+      .normalize("NFD")
+      .replace(/\p{Diacritic}/gu, "");
+
+  const renderPicker = () => {
+    const onScreen = new Set(activeExercises().map((ex) => ex.exercise_id));
+    const q = fold(pickQuery.trim());
+    const matches = exercises.filter(
+      (ex) =>
+        (pickMuscle === "all" || ex.exercise_muscle_group === pickMuscle) &&
+        (q === "" || fold(ex.exercise_name).includes(q))
+    );
+
+    // Three ways to come up empty, and they are not the same problem.
+    let emptyMsg;
+    if (q) emptyMsg = t("workout.noSearchResults", { query: pickQuery.trim() });
+    else if (pickMuscle === "all") emptyMsg = t("workout.libraryEmpty");
+    else emptyMsg = t("workout.noMuscleExercises", { muscle: t(`muscles.${pickMuscle}`) });
+
+    return (
+      <Modal open={pickerOpen} onClose={() => setPickerOpen(false)} titleKey="workout.addExerciseTitle">
+        <input
+          type="search"
+          className="wo-pick-search"
+          value={pickQuery}
+          autoFocus
+          placeholder={t("workout.searchPlaceholder")}
+          aria-label={t("workout.searchLabel")}
+          onChange={(e) => setPickQuery(e.target.value)}
+        />
+        <Select
+          inline
+          labelKey="exercises.fieldMuscle"
+          value={pickMuscle}
+          onChange={setPickMuscle}
+          options={[
+            { value: "all", label: t("workout.allMuscles") },
+            ...MUSCLE_GROUPS.map((m) => ({ value: m, label: t(`muscles.${m}`) })),
+          ]}
+        />
+
+        <div className="wo-pick-list">
+          {matches.length === 0 ? (
+            <p className="wo-ml-none">
+              {emptyMsg}{" "}
+              <Link to="/exercises" className="wo-prompt-link">{t("workout.linkAddExercises")}</Link>
+            </p>
+          ) : (
+            matches.map((ex) => {
+              const added = onScreen.has(ex.exercise_id);
+              return (
+                <div className="wo-ml-pick-row" key={ex.exercise_id}>
+                  <button
+                    type="button"
+                    className="wo-ml-add"
+                    disabled={added}
+                    onClick={() => addToWorkout(ex)}
+                  >
+                    {added ? t("workout.added") : `+ ${t("workout.addBtn")}`}
+                  </button>
+                  <span className="wo-ml-name">{ex.exercise_name}</span>
+                  {pickMuscle === "all" && (
+                    <span className="wo-pick-muscle">{t(`muscles.${ex.exercise_muscle_group}`)}</span>
+                  )}
+                </div>
+              );
+            })
+          )}
+        </div>
+
+        <div className="wo-actions wo-pick-actions">
+          <button type="button" className="btn btn--secondary" onClick={() => setPickerOpen(false)}>
+            {t("workout.doneBtn")}
+          </button>
+        </div>
+      </Modal>
+    );
   };
 
   const renderPrompt = () => {
@@ -479,6 +614,9 @@ const isDone = (row) => {
                   <span className="wo-col-main">{t("workout.colWeight")}</span>
                   <span className="wo-col-unit">{weightUnit}</span>
                 </th>
+                <th className="wo-remove-col">
+                  <span className="sr-only">{t("workout.colRemove")}</span>
+                </th>
               </tr>
             </thead>
             <tbody>
@@ -528,11 +666,30 @@ const isDone = (row) => {
                         onChange={(e) => setRow(ex.exercise_id, { weight: e.target.value, weightTouched: true })}
                       />
                     </td>
+                    <td className="wo-remove-col">
+                      <button
+                        type="button"
+                        className="btn-remove"
+                        aria-label={t("workout.remove", { name: ex.exercise_name })}
+                        onClick={() => removeFromWorkout(ex.exercise_id)}
+                      >
+                        ✕
+                      </button>
+                    </td>
                   </tr>
                 );
               })}
             </tbody>
           </table>
+
+          {/* Plans survive contact with the gym only so often. */}
+          <div className="wo-add-row">
+            <button type="button" className="btn btn--secondary wo-add-btn" onClick={() => setPickerOpen(true)}>
+              {`+ ${t("workout.addExerciseBtn")}`}
+            </button>
+          </div>
+
+          {renderPicker()}
 
           <div className="wo-actions">
             <button type="button" className="wo-btn" onClick={completeWorkout} disabled={saving}>

@@ -178,6 +178,16 @@
    beside the exercise name on a phone, so the table overflowed and had to be
    scrolled sideways. 56px still clears the 44px touch target. */
 .wo-table td.center { text-align: center; padding: 0 4px; width: 56px; }
+
+/* The remove column is as narrow as a 20px glyph plus breathing room. It is
+   paid for by the exercise name, the only elastic column, so at 360px the
+   name has roughly 80px before it truncates. */
+.wo-table th.wo-remove-col,
+.wo-table td.wo-remove-col {
+  width: 26px;
+  padding: 0;
+  text-align: center;
+}
 /* Muscle and the three number columns size to their content; the exercise
    name absorbs whatever is left and clips. width 1% is the table-layout idiom
    for shrink to content. */
@@ -206,6 +216,8 @@
    entirely and the column goes back to sizing itself to its content. */
 @media (min-width: 600px) {
   .wo-muscle-cell { padding-inline-end: 24px; }
+  .wo-table th.wo-remove-col,
+  .wo-table td.wo-remove-col { width: 44px; }
   .wo-exname-cell {
     width: 1%;
     max-width: none;
@@ -267,6 +279,41 @@
   background-repeat: no-repeat;
   background-position: 0 calc(100% - var(--strike-y));
 }
+
+/* Add exercise sits left under the table and the pair of actions sits centred
+   below it, so the affirmative yellow never stacks directly on itself. */
+.wo-workout > .wo-actions { justify-content: center; }
+.wo-add-row { margin: var(--space-sm) 0 var(--space-md); }
+.wo-add-btn { font-size: var(--fs-base); padding: 4px 12px; }
+
+.wo-pick-search {
+  width: 100%;
+  margin-bottom: var(--space-sm);
+  background-color: var(--control-bg);
+  border: 1px solid var(--control-border);
+  border-radius: var(--radius);
+  color: var(--text);
+  font-family: var(--font-body);
+  font-size: var(--fs-base);
+  padding: 6px 10px;
+}
+.wo-pick-search::placeholder { color: var(--muted); }
+.wo-pick-search:focus-visible { border-color: var(--red-border); outline: none; }
+
+/* Capped so the Done button stays reachable without scrolling the modal. */
+.wo-pick-list {
+  max-height: 44vh;
+  overflow-y: auto;
+  margin-top: var(--space-sm);
+}
+.wo-pick-muscle {
+  color: var(--muted);
+  font-size: var(--fs-xs);
+  margin-inline-start: auto;
+  padding-inline-start: 8px;
+  white-space: nowrap;
+}
+.wo-pick-actions { margin-top: var(--space-md); justify-content: flex-end; }
 
 /* Success screen */
 .wo-success-msg {
