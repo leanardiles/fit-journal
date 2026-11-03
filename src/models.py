@@ -239,7 +239,10 @@ class WorkoutLog(Base):
     routine_day_number = Column(Integer, nullable=True)
     exercise_id = Column(Integer, ForeignKey("exercises.exercise_id", ondelete="CASCADE"), nullable=False)
     sets_completed = Column(Integer, default=0)
-    reps_completed = Column(Integer, default=0)
+    # No default: a Python-side default is applied whenever the value is None
+    # at flush time, so default=0 turned every blank field into a real zero
+    # and the row could no longer say the number was simply not recorded.
+    reps_completed = Column(Integer, nullable=True)
     weight_used = Column(DECIMAL(5, 2), default=None)
     workout_date = Column(Date, nullable=False)
     session_id = Column(Integer, ForeignKey("workout_sessions.session_id", ondelete="CASCADE"), nullable=True)  # ADD THIS LINE

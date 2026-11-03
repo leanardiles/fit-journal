@@ -161,7 +161,8 @@ class WorkoutStateResponse(BaseModel):
 class WorkoutLogCreate(BaseModel):
     exercise_id: int
     sets_completed: int
-    reps_completed: int
+    # None means the user left it blank, which is not the same as zero reps.
+    reps_completed: Optional[int] = None
     weight_used: Optional[float] = None
 
 class WorkoutComplete(BaseModel):
@@ -177,7 +178,7 @@ class WorkoutLogResponse(BaseModel):
     routine_day_number: int
     exercise_id: int
     sets_completed: int
-    reps_completed: int
+    reps_completed: Optional[int]
     weight_used: Optional[float]
     workout_date: date
     

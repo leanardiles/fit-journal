@@ -481,3 +481,58 @@ def test_sessions_and_logs_by_sessions(auth):
         json={"session_ids": [session_id]},
     ).json()
     assert any(l["exercise_id"] == ex for l in logs)
+
+
+# ---- blank reps records as NULL, not as zero -------------------------------
+# A Python-side column default is applied whenever the value is None at flush
+# time, so default=0 on reps_completed quietly turned "not measured" into
+# "zero reps" and nothing downstream could tell the two apart.
+
+def _reps_rows(user_id):
+    session = SessionLocal()
+    try:
+        return [
+            r.reps_completed
+            for r in session.query(models.WorkoutLog)
+            .filter(models.WorkoutLog.user_id == user_id)
+            .order_by(models.WorkoutLog.log_id)
+            .all()
+        ]
+    finally:
+        session.close()
+
+
+def test_complete_workout_stores_null_for_omitted_reps(auth):
+    """Reps left out of the payload is stored as NULL, not coerced to 0."""
+    ex = _setup_one_exercise_day(auth)
+    resp = _complete(auth, 1, [{"exercise_id": ex, "sets_completed": 3}])
+    assert resp.status_code == 200, resp.text
+    assert _reps_rows(auth["user_id"]) == [None]
+
+
+def test_complete_workout_stores_explicit_null_reps(auth):
+    """An explicit null is kept as NULL rather than falling back to the default."""
+    ex = _setup_one_exercise_day(auth)
+    resp = _complete(auth, 1, [
+        {"exercise_id": ex, "sets_completed": 3, "reps_completed": None, "weight_used": None},
+    ])
+    assert resp.status_code == 200, resp.text
+    assert _reps_rows(auth["user_id"]) == [None]
+
+
+def test_complete_workout_keeps_a_real_reps_value(auth):
+    """A number the user did enter is stored unchanged."""
+    ex = _setup_one_exercise_day(auth)
+    resp = _complete(auth, 1, [{"exercise_id": ex, "sets_completed": 3, "reps_completed": 8}])
+    assert resp.status_code == 200, resp.text
+    assert _reps_rows(auth["user_id"]) == [8]
+
+
+def test_manual_log_stores_null_for_omitted_reps(auth):
+    """The manual path used to coerce with `or 0`; blank must stay NULL there too."""
+    ex = _make_exercise(auth, "Bench Press", "Chest")
+    resp = _log_manual(auth, "2020-06-15", [
+        {"exercise_id": ex, "sets_completed": 2, "weight_used": None},
+    ])
+    assert resp.status_code == 200, resp.text
+    assert _reps_rows(auth["user_id"]) == [None]

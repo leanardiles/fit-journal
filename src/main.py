@@ -1090,7 +1090,7 @@ def cleanup_after_workout(user_id: int, completed_exercise_ids: list, current_da
 class ManualLogExercise(BaseModel):
     exercise_id: int
     sets_completed: int
-    reps_completed: Optional[int] = 0
+    reps_completed: Optional[int] = None
     weight_used: Optional[float] = None
 
 
@@ -1152,7 +1152,7 @@ def log_manual_workout(user_id: int, data: ManualLogRequest, db: Session = Depen
             routine_day_number=None,
             exercise_id=ex.exercise_id,
             sets_completed=ex.sets_completed,
-            reps_completed=ex.reps_completed or 0,
+            reps_completed=ex.reps_completed,
             weight_used=ex.weight_used,
             workout_date=data.workout_date,
             session_id=session.session_id,

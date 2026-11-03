@@ -54,6 +54,13 @@ export function Workout() {
   const [pickMuscle, setPickMuscle] = useState("all");
   const [pickQuery, setPickQuery] = useState("");
 
+// A blank optional field is absent, not zero: || 0 would record a number the
+// user never entered and the row could no longer say it was not measured.
+const numOrNull = (v) => {
+  const n = parseInt(v, 10);
+  return Number.isFinite(n) ? n : null;
+};
+
 // An exercise counts as done once it has a positive set count. Derived, not
 // stored: clearing the field or typing 0 undoes it with no second piece of
 // state to keep in sync. Sets is the right signal because nothing prefills
@@ -252,13 +259,13 @@ const isDone = (row) => {
     const done = activeExercises().filter((ex) => isDone(rows[ex.exercise_id]));
     if (done.length === 0) { showToast(t("workout.noSetsEntered"), "error"); return; }
 
-    // Only the done rows; weight is sent back as canonical kg (null when blank).
+    // Only the done rows; reps and weight are null when blank, weight in kg.
     const payloadExercises = done.map((ex) => {
       const r = rows[ex.exercise_id] || {};
       return {
         exercise_id: ex.exercise_id,
         sets_completed: parseInt(r.sets, 10) || 0,
-        reps_completed: parseInt(r.reps, 10) || 0,
+        reps_completed: numOrNull(r.reps),
         weight_used: r.weight === "" || r.weight == null ? null : displayToKg(r.weight, isImperial),
       };
     });
@@ -324,7 +331,7 @@ const isDone = (row) => {
         exercises: manualRows.map((r) => ({
           exercise_id: r.exercise_id,
           sets_completed: parseInt(r.sets, 10) || 0,
-          reps_completed: parseInt(r.reps, 10) || 0,
+          reps_completed: numOrNull(r.reps),
           weight_used: r.weight === "" || r.weight == null ? null : displayToKg(r.weight, isImperial),
         })),
       });
@@ -609,7 +616,7 @@ const isDone = (row) => {
                 <th>{t("workout.colMuscle")}</th>
                 <th>{t("workout.colExercise")}</th>
                 <th className="center">{t("workout.colSets")}</th>
-                <th className="center">{t("workout.colReps")}</th>
+                <th className="center wo-reps-col">{t("workout.colReps")}</th>
                 <th className="center">
                   <span className="wo-col-main">{t("workout.colWeight")}</span>
                   <span className="wo-col-unit">{weightUnit}</span>
@@ -640,7 +647,7 @@ const isDone = (row) => {
                         onChange={(e) => setRow(ex.exercise_id, { sets: e.target.value })}
                       />
                     </td>
-                    <td className="center">
+                    <td className="center wo-reps-col">
                       <input
                         type="number"
                         inputMode="numeric"
@@ -714,7 +721,7 @@ const isDone = (row) => {
                     <span className="wo-ml-muscle" />
                     <span className="wo-ml-name" />
                     <span className="wo-ml-h">{t("workout.colSets")}</span>
-                    <span className="wo-ml-h">{t("workout.colReps")}</span>
+                    <span className="wo-ml-h wo-reps-col">{t("workout.colReps")}</span>
                     <span className="wo-ml-h">{t("workout.wtWithUnit", { unit: weightUnit })}</span>
                     <span className="wo-ml-delcol" />
                   </div>
@@ -736,7 +743,7 @@ const isDone = (row) => {
                         type="number"
                         min="1"
                         max="50"
-                        className="wo-ml-input"
+                        className="wo-ml-input wo-reps-col"
                         value={r.reps}
                         placeholder="–"
                         aria-label={t("workout.repsFor", { name: r.name })}

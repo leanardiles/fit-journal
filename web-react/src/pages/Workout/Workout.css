@@ -159,6 +159,26 @@
   line-height: 1.15;
 }
 .wo-col-unit { color: var(--muted); }
+
+/* Reps is hidden below the 600px tier in both logging screens. It is the one
+   number with nowhere to go on a phone: the elastic exercise-name column
+   absorbs the 56px, which is the difference between a truncated name and a
+   readable one. Hidden rather than removed, so the field keeps whatever was
+   typed when the window widens, and display: none drops it from the
+   accessibility tree too, so the column is equally absent for everyone at
+   that width. Safe only because a blank reps now records as NULL instead of a
+   zero that would read as real data. One media query undoes all of it.
+   The restore values differ by context: a table cell is table-cell, while the
+   manual log's header span and input are flex children, which are blockified
+   anyway and need block for their 46px width to apply. */
+.wo-reps-col { display: none; }
+
+@media (min-width: 600px) {
+  .wo-table th.wo-reps-col,
+  .wo-table td.wo-reps-col { display: table-cell; }
+  .wo-ml-head .wo-reps-col,
+  .wo-ml-row .wo-reps-col { display: block; }
+}
 .wo-table td {
   height: var(--lh);
   padding-bottom: 4px;
