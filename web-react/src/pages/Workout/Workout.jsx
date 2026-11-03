@@ -515,8 +515,8 @@ const isDone = (row) => {
   const showHeadDate = mode === "manual" || (mode === "workout" && !!workout);
 
   return (
-    <div className="wo">
-      <div className="wo-head">
+    <div className={`wo${mode === "manual" ? " wo--fill" : ""}`}>
+      <div className={`wo-head${mode === "manual" ? " wo-head--center-date" : ""}`}>
         <h1 className="wo-title">
           {t("workout.title")}{" "}
           {/* Kept in the DOM when idle so the date never shifts between the
@@ -719,7 +719,7 @@ const isDone = (row) => {
                     <span className="wo-ml-delcol" />
                   </div>
                   {manualRows.map((r) => (
-                    <div className="wo-ml-row" key={r.exercise_id}>
+                    <div className={`wo-ml-row${isDone(r) ? " done" : ""}`} key={r.exercise_id}>
                       <span className="wo-ml-muscle">{t(`muscles.${r.muscle}`)}</span>
                       <span className="wo-ml-name">{r.name}</span>
                       <input
@@ -764,15 +764,6 @@ const isDone = (row) => {
                   ))}
                 </div>
               )}
-
-              <div className="wo-actions">
-                <button type="button" className="btn btn--primary" onClick={saveManual} disabled={mlSaving}>
-                  {mlSaving ? t("workout.saving") : `✓ ${t("workout.logWod")}`}
-                </button>
-                <button type="button" className="btn btn--negative" onClick={goGenerate} disabled={mlSaving}>
-                  <span className="mirror-rtl" aria-hidden="true">←</span> {t("workout.back")}
-                </button>
-              </div>
             </div>
 
             <div className="wo-ml-col-right">
@@ -789,6 +780,7 @@ const isDone = (row) => {
                     </button>
                   ))}
                 </div>
+                <div className="wo-ml-picklist">
                 {(() => {
                   const exs = exercises.filter((ex) => ex.exercise_muscle_group === mlActiveMuscle);
                   const addedIds = new Set(manualRows.map((r) => r.exercise_id));
@@ -817,8 +809,18 @@ const isDone = (row) => {
                     );
                   });
                 })()}
+                </div>
               </div>
             </div>
+          </div>
+
+          <div className="wo-actions">
+            <button type="button" className="btn btn--primary" onClick={saveManual} disabled={mlSaving}>
+              {mlSaving ? t("workout.saving") : `✓ ${t("workout.logWod")}`}
+            </button>
+            <button type="button" className="btn btn--negative" onClick={goGenerate} disabled={mlSaving}>
+              <span className="mirror-rtl" aria-hidden="true">←</span> {t("workout.back")}
+            </button>
           </div>
         </div>
       )}

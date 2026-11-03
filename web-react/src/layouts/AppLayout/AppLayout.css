@@ -90,6 +90,18 @@
   padding-inline: var(--page-gutter);
 }
 
+/* A page that fills the viewport instead of the document gets the trailing
+   two lines of ruled paper back, so its pinned actions sit near the bottom
+   edge and the panes above them are taller. Only the bottom: the start
+   padding is a multiple of --lh, which is what keeps the text sitting on the
+   ruled lines. One line back rather than both: the full 68px dropped the
+   actions further than it was worth. Without :has() support nothing happens
+   and the page keeps the roomier bottom, which is why this is padding and not
+   layout. */
+@media (min-width: 760px) {
+  .app-content:has(.wo--fill) { padding-block-end: var(--lh); }
+}
+
 .app-user {
   display: flex;
   align-items: center;
