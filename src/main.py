@@ -1,16 +1,12 @@
 # Standard library imports
 from datetime import date, datetime, timedelta
 from typing import List, Optional
-import os
 import pytz
 
 # Third-party imports
 from fastapi import FastAPI, Depends, HTTPException, status, APIRouter
 from fastapi.middleware.cors import CORSMiddleware
-from fastapi.responses import RedirectResponse
 from fastapi.security import HTTPBearer, HTTPAuthorizationCredentials
-from fastapi.templating import Jinja2Templates
-from fastapi.staticfiles import StaticFiles
 from fastapi import Request
 from passlib.context import CryptContext
 from sqlalchemy import func
@@ -37,26 +33,6 @@ api_v1 = APIRouter(prefix="/v1")
 
 
 # Environment-aware Path
-# Resolve static and template directories — works in both local dev (src/ subfolder) 
-# and Lambda (/var/task/ root) environments
-BASE_DIR = os.path.dirname(os.path.abspath(__file__))
-
-# Try sibling first (local: src/main.py + ../static), then same dir (Lambda: /var/task/main.py + /var/task/static)
-def find_dir(name):
-    sibling = os.path.join(BASE_DIR, "..", name)
-    if os.path.isdir(sibling):
-        return sibling
-    return os.path.join(BASE_DIR, name)
-
-STATIC_DIR = find_dir("static")
-TEMPLATES_DIR = find_dir("templates")
-
-# Mount static files
-app.mount("/static", StaticFiles(directory=STATIC_DIR), name="static")
-# Jinja2 templates
-templates = Jinja2Templates(directory=TEMPLATES_DIR)
-
-
 # ========== CORS CONFIGURATION ==========
 app.add_middleware(
     CORSMiddleware,
@@ -178,79 +154,13 @@ def verify_user_access(
 
 # ========== ROUTES ==========
 
-# ── HTML Routes ──
+# The Jinja frontend this used to serve was retired once the React app went
+# live at fit-journal.com. This host is the API only, so the root says where
+# the app is rather than redirecting into pages that no longer exist.
 @app.get("/")
 async def root():
-    return RedirectResponse(url="/web/login")
+    return {"api": "FitJournal", "app": "https://fit-journal.com", "docs": "/docs"}
 
-@app.get("/favicon.ico", include_in_schema=False)
-async def favicon():
-    # Browsers auto-request /favicon.ico at the root; point it at the real file.
-    return RedirectResponse(url="/static/images/favicon/favicon.ico")
-
-@app.get("/web/login")
-async def login_page(request: Request):
-    return templates.TemplateResponse("login.html", {"request": request})
-
-@app.get("/web/forgot-password")
-async def forgot_password_page(request: Request):
-    return templates.TemplateResponse("forgot-password.html", {"request": request})
-
-@app.get("/web/delete-account")
-async def delete_account_page(request: Request):
-    return templates.TemplateResponse("delete-account.html", {"request": request})
-
-@app.get("/web/register")
-async def register_page(request: Request):
-    return templates.TemplateResponse("register.html", {"request": request})
-
-@app.get("/web/dashboard")
-async def dashboard(request: Request):
-    return templates.TemplateResponse("dashboard.html", {
-        "request": request,
-        "active_page": "dashboard",
-        "page_title": "Dashboard"
-    })
-
-@app.get("/web/profile")
-async def profile(request: Request):
-    return templates.TemplateResponse("profile.html", {
-        "request": request,
-        "active_page": "profile",
-        "page_title": "Profile"
-    })
-
-@app.get("/web/routine")
-async def routine(request: Request):
-    return templates.TemplateResponse("routine.html", {
-        "request": request,
-        "active_page": "routine",
-        "page_title": "Routine"
-    })
-
-@app.get("/web/exercises")
-async def exercises_page(request: Request):
-    return templates.TemplateResponse("exercises.html", {
-        "request": request,
-        "active_page": "exercises",
-        "page_title": "Exercises"
-    })
-
-@app.get("/web/calendar")
-async def calendar_page(request: Request):
-    return templates.TemplateResponse("calendar.html", {
-        "request": request,
-        "active_page": "calendar",
-        "page_title": "Calendar"
-    })
-
-@app.get("/web/logwod")
-async def logwod_page(request: Request):
-    return templates.TemplateResponse("logwod.html", {
-        "request": request,
-        "active_page": "logwod",
-        "page_title": "Log WOD"
-    })
 
 # ========== USER AUTHENTICATION ROUTES ==========
 

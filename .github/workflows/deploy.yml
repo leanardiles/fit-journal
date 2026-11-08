@@ -100,8 +100,7 @@ jobs:
       - name: Assemble the deployment package
         run: |
           cp src/*.py package/
-          cp -r templates package/
-          cp -r static package/
+          cp -r locales package/
           find package/ -name "__pycache__" -type d -exec rm -rf {} + || true
 
       - name: Create the zip

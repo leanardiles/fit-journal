@@ -4,7 +4,7 @@ This document describes how FitJournal is structured and how it is deployed. For
 
 ## System overview
 
-FitJournal is a FastAPI backend that serves JSON to two clients, a React single-page web app and a native Android app, deployed serverless on AWS. A legacy server-rendered Jinja web app is still bundled in the backend but is being retired in favour of the React SPA.
+FitJournal is a FastAPI backend that serves JSON to two clients, a React single-page web app and a native Android app, deployed serverless on AWS. The backend served a Jinja web app until November 2026; it is now the API only and renders no pages.
 
 ```
   fit-journal.com ──► S3 + CloudFront ──► React SPA (static assets)
@@ -40,11 +40,8 @@ The React SPA is static and talks to the backend over HTTPS/JSON. Both clients a
 ### Web client: React SPA (current)
 The primary web client is a React single-page app built with Vite (react-router for routing, react-i18next for localization). It is a static bundle hosted in an S3 bucket (`fitjournal-frontend-prod`) and served through CloudFront at `fit-journal.com`. CloudFront is configured for SPA routing: 403/404 responses are rewritten to `/index.html` so client-side routes resolve. The SPA calls the API at `app.fit-journal.com`, with the base URL injected at build time via `VITE_API_URL`.
 
-### Web client: Jinja server-rendered (legacy, being retired)
-The original web app is rendered server-side with Jinja2 and vanilla JavaScript, served by the same FastAPI backend under `/web/*`. It still exists but is deprecated in favour of the React SPA and will be removed.
-
 ### Backend: FastAPI on AWS Lambda
-The backend is a FastAPI application exposing a JSON API under the `/v1` prefix (plus the legacy Jinja pages under `/web`). It runs on AWS Lambda using [Mangum](https://github.com/jordaneremieff/mangum), which adapts API Gateway events into the ASGI requests FastAPI expects. The same codebase runs under `uvicorn` locally and under Lambda in production. The Lambda is attached to the default VPC so it can reach RDS privately, and it sits in a private subnet with a route to a NAT Gateway so it can also make outbound calls to the internet (needed for the email provider).
+The backend is a FastAPI application exposing a JSON API under the `/v1` prefix. It renders no HTML: the Jinja frontend it used to serve under `/web/*` was removed in November 2026, along with `templates/` and `static/`, and `/` now returns a small JSON document pointing at the React app. It runs on AWS Lambda using [Mangum](https://github.com/jordaneremieff/mangum), which adapts API Gateway events into the ASGI requests FastAPI expects. The same codebase runs under `uvicorn` locally and under Lambda in production. The Lambda is attached to the default VPC so it can reach RDS privately, and it sits in a private subnet with a route to a NAT Gateway so it can also make outbound calls to the internet (needed for the email provider).
 
 ### API layer: API Gateway HTTP API
 An API Gateway HTTP API (chosen over REST API for lower cost and simpler config) sits in front of Lambda. A single catch-all route (`ANY /{proxy+}` plus `ANY /`) forwards every request to Lambda, letting FastAPI handle all routing internally. The `$default` stage serves the API, and a custom domain (`app.fit-journal.com`) is bound with an ACM certificate.
@@ -130,7 +127,8 @@ An IAM OIDC identity provider trusts GitHub's token issuer, and the role (`fitjo
 
 ## Key decisions and trade-offs
 
-- React SPA on S3 + CloudFront for the web client, replacing the server-rendered Jinja app. Static hosting is cheap and fast and cleanly separates the web UI from the API.
+- React SPA on S3 + CloudFront for the web client, replacing the server-rendered Jinja app, which was removed once parity was reached. Static hosting is cheap and fast and cleanly separates the web UI from the API.
+- `locales/` is packaged into the Lambda bundle and resolved relative to the module directory. The backend's own i18n (`src/i18n.py`, used for localized API error messages) reads catalogs from disk, and the bundle flattens `src/*.py` into the task root, so a path resolved only as a parent sibling silently finds nothing and `t()` falls back to returning the key.
 - HTTP API over REST API: cheaper and simpler; FitJournal needs none of REST API's advanced features. (HTTP APIs support only TLS 1.0/1.2 policies on custom domains, which is why the domain uses `TLS_1_2`.)
 - Mangum adapter instead of rewriting for Lambda: one codebase runs identically locally and in production.
 - DNS at Cloudflare, not Route 53: Cloudflare is free and already hosts the domain; the API CNAME is DNS-only (not proxied) so API Gateway certificate validation and SNI work correctly.

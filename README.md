@@ -26,10 +26,6 @@ Two things set it apart. The interface is a "paper notebook" design system (rule
 - Reusable component library documented in Storybook
 - Hosted on S3 + CloudFront, see [web-react/README.md](web-react/README.md)
 
-**Legacy web (Jinja, being retired)**
-- Jinja2 + vanilla JavaScript, custom `notebook.css` (no framework)
-- Still served by the backend at `app.fit-journal.com` until the React app is cut over and it is removed
-
 **Backend**
 - FastAPI (Python), SQLAlchemy 2.0 ORM, Pydantic
 - MySQL (PyMySQL driver), JWT auth, bcrypt password hashing
@@ -158,7 +154,7 @@ cd mobile
 
 Actively developed. The React web app is **live in production** at [fit-journal.com](https://fit-journal.com) (S3 + CloudFront), internationalized in English, Spanish, Argentine Spanish, Dutch and French, with a Storybook component library. The FastAPI backend runs on AWS Lambda with a CI/CD pipeline (GitHub Actions) that runs the backend test suite before each deploy.
 
-The legacy Jinja web frontend is being retired now that the React app is live; the backend still serves it at `app.fit-journal.com` until the cutover is complete. The Android app is being migrated to the new routine model (the web app now builds routines day-by-day, each day either a rotating per-muscle pool or a fixed manual list with optional supersets, plus off-routine manual logging), then Play Store launch prep. See [ROADMAP.md](ROADMAP.md).
+The legacy Jinja web frontend has been retired: `app.fit-journal.com` is the API only now, and serves no pages. The Android app is being migrated to the new routine model (the web app now builds routines day-by-day, each day either a rotating per-muscle pool or a fixed manual list with optional supersets, plus off-routine manual logging), then Play Store launch prep. See [ROADMAP.md](ROADMAP.md).
 
 ## License
 
