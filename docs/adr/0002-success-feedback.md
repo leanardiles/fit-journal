@@ -1,7 +1,8 @@
 # ADR 0002: Success feedback by evidence, not by uniformity
 
 **Status:** Accepted, November 2026
-**Context item:** `docs/Toast-consistency-plan.md`
+**Context item:** the toast consistency plan, since harvested into
+`design-system-web.md` section 4 and deleted
 
 ## Context
 
@@ -11,8 +12,8 @@ said nothing at all. The inconsistency was visible, but "be consistent" does not
 by itself say what to do, because the silent cases were not all the same kind of
 silence.
 
-An audit of all 21 mutating actions, recorded in the plan document above, found
-three distinct situations:
+An audit of all 21 mutating actions, now kept current in
+`design-system-web.md` section 4, found three distinct situations:
 
 1. The UI already shows the outcome, because the write was optimistic and a
    failure reverts it. `Exercises.jsx` weight editing is the reference: it writes

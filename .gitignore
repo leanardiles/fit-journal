@@ -91,8 +91,6 @@ package/
 .claude/
 .claudeignore
 
-# Local-only planning doc (not for GitHub)
+# Local-only planning doc (not for GitHub). A plan stays untracked while the
+# work runs, then gets harvested and deleted, see docs/README.md.
 docs/FitJournal_Adaptive_UI_Plan_FINAL.md
-
-docs/case-study-fr-plurals.md
-docs/explainer-list-formatting.md
