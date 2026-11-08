@@ -4,12 +4,14 @@ import { useNavigate, useSearchParams, Link } from "react-router-dom";
 import { Button } from "../../components/Button/Button";
 import { PasswordToggle } from "../../components/PasswordToggle/PasswordToggle";
 import { apiPost } from "../../api/client";
+import { useToast } from "../../context/ToastContext";
 import logo from "../../assets/logo-and-name-dark.webp";
 import "../../layouts/AuthLayout/AuthLayout.css";
 
 export function ResetPasswordPage() {
   const { t } = useTranslation();
   const navigate = useNavigate();
+  const { showToast } = useToast();
   const [searchParams] = useSearchParams();
   const token = searchParams.get("token") || "";
 
@@ -31,6 +33,7 @@ export function ResetPasswordPage() {
         setError(typeof data.detail === "string" ? data.detail : t("reset.invalidToken"));
         return;
       }
+      showToast(t("reset.changed"), "success", 4000);
       navigate("/login");
     } catch {
       setError(t("errors.network"));

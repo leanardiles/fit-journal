@@ -59,6 +59,7 @@
     "mismatch": "Passwords do not match.",
     "tooShort": "Password must be at least 8 characters.",
     "invalidToken": "This reset link is invalid or has expired.",
+    "changed": "Your password has been changed. You can log in now.",
     "backToLogin": "Back to log in"
   },
   "common": {

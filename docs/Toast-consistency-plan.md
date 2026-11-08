@@ -103,8 +103,14 @@ The only page out of line, and the one with a user-visible payoff.
 
 ### Phase 2: Reset password
 
-One `showToast` call and one new string in five locales. Closes the only case where
-navigation is used as proof but proves nothing.
+One `showToast` call and one new string. Closes the only case where navigation is
+used as proof but proves nothing: the login page says nothing about the password
+having changed. The toast survives the route change because `ToastProvider` sits
+above `<Routes>` in `App.jsx`, so it lands on the login screen where it is needed.
+
+New strings go into `en` only. `fr` and `nl` arrive through the Stringherd sync on
+its next run, which is also how the pipeline gets tested; Spanish is maintained by
+hand. The same applies to Phase 1's four plural keys.
 
 ### Phase 3: Write the rule down where it will be found
 
