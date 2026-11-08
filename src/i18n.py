@@ -20,8 +20,18 @@ from typing import Optional
 
 from config import DEFAULT_LOCALE, SUPPORTED_LOCALES, resolve_locale_chain
 
-# locales/ sits at the project root; i18n.py is in src/ (one level down).
-_LOCALES_DIR = Path(__file__).resolve().parent.parent / "locales"
+# locales/ sits one level up in local dev (src/i18n.py + ../locales) but beside
+# the modules in the Lambda bundle, where src/*.py is flattened into /var/task.
+# Resolving only the sibling meant Lambda looked for /locales, found nothing,
+# and t() fell through to returning the key, so the API answered with
+# "errors.auth.invalidCredentials" instead of a sentence.
+def _find_locales_dir() -> Path:
+    here = Path(__file__).resolve().parent
+    sibling = here.parent / "locales"
+    return sibling if sibling.is_dir() else here / "locales"
+
+
+_LOCALES_DIR = _find_locales_dir()
 
 
 @lru_cache(maxsize=None)
