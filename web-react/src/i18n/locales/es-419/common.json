@@ -263,8 +263,6 @@
     "markComplete": "Marcar como completado",
     "saving": "Guardando...",
     "saveError": "No se pudo guardar el entrenamiento. Inténtalo de nuevo.",
-    "successMsg": "¡Entrenamiento completado! Bien hecho.",
-    "backToDashboard": "Volver al panel",
     "logManual": "Registrar manual",
     "date": "Fecha:",
     "manualListEmpty": "Aún no agregaste ejercicios — agrega algunos de la lista.",

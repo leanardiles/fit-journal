@@ -1690,14 +1690,6 @@
           "nl": {"hash": "76900f1bfd16", "status": "translated", "translated_at": "2026-11-01T22:36:24.711Z"}
         }
       },
-      "workout.backToDashboard": {
-        "source_hash": "97ba1d394fab",
-        "source_text": "Back to Dashboard",
-        "translations": {
-          "fr": {"hash": "97ba1d394fab", "status": "translated", "translated_at": "2026-11-01T22:36:24.705Z"},
-          "nl": {"hash": "97ba1d394fab", "status": "translated", "translated_at": "2026-11-01T22:36:24.711Z"}
-        }
-      },
       "workout.cancel": {
         "source_hash": "19766ed6ccb2",
         "source_text": "Cancel",
@@ -2008,14 +2000,6 @@
         "translations": {
           "fr": {"hash": "44b5b640107b", "status": "translated", "translated_at": "2026-11-01T22:36:24.705Z"},
           "nl": {"hash": "44b5b640107b", "status": "translated", "translated_at": "2026-11-01T22:36:24.711Z"}
-        }
-      },
-      "workout.successMsg": {
-        "source_hash": "2e2895c521c7",
-        "source_text": "Workout complete! Well done.",
-        "translations": {
-          "fr": {"hash": "2e2895c521c7", "status": "translated", "translated_at": "2026-11-01T22:36:24.705Z"},
-          "nl": {"hash": "2e2895c521c7", "status": "translated", "translated_at": "2026-11-01T22:36:24.711Z"}
         }
       },
       "workout.title": {

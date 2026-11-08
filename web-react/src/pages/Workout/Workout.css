@@ -326,14 +326,6 @@
 }
 .wo-pick-actions { margin-top: var(--space-md); justify-content: flex-end; }
 
-/* Success screen */
-.wo-success-msg {
-  color: rgba(100, 180, 100, 0.85);
-  font-size: var(--fs);
-  font-family: var(--font-body);
-  margin: var(--space-sm) 0;
-}
-
 /* Manual log builder */
 .wo-date-label { color: var(--text); }
 /* Same identity as the dropdowns: clicking it opens a picker, so it should

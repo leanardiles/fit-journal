@@ -35,7 +35,7 @@ export function Workout() {
   const [exercises, setExercises] = useState([]);
   const [loading, setLoading] = useState(true);
 
-  const [mode, setMode] = useState("generate"); // "generate" | "workout" | "success"
+  const [mode, setMode] = useState("generate"); // "generate" | "workout" | "manual"
   const [generating, setGenerating] = useState(false);
   const [saving, setSaving] = useState(false);
   // The date the workout is logged under. Defaults to today, because that is
@@ -104,6 +104,28 @@ const isDone = (row) => {
     return dayObj.day_type === "manual"
       ? [...new Set((dayObj.exercises || []).map((e) => e.muscle_group))]
       : (dayObj.muscles || []).map((m) => m.muscle_group);
+  };
+
+  // Logging mutates server state the page is holding a copy of: the routine
+  // cursor advances, and each logged exercise's current weight is overwritten,
+  // which is what seeds a prefilled weight next time. Returning to the chooser
+  // without refetching leaves the day strip on the day just finished and
+  // Generate WOD regenerating it. The old success screen hid this by linking
+  // to the dashboard, which unmounted the page.
+  const refreshAfterLog = async () => {
+    try {
+      const userId = localStorage.getItem("user_id");
+      const [st, ex] = await Promise.all([
+        apiGet(`/workout/state/${userId}`).then((r) => (r.ok ? r.json() : null)).catch(() => null),
+        apiGet(`/exercises?user_id=${userId}`).then((r) => (r.ok ? r.json() : [])).catch(() => []),
+      ]);
+      if (st?.current_day_number) setCurrentDay(st.current_day_number);
+      if (Array.isArray(ex)) setExercises(ex);
+    } catch {
+      // The workout is already saved. A stale day strip is worth far less than
+      // a false alarm, so swallow this rather than letting the caller's catch
+      // report a save that succeeded as a failure.
+    }
   };
 
   const goGenerate = () => {
@@ -279,7 +301,16 @@ const isDone = (row) => {
         workout_date: workoutDate,
       });
       if (!res.ok) { showToast(t("workout.saveError"), "error"); return; }
-      setMode("success");
+      showToast(
+        t("workout.loggedWithDay", {
+          count: done.length,
+          day: t("common.day", { day: workout.day_number }),
+        }),
+        "success",
+        4000,
+      );
+      await refreshAfterLog();
+      goGenerate();
     } catch {
       showToast(t("workout.saveError"), "error");
     } finally {
@@ -336,7 +367,9 @@ const isDone = (row) => {
         })),
       });
       if (!res.ok) { showToast(t("workout.saveError"), "error"); return; }
-      setMode("success");
+      showToast(t("workout.logged", { count: manualRows.length }), "success", 4000);
+      await refreshAfterLog();
+      goGenerate();
     } catch {
       showToast(t("workout.saveError"), "error");
     } finally {
@@ -828,17 +861,6 @@ const isDone = (row) => {
             <button type="button" className="btn btn--negative" onClick={goGenerate} disabled={mlSaving}>
               <span className="mirror-rtl" aria-hidden="true">←</span> {t("workout.back")}
             </button>
-          </div>
-        </div>
-      )}
-
-      {mode === "success" && (
-        <div className="wo-success">
-          <p className="wo-success-msg">🎉 {t("workout.successMsg")}</p>
-          <div className="wo-actions">
-            <Link to="/dashboard" className="btn btn--primary">
-              <span className="mirror-rtl" aria-hidden="true">←</span> {t("workout.backToDashboard")}
-            </Link>
           </div>
         </div>
       )}

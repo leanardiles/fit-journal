@@ -270,8 +270,6 @@
     "markComplete": "Als voltooid markeren",
     "saving": "Opslaan...",
     "saveError": "Kon de workout niet opslaan. Probeer het opnieuw.",
-    "successMsg": "Workout voltooid! Goed gedaan.",
-    "backToDashboard": "Terug naar dashboard",
     "logManual": "Handmatig loggen",
     "date": "Datum:",
     "manualListEmpty": "Nog geen oefeningen toegevoegd — voeg er een paar toe uit de lijst.",
