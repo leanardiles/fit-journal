@@ -1738,14 +1738,6 @@
           "nl": {"hash": "81d27ef6d503", "status": "translated", "translated_at": "2026-11-01T22:36:24.711Z"}
         }
       },
-      "workout.confirmSetDay": {
-        "source_hash": "c15b9820e26d",
-        "source_text": "Set {{day}} as your current day?",
-        "translations": {
-          "fr": {"hash": "c15b9820e26d", "status": "translated", "translated_at": "2026-11-01T22:36:24.705Z"},
-          "nl": {"hash": "c15b9820e26d", "status": "translated", "translated_at": "2026-11-01T22:36:24.711Z"}
-        }
-      },
       "workout.current": {
         "source_hash": "97b0560280ed",
         "source_text": "current",

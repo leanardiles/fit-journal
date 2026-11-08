@@ -1,0 +1,18 @@
+/* The question carries the weight here, so it reads at body size rather than
+   as a caption. max-width keeps a long sentence from running the full width of
+   the box and becoming hard to scan. */
+.confirm-message {
+  margin: 0 0 var(--space-lg);
+  color: var(--text);
+  font-family: var(--font-body);
+  font-size: var(--fs);
+  max-width: 46ch;
+}
+
+/* The affirmative sits first, as it does everywhere else in the app. */
+.confirm-actions {
+  display: flex;
+  gap: 12px;
+  flex-wrap: wrap;
+  justify-content: center;
+}

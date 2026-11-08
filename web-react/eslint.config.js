@@ -18,6 +18,12 @@ export default defineConfig([globalIgnores(['dist']), {
     globals: globals.browser,
     parserOptions: { ecmaFeatures: { jsx: true } },
   },
+  rules: {
+    // alert, confirm and prompt cannot be themed, use the system font, and on
+    // some mobile browsers print the site origin above the message. Questions
+    // go through ConfirmModal, or inline next to the control being acted on.
+    'no-alert': 'error',
+  },
 }, {
   // Build and test tooling runs in Node, not the browser, so process and
   // __dirname are legitimate there. Without this the linter reports correct

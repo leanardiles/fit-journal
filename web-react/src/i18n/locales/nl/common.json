@@ -245,7 +245,6 @@
     "generateBtn": "WOD genereren",
     "loading": "Laden...",
     "current": "huidige",
-    "confirmSetDay": "{{day}} als je huidige dag instellen?",
     "setDayError": "Kon de huidige dag niet instellen. Probeer het opnieuw.",
     "generateError": "Kon de workout niet genereren. Probeer het opnieuw.",
     "autoGenError": "Kon geen automatische selectie genereren. Probeer het opnieuw.",

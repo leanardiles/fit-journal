@@ -137,7 +137,6 @@ const isDone = (row) => {
 
   const selectDay = async (n) => {
     if (n === currentDay) return;
-    if (!window.confirm(t("workout.confirmSetDay", { day: dayLabel(n) }))) return;
     const userId = localStorage.getItem("user_id");
     try {
       const res = await apiPost(`/workout/state/${userId}/current-day?day_number=${n}`, {});

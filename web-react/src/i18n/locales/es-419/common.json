@@ -238,7 +238,6 @@
     "generateBtn": "Generar WOD",
     "loading": "Cargando...",
     "current": "actual",
-    "confirmSetDay": "¿Establecer {{day}} como tu día actual?",
     "setDayError": "No se pudo establecer el día actual. Inténtalo de nuevo.",
     "generateError": "No se pudo generar el entrenamiento. Inténtalo de nuevo.",
     "autoGenError": "No se pudo generar una selección automática. Inténtalo de nuevo.",

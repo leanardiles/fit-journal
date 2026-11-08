@@ -63,6 +63,9 @@
     "backToLogin": "Back to log in"
   },
   "common": {
+    "cancel": "Cancel",
+    "delete": "Delete",
+    "continue": "Continue",
     "loading": "Loading...",
     "day": "Day {{day}}",
     "dayNamed": "Day {{day}} — {{name}}",
@@ -226,6 +229,8 @@
     "editRoutine": "Edit routine",
     "addDay": "Add day",
     "deleteDay": "Delete this day",
+    "deleteDayTitle": "Delete day",
+    "switchTypeTitle": "Change day type",
     "confirmDeleteDay": "Delete Day {{day}}? Its exercises will be removed.",
     "errMinOneDay": "A routine needs at least one day."
   },
@@ -240,7 +245,6 @@
     "generateBtn": "Generate WOD",
     "loading": "Loading...",
     "current": "current",
-    "confirmSetDay": "Set {{day}} as your current day?",
     "setDayError": "Could not set the current day. Please try again.",
     "generateError": "Could not generate the workout. Please try again.",
     "autoGenError": "Could not auto-generate a selection. Please try again.",

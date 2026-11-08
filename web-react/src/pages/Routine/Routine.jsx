@@ -4,6 +4,7 @@ import { apiGet, apiPost } from "../../api/client";
 import { useToast } from "../../context/ToastContext";
 import { formatList } from "../../i18n/format";
 import { MUSCLE_GROUPS } from "../../constants/muscles";
+import { ConfirmModal } from "../../components/ConfirmModal/ConfirmModal";
 import "./Routine.css";
 
 const DEFAULT_COUNT = 3;
@@ -26,6 +27,9 @@ export function Routine() {
   const [editorPools, setEditorPools] = useState({}); // per_muscle pool expander
   const [manualTabs, setManualTabs] = useState({}); // manual active muscle tab per day
   const [saveError, setSaveError] = useState(null); // { day, msg }
+  // The pending question, or null. One slot: only one can be open at a time.
+  // { titleKey, message, confirmKey, run }
+  const [confirm, setConfirm] = useState(null);
 
   useEffect(() => {
     let cancelled = false;
@@ -134,14 +138,7 @@ export function Routine() {
     setDaysPerWeek(n);
   };
 
-  const deleteDay = (d) => {
-    if (daysPerWeek <= 1) {
-      showToast(t("routine.errMinOneDay"), "error");
-      return;
-    }
-    const st = days[d];
-    const hasContent = !!st && (st.muscles.length > 0 || Object.values(st.checked).some(Boolean));
-    if (hasContent && !window.confirm(t("routine.confirmDeleteDay", { day: d }))) return;
+  const applyDeleteDay = (d) => {
     setDays((prev) => {
       const next = {};
       for (let i = 1; i < daysPerWeek; i++) next[i] = i < d ? prev[i] : prev[i + 1];
@@ -153,6 +150,30 @@ export function Routine() {
     setSaveError(null);
   };
 
+  const deleteDay = (d) => {
+    if (daysPerWeek <= 1) {
+      showToast(t("routine.errMinOneDay"), "error");
+      return;
+    }
+    const st = days[d];
+    const hasContent = !!st && (st.muscles.length > 0 || Object.values(st.checked).some(Boolean));
+    // Only ask when there is something to lose, which is how this behaved with
+    // window.confirm. An empty day just goes.
+    if (!hasContent) { applyDeleteDay(d); return; }
+    setConfirm({
+      titleKey: "routine.deleteDayTitle",
+      message: t("routine.confirmDeleteDay", { day: d }),
+      confirmKey: "common.delete",
+      run: () => applyDeleteDay(d),
+    });
+  };
+
+  const applyDayType = (day, newType) =>
+    setDays((prev) => ({
+      ...prev,
+      [day]: { type: newType, name: prev[day].name, muscles: [], counts: {}, checked: {} },
+    }));
+
   const setDayType = (day, newType) => {
     const st = days[day];
     if (!st || st.type === newType) return;
@@ -162,11 +183,13 @@ export function Routine() {
         : st.type === "manual"
         ? Object.values(st.checked).some(Boolean)
         : false;
-    if (hasContent && !window.confirm(t("routine.confirmSwitchType", { day }))) return;
-    setDays((prev) => ({
-      ...prev,
-      [day]: { type: newType, name: prev[day].name, muscles: [], counts: {}, checked: {} },
-    }));
+    if (!hasContent) { applyDayType(day, newType); return; }
+    setConfirm({
+      titleKey: "routine.switchTypeTitle",
+      message: t("routine.confirmSwitchType", { day }),
+      confirmKey: "common.continue",
+      run: () => applyDayType(day, newType),
+    });
   };
 
   const toggleMuscle = (day, muscle) => {
@@ -623,6 +646,15 @@ export function Routine() {
           + {t("routine.newRoutine")}
         </button>
       </div>
+
+      <ConfirmModal
+        open={!!confirm}
+        titleKey={confirm?.titleKey}
+        message={confirm?.message}
+        confirmKey={confirm?.confirmKey}
+        onConfirm={() => { confirm?.run(); setConfirm(null); }}
+        onCancel={() => setConfirm(null)}
+      />
     </div>
   );
 }
