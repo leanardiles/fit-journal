@@ -114,8 +114,10 @@ hand. The same applies to Phase 1's four plural keys.
 
 ### Phase 3: Write the rule down where it will be found
 
-Add the rule above to `docs/design-system-mobile.md`, so the next page added to the
-app does not have to rediscover it.
+Recorded as `docs/adr/0002-success-feedback.md`, with the alternatives and the
+conditions for revisiting it. Not `docs/design-system-mobile.md`, which is the
+Android design system, nor `docs/ui-architecture.md`, which records only measured
+numbers. This document keeps the audit table; the ADR keeps the rule.
 
 ## Adjacent, deliberately out of scope
 
