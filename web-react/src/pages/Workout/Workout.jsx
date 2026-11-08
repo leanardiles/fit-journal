@@ -53,6 +53,12 @@ export function Workout() {
   const [pickerOpen, setPickerOpen] = useState(false);
   const [pickMuscle, setPickMuscle] = useState("all");
   const [pickQuery, setPickQuery] = useState("");
+  // Validation lives next to the thing being validated and stays until it is
+  // fixed. A toast cannot: it expires while the user is still reading the row
+  // it was complaining about.
+  const [woError, setWoError] = useState(null);
+  const [mlError, setMlError] = useState(null);
+  const [mlMissing, setMlMissing] = useState([]); // exercise_ids lacking sets
 
 // A blank optional field is absent, not zero: || 0 would record a number the
 // user never entered and the row could no longer say it was not measured.
@@ -236,7 +242,10 @@ const isDone = (row) => {
     }
   };
 
-  const setRow = (exId, patch) => setRows((prev) => ({ ...prev, [exId]: { ...prev[exId], ...patch } }));
+  const setRow = (exId, patch) => {
+    setWoError(null);
+    setRows((prev) => ({ ...prev, [exId]: { ...prev[exId], ...patch } }));
+  };
 
   // What the user is actually looking at: the generated list minus what they
   // removed, plus anything they added. Rendering and the payload both read
@@ -278,7 +287,8 @@ const isDone = (row) => {
   const completeWorkout = async () => {
     if (!workout) return;
     const done = activeExercises().filter((ex) => isDone(rows[ex.exercise_id]));
-    if (done.length === 0) { showToast(t("workout.noSetsEntered"), "error"); return; }
+    if (done.length === 0) { setWoError(t("workout.noSetsEntered")); return; }
+    setWoError(null);
 
     // Only the done rows; reps and weight are null when blank, weight in kg.
     const payloadExercises = done.map((ex) => {
@@ -327,7 +337,10 @@ const isDone = (row) => {
     setMlActiveMuscle(firstWith || MUSCLE_GROUPS[0]);
     setMode("manual");
   };
-  const addManual = (ex) =>
+  const clearMlError = () => { setMlError(null); setMlMissing([]); };
+
+  const addManual = (ex) => {
+    clearMlError();
     setManualRows((prev) =>
       prev.some((r) => r.exercise_id === ex.exercise_id)
         ? prev
@@ -343,15 +356,35 @@ const isDone = (row) => {
             },
           ]
     );
-  const removeManual = (exId) => setManualRows((prev) => prev.filter((r) => r.exercise_id !== exId));
-  const setManualField = (exId, field, value) =>
+  };
+
+  const removeManual = (exId) => {
+    clearMlError();
+    setManualRows((prev) => prev.filter((r) => r.exercise_id !== exId));
+  };
+
+  const setManualField = (exId, field, value) => {
+    clearMlError();
     setManualRows((prev) => prev.map((r) => (r.exercise_id === exId ? { ...r, [field]: value } : r)));
+  };
 
   const saveManual = async () => {
-    if (manualRows.length === 0) { showToast(t("workout.manualNoExercises"), "error"); return; }
-    if (!manualDate) { showToast(t("workout.manualNoDate"), "error"); return; }
-    const missing = manualRows.filter((r) => !r.sets || parseInt(r.sets, 10) <= 0).map((r) => r.name);
-    if (missing.length) { showToast(t("workout.missingSets", { names: formatList(missing, { type: "conjunction" }) }), "error"); return; }
+    if (manualRows.length === 0) { setMlError(t("workout.manualNoExercises")); return; }
+    if (!manualDate) { setMlError(t("workout.manualNoDate")); return; }
+    const missing = manualRows.filter((r) => !r.sets || parseInt(r.sets, 10) <= 0);
+    if (missing.length) {
+      // Naming the rows is not enough on a long list, so the offending inputs
+      // are marked too and carry aria-invalid.
+      setMlMissing(missing.map((r) => r.exercise_id));
+      setMlError(
+        t("workout.missingSets", {
+          names: formatList(missing.map((r) => r.name), { type: "conjunction" }),
+        }),
+      );
+      return;
+    }
+    setMlError(null);
+    setMlMissing([]);
 
     const userId = localStorage.getItem("user_id");
     setMlSaving(true);
@@ -573,7 +606,7 @@ const isDone = (row) => {
               className="wo-date-input"
               value={dateField.value}
               max={todayStr()}
-              onChange={(e) => dateField.set(e.target.value)}
+              onChange={(e) => { clearMlError(); dateField.set(e.target.value); }}
             />
           </div>
         )}
@@ -730,6 +763,8 @@ const isDone = (row) => {
 
           {renderPicker()}
 
+          {woError && <p className="wo-error" role="alert">{woError}</p>}
+
           <div className="wo-actions">
             <button type="button" className="btn btn--primary" onClick={completeWorkout} disabled={saving}>
               {saving ? t("workout.saving") : `✓ ${t("workout.markComplete")}`}
@@ -765,10 +800,11 @@ const isDone = (row) => {
                         type="number"
                         min="1"
                         max="20"
-                        className="wo-ml-input"
+                        className={`wo-ml-input${mlMissing.includes(r.exercise_id) ? " invalid" : ""}`}
                         value={r.sets}
                         placeholder="–"
                         aria-label={t("workout.setsFor", { name: r.name })}
+                        aria-invalid={mlMissing.includes(r.exercise_id) || undefined}
                         onChange={(e) => setManualField(r.exercise_id, "sets", e.target.value)}
                       />
                       <input
@@ -852,6 +888,8 @@ const isDone = (row) => {
               </div>
             </div>
           </div>
+
+          {mlError && <p className="wo-error" role="alert">{mlError}</p>}
 
           <div className="wo-actions">
             <button type="button" className="btn btn--primary" onClick={saveManual} disabled={mlSaving}>

@@ -152,7 +152,7 @@ export function Routine() {
 
   const deleteDay = (d) => {
     if (daysPerWeek <= 1) {
-      showToast(t("routine.errMinOneDay"), "error");
+      setSaveError({ day: d, msg: t("routine.errMinOneDay") });
       return;
     }
     const st = days[d];
@@ -523,7 +523,7 @@ export function Routine() {
               </button>
             )}
 
-            {saveError && <p className="rt-error">{saveError.msg}</p>}
+            {saveError && <p className="rt-error" role="alert">{saveError.msg}</p>}
 
             <div className="rt-save-row">
               <button className="btn btn--primary" onClick={handleSave}>

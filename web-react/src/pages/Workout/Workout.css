@@ -76,6 +76,15 @@
 }
 .wo-day-tag { color: var(--yellow); font-size: var(--fs-xs); margin-inline-start: 8px; }
 
+/* Validation, inline and persistent: it sits where the action is and stays
+   until the input changes. Matches .rt-error on Routine. */
+.wo-error {
+  color: var(--red);
+  font-size: var(--fs-base);
+  font-family: var(--font-body);
+  margin: var(--space-sm) 0 0;
+}
+
 .wo-instruction {
   color: var(--text);
   font-family: var(--font-body);
@@ -487,6 +496,10 @@
   padding: 1px 0;
 }
 .wo-ml-input:focus { border-color: var(--red-border); outline: none; }
+/* Marked by validation: the message names the rows, and this points at them.
+   Not colour alone, the message carries the same information in words
+   (WCAG 1.4.1). */
+.wo-ml-input.invalid { border-color: var(--red); border-width: 2px; }
 .wo-ml-h { width: 46px; text-align: center; }
 .wo-ml-delcol { width: 20px; }
 /* The rule separating the picker from the field follows the stacking
