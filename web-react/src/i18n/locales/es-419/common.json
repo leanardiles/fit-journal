@@ -33,7 +33,7 @@
     "repeatPasswordLabel": "Repetir contraseña",
     "passwordMismatch": "Las contraseñas no coinciden."
   },
-    "verify": {
+  "verify": {
     "title": "Verifica tu correo",
     "codeLabel": "Código de verificación",
     "codePlaceholder": "123456",
@@ -92,7 +92,7 @@
     "save": "Guardar",
     "saved": "Perfil guardado.",
     "saveError": "No se pudo guardar tu perfil.",
-     "dangerZone": "Zona de peligro",
+    "dangerZone": "Zona de peligro",
     "deleteAccount": "Eliminar cuenta",
     "deleteWarning": "Esto elimina permanentemente tu cuenta y todos tus datos. No se puede deshacer.",
     "confirmPassword": "Introduce tu contraseña para confirmar",
@@ -152,9 +152,15 @@
     "deleteAria": "Eliminar ejercicio"
   },
   "muscles": {
-    "Abs": "Abdominales", "Back": "Espalda", "Biceps": "Bíceps",
-    "Calves": "Pantorrillas", "Chest": "Pecho", "Forearms": "Antebrazos",
-    "Glutes": "Glúteos", "Legs": "Piernas", "Shoulders": "Hombros",
+    "Abs": "Abdominales",
+    "Back": "Espalda",
+    "Biceps": "Bíceps",
+    "Calves": "Pantorrillas",
+    "Chest": "Pecho",
+    "Forearms": "Antebrazos",
+    "Glutes": "Glúteos",
+    "Legs": "Piernas",
+    "Shoulders": "Hombros",
     "Triceps": "Tríceps"
   },
   "timezones": {

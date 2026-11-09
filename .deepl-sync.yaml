@@ -3,6 +3,7 @@ source_locale: en
 target_locales:
   - fr
   - nl
+  - es-419
 
 buckets:
   json:

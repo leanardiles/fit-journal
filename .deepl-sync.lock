@@ -6,6 +6,7 @@
         "source_hash": "5b0b93d7f403",
         "source_text": "FitJournal",
         "translations": {
+          "es-419": {"hash": "5b0b93d7f403", "status": "translated", "translated_at": "2026-11-09T02:01:33.373Z"},
           "fr": {"hash": "5b0b93d7f403", "status": "translated", "translated_at": "2026-11-01T22:36:24.704Z"},
           "nl": {"hash": "5b0b93d7f403", "status": "translated", "translated_at": "2026-11-01T22:36:24.710Z"}
         }
@@ -14,6 +15,7 @@
         "source_hash": "a60a56c584b3",
         "source_text": "Hide password",
         "translations": {
+          "es-419": {"hash": "a60a56c584b3", "status": "translated", "translated_at": "2026-11-09T02:01:33.373Z"},
           "fr": {"hash": "a60a56c584b3", "status": "translated", "translated_at": "2026-11-01T22:36:24.704Z"},
           "nl": {"hash": "a60a56c584b3", "status": "translated", "translated_at": "2026-11-01T22:36:24.710Z"}
         }
@@ -22,6 +24,7 @@
         "source_hash": "6aeaa6a53d09",
         "source_text": "Show password",
         "translations": {
+          "es-419": {"hash": "6aeaa6a53d09", "status": "translated", "translated_at": "2026-11-09T02:01:33.373Z"},
           "fr": {"hash": "6aeaa6a53d09", "status": "translated", "translated_at": "2026-11-01T22:36:24.704Z"},
           "nl": {"hash": "6aeaa6a53d09", "status": "translated", "translated_at": "2026-11-01T22:36:24.710Z"}
         }
@@ -30,6 +33,7 @@
         "source_hash": "fc91b0ee2e9f",
         "source_text": "All days",
         "translations": {
+          "es-419": {"hash": "fc91b0ee2e9f", "status": "translated", "translated_at": "2026-11-09T02:01:33.375Z"},
           "fr": {"hash": "fc91b0ee2e9f", "status": "translated", "translated_at": "2026-11-01T22:36:24.705Z"},
           "nl": {"hash": "fc91b0ee2e9f", "status": "translated", "translated_at": "2026-11-01T22:36:24.711Z"}
         }
@@ -38,6 +42,7 @@
         "source_hash": "a52ace420f21",
         "source_text": "All",
         "translations": {
+          "es-419": {"hash": "a52ace420f21", "status": "translated", "translated_at": "2026-11-09T02:01:33.375Z"},
           "fr": {"hash": "a52ace420f21", "status": "translated", "translated_at": "2026-11-01T22:36:24.705Z"},
           "nl": {"hash": "a52ace420f21", "status": "translated", "translated_at": "2026-11-01T22:36:24.711Z"}
         }
@@ -46,6 +51,7 @@
         "source_hash": "158b975ea315",
         "source_text": "Automatic selection",
         "translations": {
+          "es-419": {"hash": "158b975ea315", "status": "translated", "translated_at": "2026-11-09T02:01:33.375Z"},
           "fr": {"hash": "158b975ea315", "status": "translated", "translated_at": "2026-11-01T22:36:24.705Z"},
           "nl": {"hash": "158b975ea315", "status": "translated", "translated_at": "2026-11-01T22:36:24.711Z"}
         }
@@ -54,6 +60,7 @@
         "source_hash": "3e814cca74fe",
         "source_text": "Could not clear the selections.",
         "translations": {
+          "es-419": {"hash": "3e814cca74fe", "status": "translated", "translated_at": "2026-11-09T02:01:33.375Z"},
           "fr": {"hash": "3e814cca74fe", "status": "translated", "translated_at": "2026-11-01T22:36:24.705Z"},
           "nl": {"hash": "3e814cca74fe", "status": "translated", "translated_at": "2026-11-01T22:36:24.711Z"}
         }
@@ -62,6 +69,7 @@
         "source_hash": "cea4d2e010b8",
         "source_text": "Clear selection",
         "translations": {
+          "es-419": {"hash": "cea4d2e010b8", "status": "translated", "translated_at": "2026-11-09T02:01:33.375Z"},
           "fr": {"hash": "cea4d2e010b8", "status": "translated", "translated_at": "2026-11-01T22:36:24.705Z"},
           "nl": {"hash": "cea4d2e010b8", "status": "translated", "translated_at": "2026-11-01T22:36:24.711Z"}
         }
@@ -70,6 +78,7 @@
         "source_hash": "a1759b4e50d6",
         "source_text": "Selections cleared.",
         "translations": {
+          "es-419": {"hash": "a1759b4e50d6", "status": "translated", "translated_at": "2026-11-09T02:01:33.375Z"},
           "fr": {"hash": "a1759b4e50d6", "status": "translated", "translated_at": "2026-11-01T22:36:24.705Z"},
           "nl": {"hash": "a1759b4e50d6", "status": "translated", "translated_at": "2026-11-01T22:36:24.711Z"}
         }
@@ -78,6 +87,7 @@
         "source_hash": "f0fe07086169",
         "source_text": "Create routine",
         "translations": {
+          "es-419": {"hash": "f0fe07086169", "status": "translated", "translated_at": "2026-11-09T02:01:33.375Z"},
           "fr": {"hash": "f0fe07086169", "status": "translated", "translated_at": "2026-11-01T22:36:24.705Z"},
           "nl": {"hash": "f0fe07086169", "status": "translated", "translated_at": "2026-11-01T22:36:24.711Z"}
         }
@@ -86,6 +96,7 @@
         "source_hash": "97b0560280ed",
         "source_text": "current",
         "translations": {
+          "es-419": {"hash": "97b0560280ed", "status": "translated", "translated_at": "2026-11-09T02:01:33.375Z"},
           "fr": {"hash": "97b0560280ed", "status": "translated", "translated_at": "2026-11-01T22:36:24.705Z"},
           "nl": {"hash": "97b0560280ed", "status": "translated", "translated_at": "2026-11-01T22:36:24.711Z"}
         }
@@ -94,6 +105,7 @@
         "source_hash": "9bc3516b784a",
         "source_text": "Exercise",
         "translations": {
+          "es-419": {"hash": "9bc3516b784a", "status": "translated", "translated_at": "2026-11-09T02:01:33.375Z"},
           "fr": {"hash": "9bc3516b784a", "status": "translated", "translated_at": "2026-11-01T22:36:24.705Z"},
           "nl": {"hash": "9bc3516b784a", "status": "translated", "translated_at": "2026-11-01T22:36:24.711Z"}
         }
@@ -102,6 +114,7 @@
         "source_hash": "7752955733c7",
         "source_text": "Could not generate the next workout.",
         "translations": {
+          "es-419": {"hash": "7752955733c7", "status": "translated", "translated_at": "2026-11-09T02:01:33.375Z"},
           "fr": {"hash": "7752955733c7", "status": "translated", "translated_at": "2026-11-01T22:36:24.705Z"},
           "nl": {"hash": "7752955733c7", "status": "translated", "translated_at": "2026-11-01T22:36:24.711Z"}
         }
@@ -110,6 +123,7 @@
         "source_hash": "309aa5824aa6",
         "source_text": "Next workout generated: {{count}} exercise selected.",
         "translations": {
+          "es-419": {"hash": "309aa5824aa6", "status": "translated", "translated_at": "2026-11-09T02:01:33.375Z"},
           "fr": {"hash": "309aa5824aa6", "status": "translated", "translated_at": "2026-11-01T22:36:24.705Z"},
           "nl": {"hash": "309aa5824aa6", "status": "translated", "translated_at": "2026-11-01T22:36:24.711Z"}
         }
@@ -118,6 +132,7 @@
         "source_hash": "d5f326a98e3e",
         "source_text": "Next workout generated: {{count}} exercises selected.",
         "translations": {
+          "es-419": {"hash": "d5f326a98e3e", "status": "translated", "translated_at": "2026-11-09T02:01:33.375Z"},
           "fr": {"hash": "d5f326a98e3e", "status": "translated", "translated_at": "2026-11-01T22:36:24.705Z"},
           "nl": {"hash": "d5f326a98e3e", "status": "translated", "translated_at": "2026-11-01T22:36:24.711Z"}
         }
@@ -126,6 +141,7 @@
         "source_hash": "d84520dc3bf4",
         "source_text": "Manual day: exercises are fixed by your routine",
         "translations": {
+          "es-419": {"hash": "d84520dc3bf4", "status": "translated", "translated_at": "2026-11-09T02:01:33.375Z"},
           "fr": {"hash": "d84520dc3bf4", "status": "translated", "translated_at": "2026-11-01T22:36:24.705Z"},
           "nl": {"hash": "d84520dc3bf4", "status": "translated", "translated_at": "2026-11-01T22:36:24.711Z"}
         }
@@ -134,6 +150,7 @@
         "source_hash": "9992ea089e79",
         "source_text": "No exercises for the selected day(s). Add some on the Exercises page.",
         "translations": {
+          "es-419": {"hash": "9992ea089e79", "status": "translated", "translated_at": "2026-11-09T02:01:33.375Z"},
           "fr": {"hash": "9992ea089e79", "status": "translated", "translated_at": "2026-11-01T22:36:24.705Z"},
           "nl": {"hash": "9992ea089e79", "status": "translated", "translated_at": "2026-11-01T22:36:24.711Z"}
         }
@@ -142,6 +159,7 @@
         "source_hash": "236d1aa6599b",
         "source_text": "No exercises yet. Add some on the Exercises page.",
         "translations": {
+          "es-419": {"hash": "236d1aa6599b", "status": "translated", "translated_at": "2026-11-09T02:01:33.375Z"},
           "fr": {"hash": "236d1aa6599b", "status": "translated", "translated_at": "2026-11-01T22:36:24.705Z"},
           "nl": {"hash": "236d1aa6599b", "status": "translated", "translated_at": "2026-11-01T22:36:24.711Z"}
         }
@@ -150,6 +168,7 @@
         "source_hash": "092afee2d69e",
         "source_text": "No routine set up yet.",
         "translations": {
+          "es-419": {"hash": "092afee2d69e", "status": "translated", "translated_at": "2026-11-09T02:01:33.375Z"},
           "fr": {"hash": "092afee2d69e", "status": "translated", "translated_at": "2026-11-01T22:36:24.705Z"},
           "nl": {"hash": "092afee2d69e", "status": "translated", "translated_at": "2026-11-01T22:36:24.711Z"}
         }
@@ -158,6 +177,7 @@
         "source_hash": "2a78025de6aa",
         "source_text": "Select",
         "translations": {
+          "es-419": {"hash": "2a78025de6aa", "status": "translated", "translated_at": "2026-11-09T02:01:33.375Z"},
           "fr": {"hash": "2a78025de6aa", "status": "translated", "translated_at": "2026-11-01T22:36:24.705Z"},
           "nl": {"hash": "2a78025de6aa", "status": "translated", "translated_at": "2026-11-01T22:36:24.711Z"}
         }
@@ -166,6 +186,7 @@
         "source_hash": "053f9cc0c205",
         "source_text": "Select the day to visualize:",
         "translations": {
+          "es-419": {"hash": "053f9cc0c205", "status": "translated", "translated_at": "2026-11-09T02:01:33.375Z"},
           "fr": {"hash": "053f9cc0c205", "status": "translated", "translated_at": "2026-11-01T22:36:24.705Z"},
           "nl": {"hash": "053f9cc0c205", "status": "translated", "translated_at": "2026-11-01T22:36:24.711Z"}
         }
@@ -174,6 +195,7 @@
         "source_hash": "06342052ed6d",
         "source_text": "Select {{name}} for the next workout",
         "translations": {
+          "es-419": {"hash": "06342052ed6d", "status": "translated", "translated_at": "2026-11-09T02:01:33.375Z"},
           "fr": {"hash": "06342052ed6d", "status": "translated", "translated_at": "2026-11-01T22:36:24.705Z"},
           "nl": {"hash": "06342052ed6d", "status": "translated", "translated_at": "2026-11-01T22:36:24.711Z"}
         }
@@ -182,6 +204,7 @@
         "source_hash": "fee6e53ba3bf",
         "source_text": "Showing: {{days}}",
         "translations": {
+          "es-419": {"hash": "fee6e53ba3bf", "status": "translated", "translated_at": "2026-11-09T02:01:33.375Z"},
           "fr": {"hash": "fee6e53ba3bf", "status": "translated", "translated_at": "2026-11-01T22:36:24.705Z"},
           "nl": {"hash": "fee6e53ba3bf", "status": "translated", "translated_at": "2026-11-01T22:36:24.711Z"}
         }
@@ -190,6 +213,7 @@
         "source_hash": "d003ac323c6b",
         "source_text": "Showing all days",
         "translations": {
+          "es-419": {"hash": "d003ac323c6b", "status": "translated", "translated_at": "2026-11-09T02:01:33.375Z"},
           "fr": {"hash": "d003ac323c6b", "status": "translated", "translated_at": "2026-11-01T22:36:24.705Z"},
           "nl": {"hash": "d003ac323c6b", "status": "translated", "translated_at": "2026-11-01T22:36:24.711Z"}
         }
@@ -198,6 +222,7 @@
         "source_hash": "970a45adbf59",
         "source_text": "My calendar",
         "translations": {
+          "es-419": {"hash": "970a45adbf59", "status": "translated", "translated_at": "2026-11-09T02:01:33.374Z"},
           "fr": {"hash": "970a45adbf59", "status": "translated", "translated_at": "2026-11-01T22:36:24.705Z"},
           "nl": {"hash": "970a45adbf59", "status": "translated", "translated_at": "2026-11-01T22:36:24.711Z"}
         }
@@ -206,6 +231,7 @@
         "source_hash": "548d76c5a3f1",
         "source_text": "Could not update the selection.",
         "translations": {
+          "es-419": {"hash": "548d76c5a3f1", "status": "translated", "translated_at": "2026-11-09T02:01:33.375Z"},
           "fr": {"hash": "548d76c5a3f1", "status": "translated", "translated_at": "2026-11-01T22:36:24.705Z"},
           "nl": {"hash": "548d76c5a3f1", "status": "translated", "translated_at": "2026-11-01T22:36:24.711Z"}
         }
@@ -214,6 +240,7 @@
         "source_hash": "1bf84bb8a989",
         "source_text": "Day {{day}}",
         "translations": {
+          "es-419": {"hash": "1bf84bb8a989", "status": "translated", "translated_at": "2026-11-09T02:01:33.374Z"},
           "fr": {"hash": "1bf84bb8a989", "status": "translated", "translated_at": "2026-11-01T22:36:24.704Z"},
           "nl": {"hash": "1bf84bb8a989", "status": "translated", "translated_at": "2026-11-01T22:36:24.710Z"}
         }
@@ -222,6 +249,7 @@
         "source_hash": "ee7587fdb7d1",
         "source_text": "Day {{day}} — {{name}}",
         "translations": {
+          "es-419": {"hash": "ee7587fdb7d1", "status": "translated", "translated_at": "2026-11-09T02:01:33.374Z"},
           "fr": {"hash": "ee7587fdb7d1", "status": "translated", "translated_at": "2026-11-01T22:36:24.704Z"},
           "nl": {"hash": "ee7587fdb7d1", "status": "translated", "translated_at": "2026-11-01T22:36:24.710Z"}
         }
@@ -230,6 +258,7 @@
         "source_hash": "1a85d3ac126d",
         "source_text": "Day {{day}} ({{name}})",
         "translations": {
+          "es-419": {"hash": "1a85d3ac126d", "status": "translated", "translated_at": "2026-11-09T02:01:33.374Z"},
           "fr": {"hash": "1a85d3ac126d", "status": "translated", "translated_at": "2026-11-01T22:36:24.704Z"},
           "nl": {"hash": "1a85d3ac126d", "status": "translated", "translated_at": "2026-11-01T22:36:24.710Z"}
         }
@@ -238,6 +267,7 @@
         "source_hash": "47d2a515ef2f",
         "source_text": "Loading...",
         "translations": {
+          "es-419": {"hash": "47d2a515ef2f", "status": "translated", "translated_at": "2026-11-09T02:01:33.374Z"},
           "fr": {"hash": "47d2a515ef2f", "status": "translated", "translated_at": "2026-11-01T22:36:24.704Z"},
           "nl": {"hash": "47d2a515ef2f", "status": "translated", "translated_at": "2026-11-01T22:36:24.710Z"}
         }
@@ -246,6 +276,7 @@
         "source_hash": "0059798b7f70",
         "source_text": "(optional)",
         "translations": {
+          "es-419": {"hash": "0059798b7f70", "status": "translated", "translated_at": "2026-11-09T02:01:33.374Z"},
           "fr": {"hash": "0059798b7f70", "status": "translated", "translated_at": "2026-11-01T22:36:24.704Z"},
           "nl": {"hash": "0059798b7f70", "status": "translated", "translated_at": "2026-11-01T22:36:24.710Z"}
         }
@@ -254,6 +285,7 @@
         "source_hash": "f0fe07086169",
         "source_text": "Create routine",
         "translations": {
+          "es-419": {"hash": "f0fe07086169", "status": "translated", "translated_at": "2026-11-09T02:01:33.374Z"},
           "fr": {"hash": "f0fe07086169", "status": "translated", "translated_at": "2026-11-01T22:36:24.704Z"},
           "nl": {"hash": "f0fe07086169", "status": "translated", "translated_at": "2026-11-01T22:36:24.710Z"}
         }
@@ -262,6 +294,7 @@
         "source_hash": "99e2c561b852",
         "source_text": "Current day",
         "translations": {
+          "es-419": {"hash": "99e2c561b852", "status": "translated", "translated_at": "2026-11-09T02:01:33.374Z"},
           "fr": {"hash": "99e2c561b852", "status": "translated", "translated_at": "2026-11-01T22:36:24.704Z"},
           "nl": {"hash": "99e2c561b852", "status": "translated", "translated_at": "2026-11-01T22:36:24.710Z"}
         }
@@ -270,6 +303,7 @@
         "source_hash": "f6accb829b36",
         "source_text": "Your current routine",
         "translations": {
+          "es-419": {"hash": "f6accb829b36", "status": "translated", "translated_at": "2026-11-09T02:01:33.374Z"},
           "fr": {"hash": "f6accb829b36", "status": "translated", "translated_at": "2026-11-01T22:36:24.704Z"},
           "nl": {"hash": "f6accb829b36", "status": "translated", "translated_at": "2026-11-01T22:36:24.710Z"}
         }
@@ -278,6 +312,7 @@
         "source_hash": "801e2738261a",
         "source_text": "Edit routine",
         "translations": {
+          "es-419": {"hash": "801e2738261a", "status": "translated", "translated_at": "2026-11-09T02:01:33.374Z"},
           "fr": {"hash": "801e2738261a", "status": "translated", "translated_at": "2026-11-01T22:36:24.704Z"},
           "nl": {"hash": "801e2738261a", "status": "translated", "translated_at": "2026-11-01T22:36:24.710Z"}
         }
@@ -286,6 +321,7 @@
         "source_hash": "0603deca4fcb",
         "source_text": "Last 7 days",
         "translations": {
+          "es-419": {"hash": "0603deca4fcb", "status": "translated", "translated_at": "2026-11-09T02:01:33.374Z"},
           "fr": {"hash": "0603deca4fcb", "status": "translated", "translated_at": "2026-11-01T22:36:24.704Z"},
           "nl": {"hash": "0603deca4fcb", "status": "translated", "translated_at": "2026-11-01T22:36:24.710Z"}
         }
@@ -294,6 +330,7 @@
         "source_hash": "092afee2d69e",
         "source_text": "No routine set up yet.",
         "translations": {
+          "es-419": {"hash": "092afee2d69e", "status": "translated", "translated_at": "2026-11-09T02:01:33.374Z"},
           "fr": {"hash": "092afee2d69e", "status": "translated", "translated_at": "2026-11-01T22:36:24.704Z"},
           "nl": {"hash": "092afee2d69e", "status": "translated", "translated_at": "2026-11-01T22:36:24.710Z"}
         }
@@ -302,6 +339,7 @@
         "source_hash": "ad2b2af5d5f8",
         "source_text": "No sets logged in this range.",
         "translations": {
+          "es-419": {"hash": "ad2b2af5d5f8", "status": "translated", "translated_at": "2026-11-09T02:01:33.374Z"},
           "fr": {"hash": "ad2b2af5d5f8", "status": "translated", "translated_at": "2026-11-01T22:36:24.704Z"},
           "nl": {"hash": "ad2b2af5d5f8", "status": "translated", "translated_at": "2026-11-01T22:36:24.710Z"}
         }
@@ -310,6 +348,7 @@
         "source_hash": "213117112ffd",
         "source_text": "Quick stats",
         "translations": {
+          "es-419": {"hash": "213117112ffd", "status": "translated", "translated_at": "2026-11-09T02:01:33.374Z"},
           "fr": {"hash": "213117112ffd", "status": "translated", "translated_at": "2026-11-01T22:36:24.704Z"},
           "nl": {"hash": "213117112ffd", "status": "translated", "translated_at": "2026-11-01T22:36:24.710Z"}
         }
@@ -318,6 +357,7 @@
         "source_hash": "52efae684f6e",
         "source_text": "Rest day",
         "translations": {
+          "es-419": {"hash": "52efae684f6e", "status": "translated", "translated_at": "2026-11-09T02:01:33.374Z"},
           "fr": {"hash": "52efae684f6e", "status": "translated", "translated_at": "2026-11-01T22:36:24.704Z"},
           "nl": {"hash": "52efae684f6e", "status": "translated", "translated_at": "2026-11-01T22:36:24.710Z"}
         }
@@ -326,6 +366,7 @@
         "source_hash": "5e8e11f941a0",
         "source_text": "Sets per muscle",
         "translations": {
+          "es-419": {"hash": "5e8e11f941a0", "status": "translated", "translated_at": "2026-11-09T02:01:33.374Z"},
           "fr": {"hash": "5e8e11f941a0", "status": "translated", "translated_at": "2026-11-01T22:36:24.704Z"},
           "nl": {"hash": "5e8e11f941a0", "status": "translated", "translated_at": "2026-11-01T22:36:24.710Z"}
         }
@@ -334,6 +375,7 @@
         "source_hash": "189ca510958e",
         "source_text": "{{count}} set",
         "translations": {
+          "es-419": {"hash": "189ca510958e", "status": "translated", "translated_at": "2026-11-09T02:01:33.374Z"},
           "fr": {"hash": "189ca510958e", "status": "translated", "translated_at": "2026-11-01T22:36:24.704Z"},
           "nl": {"hash": "189ca510958e", "status": "translated", "translated_at": "2026-11-01T22:36:24.710Z"}
         }
@@ -342,6 +384,7 @@
         "source_hash": "d2e17fd2d37c",
         "source_text": "{{count}} sets",
         "translations": {
+          "es-419": {"hash": "d2e17fd2d37c", "status": "translated", "translated_at": "2026-11-09T02:01:33.374Z"},
           "fr": {"hash": "d2e17fd2d37c", "status": "translated", "translated_at": "2026-11-01T22:36:24.704Z"},
           "nl": {"hash": "d2e17fd2d37c", "status": "translated", "translated_at": "2026-11-01T22:36:24.710Z"}
         }
@@ -350,6 +393,7 @@
         "source_hash": "8c4eef5ab253",
         "source_text": "This week",
         "translations": {
+          "es-419": {"hash": "8c4eef5ab253", "status": "translated", "translated_at": "2026-11-09T02:01:33.374Z"},
           "fr": {"hash": "8c4eef5ab253", "status": "translated", "translated_at": "2026-11-01T22:36:24.704Z"},
           "nl": {"hash": "8c4eef5ab253", "status": "translated", "translated_at": "2026-11-01T22:36:24.710Z"}
         }
@@ -358,6 +402,7 @@
         "source_hash": "3bd5bfb4c14a",
         "source_text": "My Dashboard",
         "translations": {
+          "es-419": {"hash": "3bd5bfb4c14a", "status": "translated", "translated_at": "2026-11-09T02:01:33.374Z"},
           "fr": {"hash": "3bd5bfb4c14a", "status": "translated", "translated_at": "2026-11-01T22:36:24.704Z"},
           "nl": {"hash": "3bd5bfb4c14a", "status": "translated", "translated_at": "2026-11-01T22:36:24.710Z"}
         }
@@ -366,6 +411,7 @@
         "source_hash": "e0f4f767ac88",
         "source_text": "today",
         "translations": {
+          "es-419": {"hash": "e0f4f767ac88", "status": "translated", "translated_at": "2026-11-09T02:01:33.374Z"},
           "fr": {"hash": "e0f4f767ac88", "status": "translated", "translated_at": "2026-11-01T22:36:24.704Z"},
           "nl": {"hash": "e0f4f767ac88", "status": "translated", "translated_at": "2026-11-01T22:36:24.710Z"}
         }
@@ -374,6 +420,7 @@
         "source_hash": "b298b2aa7907",
         "source_text": "Could not reach the server. Check your connection and try again.",
         "translations": {
+          "es-419": {"hash": "b298b2aa7907", "status": "translated", "translated_at": "2026-11-09T02:01:33.375Z"},
           "fr": {"hash": "b298b2aa7907", "status": "translated", "translated_at": "2026-11-01T22:36:24.705Z"},
           "nl": {"hash": "b298b2aa7907", "status": "translated", "translated_at": "2026-11-01T22:36:24.711Z"}
         }
@@ -382,6 +429,7 @@
         "source_hash": "e637763d9781",
         "source_text": "Add exercise",
         "translations": {
+          "es-419": {"hash": "e637763d9781", "status": "translated", "translated_at": "2026-11-09T02:01:33.374Z"},
           "fr": {"hash": "e637763d9781", "status": "translated", "translated_at": "2026-11-01T22:36:24.704Z"},
           "nl": {"hash": "e637763d9781", "status": "translated", "translated_at": "2026-11-01T22:36:24.710Z"}
         }
@@ -390,6 +438,7 @@
         "source_hash": "c46c6fb819b3",
         "source_text": "Exercise added",
         "translations": {
+          "es-419": {"hash": "c46c6fb819b3", "status": "translated", "translated_at": "2026-11-09T02:01:33.374Z"},
           "fr": {"hash": "c46c6fb819b3", "status": "translated", "translated_at": "2026-11-01T22:36:24.704Z"},
           "nl": {"hash": "c46c6fb819b3", "status": "translated", "translated_at": "2026-11-01T22:36:24.710Z"}
         }
@@ -398,6 +447,7 @@
         "source_hash": "19766ed6ccb2",
         "source_text": "Cancel",
         "translations": {
+          "es-419": {"hash": "19766ed6ccb2", "status": "translated", "translated_at": "2026-11-09T02:01:33.374Z"},
           "fr": {"hash": "19766ed6ccb2", "status": "translated", "translated_at": "2026-11-01T22:36:24.704Z"},
           "nl": {"hash": "19766ed6ccb2", "status": "translated", "translated_at": "2026-11-01T22:36:24.710Z"}
         }
@@ -406,6 +456,7 @@
         "source_hash": "19766ed6ccb2",
         "source_text": "Cancel",
         "translations": {
+          "es-419": {"hash": "19766ed6ccb2", "status": "translated", "translated_at": "2026-11-09T02:01:33.374Z"},
           "fr": {"hash": "19766ed6ccb2", "status": "translated", "translated_at": "2026-11-01T22:36:24.704Z"},
           "nl": {"hash": "19766ed6ccb2", "status": "translated", "translated_at": "2026-11-01T22:36:24.710Z"}
         }
@@ -414,6 +465,7 @@
         "source_hash": "e2d0a54968ea",
         "source_text": "Delete",
         "translations": {
+          "es-419": {"hash": "e2d0a54968ea", "status": "translated", "translated_at": "2026-11-09T02:01:33.374Z"},
           "fr": {"hash": "e2d0a54968ea", "status": "translated", "translated_at": "2026-11-01T22:36:24.704Z"},
           "nl": {"hash": "e2d0a54968ea", "status": "translated", "translated_at": "2026-11-01T22:36:24.710Z"}
         }
@@ -422,6 +474,7 @@
         "source_hash": "9bc3516b784a",
         "source_text": "Exercise",
         "translations": {
+          "es-419": {"hash": "9bc3516b784a", "status": "translated", "translated_at": "2026-11-09T02:01:33.374Z"},
           "fr": {"hash": "9bc3516b784a", "status": "translated", "translated_at": "2026-11-01T22:36:24.704Z"},
           "nl": {"hash": "9bc3516b784a", "status": "translated", "translated_at": "2026-11-01T22:36:24.710Z"}
         }
@@ -430,6 +483,7 @@
         "source_hash": "a6a32dbc5618",
         "source_text": "Link",
         "translations": {
+          "es-419": {"hash": "a6a32dbc5618", "status": "translated", "translated_at": "2026-11-09T02:01:33.374Z"},
           "fr": {"hash": "a6a32dbc5618", "status": "translated", "translated_at": "2026-11-01T22:36:24.704Z"},
           "nl": {"hash": "a6a32dbc5618", "status": "translated", "translated_at": "2026-11-01T22:36:24.710Z"}
         }
@@ -438,6 +492,7 @@
         "source_hash": "81d27ef6d503",
         "source_text": "Weight",
         "translations": {
+          "es-419": {"hash": "81d27ef6d503", "status": "translated", "translated_at": "2026-11-09T02:01:33.374Z"},
           "fr": {"hash": "81d27ef6d503", "status": "translated", "translated_at": "2026-11-01T22:36:24.704Z"},
           "nl": {"hash": "81d27ef6d503", "status": "translated", "translated_at": "2026-11-01T22:36:24.710Z"}
         }
@@ -446,6 +501,7 @@
         "source_hash": "af5f7704ea90",
         "source_text": "Weight ({{unit}})",
         "translations": {
+          "es-419": {"hash": "af5f7704ea90", "status": "translated", "translated_at": "2026-11-09T02:01:33.374Z"},
           "fr": {"hash": "af5f7704ea90", "status": "translated", "translated_at": "2026-11-01T22:36:24.704Z"},
           "nl": {"hash": "af5f7704ea90", "status": "translated", "translated_at": "2026-11-01T22:36:24.710Z"}
         }
@@ -454,6 +510,7 @@
         "source_hash": "e2d0a54968ea",
         "source_text": "Delete",
         "translations": {
+          "es-419": {"hash": "e2d0a54968ea", "status": "translated", "translated_at": "2026-11-09T02:01:33.374Z"},
           "fr": {"hash": "e2d0a54968ea", "status": "translated", "translated_at": "2026-11-01T22:36:24.704Z"},
           "nl": {"hash": "e2d0a54968ea", "status": "translated", "translated_at": "2026-11-01T22:36:24.710Z"}
         }
@@ -462,6 +519,7 @@
         "source_hash": "4b88ad588129",
         "source_text": "Delete exercise",
         "translations": {
+          "es-419": {"hash": "4b88ad588129", "status": "translated", "translated_at": "2026-11-09T02:01:33.374Z"},
           "fr": {"hash": "4b88ad588129", "status": "translated", "translated_at": "2026-11-01T22:36:24.705Z"},
           "nl": {"hash": "4b88ad588129", "status": "translated", "translated_at": "2026-11-01T22:36:24.710Z"}
         }
@@ -470,6 +528,7 @@
         "source_hash": "39bd8bb06f54",
         "source_text": "Couldn't delete the exercise. Please try again.",
         "translations": {
+          "es-419": {"hash": "39bd8bb06f54", "status": "translated", "translated_at": "2026-11-09T02:01:33.374Z"},
           "fr": {"hash": "39bd8bb06f54", "status": "translated", "translated_at": "2026-11-01T22:36:24.704Z"},
           "nl": {"hash": "39bd8bb06f54", "status": "translated", "translated_at": "2026-11-01T22:36:24.710Z"}
         }
@@ -478,6 +537,7 @@
         "source_hash": "218df7d49b54",
         "source_text": "Exercise deleted",
         "translations": {
+          "es-419": {"hash": "218df7d49b54", "status": "translated", "translated_at": "2026-11-09T02:01:33.374Z"},
           "fr": {"hash": "218df7d49b54", "status": "translated", "translated_at": "2026-11-01T22:36:24.704Z"},
           "nl": {"hash": "218df7d49b54", "status": "translated", "translated_at": "2026-11-01T22:36:24.710Z"}
         }
@@ -486,6 +546,7 @@
         "source_hash": "4395892cff94",
         "source_text": "No exercises found for this muscle group.",
         "translations": {
+          "es-419": {"hash": "4395892cff94", "status": "translated", "translated_at": "2026-11-09T02:01:33.374Z"},
           "fr": {"hash": "4395892cff94", "status": "translated", "translated_at": "2026-11-01T22:36:24.704Z"},
           "nl": {"hash": "4395892cff94", "status": "translated", "translated_at": "2026-11-01T22:36:24.710Z"}
         }
@@ -494,6 +555,7 @@
         "source_hash": "6e2ad303447c",
         "source_text": "Couldn't add the exercise. Please try again.",
         "translations": {
+          "es-419": {"hash": "6e2ad303447c", "status": "translated", "translated_at": "2026-11-09T02:01:33.374Z"},
           "fr": {"hash": "6e2ad303447c", "status": "translated", "translated_at": "2026-11-01T22:36:24.704Z"},
           "nl": {"hash": "6e2ad303447c", "status": "translated", "translated_at": "2026-11-01T22:36:24.710Z"}
         }
@@ -502,6 +564,7 @@
         "source_hash": "8736ed577c73",
         "source_text": "An exercise with this name already exists.",
         "translations": {
+          "es-419": {"hash": "8736ed577c73", "status": "translated", "translated_at": "2026-11-09T02:01:33.374Z"},
           "fr": {"hash": "8736ed577c73", "status": "translated", "translated_at": "2026-11-01T22:36:24.704Z"},
           "nl": {"hash": "8736ed577c73", "status": "translated", "translated_at": "2026-11-01T22:36:24.710Z"}
         }
@@ -510,6 +573,7 @@
         "source_hash": "7c9af0aea3e0",
         "source_text": "Exercise name is required.",
         "translations": {
+          "es-419": {"hash": "7c9af0aea3e0", "status": "translated", "translated_at": "2026-11-09T02:01:33.374Z"},
           "fr": {"hash": "7c9af0aea3e0", "status": "translated", "translated_at": "2026-11-01T22:36:24.704Z"},
           "nl": {"hash": "7c9af0aea3e0", "status": "translated", "translated_at": "2026-11-01T22:36:24.710Z"}
         }
@@ -518,6 +582,7 @@
         "source_hash": "a6a32dbc5618",
         "source_text": "Link",
         "translations": {
+          "es-419": {"hash": "a6a32dbc5618", "status": "translated", "translated_at": "2026-11-09T02:01:33.374Z"},
           "fr": {"hash": "a6a32dbc5618", "status": "translated", "translated_at": "2026-11-01T22:36:24.704Z"},
           "nl": {"hash": "a6a32dbc5618", "status": "translated", "translated_at": "2026-11-01T22:36:24.710Z"}
         }
@@ -526,6 +591,7 @@
         "source_hash": "4c136056bc10",
         "source_text": "Muscle group",
         "translations": {
+          "es-419": {"hash": "4c136056bc10", "status": "translated", "translated_at": "2026-11-09T02:01:33.374Z"},
           "fr": {"hash": "4c136056bc10", "status": "translated", "translated_at": "2026-11-01T22:36:24.704Z"},
           "nl": {"hash": "4c136056bc10", "status": "translated", "translated_at": "2026-11-01T22:36:24.710Z"}
         }
@@ -534,6 +600,7 @@
         "source_hash": "dcd1d5223f73",
         "source_text": "Name",
         "translations": {
+          "es-419": {"hash": "dcd1d5223f73", "status": "translated", "translated_at": "2026-11-09T02:01:33.374Z"},
           "fr": {"hash": "dcd1d5223f73", "status": "translated", "translated_at": "2026-11-01T22:36:24.704Z"},
           "nl": {"hash": "dcd1d5223f73", "status": "translated", "translated_at": "2026-11-01T22:36:24.710Z"}
         }
@@ -542,6 +609,7 @@
         "source_hash": "8a7525b1492f",
         "source_text": "Notes",
         "translations": {
+          "es-419": {"hash": "8a7525b1492f", "status": "translated", "translated_at": "2026-11-09T02:01:33.374Z"},
           "fr": {"hash": "8a7525b1492f", "status": "translated", "translated_at": "2026-11-01T22:36:24.704Z"},
           "nl": {"hash": "8a7525b1492f", "status": "translated", "translated_at": "2026-11-01T22:36:24.710Z"}
         }
@@ -550,6 +618,7 @@
         "source_hash": "81d27ef6d503",
         "source_text": "Weight",
         "translations": {
+          "es-419": {"hash": "81d27ef6d503", "status": "translated", "translated_at": "2026-11-09T02:01:33.374Z"},
           "fr": {"hash": "81d27ef6d503", "status": "translated", "translated_at": "2026-11-01T22:36:24.704Z"},
           "nl": {"hash": "81d27ef6d503", "status": "translated", "translated_at": "2026-11-01T22:36:24.710Z"}
         }
@@ -558,6 +627,7 @@
         "source_hash": "e98a62ef23bb",
         "source_text": "https://...",
         "translations": {
+          "es-419": {"hash": "e98a62ef23bb", "status": "translated", "translated_at": "2026-11-09T02:01:33.374Z"},
           "fr": {"hash": "e98a62ef23bb", "status": "translated", "translated_at": "2026-11-01T22:36:24.704Z"},
           "nl": {"hash": "e98a62ef23bb", "status": "translated", "translated_at": "2026-11-01T22:36:24.710Z"}
         }
@@ -566,6 +636,7 @@
         "source_hash": "c252b41f0b4f",
         "source_text": "Exercise name",
         "translations": {
+          "es-419": {"hash": "c252b41f0b4f", "status": "translated", "translated_at": "2026-11-09T02:01:33.374Z"},
           "fr": {"hash": "c252b41f0b4f", "status": "translated", "translated_at": "2026-11-01T22:36:24.704Z"},
           "nl": {"hash": "c252b41f0b4f", "status": "translated", "translated_at": "2026-11-01T22:36:24.710Z"}
         }
@@ -574,6 +645,7 @@
         "source_hash": "7073618a629f",
         "source_text": "New exercise",
         "translations": {
+          "es-419": {"hash": "7073618a629f", "status": "translated", "translated_at": "2026-11-09T02:01:33.374Z"},
           "fr": {"hash": "7073618a629f", "status": "translated", "translated_at": "2026-11-01T22:36:24.704Z"},
           "nl": {"hash": "7073618a629f", "status": "translated", "translated_at": "2026-11-01T22:36:24.710Z"}
         }
@@ -582,6 +654,7 @@
         "source_hash": "c49b2f6cd5b5",
         "source_text": "Any notes...",
         "translations": {
+          "es-419": {"hash": "c49b2f6cd5b5", "status": "translated", "translated_at": "2026-11-09T02:01:33.374Z"},
           "fr": {"hash": "c49b2f6cd5b5", "status": "translated", "translated_at": "2026-11-01T22:36:24.704Z"},
           "nl": {"hash": "c49b2f6cd5b5", "status": "translated", "translated_at": "2026-11-01T22:36:24.710Z"}
         }
@@ -590,6 +663,7 @@
         "source_hash": "1509f561f241",
         "source_text": "Save",
         "translations": {
+          "es-419": {"hash": "1509f561f241", "status": "translated", "translated_at": "2026-11-09T02:01:33.374Z"},
           "fr": {"hash": "1509f561f241", "status": "translated", "translated_at": "2026-11-01T22:36:24.704Z"},
           "nl": {"hash": "1509f561f241", "status": "translated", "translated_at": "2026-11-01T22:36:24.710Z"}
         }
@@ -598,6 +672,7 @@
         "source_hash": "9ef76d1d9615",
         "source_text": "Select muscle group:",
         "translations": {
+          "es-419": {"hash": "9ef76d1d9615", "status": "translated", "translated_at": "2026-11-09T02:01:33.374Z"},
           "fr": {"hash": "9ef76d1d9615", "status": "translated", "translated_at": "2026-11-01T22:36:24.704Z"},
           "nl": {"hash": "9ef76d1d9615", "status": "translated", "translated_at": "2026-11-01T22:36:24.710Z"}
         }
@@ -606,6 +681,7 @@
         "source_hash": "e9ca8fed7e05",
         "source_text": "My exercises",
         "translations": {
+          "es-419": {"hash": "e9ca8fed7e05", "status": "translated", "translated_at": "2026-11-09T02:01:33.374Z"},
           "fr": {"hash": "e9ca8fed7e05", "status": "translated", "translated_at": "2026-11-01T22:36:24.704Z"},
           "nl": {"hash": "e9ca8fed7e05", "status": "translated", "translated_at": "2026-11-01T22:36:24.710Z"}
         }
@@ -614,6 +690,7 @@
         "source_hash": "dcc839a4015c",
         "source_text": "View",
         "translations": {
+          "es-419": {"hash": "dcc839a4015c", "status": "translated", "translated_at": "2026-11-09T02:01:33.374Z"},
           "fr": {"hash": "dcc839a4015c", "status": "translated", "translated_at": "2026-11-01T22:36:24.704Z"},
           "nl": {"hash": "dcc839a4015c", "status": "translated", "translated_at": "2026-11-01T22:36:24.710Z"}
         }
@@ -622,6 +699,7 @@
         "source_hash": "53824162b760",
         "source_text": "Couldn't save the weight. Please try again.",
         "translations": {
+          "es-419": {"hash": "53824162b760", "status": "translated", "translated_at": "2026-11-09T02:01:33.374Z"},
           "fr": {"hash": "53824162b760", "status": "translated", "translated_at": "2026-11-01T22:36:24.704Z"},
           "nl": {"hash": "53824162b760", "status": "translated", "translated_at": "2026-11-01T22:36:24.710Z"}
         }
@@ -630,6 +708,7 @@
         "source_hash": "30a8b4cdec88",
         "source_text": "Back to log in",
         "translations": {
+          "es-419": {"hash": "30a8b4cdec88", "status": "translated", "translated_at": "2026-11-09T02:01:33.374Z"},
           "fr": {"hash": "30a8b4cdec88", "status": "translated", "translated_at": "2026-11-01T22:36:24.704Z"},
           "nl": {"hash": "30a8b4cdec88", "status": "translated", "translated_at": "2026-11-01T22:36:24.710Z"}
         }
@@ -638,6 +717,7 @@
         "source_hash": "708c5d67ba8e",
         "source_text": "Send reset link",
         "translations": {
+          "es-419": {"hash": "708c5d67ba8e", "status": "translated", "translated_at": "2026-11-09T02:01:33.374Z"},
           "fr": {"hash": "708c5d67ba8e", "status": "translated", "translated_at": "2026-11-01T22:36:24.704Z"},
           "nl": {"hash": "708c5d67ba8e", "status": "translated", "translated_at": "2026-11-01T22:36:24.710Z"}
         }
@@ -646,6 +726,7 @@
         "source_hash": "af67a7e6c473",
         "source_text": "Enter your email and we will send you a reset link.",
         "translations": {
+          "es-419": {"hash": "af67a7e6c473", "status": "translated", "translated_at": "2026-11-09T02:01:33.374Z"},
           "fr": {"hash": "af67a7e6c473", "status": "translated", "translated_at": "2026-11-01T22:36:24.704Z"},
           "nl": {"hash": "af67a7e6c473", "status": "translated", "translated_at": "2026-11-01T22:36:24.710Z"}
         }
@@ -654,6 +735,7 @@
         "source_hash": "8b784156b54f",
         "source_text": "If that account exists, a reset link has been sent. Check your inbox.",
         "translations": {
+          "es-419": {"hash": "8b784156b54f", "status": "translated", "translated_at": "2026-11-09T02:01:33.374Z"},
           "fr": {"hash": "8b784156b54f", "status": "translated", "translated_at": "2026-11-01T22:36:24.704Z"},
           "nl": {"hash": "8b784156b54f", "status": "translated", "translated_at": "2026-11-01T22:36:24.710Z"}
         }
@@ -662,6 +744,7 @@
         "source_hash": "59fa4379be1f",
         "source_text": "Reset your password",
         "translations": {
+          "es-419": {"hash": "59fa4379be1f", "status": "translated", "translated_at": "2026-11-09T02:01:33.374Z"},
           "fr": {"hash": "59fa4379be1f", "status": "translated", "translated_at": "2026-11-01T22:36:24.704Z"},
           "nl": {"hash": "59fa4379be1f", "status": "translated", "translated_at": "2026-11-01T22:36:24.710Z"}
         }
@@ -670,6 +753,7 @@
         "source_hash": "c189840cf7e2",
         "source_text": "Log in",
         "translations": {
+          "es-419": {"hash": "c189840cf7e2", "status": "translated", "translated_at": "2026-11-09T02:01:33.374Z"},
           "fr": {"hash": "c189840cf7e2", "status": "translated", "translated_at": "2026-11-01T22:36:24.704Z"},
           "nl": {"hash": "c189840cf7e2", "status": "translated", "translated_at": "2026-11-01T22:36:24.710Z"}
         }
@@ -678,6 +762,7 @@
         "source_hash": "969ccbd3cf63",
         "source_text": "Email",
         "translations": {
+          "es-419": {"hash": "969ccbd3cf63", "status": "translated", "translated_at": "2026-11-09T02:01:33.374Z"},
           "fr": {"hash": "969ccbd3cf63", "status": "translated", "translated_at": "2026-11-01T22:36:24.704Z"},
           "nl": {"hash": "969ccbd3cf63", "status": "translated", "translated_at": "2026-11-01T22:36:24.710Z"}
         }
@@ -686,6 +771,7 @@
         "source_hash": "53e6cdc30765",
         "source_text": "you@example.com",
         "translations": {
+          "es-419": {"hash": "53e6cdc30765", "status": "translated", "translated_at": "2026-11-09T02:01:33.374Z"},
           "fr": {"hash": "53e6cdc30765", "status": "translated", "translated_at": "2026-11-01T22:36:24.704Z"},
           "nl": {"hash": "53e6cdc30765", "status": "translated", "translated_at": "2026-11-01T22:36:24.710Z"}
         }
@@ -694,6 +780,7 @@
         "source_hash": "30c1d8d3e912",
         "source_text": "Forgot password?",
         "translations": {
+          "es-419": {"hash": "30c1d8d3e912", "status": "translated", "translated_at": "2026-11-09T02:01:33.374Z"},
           "fr": {"hash": "30c1d8d3e912", "status": "translated", "translated_at": "2026-11-01T22:36:24.704Z"},
           "nl": {"hash": "30c1d8d3e912", "status": "translated", "translated_at": "2026-11-01T22:36:24.710Z"}
         }
@@ -702,6 +789,7 @@
         "source_hash": "75409535c0c2",
         "source_text": "No account? Register",
         "translations": {
+          "es-419": {"hash": "75409535c0c2", "status": "translated", "translated_at": "2026-11-09T02:01:33.374Z"},
           "fr": {"hash": "75409535c0c2", "status": "translated", "translated_at": "2026-11-01T22:36:24.704Z"},
           "nl": {"hash": "75409535c0c2", "status": "translated", "translated_at": "2026-11-01T22:36:24.710Z"}
         }
@@ -710,6 +798,7 @@
         "source_hash": "e7cf3ef4f17c",
         "source_text": "Password",
         "translations": {
+          "es-419": {"hash": "e7cf3ef4f17c", "status": "translated", "translated_at": "2026-11-09T02:01:33.374Z"},
           "fr": {"hash": "e7cf3ef4f17c", "status": "translated", "translated_at": "2026-11-01T22:36:24.704Z"},
           "nl": {"hash": "e7cf3ef4f17c", "status": "translated", "translated_at": "2026-11-01T22:36:24.710Z"}
         }
@@ -726,6 +815,7 @@
         "source_hash": "53d1124b21ae",
         "source_text": "Sign in and log your next workout",
         "translations": {
+          "es-419": {"hash": "53d1124b21ae", "status": "translated", "translated_at": "2026-11-09T02:01:33.374Z"},
           "fr": {"hash": "53d1124b21ae", "status": "translated", "translated_at": "2026-11-01T22:36:24.704Z"},
           "nl": {"hash": "53d1124b21ae", "status": "translated", "translated_at": "2026-11-01T22:36:24.710Z"}
         }
@@ -734,6 +824,7 @@
         "source_hash": "ef68818cc22e",
         "source_text": "Abs",
         "translations": {
+          "es-419": {"hash": "ef68818cc22e", "status": "translated", "translated_at": "2026-11-09T02:01:33.374Z"},
           "fr": {"hash": "ef68818cc22e", "status": "translated", "translated_at": "2026-11-01T22:36:24.705Z"},
           "nl": {"hash": "ef68818cc22e", "status": "translated", "translated_at": "2026-11-01T22:36:24.710Z"}
         }
@@ -742,6 +833,7 @@
         "source_hash": "76900f1bfd16",
         "source_text": "Back",
         "translations": {
+          "es-419": {"hash": "76900f1bfd16", "status": "translated", "translated_at": "2026-11-09T02:01:33.374Z"},
           "fr": {"hash": "76900f1bfd16", "status": "translated", "translated_at": "2026-11-01T22:36:24.705Z"},
           "nl": {"hash": "76900f1bfd16", "status": "translated", "translated_at": "2026-11-01T22:36:24.710Z"}
         }
@@ -750,6 +842,7 @@
         "source_hash": "49f08df6459e",
         "source_text": "Biceps",
         "translations": {
+          "es-419": {"hash": "49f08df6459e", "status": "translated", "translated_at": "2026-11-09T02:01:33.374Z"},
           "fr": {"hash": "49f08df6459e", "status": "translated", "translated_at": "2026-11-01T22:36:24.705Z"},
           "nl": {"hash": "49f08df6459e", "status": "translated", "translated_at": "2026-11-01T22:36:24.710Z"}
         }
@@ -758,6 +851,7 @@
         "source_hash": "b94a4523f488",
         "source_text": "Calves",
         "translations": {
+          "es-419": {"hash": "b94a4523f488", "status": "translated", "translated_at": "2026-11-09T02:01:33.374Z"},
           "fr": {"hash": "b94a4523f488", "status": "translated", "translated_at": "2026-11-01T22:36:24.705Z"},
           "nl": {"hash": "b94a4523f488", "status": "translated", "translated_at": "2026-11-01T22:36:24.711Z"}
         }
@@ -766,6 +860,7 @@
         "source_hash": "378d83808237",
         "source_text": "Chest",
         "translations": {
+          "es-419": {"hash": "378d83808237", "status": "translated", "translated_at": "2026-11-09T02:01:33.374Z"},
           "fr": {"hash": "378d83808237", "status": "translated", "translated_at": "2026-11-01T22:36:24.705Z"},
           "nl": {"hash": "378d83808237", "status": "translated", "translated_at": "2026-11-01T22:36:24.711Z"}
         }
@@ -774,6 +869,7 @@
         "source_hash": "b4670a48d8d7",
         "source_text": "Forearms",
         "translations": {
+          "es-419": {"hash": "b4670a48d8d7", "status": "translated", "translated_at": "2026-11-09T02:01:33.374Z"},
           "fr": {"hash": "b4670a48d8d7", "status": "translated", "translated_at": "2026-11-01T22:36:24.705Z"},
           "nl": {"hash": "b4670a48d8d7", "status": "translated", "translated_at": "2026-11-01T22:36:24.711Z"}
         }
@@ -782,6 +878,7 @@
         "source_hash": "dffedb34d5b6",
         "source_text": "Glutes",
         "translations": {
+          "es-419": {"hash": "dffedb34d5b6", "status": "translated", "translated_at": "2026-11-09T02:01:33.374Z"},
           "fr": {"hash": "dffedb34d5b6", "status": "translated", "translated_at": "2026-11-01T22:36:24.705Z"},
           "nl": {"hash": "dffedb34d5b6", "status": "translated", "translated_at": "2026-11-01T22:36:24.711Z"}
         }
@@ -790,6 +887,7 @@
         "source_hash": "38557594d0fc",
         "source_text": "Legs",
         "translations": {
+          "es-419": {"hash": "38557594d0fc", "status": "translated", "translated_at": "2026-11-09T02:01:33.374Z"},
           "fr": {"hash": "38557594d0fc", "status": "translated", "translated_at": "2026-11-01T22:36:24.705Z"},
           "nl": {"hash": "38557594d0fc", "status": "translated", "translated_at": "2026-11-01T22:36:24.711Z"}
         }
@@ -798,6 +896,7 @@
         "source_hash": "ce3ffddfdb01",
         "source_text": "Shoulders",
         "translations": {
+          "es-419": {"hash": "ce3ffddfdb01", "status": "translated", "translated_at": "2026-11-09T02:01:33.374Z"},
           "fr": {"hash": "ce3ffddfdb01", "status": "translated", "translated_at": "2026-11-01T22:36:24.705Z"},
           "nl": {"hash": "ce3ffddfdb01", "status": "translated", "translated_at": "2026-11-01T22:36:24.711Z"}
         }
@@ -806,6 +905,7 @@
         "source_hash": "9978157e8e5b",
         "source_text": "Triceps",
         "translations": {
+          "es-419": {"hash": "9978157e8e5b", "status": "translated", "translated_at": "2026-11-09T02:01:33.374Z"},
           "fr": {"hash": "9978157e8e5b", "status": "translated", "translated_at": "2026-11-01T22:36:24.705Z"},
           "nl": {"hash": "9978157e8e5b", "status": "translated", "translated_at": "2026-11-01T22:36:24.711Z"}
         }
@@ -814,6 +914,7 @@
         "source_hash": "d5d0a30b517e",
         "source_text": "Calendar",
         "translations": {
+          "es-419": {"hash": "d5d0a30b517e", "status": "translated", "translated_at": "2026-11-09T02:01:33.374Z"},
           "fr": {"hash": "d5d0a30b517e", "status": "translated", "translated_at": "2026-11-01T22:36:24.704Z"},
           "nl": {"hash": "d5d0a30b517e", "status": "translated", "translated_at": "2026-11-01T22:36:24.710Z"}
         }
@@ -822,6 +923,7 @@
         "source_hash": "67b696468610",
         "source_text": "Dashboard",
         "translations": {
+          "es-419": {"hash": "67b696468610", "status": "translated", "translated_at": "2026-11-09T02:01:33.373Z"},
           "fr": {"hash": "67b696468610", "status": "translated", "translated_at": "2026-11-01T22:36:24.704Z"},
           "nl": {"hash": "67b696468610", "status": "translated", "translated_at": "2026-11-01T22:36:24.710Z"}
         }
@@ -830,6 +932,7 @@
         "source_hash": "988f06b36354",
         "source_text": "Exercises",
         "translations": {
+          "es-419": {"hash": "988f06b36354", "status": "translated", "translated_at": "2026-11-09T02:01:33.374Z"},
           "fr": {"hash": "988f06b36354", "status": "translated", "translated_at": "2026-11-01T22:36:24.704Z"},
           "nl": {"hash": "988f06b36354", "status": "translated", "translated_at": "2026-11-01T22:36:24.710Z"}
         }
@@ -838,6 +941,7 @@
         "source_hash": "a4fe65264ef7",
         "source_text": "Language",
         "translations": {
+          "es-419": {"hash": "a4fe65264ef7", "status": "translated", "translated_at": "2026-11-09T02:01:33.374Z"},
           "fr": {"hash": "a4fe65264ef7", "status": "translated", "translated_at": "2026-11-01T22:36:24.704Z"},
           "nl": {"hash": "a4fe65264ef7", "status": "translated", "translated_at": "2026-11-01T22:36:24.710Z"}
         }
@@ -846,6 +950,7 @@
         "source_hash": "49616145514e",
         "source_text": "Log out",
         "translations": {
+          "es-419": {"hash": "49616145514e", "status": "translated", "translated_at": "2026-11-09T02:01:33.374Z"},
           "fr": {"hash": "49616145514e", "status": "translated", "translated_at": "2026-11-01T22:36:24.704Z"},
           "nl": {"hash": "49616145514e", "status": "translated", "translated_at": "2026-11-01T22:36:24.710Z"}
         }
@@ -854,6 +959,7 @@
         "source_hash": "eb355944b92d",
         "source_text": "Main navigation",
         "translations": {
+          "es-419": {"hash": "eb355944b92d", "status": "translated", "translated_at": "2026-11-09T02:01:33.374Z"},
           "fr": {"hash": "eb355944b92d", "status": "translated", "translated_at": "2026-11-01T22:36:24.704Z"},
           "nl": {"hash": "eb355944b92d", "status": "translated", "translated_at": "2026-11-01T22:36:24.710Z"}
         }
@@ -862,6 +968,7 @@
         "source_hash": "d696a35bdd18",
         "source_text": "Profile",
         "translations": {
+          "es-419": {"hash": "d696a35bdd18", "status": "translated", "translated_at": "2026-11-09T02:01:33.374Z"},
           "fr": {"hash": "d696a35bdd18", "status": "translated", "translated_at": "2026-11-01T22:36:24.704Z"},
           "nl": {"hash": "d696a35bdd18", "status": "translated", "translated_at": "2026-11-01T22:36:24.710Z"}
         }
@@ -870,6 +977,7 @@
         "source_hash": "0b5baf309897",
         "source_text": "Routine",
         "translations": {
+          "es-419": {"hash": "0b5baf309897", "status": "translated", "translated_at": "2026-11-09T02:01:33.374Z"},
           "fr": {"hash": "0b5baf309897", "status": "translated", "translated_at": "2026-11-01T22:36:24.704Z"},
           "nl": {"hash": "0b5baf309897", "status": "translated", "translated_at": "2026-11-01T22:36:24.710Z"}
         }
@@ -878,6 +986,7 @@
         "source_hash": "7b3abf24fddd",
         "source_text": "Workout",
         "translations": {
+          "es-419": {"hash": "7b3abf24fddd", "status": "translated", "translated_at": "2026-11-09T02:01:33.374Z"},
           "fr": {"hash": "7b3abf24fddd", "status": "translated", "translated_at": "2026-11-01T22:36:24.704Z"},
           "nl": {"hash": "7b3abf24fddd", "status": "translated", "translated_at": "2026-11-01T22:36:24.710Z"}
         }
@@ -886,6 +995,7 @@
         "source_hash": "249b7587a3fc",
         "source_text": "WOD",
         "translations": {
+          "es-419": {"hash": "249b7587a3fc", "status": "translated", "translated_at": "2026-11-09T02:01:33.374Z"},
           "fr": {"hash": "249b7587a3fc", "status": "translated", "translated_at": "2026-11-01T22:36:24.704Z"},
           "nl": {"hash": "249b7587a3fc", "status": "translated", "translated_at": "2026-11-01T22:36:24.710Z"}
         }
@@ -894,6 +1004,7 @@
         "source_hash": "f65c2dd173fc",
         "source_text": "Your account has been deleted.",
         "translations": {
+          "es-419": {"hash": "f65c2dd173fc", "status": "translated", "translated_at": "2026-11-09T02:01:33.374Z"},
           "fr": {"hash": "f65c2dd173fc", "status": "translated", "translated_at": "2026-11-01T22:36:24.704Z"},
           "nl": {"hash": "f65c2dd173fc", "status": "translated", "translated_at": "2026-11-01T22:36:24.710Z"}
         }
@@ -902,6 +1013,7 @@
         "source_hash": "39b7370f30a3",
         "source_text": "Age",
         "translations": {
+          "es-419": {"hash": "39b7370f30a3", "status": "translated", "translated_at": "2026-11-09T02:01:33.374Z"},
           "fr": {"hash": "39b7370f30a3", "status": "translated", "translated_at": "2026-11-01T22:36:24.704Z"},
           "nl": {"hash": "39b7370f30a3", "status": "translated", "translated_at": "2026-11-01T22:36:24.710Z"}
         }
@@ -910,6 +1022,7 @@
         "source_hash": "19766ed6ccb2",
         "source_text": "Cancel",
         "translations": {
+          "es-419": {"hash": "19766ed6ccb2", "status": "translated", "translated_at": "2026-11-09T02:01:33.374Z"},
           "fr": {"hash": "19766ed6ccb2", "status": "translated", "translated_at": "2026-11-01T22:36:24.704Z"},
           "nl": {"hash": "19766ed6ccb2", "status": "translated", "translated_at": "2026-11-01T22:36:24.710Z"}
         }
@@ -918,6 +1031,7 @@
         "source_hash": "9003e1b7e7c2",
         "source_text": "Permanently delete",
         "translations": {
+          "es-419": {"hash": "9003e1b7e7c2", "status": "translated", "translated_at": "2026-11-09T02:01:33.374Z"},
           "fr": {"hash": "9003e1b7e7c2", "status": "translated", "translated_at": "2026-11-01T22:36:24.704Z"},
           "nl": {"hash": "9003e1b7e7c2", "status": "translated", "translated_at": "2026-11-01T22:36:24.710Z"}
         }
@@ -926,6 +1040,7 @@
         "source_hash": "0aec03a60176",
         "source_text": "Enter your password to confirm",
         "translations": {
+          "es-419": {"hash": "0aec03a60176", "status": "translated", "translated_at": "2026-11-09T02:01:33.374Z"},
           "fr": {"hash": "0aec03a60176", "status": "translated", "translated_at": "2026-11-01T22:36:24.704Z"},
           "nl": {"hash": "0aec03a60176", "status": "translated", "translated_at": "2026-11-01T22:36:24.710Z"}
         }
@@ -934,6 +1049,7 @@
         "source_hash": "fd8b8dae4421",
         "source_text": "Danger zone",
         "translations": {
+          "es-419": {"hash": "fd8b8dae4421", "status": "translated", "translated_at": "2026-11-09T02:01:33.374Z"},
           "fr": {"hash": "fd8b8dae4421", "status": "translated", "translated_at": "2026-11-01T22:36:24.704Z"},
           "nl": {"hash": "fd8b8dae4421", "status": "translated", "translated_at": "2026-11-01T22:36:24.710Z"}
         }
@@ -942,6 +1058,7 @@
         "source_hash": "a2e20a335700",
         "source_text": "Delete account",
         "translations": {
+          "es-419": {"hash": "a2e20a335700", "status": "translated", "translated_at": "2026-11-09T02:01:33.374Z"},
           "fr": {"hash": "a2e20a335700", "status": "translated", "translated_at": "2026-11-01T22:36:24.704Z"},
           "nl": {"hash": "a2e20a335700", "status": "translated", "translated_at": "2026-11-01T22:36:24.710Z"}
         }
@@ -950,6 +1067,7 @@
         "source_hash": "39bc7ab1ce09",
         "source_text": "Couldn't delete your account.",
         "translations": {
+          "es-419": {"hash": "39bc7ab1ce09", "status": "translated", "translated_at": "2026-11-09T02:01:33.374Z"},
           "fr": {"hash": "39bc7ab1ce09", "status": "translated", "translated_at": "2026-11-01T22:36:24.704Z"},
           "nl": {"hash": "39bc7ab1ce09", "status": "translated", "translated_at": "2026-11-01T22:36:24.710Z"}
         }
@@ -958,6 +1076,7 @@
         "source_hash": "020287dfd60a",
         "source_text": "This permanently deletes your account and all your data. This cannot be undone.",
         "translations": {
+          "es-419": {"hash": "020287dfd60a", "status": "translated", "translated_at": "2026-11-09T02:01:33.374Z"},
           "fr": {"hash": "020287dfd60a", "status": "translated", "translated_at": "2026-11-01T22:36:24.704Z"},
           "nl": {"hash": "020287dfd60a", "status": "translated", "translated_at": "2026-11-01T22:36:24.710Z"}
         }
@@ -966,6 +1085,7 @@
         "source_hash": "969ccbd3cf63",
         "source_text": "Email",
         "translations": {
+          "es-419": {"hash": "969ccbd3cf63", "status": "translated", "translated_at": "2026-11-09T02:01:33.374Z"},
           "fr": {"hash": "969ccbd3cf63", "status": "translated", "translated_at": "2026-11-01T22:36:24.704Z"},
           "nl": {"hash": "969ccbd3cf63", "status": "translated", "translated_at": "2026-11-01T22:36:24.710Z"}
         }
@@ -974,6 +1094,7 @@
         "source_hash": "9adf009b9ea4",
         "source_text": "ft",
         "translations": {
+          "es-419": {"hash": "9adf009b9ea4", "status": "translated", "translated_at": "2026-11-09T02:01:33.374Z"},
           "fr": {"hash": "9adf009b9ea4", "status": "translated", "translated_at": "2026-11-01T22:36:24.704Z"},
           "nl": {"hash": "9adf009b9ea4", "status": "translated", "translated_at": "2026-11-01T22:36:24.710Z"}
         }
@@ -982,6 +1103,7 @@
         "source_hash": "bfe2eca40179",
         "source_text": "Height",
         "translations": {
+          "es-419": {"hash": "bfe2eca40179", "status": "translated", "translated_at": "2026-11-09T02:01:33.374Z"},
           "fr": {"hash": "bfe2eca40179", "status": "translated", "translated_at": "2026-11-01T22:36:24.704Z"},
           "nl": {"hash": "bfe2eca40179", "status": "translated", "translated_at": "2026-11-01T22:36:24.710Z"}
         }
@@ -990,6 +1112,7 @@
         "source_hash": "ebd5acd00131",
         "source_text": "Height in {{unit}}",
         "translations": {
+          "es-419": {"hash": "ebd5acd00131", "status": "translated", "translated_at": "2026-11-09T02:01:33.374Z"},
           "fr": {"hash": "ebd5acd00131", "status": "translated", "translated_at": "2026-11-01T22:36:24.704Z"},
           "nl": {"hash": "ebd5acd00131", "status": "translated", "translated_at": "2026-11-01T22:36:24.710Z"}
         }
@@ -998,6 +1121,7 @@
         "source_hash": "ab89c0ee56a7",
         "source_text": "Height, feet",
         "translations": {
+          "es-419": {"hash": "ab89c0ee56a7", "status": "translated", "translated_at": "2026-11-09T02:01:33.374Z"},
           "fr": {"hash": "ab89c0ee56a7", "status": "translated", "translated_at": "2026-11-01T22:36:24.704Z"},
           "nl": {"hash": "ab89c0ee56a7", "status": "translated", "translated_at": "2026-11-01T22:36:24.710Z"}
         }
@@ -1006,6 +1130,7 @@
         "source_hash": "0b45d9ed1d6f",
         "source_text": "Height, inches",
         "translations": {
+          "es-419": {"hash": "0b45d9ed1d6f", "status": "translated", "translated_at": "2026-11-09T02:01:33.374Z"},
           "fr": {"hash": "0b45d9ed1d6f", "status": "translated", "translated_at": "2026-11-01T22:36:24.704Z"},
           "nl": {"hash": "0b45d9ed1d6f", "status": "translated", "translated_at": "2026-11-01T22:36:24.710Z"}
         }
@@ -1014,6 +1139,7 @@
         "source_hash": "d5d9fd1ff27d",
         "source_text": "Imperial (lb, ft)",
         "translations": {
+          "es-419": {"hash": "d5d9fd1ff27d", "status": "translated", "translated_at": "2026-11-09T02:01:33.374Z"},
           "fr": {"hash": "d5d9fd1ff27d", "status": "translated", "translated_at": "2026-11-01T22:36:24.704Z"},
           "nl": {"hash": "d5d9fd1ff27d", "status": "translated", "translated_at": "2026-11-01T22:36:24.710Z"}
         }
@@ -1022,6 +1148,7 @@
         "source_hash": "582967534d0f",
         "source_text": "in",
         "translations": {
+          "es-419": {"hash": "582967534d0f", "status": "translated", "translated_at": "2026-11-09T02:01:33.374Z"},
           "fr": {"hash": "582967534d0f", "status": "translated", "translated_at": "2026-11-01T22:36:24.704Z"},
           "nl": {"hash": "582967534d0f", "status": "translated", "translated_at": "2026-11-01T22:36:24.710Z"}
         }
@@ -1030,6 +1157,7 @@
         "source_hash": "a4fe65264ef7",
         "source_text": "Language",
         "translations": {
+          "es-419": {"hash": "a4fe65264ef7", "status": "translated", "translated_at": "2026-11-09T02:01:33.374Z"},
           "fr": {"hash": "a4fe65264ef7", "status": "translated", "translated_at": "2026-11-01T22:36:24.704Z"},
           "nl": {"hash": "a4fe65264ef7", "status": "translated", "translated_at": "2026-11-01T22:36:24.710Z"}
         }
@@ -1038,6 +1166,7 @@
         "source_hash": "2d303d33f091",
         "source_text": "Metric (kg, cm)",
         "translations": {
+          "es-419": {"hash": "2d303d33f091", "status": "translated", "translated_at": "2026-11-09T02:01:33.374Z"},
           "fr": {"hash": "2d303d33f091", "status": "translated", "translated_at": "2026-11-01T22:36:24.704Z"},
           "nl": {"hash": "2d303d33f091", "status": "translated", "translated_at": "2026-11-01T22:36:24.710Z"}
         }
@@ -1046,6 +1175,7 @@
         "source_hash": "dcd1d5223f73",
         "source_text": "Name",
         "translations": {
+          "es-419": {"hash": "dcd1d5223f73", "status": "translated", "translated_at": "2026-11-09T02:01:33.374Z"},
           "fr": {"hash": "dcd1d5223f73", "status": "translated", "translated_at": "2026-11-01T22:36:24.704Z"},
           "nl": {"hash": "dcd1d5223f73", "status": "translated", "translated_at": "2026-11-01T22:36:24.710Z"}
         }
@@ -1054,6 +1184,7 @@
         "source_hash": "1509f561f241",
         "source_text": "Save",
         "translations": {
+          "es-419": {"hash": "1509f561f241", "status": "translated", "translated_at": "2026-11-09T02:01:33.374Z"},
           "fr": {"hash": "1509f561f241", "status": "translated", "translated_at": "2026-11-01T22:36:24.704Z"},
           "nl": {"hash": "1509f561f241", "status": "translated", "translated_at": "2026-11-01T22:36:24.710Z"}
         }
@@ -1062,6 +1193,7 @@
         "source_hash": "de5cbcd5d874",
         "source_text": "Couldn't save your profile.",
         "translations": {
+          "es-419": {"hash": "de5cbcd5d874", "status": "translated", "translated_at": "2026-11-09T02:01:33.374Z"},
           "fr": {"hash": "de5cbcd5d874", "status": "translated", "translated_at": "2026-11-01T22:36:24.704Z"},
           "nl": {"hash": "de5cbcd5d874", "status": "translated", "translated_at": "2026-11-01T22:36:24.710Z"}
         }
@@ -1070,6 +1202,7 @@
         "source_hash": "c1632eafd446",
         "source_text": "Profile saved.",
         "translations": {
+          "es-419": {"hash": "c1632eafd446", "status": "translated", "translated_at": "2026-11-09T02:01:33.374Z"},
           "fr": {"hash": "c1632eafd446", "status": "translated", "translated_at": "2026-11-01T22:36:24.704Z"},
           "nl": {"hash": "c1632eafd446", "status": "translated", "translated_at": "2026-11-01T22:36:24.710Z"}
         }
@@ -1078,6 +1211,7 @@
         "source_hash": "953dd6f2b461",
         "source_text": "Sex",
         "translations": {
+          "es-419": {"hash": "953dd6f2b461", "status": "translated", "translated_at": "2026-11-09T02:01:33.374Z"},
           "fr": {"hash": "953dd6f2b461", "status": "translated", "translated_at": "2026-11-01T22:36:24.704Z"},
           "nl": {"hash": "953dd6f2b461", "status": "translated", "translated_at": "2026-11-01T22:36:24.710Z"}
         }
@@ -1086,6 +1220,7 @@
         "source_hash": "e8cca808ae5a",
         "source_text": "Female",
         "translations": {
+          "es-419": {"hash": "e8cca808ae5a", "status": "translated", "translated_at": "2026-11-09T02:01:33.374Z"},
           "fr": {"hash": "e8cca808ae5a", "status": "translated", "translated_at": "2026-11-01T22:36:24.704Z"},
           "nl": {"hash": "e8cca808ae5a", "status": "translated", "translated_at": "2026-11-01T22:36:24.710Z"}
         }
@@ -1094,6 +1229,7 @@
         "source_hash": "03f8c1273e3d",
         "source_text": "Male",
         "translations": {
+          "es-419": {"hash": "03f8c1273e3d", "status": "translated", "translated_at": "2026-11-09T02:01:33.374Z"},
           "fr": {"hash": "03f8c1273e3d", "status": "translated", "translated_at": "2026-11-01T22:36:24.704Z"},
           "nl": {"hash": "03f8c1273e3d", "status": "translated", "translated_at": "2026-11-01T22:36:24.710Z"}
         }
@@ -1102,6 +1238,7 @@
         "source_hash": "ec63fa8ed263",
         "source_text": "Non-binary",
         "translations": {
+          "es-419": {"hash": "ec63fa8ed263", "status": "translated", "translated_at": "2026-11-09T02:01:33.374Z"},
           "fr": {"hash": "ec63fa8ed263", "status": "translated", "translated_at": "2026-11-01T22:36:24.704Z"},
           "nl": {"hash": "ec63fa8ed263", "status": "translated", "translated_at": "2026-11-01T22:36:24.710Z"}
         }
@@ -1110,6 +1247,7 @@
         "source_hash": "4ceca1d52ced",
         "source_text": "Timezone",
         "translations": {
+          "es-419": {"hash": "4ceca1d52ced", "status": "translated", "translated_at": "2026-11-09T02:01:33.374Z"},
           "fr": {"hash": "4ceca1d52ced", "status": "translated", "translated_at": "2026-11-01T22:36:24.704Z"},
           "nl": {"hash": "4ceca1d52ced", "status": "translated", "translated_at": "2026-11-01T22:36:24.710Z"}
         }
@@ -1118,6 +1256,7 @@
         "source_hash": "271c62fa2deb",
         "source_text": "My profile",
         "translations": {
+          "es-419": {"hash": "271c62fa2deb", "status": "translated", "translated_at": "2026-11-09T02:01:33.374Z"},
           "fr": {"hash": "271c62fa2deb", "status": "translated", "translated_at": "2026-11-01T22:36:24.704Z"},
           "nl": {"hash": "271c62fa2deb", "status": "translated", "translated_at": "2026-11-01T22:36:24.710Z"}
         }
@@ -1126,6 +1265,7 @@
         "source_hash": "9fb6669a77ea",
         "source_text": "Units",
         "translations": {
+          "es-419": {"hash": "9fb6669a77ea", "status": "translated", "translated_at": "2026-11-09T02:01:33.374Z"},
           "fr": {"hash": "9fb6669a77ea", "status": "translated", "translated_at": "2026-11-01T22:36:24.704Z"},
           "nl": {"hash": "9fb6669a77ea", "status": "translated", "translated_at": "2026-11-01T22:36:24.710Z"}
         }
@@ -1134,6 +1274,7 @@
         "source_hash": "81d27ef6d503",
         "source_text": "Weight",
         "translations": {
+          "es-419": {"hash": "81d27ef6d503", "status": "translated", "translated_at": "2026-11-09T02:01:33.374Z"},
           "fr": {"hash": "81d27ef6d503", "status": "translated", "translated_at": "2026-11-01T22:36:24.704Z"},
           "nl": {"hash": "81d27ef6d503", "status": "translated", "translated_at": "2026-11-01T22:36:24.710Z"}
         }
@@ -1142,6 +1283,7 @@
         "source_hash": "4842c7bbfd14",
         "source_text": "Weight in {{unit}}",
         "translations": {
+          "es-419": {"hash": "4842c7bbfd14", "status": "translated", "translated_at": "2026-11-09T02:01:33.374Z"},
           "fr": {"hash": "4842c7bbfd14", "status": "translated", "translated_at": "2026-11-01T22:36:24.704Z"},
           "nl": {"hash": "4842c7bbfd14", "status": "translated", "translated_at": "2026-11-01T22:36:24.710Z"}
         }
@@ -1150,6 +1292,7 @@
         "source_hash": "bb7234ec1245",
         "source_text": "Register",
         "translations": {
+          "es-419": {"hash": "bb7234ec1245", "status": "translated", "translated_at": "2026-11-09T02:01:33.374Z"},
           "fr": {"hash": "bb7234ec1245", "status": "translated", "translated_at": "2026-11-01T22:36:24.704Z"},
           "nl": {"hash": "bb7234ec1245", "status": "translated", "translated_at": "2026-11-01T22:36:24.710Z"}
         }
@@ -1158,6 +1301,7 @@
         "source_hash": "6d047148749d",
         "source_text": "Already have an account? Log in",
         "translations": {
+          "es-419": {"hash": "6d047148749d", "status": "translated", "translated_at": "2026-11-09T02:01:33.374Z"},
           "fr": {"hash": "6d047148749d", "status": "translated", "translated_at": "2026-11-01T22:36:24.704Z"},
           "nl": {"hash": "6d047148749d", "status": "translated", "translated_at": "2026-11-01T22:36:24.710Z"}
         }
@@ -1166,6 +1310,7 @@
         "source_hash": "6c6e178ad2a8",
         "source_text": "Passwords do not match.",
         "translations": {
+          "es-419": {"hash": "6c6e178ad2a8", "status": "translated", "translated_at": "2026-11-09T02:01:33.374Z"},
           "fr": {"hash": "6c6e178ad2a8", "status": "translated", "translated_at": "2026-11-01T22:36:24.704Z"},
           "nl": {"hash": "6c6e178ad2a8", "status": "translated", "translated_at": "2026-11-01T22:36:24.710Z"}
         }
@@ -1174,6 +1319,7 @@
         "source_hash": "b74070f90e8c",
         "source_text": "Repeat password",
         "translations": {
+          "es-419": {"hash": "b74070f90e8c", "status": "translated", "translated_at": "2026-11-09T02:01:33.374Z"},
           "fr": {"hash": "b74070f90e8c", "status": "translated", "translated_at": "2026-11-01T22:36:24.704Z"},
           "nl": {"hash": "b74070f90e8c", "status": "translated", "translated_at": "2026-11-01T22:36:24.710Z"}
         }
@@ -1182,6 +1328,7 @@
         "source_hash": "1d81e73bdc7f",
         "source_text": "Account created. We sent a verification code to your email.",
         "translations": {
+          "es-419": {"hash": "1d81e73bdc7f", "status": "translated", "translated_at": "2026-11-09T02:01:33.374Z"},
           "fr": {"hash": "1d81e73bdc7f", "status": "translated", "translated_at": "2026-11-01T22:36:24.704Z"},
           "nl": {"hash": "1d81e73bdc7f", "status": "translated", "translated_at": "2026-11-01T22:36:24.710Z"}
         }
@@ -1190,6 +1337,7 @@
         "source_hash": "9e709348f582",
         "source_text": "Create your account",
         "translations": {
+          "es-419": {"hash": "9e709348f582", "status": "translated", "translated_at": "2026-11-09T02:01:33.374Z"},
           "fr": {"hash": "9e709348f582", "status": "translated", "translated_at": "2026-11-01T22:36:24.704Z"},
           "nl": {"hash": "9e709348f582", "status": "translated", "translated_at": "2026-11-01T22:36:24.710Z"}
         }
@@ -1198,6 +1346,7 @@
         "source_hash": "30a8b4cdec88",
         "source_text": "Back to log in",
         "translations": {
+          "es-419": {"hash": "30a8b4cdec88", "status": "translated", "translated_at": "2026-11-09T02:01:33.374Z"},
           "fr": {"hash": "30a8b4cdec88", "status": "translated", "translated_at": "2026-11-01T22:36:24.704Z"},
           "nl": {"hash": "30a8b4cdec88", "status": "translated", "translated_at": "2026-11-01T22:36:24.710Z"}
         }
@@ -1206,6 +1355,7 @@
         "source_hash": "fe45b4014135",
         "source_text": "Update password",
         "translations": {
+          "es-419": {"hash": "fe45b4014135", "status": "translated", "translated_at": "2026-11-09T02:01:33.374Z"},
           "fr": {"hash": "fe45b4014135", "status": "translated", "translated_at": "2026-11-01T22:36:24.704Z"},
           "nl": {"hash": "fe45b4014135", "status": "translated", "translated_at": "2026-11-01T22:36:24.710Z"}
         }
@@ -1214,6 +1364,7 @@
         "source_hash": "ed5598ec1cac",
         "source_text": "This reset link is invalid or has expired.",
         "translations": {
+          "es-419": {"hash": "ed5598ec1cac", "status": "translated", "translated_at": "2026-11-09T02:01:33.374Z"},
           "fr": {"hash": "ed5598ec1cac", "status": "translated", "translated_at": "2026-11-01T22:36:24.704Z"},
           "nl": {"hash": "ed5598ec1cac", "status": "translated", "translated_at": "2026-11-01T22:36:24.710Z"}
         }
@@ -1222,6 +1373,7 @@
         "source_hash": "6c6e178ad2a8",
         "source_text": "Passwords do not match.",
         "translations": {
+          "es-419": {"hash": "6c6e178ad2a8", "status": "translated", "translated_at": "2026-11-09T02:01:33.374Z"},
           "fr": {"hash": "6c6e178ad2a8", "status": "translated", "translated_at": "2026-11-01T22:36:24.704Z"},
           "nl": {"hash": "6c6e178ad2a8", "status": "translated", "translated_at": "2026-11-01T22:36:24.710Z"}
         }
@@ -1230,6 +1382,7 @@
         "source_hash": "3dd9df4441fb",
         "source_text": "New password",
         "translations": {
+          "es-419": {"hash": "3dd9df4441fb", "status": "translated", "translated_at": "2026-11-09T02:01:33.374Z"},
           "fr": {"hash": "3dd9df4441fb", "status": "translated", "translated_at": "2026-11-01T22:36:24.704Z"},
           "nl": {"hash": "3dd9df4441fb", "status": "translated", "translated_at": "2026-11-01T22:36:24.710Z"}
         }
@@ -1238,6 +1391,7 @@
         "source_hash": "0c89ec93844f",
         "source_text": "Repeat new password",
         "translations": {
+          "es-419": {"hash": "0c89ec93844f", "status": "translated", "translated_at": "2026-11-09T02:01:33.374Z"},
           "fr": {"hash": "0c89ec93844f", "status": "translated", "translated_at": "2026-11-01T22:36:24.704Z"},
           "nl": {"hash": "0c89ec93844f", "status": "translated", "translated_at": "2026-11-01T22:36:24.710Z"}
         }
@@ -1246,6 +1400,7 @@
         "source_hash": "887a560b8253",
         "source_text": "Set a new password",
         "translations": {
+          "es-419": {"hash": "887a560b8253", "status": "translated", "translated_at": "2026-11-09T02:01:33.374Z"},
           "fr": {"hash": "887a560b8253", "status": "translated", "translated_at": "2026-11-01T22:36:24.704Z"},
           "nl": {"hash": "887a560b8253", "status": "translated", "translated_at": "2026-11-01T22:36:24.710Z"}
         }
@@ -1254,6 +1409,7 @@
         "source_hash": "6c90bb659d98",
         "source_text": "Password must be at least 8 characters.",
         "translations": {
+          "es-419": {"hash": "6c90bb659d98", "status": "translated", "translated_at": "2026-11-09T02:01:33.374Z"},
           "fr": {"hash": "6c90bb659d98", "status": "translated", "translated_at": "2026-11-01T22:36:24.704Z"},
           "nl": {"hash": "6c90bb659d98", "status": "translated", "translated_at": "2026-11-01T22:36:24.710Z"}
         }
@@ -1262,6 +1418,7 @@
         "source_hash": "1bafb284397e",
         "source_text": "Add day",
         "translations": {
+          "es-419": {"hash": "1bafb284397e", "status": "translated", "translated_at": "2026-11-09T02:01:33.375Z"},
           "fr": {"hash": "1bafb284397e", "status": "translated", "translated_at": "2026-11-01T22:36:24.705Z"},
           "nl": {"hash": "1bafb284397e", "status": "translated", "translated_at": "2026-11-01T22:36:24.711Z"}
         }
@@ -1270,6 +1427,7 @@
         "source_hash": "163ade8a4b22",
         "source_text": "By muscle group",
         "translations": {
+          "es-419": {"hash": "163ade8a4b22", "status": "translated", "translated_at": "2026-11-09T02:01:33.375Z"},
           "fr": {"hash": "163ade8a4b22", "status": "translated", "translated_at": "2026-11-01T22:36:24.705Z"},
           "nl": {"hash": "163ade8a4b22", "status": "translated", "translated_at": "2026-11-01T22:36:24.711Z"}
         }
@@ -1278,6 +1436,7 @@
         "source_hash": "19766ed6ccb2",
         "source_text": "Cancel",
         "translations": {
+          "es-419": {"hash": "19766ed6ccb2", "status": "translated", "translated_at": "2026-11-09T02:01:33.375Z"},
           "fr": {"hash": "19766ed6ccb2", "status": "translated", "translated_at": "2026-11-01T22:36:24.705Z"},
           "nl": {"hash": "19766ed6ccb2", "status": "translated", "translated_at": "2026-11-01T22:36:24.711Z"}
         }
@@ -1286,6 +1445,7 @@
         "source_hash": "b69a2fee64da",
         "source_text": "Delete Day {{day}}? Its exercises will be removed.",
         "translations": {
+          "es-419": {"hash": "b69a2fee64da", "status": "translated", "translated_at": "2026-11-09T02:01:33.375Z"},
           "fr": {"hash": "b69a2fee64da", "status": "translated", "translated_at": "2026-11-01T22:36:24.705Z"},
           "nl": {"hash": "b69a2fee64da", "status": "translated", "translated_at": "2026-11-01T22:36:24.711Z"}
         }
@@ -1294,6 +1454,7 @@
         "source_hash": "dc11036138c7",
         "source_text": "Switching Day {{day}} clears its exercises. Continue?",
         "translations": {
+          "es-419": {"hash": "dc11036138c7", "status": "translated", "translated_at": "2026-11-09T02:01:33.375Z"},
           "fr": {"hash": "dc11036138c7", "status": "translated", "translated_at": "2026-11-01T22:36:24.705Z"},
           "nl": {"hash": "dc11036138c7", "status": "translated", "translated_at": "2026-11-01T22:36:24.711Z"}
         }
@@ -1302,6 +1463,7 @@
         "source_hash": "f0fe07086169",
         "source_text": "Create routine",
         "translations": {
+          "es-419": {"hash": "f0fe07086169", "status": "translated", "translated_at": "2026-11-09T02:01:33.375Z"},
           "fr": {"hash": "f0fe07086169", "status": "translated", "translated_at": "2026-11-01T22:36:24.705Z"},
           "nl": {"hash": "f0fe07086169", "status": "translated", "translated_at": "2026-11-01T22:36:24.711Z"}
         }
@@ -1310,6 +1472,7 @@
         "source_hash": "b0b9fe24ffa9",
         "source_text": "Manual",
         "translations": {
+          "es-419": {"hash": "b0b9fe24ffa9", "status": "translated", "translated_at": "2026-11-09T02:01:33.375Z"},
           "fr": {"hash": "b0b9fe24ffa9", "status": "translated", "translated_at": "2026-11-01T22:36:24.705Z"},
           "nl": {"hash": "b0b9fe24ffa9", "status": "translated", "translated_at": "2026-11-01T22:36:24.711Z"}
         }
@@ -1318,6 +1481,7 @@
         "source_hash": "ccca32fe4085",
         "source_text": "Per muscle",
         "translations": {
+          "es-419": {"hash": "ccca32fe4085", "status": "translated", "translated_at": "2026-11-09T02:01:33.375Z"},
           "fr": {"hash": "ccca32fe4085", "status": "translated", "translated_at": "2026-11-01T22:36:24.705Z"},
           "nl": {"hash": "ccca32fe4085", "status": "translated", "translated_at": "2026-11-01T22:36:24.711Z"}
         }
@@ -1326,6 +1490,7 @@
         "source_hash": "233a5fae38a8",
         "source_text": "How many days per week?",
         "translations": {
+          "es-419": {"hash": "233a5fae38a8", "status": "translated", "translated_at": "2026-11-09T02:01:33.375Z"},
           "fr": {"hash": "233a5fae38a8", "status": "translated", "translated_at": "2026-11-01T22:36:24.705Z"},
           "nl": {"hash": "233a5fae38a8", "status": "translated", "translated_at": "2026-11-01T22:36:24.711Z"}
         }
@@ -1334,6 +1499,7 @@
         "source_hash": "8a57877f282a",
         "source_text": "Delete this day",
         "translations": {
+          "es-419": {"hash": "8a57877f282a", "status": "translated", "translated_at": "2026-11-09T02:01:33.375Z"},
           "fr": {"hash": "8a57877f282a", "status": "translated", "translated_at": "2026-11-01T22:36:24.705Z"},
           "nl": {"hash": "8a57877f282a", "status": "translated", "translated_at": "2026-11-01T22:36:24.711Z"}
         }
@@ -1342,6 +1508,7 @@
         "source_hash": "801e2738261a",
         "source_text": "Edit routine",
         "translations": {
+          "es-419": {"hash": "801e2738261a", "status": "translated", "translated_at": "2026-11-09T02:01:33.375Z"},
           "fr": {"hash": "801e2738261a", "status": "translated", "translated_at": "2026-11-01T22:36:24.705Z"},
           "nl": {"hash": "801e2738261a", "status": "translated", "translated_at": "2026-11-01T22:36:24.711Z"}
         }
@@ -1350,6 +1517,7 @@
         "source_hash": "131eaf7de655",
         "source_text": "A routine needs at least one day.",
         "translations": {
+          "es-419": {"hash": "131eaf7de655", "status": "translated", "translated_at": "2026-11-09T02:01:33.375Z"},
           "fr": {"hash": "131eaf7de655", "status": "translated", "translated_at": "2026-11-01T22:36:24.705Z"},
           "nl": {"hash": "131eaf7de655", "status": "translated", "translated_at": "2026-11-01T22:36:24.711Z"}
         }
@@ -1358,6 +1526,7 @@
         "source_hash": "b6c852e3cf85",
         "source_text": "Select at least one {{muscle}} exercise for Day {{day}}.",
         "translations": {
+          "es-419": {"hash": "b6c852e3cf85", "status": "translated", "translated_at": "2026-11-09T02:01:33.375Z"},
           "fr": {"hash": "b6c852e3cf85", "status": "translated", "translated_at": "2026-11-01T22:36:24.705Z"},
           "nl": {"hash": "b6c852e3cf85", "status": "translated", "translated_at": "2026-11-01T22:36:24.711Z"}
         }
@@ -1366,6 +1535,7 @@
         "source_hash": "9a48530e9a92",
         "source_text": "Select at least one exercise for Day {{day}}.",
         "translations": {
+          "es-419": {"hash": "9a48530e9a92", "status": "translated", "translated_at": "2026-11-09T02:01:33.375Z"},
           "fr": {"hash": "9a48530e9a92", "status": "translated", "translated_at": "2026-11-01T22:36:24.705Z"},
           "nl": {"hash": "9a48530e9a92", "status": "translated", "translated_at": "2026-11-01T22:36:24.711Z"}
         }
@@ -1374,6 +1544,7 @@
         "source_hash": "578a3fb264a8",
         "source_text": "Day {{day}} needs at least one muscle group.",
         "translations": {
+          "es-419": {"hash": "578a3fb264a8", "status": "translated", "translated_at": "2026-11-09T02:01:33.375Z"},
           "fr": {"hash": "578a3fb264a8", "status": "translated", "translated_at": "2026-11-01T22:36:24.705Z"},
           "nl": {"hash": "578a3fb264a8", "status": "translated", "translated_at": "2026-11-01T22:36:24.711Z"}
         }
@@ -1382,6 +1553,7 @@
         "source_hash": "2d991b3d1b63",
         "source_text": "You have no {{muscle}} exercises. Add some on the Exercises page first.",
         "translations": {
+          "es-419": {"hash": "2d991b3d1b63", "status": "translated", "translated_at": "2026-11-09T02:01:33.375Z"},
           "fr": {"hash": "2d991b3d1b63", "status": "translated", "translated_at": "2026-11-01T22:36:24.705Z"},
           "nl": {"hash": "2d991b3d1b63", "status": "translated", "translated_at": "2026-11-01T22:36:24.711Z"}
         }
@@ -1390,6 +1562,7 @@
         "source_hash": "9abcb38fd4ed",
         "source_text": "Choose a type for Day {{day}} (by muscle group or manual).",
         "translations": {
+          "es-419": {"hash": "9abcb38fd4ed", "status": "translated", "translated_at": "2026-11-09T02:01:33.375Z"},
           "fr": {"hash": "9abcb38fd4ed", "status": "translated", "translated_at": "2026-11-01T22:36:24.705Z"},
           "nl": {"hash": "9abcb38fd4ed", "status": "translated", "translated_at": "2026-11-01T22:36:24.711Z"}
         }
@@ -1398,6 +1571,7 @@
         "source_hash": "c972e43a2fcd",
         "source_text": "{{count}} exercise",
         "translations": {
+          "es-419": {"hash": "c972e43a2fcd", "status": "translated", "translated_at": "2026-11-09T02:01:33.375Z"},
           "fr": {"hash": "c972e43a2fcd", "status": "translated", "translated_at": "2026-11-01T22:36:24.705Z"},
           "nl": {"hash": "c972e43a2fcd", "status": "translated", "translated_at": "2026-11-01T22:36:24.711Z"}
         }
@@ -1406,6 +1580,7 @@
         "source_hash": "6496b252ce51",
         "source_text": "{{count}} exercises",
         "translations": {
+          "es-419": {"hash": "6496b252ce51", "status": "translated", "translated_at": "2026-11-09T02:01:33.375Z"},
           "fr": {"hash": "6496b252ce51", "status": "translated", "translated_at": "2026-11-01T22:36:24.705Z"},
           "nl": {"hash": "6496b252ce51", "status": "translated", "translated_at": "2026-11-01T22:36:24.711Z"}
         }
@@ -1414,6 +1589,7 @@
         "source_hash": "b0b9fe24ffa9",
         "source_text": "Manual",
         "translations": {
+          "es-419": {"hash": "b0b9fe24ffa9", "status": "translated", "translated_at": "2026-11-09T02:01:33.375Z"},
           "fr": {"hash": "b0b9fe24ffa9", "status": "translated", "translated_at": "2026-11-01T22:36:24.705Z"},
           "nl": {"hash": "b0b9fe24ffa9", "status": "translated", "translated_at": "2026-11-01T22:36:24.711Z"}
         }
@@ -1422,6 +1598,7 @@
         "source_hash": "2f3c0e5bd132",
         "source_text": "name (optional)",
         "translations": {
+          "es-419": {"hash": "2f3c0e5bd132", "status": "translated", "translated_at": "2026-11-09T02:01:33.375Z"},
           "fr": {"hash": "2f3c0e5bd132", "status": "translated", "translated_at": "2026-11-01T22:36:24.705Z"},
           "nl": {"hash": "2f3c0e5bd132", "status": "translated", "translated_at": "2026-11-01T22:36:24.711Z"}
         }
@@ -1430,6 +1607,7 @@
         "source_hash": "d5e520f554b1",
         "source_text": "New routine",
         "translations": {
+          "es-419": {"hash": "d5e520f554b1", "status": "translated", "translated_at": "2026-11-09T02:01:33.375Z"},
           "fr": {"hash": "d5e520f554b1", "status": "translated", "translated_at": "2026-11-01T22:36:24.705Z"},
           "nl": {"hash": "d5e520f554b1", "status": "translated", "translated_at": "2026-11-01T22:36:24.711Z"}
         }
@@ -1438,6 +1616,7 @@
         "source_hash": "3404c058f3ff",
         "source_text": "Your new routine",
         "translations": {
+          "es-419": {"hash": "3404c058f3ff", "status": "translated", "translated_at": "2026-11-09T02:01:33.375Z"},
           "fr": {"hash": "3404c058f3ff", "status": "translated", "translated_at": "2026-11-01T22:36:24.705Z"},
           "nl": {"hash": "3404c058f3ff", "status": "translated", "translated_at": "2026-11-01T22:36:24.711Z"}
         }
@@ -1446,6 +1625,7 @@
         "source_hash": "d374e53379aa",
         "source_text": "No exercises",
         "translations": {
+          "es-419": {"hash": "d374e53379aa", "status": "translated", "translated_at": "2026-11-09T02:01:33.375Z"},
           "fr": {"hash": "d374e53379aa", "status": "translated", "translated_at": "2026-11-01T22:36:24.705Z"},
           "nl": {"hash": "d374e53379aa", "status": "translated", "translated_at": "2026-11-01T22:36:24.711Z"}
         }
@@ -1454,6 +1634,7 @@
         "source_hash": "41cd38734fe1",
         "source_text": "No {{muscle}} exercises yet. Add some on the Exercises page.",
         "translations": {
+          "es-419": {"hash": "41cd38734fe1", "status": "translated", "translated_at": "2026-11-09T02:01:33.375Z"},
           "fr": {"hash": "41cd38734fe1", "status": "translated", "translated_at": "2026-11-01T22:36:24.705Z"},
           "nl": {"hash": "41cd38734fe1", "status": "translated", "translated_at": "2026-11-01T22:36:24.711Z"}
         }
@@ -1462,6 +1643,7 @@
         "source_hash": "c324d0c6db21",
         "source_text": "No muscles",
         "translations": {
+          "es-419": {"hash": "c324d0c6db21", "status": "translated", "translated_at": "2026-11-09T02:01:33.375Z"},
           "fr": {"hash": "c324d0c6db21", "status": "translated", "translated_at": "2026-11-01T22:36:24.705Z"},
           "nl": {"hash": "c324d0c6db21", "status": "translated", "translated_at": "2026-11-01T22:36:24.711Z"}
         }
@@ -1470,6 +1652,7 @@
         "source_hash": "00e8c6ab98a6",
         "source_text": "You don't have a routine yet.",
         "translations": {
+          "es-419": {"hash": "00e8c6ab98a6", "status": "translated", "translated_at": "2026-11-09T02:01:33.375Z"},
           "fr": {"hash": "00e8c6ab98a6", "status": "translated", "translated_at": "2026-11-01T22:36:24.705Z"},
           "nl": {"hash": "00e8c6ab98a6", "status": "translated", "translated_at": "2026-11-01T22:36:24.711Z"}
         }
@@ -1478,6 +1661,7 @@
         "source_hash": "dc937b598926",
         "source_text": "None",
         "translations": {
+          "es-419": {"hash": "dc937b598926", "status": "translated", "translated_at": "2026-11-09T02:01:33.375Z"},
           "fr": {"hash": "dc937b598926", "status": "translated", "translated_at": "2026-11-01T22:36:24.705Z"},
           "nl": {"hash": "dc937b598926", "status": "translated", "translated_at": "2026-11-01T22:36:24.711Z"}
         }
@@ -1486,6 +1670,7 @@
         "source_hash": "6d2d680643ac",
         "source_text": "exercises per session",
         "translations": {
+          "es-419": {"hash": "6d2d680643ac", "status": "translated", "translated_at": "2026-11-09T02:01:33.375Z"},
           "fr": {"hash": "6d2d680643ac", "status": "translated", "translated_at": "2026-11-01T22:36:24.705Z"},
           "nl": {"hash": "6d2d680643ac", "status": "translated", "translated_at": "2026-11-01T22:36:24.711Z"}
         }
@@ -1494,6 +1679,7 @@
         "source_hash": "2eb6ea92d534",
         "source_text": "Save routine",
         "translations": {
+          "es-419": {"hash": "2eb6ea92d534", "status": "translated", "translated_at": "2026-11-09T02:01:33.375Z"},
           "fr": {"hash": "2eb6ea92d534", "status": "translated", "translated_at": "2026-11-01T22:36:24.705Z"},
           "nl": {"hash": "2eb6ea92d534", "status": "translated", "translated_at": "2026-11-01T22:36:24.711Z"}
         }
@@ -1502,6 +1688,7 @@
         "source_hash": "92b1c1dfc723",
         "source_text": "Could not save the routine.",
         "translations": {
+          "es-419": {"hash": "92b1c1dfc723", "status": "translated", "translated_at": "2026-11-09T02:01:33.375Z"},
           "fr": {"hash": "92b1c1dfc723", "status": "translated", "translated_at": "2026-11-01T22:36:24.705Z"},
           "nl": {"hash": "92b1c1dfc723", "status": "translated", "translated_at": "2026-11-01T22:36:24.711Z"}
         }
@@ -1510,6 +1697,7 @@
         "source_hash": "aca86c04eb7b",
         "source_text": "Routine saved!",
         "translations": {
+          "es-419": {"hash": "aca86c04eb7b", "status": "translated", "translated_at": "2026-11-09T02:01:33.375Z"},
           "fr": {"hash": "aca86c04eb7b", "status": "translated", "translated_at": "2026-11-01T22:36:24.705Z"},
           "nl": {"hash": "aca86c04eb7b", "status": "translated", "translated_at": "2026-11-01T22:36:24.711Z"}
         }
@@ -1518,6 +1706,7 @@
         "source_hash": "7438ec5cc8ba",
         "source_text": "see pool",
         "translations": {
+          "es-419": {"hash": "7438ec5cc8ba", "status": "translated", "translated_at": "2026-11-09T02:01:33.375Z"},
           "fr": {"hash": "7438ec5cc8ba", "status": "translated", "translated_at": "2026-11-01T22:36:24.705Z"},
           "nl": {"hash": "7438ec5cc8ba", "status": "translated", "translated_at": "2026-11-01T22:36:24.711Z"}
         }
@@ -1526,6 +1715,7 @@
         "source_hash": "723d52836be5",
         "source_text": "Select exercises to include",
         "translations": {
+          "es-419": {"hash": "723d52836be5", "status": "translated", "translated_at": "2026-11-09T02:01:33.375Z"},
           "fr": {"hash": "723d52836be5", "status": "translated", "translated_at": "2026-11-01T22:36:24.705Z"},
           "nl": {"hash": "723d52836be5", "status": "translated", "translated_at": "2026-11-01T22:36:24.711Z"}
         }
@@ -1534,6 +1724,7 @@
         "source_hash": "57fd7a0cf33f",
         "source_text": "Selected",
         "translations": {
+          "es-419": {"hash": "57fd7a0cf33f", "status": "translated", "translated_at": "2026-11-09T02:01:33.375Z"},
           "fr": {"hash": "57fd7a0cf33f", "status": "translated", "translated_at": "2026-11-01T22:36:24.705Z"},
           "nl": {"hash": "57fd7a0cf33f", "status": "translated", "translated_at": "2026-11-01T22:36:24.711Z"}
         }
@@ -1542,6 +1733,7 @@
         "source_hash": "19d54b4e3c12",
         "source_text": "My current routine",
         "translations": {
+          "es-419": {"hash": "19d54b4e3c12", "status": "translated", "translated_at": "2026-11-09T02:01:33.375Z"},
           "fr": {"hash": "19d54b4e3c12", "status": "translated", "translated_at": "2026-11-01T22:36:24.705Z"},
           "nl": {"hash": "19d54b4e3c12", "status": "translated", "translated_at": "2026-11-01T22:36:24.711Z"}
         }
@@ -1550,6 +1742,7 @@
         "source_hash": "7fac10f90096",
         "source_text": "Training {{count}} day per week",
         "translations": {
+          "es-419": {"hash": "7fac10f90096", "status": "translated", "translated_at": "2026-11-09T02:01:33.375Z"},
           "fr": {"hash": "7fac10f90096", "status": "translated", "translated_at": "2026-11-01T22:36:24.705Z"},
           "nl": {"hash": "7fac10f90096", "status": "translated", "translated_at": "2026-11-01T22:36:24.711Z"}
         }
@@ -1558,6 +1751,7 @@
         "source_hash": "1bade6465247",
         "source_text": "Training {{count}} days per week",
         "translations": {
+          "es-419": {"hash": "1bade6465247", "status": "translated", "translated_at": "2026-11-09T02:01:33.375Z"},
           "fr": {"hash": "1bade6465247", "status": "translated", "translated_at": "2026-11-01T22:36:24.705Z"},
           "nl": {"hash": "1bade6465247", "status": "translated", "translated_at": "2026-11-01T22:36:24.711Z"}
         }
@@ -1566,6 +1760,7 @@
         "source_hash": "c4a371acd7c3",
         "source_text": "Africa",
         "translations": {
+          "es-419": {"hash": "c4a371acd7c3", "status": "translated", "translated_at": "2026-11-09T02:01:33.374Z"},
           "fr": {"hash": "c4a371acd7c3", "status": "translated", "translated_at": "2026-11-01T22:36:24.705Z"},
           "nl": {"hash": "c4a371acd7c3", "status": "translated", "translated_at": "2026-11-01T22:36:24.711Z"}
         }
@@ -1574,6 +1769,7 @@
         "source_hash": "2d1b84c3b2d1",
         "source_text": "Americas",
         "translations": {
+          "es-419": {"hash": "2d1b84c3b2d1", "status": "translated", "translated_at": "2026-11-09T02:01:33.374Z"},
           "fr": {"hash": "2d1b84c3b2d1", "status": "translated", "translated_at": "2026-11-01T22:36:24.705Z"},
           "nl": {"hash": "2d1b84c3b2d1", "status": "translated", "translated_at": "2026-11-01T22:36:24.711Z"}
         }
@@ -1582,6 +1778,7 @@
         "source_hash": "e3a1804a6fe6",
         "source_text": "Asia / Pacific",
         "translations": {
+          "es-419": {"hash": "e3a1804a6fe6", "status": "translated", "translated_at": "2026-11-09T02:01:33.374Z"},
           "fr": {"hash": "e3a1804a6fe6", "status": "translated", "translated_at": "2026-11-01T22:36:24.705Z"},
           "nl": {"hash": "e3a1804a6fe6", "status": "translated", "translated_at": "2026-11-01T22:36:24.711Z"}
         }
@@ -1590,6 +1787,7 @@
         "source_hash": "e595f45dc6c9",
         "source_text": "Europe",
         "translations": {
+          "es-419": {"hash": "e595f45dc6c9", "status": "translated", "translated_at": "2026-11-09T02:01:33.374Z"},
           "fr": {"hash": "e595f45dc6c9", "status": "translated", "translated_at": "2026-11-01T22:36:24.705Z"},
           "nl": {"hash": "e595f45dc6c9", "status": "translated", "translated_at": "2026-11-01T22:36:24.711Z"}
         }
@@ -1598,6 +1796,7 @@
         "source_hash": "30a8b4cdec88",
         "source_text": "Back to log in",
         "translations": {
+          "es-419": {"hash": "30a8b4cdec88", "status": "translated", "translated_at": "2026-11-09T02:01:33.374Z"},
           "fr": {"hash": "30a8b4cdec88", "status": "translated", "translated_at": "2026-11-01T22:36:24.704Z"},
           "nl": {"hash": "30a8b4cdec88", "status": "translated", "translated_at": "2026-11-01T22:36:24.710Z"}
         }
@@ -1606,6 +1805,7 @@
         "source_hash": "eea2745e2867",
         "source_text": "Verify",
         "translations": {
+          "es-419": {"hash": "eea2745e2867", "status": "translated", "translated_at": "2026-11-09T02:01:33.374Z"},
           "fr": {"hash": "eea2745e2867", "status": "translated", "translated_at": "2026-11-01T22:36:24.704Z"},
           "nl": {"hash": "eea2745e2867", "status": "translated", "translated_at": "2026-11-01T22:36:24.710Z"}
         }
@@ -1614,6 +1814,7 @@
         "source_hash": "3ee75029c70e",
         "source_text": "Verification code",
         "translations": {
+          "es-419": {"hash": "3ee75029c70e", "status": "translated", "translated_at": "2026-11-09T02:01:33.374Z"},
           "fr": {"hash": "3ee75029c70e", "status": "translated", "translated_at": "2026-11-01T22:36:24.704Z"},
           "nl": {"hash": "3ee75029c70e", "status": "translated", "translated_at": "2026-11-01T22:36:24.710Z"}
         }
@@ -1622,6 +1823,7 @@
         "source_hash": "8d969eef6eca",
         "source_text": "123456",
         "translations": {
+          "es-419": {"hash": "8d969eef6eca", "status": "translated", "translated_at": "2026-11-09T02:01:33.374Z"},
           "fr": {"hash": "8d969eef6eca", "status": "translated", "translated_at": "2026-11-01T22:36:24.704Z"},
           "nl": {"hash": "8d969eef6eca", "status": "translated", "translated_at": "2026-11-01T22:36:24.710Z"}
         }
@@ -1630,6 +1832,7 @@
         "source_hash": "810983de6eae",
         "source_text": "Invalid or expired code.",
         "translations": {
+          "es-419": {"hash": "810983de6eae", "status": "translated", "translated_at": "2026-11-09T02:01:33.374Z"},
           "fr": {"hash": "810983de6eae", "status": "translated", "translated_at": "2026-11-01T22:36:24.704Z"},
           "nl": {"hash": "810983de6eae", "status": "translated", "translated_at": "2026-11-01T22:36:24.710Z"}
         }
@@ -1638,6 +1841,7 @@
         "source_hash": "b97457409ab5",
         "source_text": "Resend code",
         "translations": {
+          "es-419": {"hash": "b97457409ab5", "status": "translated", "translated_at": "2026-11-09T02:01:33.374Z"},
           "fr": {"hash": "b97457409ab5", "status": "translated", "translated_at": "2026-11-01T22:36:24.704Z"},
           "nl": {"hash": "b97457409ab5", "status": "translated", "translated_at": "2026-11-01T22:36:24.710Z"}
         }
@@ -1646,6 +1850,7 @@
         "source_hash": "0ff31d08bd3a",
         "source_text": "If the account exists and is unverified, a new code has been sent.",
         "translations": {
+          "es-419": {"hash": "0ff31d08bd3a", "status": "translated", "translated_at": "2026-11-09T02:01:33.374Z"},
           "fr": {"hash": "0ff31d08bd3a", "status": "translated", "translated_at": "2026-11-01T22:36:24.704Z"},
           "nl": {"hash": "0ff31d08bd3a", "status": "translated", "translated_at": "2026-11-01T22:36:24.710Z"}
         }
@@ -1654,6 +1859,7 @@
         "source_hash": "bb265946234f",
         "source_text": "Verify your email",
         "translations": {
+          "es-419": {"hash": "bb265946234f", "status": "translated", "translated_at": "2026-11-09T02:01:33.374Z"},
           "fr": {"hash": "bb265946234f", "status": "translated", "translated_at": "2026-11-01T22:36:24.704Z"},
           "nl": {"hash": "bb265946234f", "status": "translated", "translated_at": "2026-11-01T22:36:24.710Z"}
         }
@@ -1662,6 +1868,7 @@
         "source_hash": "7e9e5ac30f22",
         "source_text": "add",
         "translations": {
+          "es-419": {"hash": "7e9e5ac30f22", "status": "translated", "translated_at": "2026-11-09T02:01:33.375Z"},
           "fr": {"hash": "7e9e5ac30f22", "status": "translated", "translated_at": "2026-11-01T22:36:24.705Z"},
           "nl": {"hash": "7e9e5ac30f22", "status": "translated", "translated_at": "2026-11-01T22:36:24.711Z"}
         }
@@ -1670,6 +1877,7 @@
         "source_hash": "279b8a60f444",
         "source_text": "added",
         "translations": {
+          "es-419": {"hash": "279b8a60f444", "status": "translated", "translated_at": "2026-11-09T02:01:33.375Z"},
           "fr": {"hash": "279b8a60f444", "status": "translated", "translated_at": "2026-11-01T22:36:24.705Z"},
           "nl": {"hash": "279b8a60f444", "status": "translated", "translated_at": "2026-11-01T22:36:24.711Z"}
         }
@@ -1678,6 +1886,7 @@
         "source_hash": "a9d884004d65",
         "source_text": "Could not auto-generate a selection. Please try again.",
         "translations": {
+          "es-419": {"hash": "a9d884004d65", "status": "translated", "translated_at": "2026-11-09T02:01:33.375Z"},
           "fr": {"hash": "a9d884004d65", "status": "translated", "translated_at": "2026-11-01T22:36:24.705Z"},
           "nl": {"hash": "a9d884004d65", "status": "translated", "translated_at": "2026-11-01T22:36:24.711Z"}
         }
@@ -1686,6 +1895,7 @@
         "source_hash": "76900f1bfd16",
         "source_text": "Back",
         "translations": {
+          "es-419": {"hash": "76900f1bfd16", "status": "translated", "translated_at": "2026-11-09T02:01:33.375Z"},
           "fr": {"hash": "76900f1bfd16", "status": "translated", "translated_at": "2026-11-01T22:36:24.705Z"},
           "nl": {"hash": "76900f1bfd16", "status": "translated", "translated_at": "2026-11-01T22:36:24.711Z"}
         }
@@ -1694,6 +1904,7 @@
         "source_hash": "19766ed6ccb2",
         "source_text": "Cancel",
         "translations": {
+          "es-419": {"hash": "19766ed6ccb2", "status": "translated", "translated_at": "2026-11-09T02:01:33.375Z"},
           "fr": {"hash": "19766ed6ccb2", "status": "translated", "translated_at": "2026-11-01T22:36:24.705Z"},
           "nl": {"hash": "19766ed6ccb2", "status": "translated", "translated_at": "2026-11-01T22:36:24.711Z"}
         }
@@ -1702,6 +1913,7 @@
         "source_hash": "9bc3516b784a",
         "source_text": "Exercise",
         "translations": {
+          "es-419": {"hash": "9bc3516b784a", "status": "translated", "translated_at": "2026-11-09T02:01:33.375Z"},
           "fr": {"hash": "9bc3516b784a", "status": "translated", "translated_at": "2026-11-01T22:36:24.705Z"},
           "nl": {"hash": "9bc3516b784a", "status": "translated", "translated_at": "2026-11-01T22:36:24.711Z"}
         }
@@ -1710,6 +1922,7 @@
         "source_hash": "4bd851bcd8a8",
         "source_text": "Muscle",
         "translations": {
+          "es-419": {"hash": "4bd851bcd8a8", "status": "translated", "translated_at": "2026-11-09T02:01:33.375Z"},
           "fr": {"hash": "4bd851bcd8a8", "status": "translated", "translated_at": "2026-11-01T22:36:24.705Z"},
           "nl": {"hash": "4bd851bcd8a8", "status": "translated", "translated_at": "2026-11-01T22:36:24.711Z"}
         }
@@ -1718,6 +1931,7 @@
         "source_hash": "85bf5aae0c21",
         "source_text": "Reps",
         "translations": {
+          "es-419": {"hash": "85bf5aae0c21", "status": "translated", "translated_at": "2026-11-09T02:01:33.375Z"},
           "fr": {"hash": "85bf5aae0c21", "status": "translated", "translated_at": "2026-11-01T22:36:24.705Z"},
           "nl": {"hash": "85bf5aae0c21", "status": "translated", "translated_at": "2026-11-01T22:36:24.711Z"}
         }
@@ -1726,6 +1940,7 @@
         "source_hash": "fbb0f1b48888",
         "source_text": "Sets",
         "translations": {
+          "es-419": {"hash": "fbb0f1b48888", "status": "translated", "translated_at": "2026-11-09T02:01:33.375Z"},
           "fr": {"hash": "fbb0f1b48888", "status": "translated", "translated_at": "2026-11-01T22:36:24.705Z"},
           "nl": {"hash": "fbb0f1b48888", "status": "translated", "translated_at": "2026-11-01T22:36:24.711Z"}
         }
@@ -1734,6 +1949,7 @@
         "source_hash": "81d27ef6d503",
         "source_text": "Weight",
         "translations": {
+          "es-419": {"hash": "81d27ef6d503", "status": "translated", "translated_at": "2026-11-09T02:01:33.375Z"},
           "fr": {"hash": "81d27ef6d503", "status": "translated", "translated_at": "2026-11-01T22:36:24.705Z"},
           "nl": {"hash": "81d27ef6d503", "status": "translated", "translated_at": "2026-11-01T22:36:24.711Z"}
         }
@@ -1742,6 +1958,7 @@
         "source_hash": "97b0560280ed",
         "source_text": "current",
         "translations": {
+          "es-419": {"hash": "97b0560280ed", "status": "translated", "translated_at": "2026-11-09T02:01:33.375Z"},
           "fr": {"hash": "97b0560280ed", "status": "translated", "translated_at": "2026-11-01T22:36:24.705Z"},
           "nl": {"hash": "97b0560280ed", "status": "translated", "translated_at": "2026-11-01T22:36:24.711Z"}
         }
@@ -1750,6 +1967,7 @@
         "source_hash": "b51489bde8d8",
         "source_text": "Date:",
         "translations": {
+          "es-419": {"hash": "b51489bde8d8", "status": "translated", "translated_at": "2026-11-09T02:01:33.375Z"},
           "fr": {"hash": "b51489bde8d8", "status": "translated", "translated_at": "2026-11-01T22:36:24.705Z"},
           "nl": {"hash": "b51489bde8d8", "status": "translated", "translated_at": "2026-11-01T22:36:24.711Z"}
         }
@@ -1758,6 +1976,7 @@
         "source_hash": "86bb28a0f274",
         "source_text": "No exercises found for: {{muscles}}.",
         "translations": {
+          "es-419": {"hash": "86bb28a0f274", "status": "translated", "translated_at": "2026-11-09T02:01:33.375Z"},
           "fr": {"hash": "86bb28a0f274", "status": "translated", "translated_at": "2026-11-01T22:36:24.705Z"},
           "nl": {"hash": "86bb28a0f274", "status": "translated", "translated_at": "2026-11-01T22:36:24.711Z"}
         }
@@ -1766,6 +1985,7 @@
         "source_hash": "9bea249667d0",
         "source_text": "Generate WOD",
         "translations": {
+          "es-419": {"hash": "9bea249667d0", "status": "translated", "translated_at": "2026-11-09T02:01:33.375Z"},
           "fr": {"hash": "9bea249667d0", "status": "translated", "translated_at": "2026-11-01T22:36:24.705Z"},
           "nl": {"hash": "9bea249667d0", "status": "translated", "translated_at": "2026-11-01T22:36:24.711Z"}
         }
@@ -1774,6 +1994,7 @@
         "source_hash": "3611486397e8",
         "source_text": "Could not generate the workout. Please try again.",
         "translations": {
+          "es-419": {"hash": "3611486397e8", "status": "translated", "translated_at": "2026-11-09T02:01:33.375Z"},
           "fr": {"hash": "3611486397e8", "status": "translated", "translated_at": "2026-11-01T22:36:24.705Z"},
           "nl": {"hash": "3611486397e8", "status": "translated", "translated_at": "2026-11-01T22:36:24.711Z"}
         }
@@ -1782,6 +2003,7 @@
         "source_hash": "662603cc2ea0",
         "source_text": "Generate the workout for your highlighted day, or pick a different day above.",
         "translations": {
+          "es-419": {"hash": "662603cc2ea0", "status": "translated", "translated_at": "2026-11-09T02:01:33.375Z"},
           "fr": {"hash": "662603cc2ea0", "status": "translated", "translated_at": "2026-11-01T22:36:24.705Z"},
           "nl": {"hash": "662603cc2ea0", "status": "translated", "translated_at": "2026-11-01T22:36:24.711Z"}
         }
@@ -1790,6 +2012,7 @@
         "source_hash": "a279ac96977d",
         "source_text": "Add exercises",
         "translations": {
+          "es-419": {"hash": "a279ac96977d", "status": "translated", "translated_at": "2026-11-09T02:01:33.375Z"},
           "fr": {"hash": "a279ac96977d", "status": "translated", "translated_at": "2026-11-01T22:36:24.705Z"},
           "nl": {"hash": "a279ac96977d", "status": "translated", "translated_at": "2026-11-01T22:36:24.711Z"}
         }
@@ -1798,6 +2021,7 @@
         "source_hash": "158b975ea315",
         "source_text": "Automatic selection",
         "translations": {
+          "es-419": {"hash": "158b975ea315", "status": "translated", "translated_at": "2026-11-09T02:01:33.375Z"},
           "fr": {"hash": "158b975ea315", "status": "translated", "translated_at": "2026-11-01T22:36:24.705Z"},
           "nl": {"hash": "158b975ea315", "status": "translated", "translated_at": "2026-11-01T22:36:24.711Z"}
         }
@@ -1806,6 +2030,7 @@
         "source_hash": "a1ad37d0c5e8",
         "source_text": "Open calendar",
         "translations": {
+          "es-419": {"hash": "a1ad37d0c5e8", "status": "translated", "translated_at": "2026-11-09T02:01:33.375Z"},
           "fr": {"hash": "a1ad37d0c5e8", "status": "translated", "translated_at": "2026-11-01T22:36:24.705Z"},
           "nl": {"hash": "a1ad37d0c5e8", "status": "translated", "translated_at": "2026-11-01T22:36:24.711Z"}
         }
@@ -1814,6 +2039,7 @@
         "source_hash": "f0fe07086169",
         "source_text": "Create routine",
         "translations": {
+          "es-419": {"hash": "f0fe07086169", "status": "translated", "translated_at": "2026-11-09T02:01:33.375Z"},
           "fr": {"hash": "f0fe07086169", "status": "translated", "translated_at": "2026-11-01T22:36:24.705Z"},
           "nl": {"hash": "f0fe07086169", "status": "translated", "translated_at": "2026-11-01T22:36:24.711Z"}
         }
@@ -1822,6 +2048,7 @@
         "source_hash": "801e2738261a",
         "source_text": "Edit routine",
         "translations": {
+          "es-419": {"hash": "801e2738261a", "status": "translated", "translated_at": "2026-11-09T02:01:33.375Z"},
           "fr": {"hash": "801e2738261a", "status": "translated", "translated_at": "2026-11-01T22:36:24.705Z"},
           "nl": {"hash": "801e2738261a", "status": "translated", "translated_at": "2026-11-01T22:36:24.711Z"}
         }
@@ -1830,6 +2057,7 @@
         "source_hash": "47d2a515ef2f",
         "source_text": "Loading...",
         "translations": {
+          "es-419": {"hash": "47d2a515ef2f", "status": "translated", "translated_at": "2026-11-09T02:01:33.375Z"},
           "fr": {"hash": "47d2a515ef2f", "status": "translated", "translated_at": "2026-11-01T22:36:24.705Z"},
           "nl": {"hash": "47d2a515ef2f", "status": "translated", "translated_at": "2026-11-01T22:36:24.711Z"}
         }
@@ -1838,6 +2066,7 @@
         "source_hash": "d0d1f25d38f0",
         "source_text": "Log Manual",
         "translations": {
+          "es-419": {"hash": "d0d1f25d38f0", "status": "translated", "translated_at": "2026-11-09T02:01:33.375Z"},
           "fr": {"hash": "d0d1f25d38f0", "status": "translated", "translated_at": "2026-11-01T22:36:24.705Z"},
           "nl": {"hash": "d0d1f25d38f0", "status": "translated", "translated_at": "2026-11-01T22:36:24.711Z"}
         }
@@ -1846,6 +2075,7 @@
         "source_hash": "37c72e944486",
         "source_text": "Log WOD",
         "translations": {
+          "es-419": {"hash": "37c72e944486", "status": "translated", "translated_at": "2026-11-09T02:01:33.375Z"},
           "fr": {"hash": "37c72e944486", "status": "translated", "translated_at": "2026-11-01T22:36:24.705Z"},
           "nl": {"hash": "37c72e944486", "status": "translated", "translated_at": "2026-11-01T22:36:24.711Z"}
         }
@@ -1862,6 +2092,7 @@
         "source_hash": "edbff4919be3",
         "source_text": "No exercises added yet — add some from the list.",
         "translations": {
+          "es-419": {"hash": "edbff4919be3", "status": "translated", "translated_at": "2026-11-09T02:01:33.375Z"},
           "fr": {"hash": "edbff4919be3", "status": "translated", "translated_at": "2026-11-01T22:36:24.705Z"},
           "nl": {"hash": "edbff4919be3", "status": "translated", "translated_at": "2026-11-01T22:36:24.711Z"}
         }
@@ -1870,6 +2101,7 @@
         "source_hash": "97385c45e52d",
         "source_text": "Pick a date.",
         "translations": {
+          "es-419": {"hash": "97385c45e52d", "status": "translated", "translated_at": "2026-11-09T02:01:33.375Z"},
           "fr": {"hash": "97385c45e52d", "status": "translated", "translated_at": "2026-11-01T22:36:24.705Z"},
           "nl": {"hash": "97385c45e52d", "status": "translated", "translated_at": "2026-11-01T22:36:24.711Z"}
         }
@@ -1878,6 +2110,7 @@
         "source_hash": "6c1b635ac2ee",
         "source_text": "Add at least one exercise.",
         "translations": {
+          "es-419": {"hash": "6c1b635ac2ee", "status": "translated", "translated_at": "2026-11-09T02:01:33.375Z"},
           "fr": {"hash": "6c1b635ac2ee", "status": "translated", "translated_at": "2026-11-01T22:36:24.705Z"},
           "nl": {"hash": "6c1b635ac2ee", "status": "translated", "translated_at": "2026-11-01T22:36:24.711Z"}
         }
@@ -1886,6 +2119,7 @@
         "source_hash": "5b81a08b0d08",
         "source_text": "Mark as Complete",
         "translations": {
+          "es-419": {"hash": "5b81a08b0d08", "status": "translated", "translated_at": "2026-11-09T02:01:33.375Z"},
           "fr": {"hash": "5b81a08b0d08", "status": "translated", "translated_at": "2026-11-01T22:36:24.705Z"},
           "nl": {"hash": "5b81a08b0d08", "status": "translated", "translated_at": "2026-11-01T22:36:24.711Z"}
         }
@@ -1894,6 +2128,7 @@
         "source_hash": "537fae068b05",
         "source_text": "Please enter sets for: {{names}}",
         "translations": {
+          "es-419": {"hash": "537fae068b05", "status": "translated", "translated_at": "2026-11-09T02:01:33.375Z"},
           "fr": {"hash": "537fae068b05", "status": "translated", "translated_at": "2026-11-01T22:36:24.705Z"},
           "nl": {"hash": "537fae068b05", "status": "translated", "translated_at": "2026-11-01T22:36:24.711Z"}
         }
@@ -1902,6 +2137,7 @@
         "source_hash": "f39c89797acb",
         "source_text": "No {{muscle}} exercises.",
         "translations": {
+          "es-419": {"hash": "f39c89797acb", "status": "translated", "translated_at": "2026-11-09T02:01:33.375Z"},
           "fr": {"hash": "f39c89797acb", "status": "translated", "translated_at": "2026-11-01T22:36:24.705Z"},
           "nl": {"hash": "f39c89797acb", "status": "translated", "translated_at": "2026-11-01T22:36:24.711Z"}
         }
@@ -1910,6 +2146,7 @@
         "source_hash": "d82e5ed420c8",
         "source_text": "Enter the number of sets for at least one exercise.",
         "translations": {
+          "es-419": {"hash": "d82e5ed420c8", "status": "translated", "translated_at": "2026-11-09T02:01:33.375Z"},
           "fr": {"hash": "d82e5ed420c8", "status": "translated", "translated_at": "2026-11-01T22:36:24.705Z"},
           "nl": {"hash": "d82e5ed420c8", "status": "translated", "translated_at": "2026-11-01T22:36:24.711Z"}
         }
@@ -1918,6 +2155,7 @@
         "source_hash": "649ecce2fe3d",
         "source_text": "This day has no exercises yet.",
         "translations": {
+          "es-419": {"hash": "649ecce2fe3d", "status": "translated", "translated_at": "2026-11-09T02:01:33.375Z"},
           "fr": {"hash": "649ecce2fe3d", "status": "translated", "translated_at": "2026-11-01T22:36:24.705Z"},
           "nl": {"hash": "649ecce2fe3d", "status": "translated", "translated_at": "2026-11-01T22:36:24.711Z"}
         }
@@ -1926,6 +2164,7 @@
         "source_hash": "47b1faa06ee5",
         "source_text": "No exercises in your library for today's muscles: {{muscles}}.",
         "translations": {
+          "es-419": {"hash": "47b1faa06ee5", "status": "translated", "translated_at": "2026-11-09T02:01:33.375Z"},
           "fr": {"hash": "47b1faa06ee5", "status": "translated", "translated_at": "2026-11-01T22:36:24.705Z"},
           "nl": {"hash": "47b1faa06ee5", "status": "translated", "translated_at": "2026-11-01T22:36:24.711Z"}
         }
@@ -1934,6 +2173,7 @@
         "source_hash": "fd14bbcc0346",
         "source_text": "You need a routine before you can generate a workout.",
         "translations": {
+          "es-419": {"hash": "fd14bbcc0346", "status": "translated", "translated_at": "2026-11-09T02:01:33.375Z"},
           "fr": {"hash": "fd14bbcc0346", "status": "translated", "translated_at": "2026-11-01T22:36:24.705Z"},
           "nl": {"hash": "fd14bbcc0346", "status": "translated", "translated_at": "2026-11-01T22:36:24.711Z"}
         }
@@ -1942,6 +2182,7 @@
         "source_hash": "3a0a3f5eceb5",
         "source_text": "No exercises are selected for this day.",
         "translations": {
+          "es-419": {"hash": "3a0a3f5eceb5", "status": "translated", "translated_at": "2026-11-09T02:01:33.375Z"},
           "fr": {"hash": "3a0a3f5eceb5", "status": "translated", "translated_at": "2026-11-01T22:36:24.705Z"},
           "nl": {"hash": "3a0a3f5eceb5", "status": "translated", "translated_at": "2026-11-01T22:36:24.711Z"}
         }
@@ -1950,6 +2191,7 @@
         "source_hash": "43e1269ac88a",
         "source_text": "Remove {{name}}",
         "translations": {
+          "es-419": {"hash": "43e1269ac88a", "status": "translated", "translated_at": "2026-11-09T02:01:33.375Z"},
           "fr": {"hash": "43e1269ac88a", "status": "translated", "translated_at": "2026-11-01T22:36:24.705Z"},
           "nl": {"hash": "43e1269ac88a", "status": "translated", "translated_at": "2026-11-01T22:36:24.711Z"}
         }
@@ -1958,6 +2200,7 @@
         "source_hash": "fa3e64f96194",
         "source_text": "Reps for {{name}}",
         "translations": {
+          "es-419": {"hash": "fa3e64f96194", "status": "translated", "translated_at": "2026-11-09T02:01:33.375Z"},
           "fr": {"hash": "fa3e64f96194", "status": "translated", "translated_at": "2026-11-01T22:36:24.705Z"},
           "nl": {"hash": "fa3e64f96194", "status": "translated", "translated_at": "2026-11-01T22:36:24.711Z"}
         }
@@ -1966,6 +2209,7 @@
         "source_hash": "930647249314",
         "source_text": "Could not save the workout. Please try again.",
         "translations": {
+          "es-419": {"hash": "930647249314", "status": "translated", "translated_at": "2026-11-09T02:01:33.375Z"},
           "fr": {"hash": "930647249314", "status": "translated", "translated_at": "2026-11-01T22:36:24.705Z"},
           "nl": {"hash": "930647249314", "status": "translated", "translated_at": "2026-11-01T22:36:24.711Z"}
         }
@@ -1974,6 +2218,7 @@
         "source_hash": "dc85af8f2b1d",
         "source_text": "Saving...",
         "translations": {
+          "es-419": {"hash": "dc85af8f2b1d", "status": "translated", "translated_at": "2026-11-09T02:01:33.375Z"},
           "fr": {"hash": "dc85af8f2b1d", "status": "translated", "translated_at": "2026-11-01T22:36:24.705Z"},
           "nl": {"hash": "dc85af8f2b1d", "status": "translated", "translated_at": "2026-11-01T22:36:24.711Z"}
         }
@@ -1982,6 +2227,7 @@
         "source_hash": "fa03c522a65f",
         "source_text": "Could not set the current day. Please try again.",
         "translations": {
+          "es-419": {"hash": "fa03c522a65f", "status": "translated", "translated_at": "2026-11-09T02:01:33.375Z"},
           "fr": {"hash": "fa03c522a65f", "status": "translated", "translated_at": "2026-11-01T22:36:24.705Z"},
           "nl": {"hash": "fa03c522a65f", "status": "translated", "translated_at": "2026-11-01T22:36:24.711Z"}
         }
@@ -1990,6 +2236,7 @@
         "source_hash": "44b5b640107b",
         "source_text": "Sets for {{name}}",
         "translations": {
+          "es-419": {"hash": "44b5b640107b", "status": "translated", "translated_at": "2026-11-09T02:01:33.375Z"},
           "fr": {"hash": "44b5b640107b", "status": "translated", "translated_at": "2026-11-01T22:36:24.705Z"},
           "nl": {"hash": "44b5b640107b", "status": "translated", "translated_at": "2026-11-01T22:36:24.711Z"}
         }
@@ -1998,6 +2245,7 @@
         "source_hash": "37c72e944486",
         "source_text": "Log WOD",
         "translations": {
+          "es-419": {"hash": "37c72e944486", "status": "translated", "translated_at": "2026-11-09T02:01:33.375Z"},
           "fr": {"hash": "37c72e944486", "status": "translated", "translated_at": "2026-11-01T22:36:24.705Z"},
           "nl": {"hash": "37c72e944486", "status": "translated", "translated_at": "2026-11-01T22:36:24.711Z"}
         }
@@ -2006,6 +2254,7 @@
         "source_hash": "83c51eff18aa",
         "source_text": "Weight in {{unit}} for {{name}}",
         "translations": {
+          "es-419": {"hash": "83c51eff18aa", "status": "translated", "translated_at": "2026-11-09T02:01:33.375Z"},
           "fr": {"hash": "83c51eff18aa", "status": "translated", "translated_at": "2026-11-01T22:36:24.705Z"},
           "nl": {"hash": "83c51eff18aa", "status": "translated", "translated_at": "2026-11-01T22:36:24.711Z"}
         }
@@ -2014,6 +2263,7 @@
         "source_hash": "a721dbc8d168",
         "source_text": "wt",
         "translations": {
+          "es-419": {"hash": "a721dbc8d168", "status": "translated", "translated_at": "2026-11-09T02:01:33.375Z"},
           "fr": {"hash": "a721dbc8d168", "status": "translated", "translated_at": "2026-11-01T22:36:24.705Z"},
           "nl": {"hash": "a721dbc8d168", "status": "translated", "translated_at": "2026-11-01T22:36:24.711Z"}
         }
@@ -2022,14 +2272,15 @@
         "source_hash": "55f5e0a0bd59",
         "source_text": "wt ({{unit}})",
         "translations": {
+          "es-419": {"hash": "55f5e0a0bd59", "status": "translated", "translated_at": "2026-11-09T02:01:33.375Z"},
           "fr": {"hash": "55f5e0a0bd59", "status": "translated", "translated_at": "2026-11-01T22:36:24.705Z"},
           "nl": {"hash": "55f5e0a0bd59", "status": "translated", "translated_at": "2026-11-01T22:36:24.711Z"}
         }
       }
     }
   },
-  "generated_at": "2026-11-01T22:36:24.711Z",
+  "generated_at": "2026-11-09T02:01:33.375Z",
   "source_locale": "en",
-  "stats": {"last_sync": "2026-11-01T22:36:24.711Z", "total_keys": 256, "total_translations": 512},
+  "stats": {"last_sync": "2026-11-09T02:01:33.375Z", "total_keys": 253, "total_translations": 757},
   "version": 1
 }
