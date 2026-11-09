@@ -238,7 +238,7 @@
     "deleteDay": "Supprimer ce jour",
     "confirmDeleteDay": "Supprimer le jour {{day}} ? Ses exercices seront supprimés.",
     "errMinOneDay": "Une routine, ça prend au moins une journée.",
-    "deleteDayTitle": "Jour de suppression",
+    "deleteDayTitle": "Supprimer ce jour",
     "switchTypeTitle": "Changer le type de jour"
   },
   "workout": {
@@ -291,16 +291,16 @@
     "addExerciseBtn": "Ajouter un exercice",
     "addExerciseTitle": "Ajouter un exercice",
     "allMuscles": "Tous les muscles",
-    "colRemove": "Supprimer",
-    "doneBtn": "C'est fait",
+    "colRemove": "Retirer",
+    "doneBtn": "Terminé",
     "libraryEmpty": "Il n'y a pas encore d'exercices dans ta bibliothèque.",
-    "logged_one": "Enregistrement de l'exercice {{count}}",
-    "logged_other": "Enregistrement des exercices {{count}}",
-    "loggedWithDay_one": "Enregistrement de l'exercice {{count}} pour {{day}}",
-    "loggedWithDay_other": "{{count}} exercices enregistrés pour {{day}}",
+    "logged_one": "{{count}} exercice enregistré",
+    "logged_other": "{{count}} exercices enregistrés",
+    "loggedWithDay_one": "{{count}} exercice enregistré pour le {{day}}",
+    "loggedWithDay_other": "{{count}} exercices enregistrés pour le {{day}}",
     "noSearchResults": "Rien ne correspond à {{query}}.",
     "searchLabel": "Rechercher des exercices par nom",
-    "searchPlaceholder": "Exercices de recherche"
+    "searchPlaceholder": "Rechercher des exercices"
   },
   "errors": {
     "network": "Impossible de joindre le serveur. Vérifie ta connexion et réessaie."

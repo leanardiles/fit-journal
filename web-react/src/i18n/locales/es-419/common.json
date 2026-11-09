@@ -60,7 +60,7 @@
     "tooShort": "La contraseña debe tener al menos 8 caracteres.",
     "invalidToken": "Este enlace de restablecimiento es inválido o venció.",
     "backToLogin": "Volver a iniciar sesión",
-    "changed": "Ya se cambió tu contraseña. Ya puedes iniciar sesión."
+    "changed": "Se cambió tu contraseña. Ya puedes iniciar sesión."
   },
   "common": {
     "loading": "Cargando...",
@@ -70,7 +70,7 @@
     "optional": "(opcional)",
     "cancel": "Cancelar",
     "continue": "Continuar",
-    "delete": "Borrar"
+    "delete": "Eliminar"
   },
   "profile": {
     "weightWithUnit": "Peso en {{unit}}",
@@ -238,7 +238,7 @@
     "deleteDay": "Eliminar este día",
     "confirmDeleteDay": "¿Eliminar el día {{day}}? Se quitarán sus ejercicios.",
     "errMinOneDay": "Una rutina necesita al menos un día.",
-    "deleteDayTitle": "Borrar día",
+    "deleteDayTitle": "Eliminar día",
     "switchTypeTitle": "Cambiar el tipo de día"
   },
   "workout": {
@@ -287,19 +287,19 @@
     "noMuscleExercises": "No hay ejercicios de {{muscle}}.",
     "manualNoExercises": "Agrega al menos un ejercicio.",
     "manualNoDate": "Elige una fecha.",
-    "addExerciseBtn": "Agrega ejercicio",
-    "addExerciseTitle": "Agrega un ejercicio",
+    "addExerciseBtn": "Agregar ejercicio",
+    "addExerciseTitle": "Agregar un ejercicio",
     "allMuscles": "Todos los músculos",
-    "colRemove": "Eliminar",
+    "colRemove": "Quitar",
     "doneBtn": "Listo",
-    "libraryEmpty": "Aún no hay ejercicios en tu biblioteca.",
-    "logged_one": "Se registró el ejercicio {{count}}",
-    "logged_other": "Ejercicios registrados de {{count}}",
-    "loggedWithDay_one": "Se registró el ejercicio {{count}} para {{day}}",
-    "loggedWithDay_other": "Se registraron {{count}} ejercicios para {{day}}",
-    "noSearchResults": "No hay nada que se compare con {{query}}.",
+    "libraryEmpty": "Aún no hay ejercicios.",
+    "logged_one": "{{count}} ejercicio registrado",
+    "logged_other": "{{count}} ejercicios registrados",
+    "loggedWithDay_one": "{{count}} ejercicio registrado para {{day}}",
+    "loggedWithDay_other": "{{count}} ejercicios registrados para {{day}}",
+    "noSearchResults": "No hay resultados para {{query}}.",
     "searchLabel": "Buscar ejercicios por nombre",
-    "searchPlaceholder": "Ejercicios de búsqueda",
+    "searchPlaceholder": "Buscar ejercicios",
     "manual": "Manual"
   },
   "errors": {

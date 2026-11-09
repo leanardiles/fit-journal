@@ -69,7 +69,7 @@
     "dayNamedInline": "Dag {{day}} ({{name}})",
     "optional": "(optioneel)",
     "cancel": "Annuleren",
-    "continue": "Ga verder",
+    "continue": "Doorgaan",
     "delete": "Verwijderen"
   },
   "profile": {
@@ -264,7 +264,7 @@
     "colReps": "Herh.",
     "promptNoRoutine": "Je hebt een routine nodig voordat je een workout kunt genereren.",
     "promptNoSelection": "Er zijn geen oefeningen geselecteerd voor deze dag.",
-    "promptNoLibrary": "Geen oefeningen in je bibliotheek voor de spieren van vandaag: {{muscles}}.",
+    "promptNoLibrary": "Je hebt geen oefeningen voor de spieren van vandaag: {{muscles}}.",
     "promptManualEmpty": "Deze dag heeft nog geen oefeningen.",
     "gapNote": "Geen oefeningen gevonden voor: {{muscles}}.",
     "linkCreateRoutine": "Routine maken",
@@ -288,19 +288,19 @@
     "manualNoExercises": "Voeg minstens één oefening toe.",
     "manualNoDate": "Kies een datum.",
     "manual": "Handmatig",
-    "addExerciseBtn": "Voeg een oefening toe",
+    "addExerciseBtn": "Oefening toevoegen",
     "addExerciseTitle": "Een oefening toevoegen",
     "allMuscles": "Alle spieren",
     "colRemove": "Verwijderen",
     "doneBtn": "Klaar",
-    "libraryEmpty": "Er staan nog geen oefeningen in je bibliotheek.",
-    "logged_one": "Oefening {{count}} geregistreerd",
+    "libraryEmpty": "Je hebt nog geen oefeningen.",
+    "logged_one": "{{count}} oefening geregistreerd",
     "logged_other": "{{count}} oefeningen geregistreerd",
-    "loggedWithDay_one": "Oefening {{count}} geregistreerd voor {{day}}",
-    "loggedWithDay_other": "Er zijn {{count}} oefeningen geregistreerd voor {{day}}",
-    "noSearchResults": "Er is niets dat overeenkomt met {{query}}.",
+    "loggedWithDay_one": "{{count}} oefening geregistreerd voor {{day}}",
+    "loggedWithDay_other": "{{count}} oefeningen geregistreerd voor {{day}}",
+    "noSearchResults": "Geen resultaten voor {{query}}.",
     "searchLabel": "Zoek oefeningen op naam",
-    "searchPlaceholder": "Zoekopdrachten"
+    "searchPlaceholder": "Oefeningen zoeken"
   },
   "errors": {
     "network": "Kan de server niet bereiken. Controleer je verbinding en probeer het opnieuw."
