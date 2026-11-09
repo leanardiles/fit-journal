@@ -23,7 +23,8 @@
     "emailPlaceholder": "tu@ejemplo.com",
     "passwordLabel": "Contraseña",
     "noAccount": "¿No tienes cuenta? Regístrate",
-    "forgotPassword": "¿Olvidaste tu contraseña?"
+    "forgotPassword": "¿Olvidaste tu contraseña?",
+    "passwordPlaceholder": "••••••••••"
   },
   "register": {
     "title": "Crea tu cuenta",
@@ -33,7 +34,7 @@
     "repeatPasswordLabel": "Repetir contraseña",
     "passwordMismatch": "Las contraseñas no coinciden."
   },
-    "verify": {
+  "verify": {
     "title": "Verifica tu correo",
     "codeLabel": "Código de verificación",
     "codePlaceholder": "123456",
@@ -58,14 +59,18 @@
     "mismatch": "Las contraseñas no coinciden.",
     "tooShort": "La contraseña debe tener al menos 8 caracteres.",
     "invalidToken": "Este enlace de restablecimiento es inválido o venció.",
-    "backToLogin": "Volver a iniciar sesión"
+    "backToLogin": "Volver a iniciar sesión",
+    "changed": "Se cambió tu contraseña. Ya puedes iniciar sesión."
   },
   "common": {
     "loading": "Cargando...",
     "day": "Día {{day}}",
     "dayNamed": "Día {{day}} — {{name}}",
     "dayNamedInline": "Día {{day}} ({{name}})",
-    "optional": "(opcional)"
+    "optional": "(opcional)",
+    "cancel": "Cancelar",
+    "continue": "Continuar",
+    "delete": "Eliminar"
   },
   "profile": {
     "weightWithUnit": "Peso en {{unit}}",
@@ -92,7 +97,7 @@
     "save": "Guardar",
     "saved": "Perfil guardado.",
     "saveError": "No se pudo guardar tu perfil.",
-     "dangerZone": "Zona de peligro",
+    "dangerZone": "Zona de peligro",
     "deleteAccount": "Eliminar cuenta",
     "deleteWarning": "Esto elimina permanentemente tu cuenta y todos tus datos. No se puede deshacer.",
     "confirmPassword": "Introduce tu contraseña para confirmar",
@@ -152,9 +157,15 @@
     "deleteAria": "Eliminar ejercicio"
   },
   "muscles": {
-    "Abs": "Abdominales", "Back": "Espalda", "Biceps": "Bíceps",
-    "Calves": "Pantorrillas", "Chest": "Pecho", "Forearms": "Antebrazos",
-    "Glutes": "Glúteos", "Legs": "Piernas", "Shoulders": "Hombros",
+    "Abs": "Abdominales",
+    "Back": "Espalda",
+    "Biceps": "Bíceps",
+    "Calves": "Pantorrillas",
+    "Chest": "Pecho",
+    "Forearms": "Antebrazos",
+    "Glutes": "Glúteos",
+    "Legs": "Piernas",
+    "Shoulders": "Hombros",
     "Triceps": "Tríceps"
   },
   "timezones": {
@@ -226,7 +237,9 @@
     "addDay": "Agregar día",
     "deleteDay": "Eliminar este día",
     "confirmDeleteDay": "¿Eliminar el día {{day}}? Se quitarán sus ejercicios.",
-    "errMinOneDay": "Una rutina necesita al menos un día."
+    "errMinOneDay": "Una rutina necesita al menos un día.",
+    "deleteDayTitle": "Eliminar día",
+    "switchTypeTitle": "Cambiar el tipo de día"
   },
   "workout": {
     "wtWithUnit": "peso ({{unit}})",
@@ -273,7 +286,21 @@
     "remove": "Quitar {{name}}",
     "noMuscleExercises": "No hay ejercicios de {{muscle}}.",
     "manualNoExercises": "Agrega al menos un ejercicio.",
-    "manualNoDate": "Elige una fecha."
+    "manualNoDate": "Elige una fecha.",
+    "addExerciseBtn": "Agregar ejercicio",
+    "addExerciseTitle": "Agregar un ejercicio",
+    "allMuscles": "Todos los músculos",
+    "colRemove": "Quitar",
+    "doneBtn": "Listo",
+    "libraryEmpty": "Aún no hay ejercicios.",
+    "logged_one": "{{count}} ejercicio registrado",
+    "logged_other": "{{count}} ejercicios registrados",
+    "loggedWithDay_one": "{{count}} ejercicio registrado para {{day}}",
+    "loggedWithDay_other": "{{count}} ejercicios registrados para {{day}}",
+    "noSearchResults": "No hay resultados para {{query}}.",
+    "searchLabel": "Buscar ejercicios por nombre",
+    "searchPlaceholder": "Buscar ejercicios",
+    "manual": "Manual"
   },
   "errors": {
     "network": "No se pudo conectar con el servidor. Revisa tu conexión e inténtalo de nuevo."
