@@ -236,6 +236,24 @@
           "nl": {"hash": "548d76c5a3f1", "status": "translated", "translated_at": "2026-11-01T22:36:24.711Z"}
         }
       },
+      "common.cancel": {
+        "source_hash": "19766ed6ccb2",
+        "source_text": "Cancel",
+        "translations": {
+          "es-419": {"character_count": 6, "hash": "19766ed6ccb2", "status": "translated", "translated_at": "2026-11-09T02:17:09.884Z"},
+          "fr": {"character_count": 6, "hash": "19766ed6ccb2", "status": "translated", "translated_at": "2026-11-09T02:17:09.884Z"},
+          "nl": {"character_count": 6, "hash": "19766ed6ccb2", "status": "translated", "translated_at": "2026-11-09T02:17:09.884Z"}
+        }
+      },
+      "common.continue": {
+        "source_hash": "31fbef162594",
+        "source_text": "Continue",
+        "translations": {
+          "es-419": {"character_count": 8, "hash": "31fbef162594", "status": "translated", "translated_at": "2026-11-09T02:17:09.884Z"},
+          "fr": {"character_count": 8, "hash": "31fbef162594", "status": "translated", "translated_at": "2026-11-09T02:17:09.884Z"},
+          "nl": {"character_count": 8, "hash": "31fbef162594", "status": "translated", "translated_at": "2026-11-09T02:17:09.884Z"}
+        }
+      },
       "common.day": {
         "source_hash": "1bf84bb8a989",
         "source_text": "Day {{day}}",
@@ -261,6 +279,15 @@
           "es-419": {"hash": "1a85d3ac126d", "status": "translated", "translated_at": "2026-11-09T02:01:33.374Z"},
           "fr": {"hash": "1a85d3ac126d", "status": "translated", "translated_at": "2026-11-01T22:36:24.704Z"},
           "nl": {"hash": "1a85d3ac126d", "status": "translated", "translated_at": "2026-11-01T22:36:24.710Z"}
+        }
+      },
+      "common.delete": {
+        "source_hash": "e2d0a54968ea",
+        "source_text": "Delete",
+        "translations": {
+          "es-419": {"character_count": 6, "hash": "e2d0a54968ea", "status": "translated", "translated_at": "2026-11-09T02:17:09.884Z"},
+          "fr": {"character_count": 6, "hash": "e2d0a54968ea", "status": "translated", "translated_at": "2026-11-09T02:17:09.884Z"},
+          "nl": {"character_count": 6, "hash": "e2d0a54968ea", "status": "translated", "translated_at": "2026-11-09T02:17:09.884Z"}
         }
       },
       "common.loading": {
@@ -807,6 +834,7 @@
         "source_hash": "3f881cb8d3f8",
         "source_text": "••••••••••",
         "translations": {
+          "es-419": {"hash": "3f881cb8d3f8", "status": "translated", "translated_at": "2026-11-09T02:17:09.885Z"},
           "fr": {"hash": "3f881cb8d3f8", "status": "translated", "translated_at": "2026-11-01T22:36:24.704Z"},
           "nl": {"hash": "3f881cb8d3f8", "status": "translated", "translated_at": "2026-11-01T22:36:24.710Z"}
         }
@@ -1360,6 +1388,15 @@
           "nl": {"hash": "fe45b4014135", "status": "translated", "translated_at": "2026-11-01T22:36:24.710Z"}
         }
       },
+      "reset.changed": {
+        "source_hash": "b03c8c5f9988",
+        "source_text": "Your password has been changed. You can log in now.",
+        "translations": {
+          "es-419": {"character_count": 51, "hash": "b03c8c5f9988", "status": "translated", "translated_at": "2026-11-09T02:17:09.884Z"},
+          "fr": {"character_count": 51, "hash": "b03c8c5f9988", "status": "translated", "translated_at": "2026-11-09T02:17:09.884Z"},
+          "nl": {"character_count": 51, "hash": "b03c8c5f9988", "status": "translated", "translated_at": "2026-11-09T02:17:09.884Z"}
+        }
+      },
       "reset.invalidToken": {
         "source_hash": "ed5598ec1cac",
         "source_text": "This reset link is invalid or has expired.",
@@ -1502,6 +1539,15 @@
           "es-419": {"hash": "8a57877f282a", "status": "translated", "translated_at": "2026-11-09T02:01:33.375Z"},
           "fr": {"hash": "8a57877f282a", "status": "translated", "translated_at": "2026-11-01T22:36:24.705Z"},
           "nl": {"hash": "8a57877f282a", "status": "translated", "translated_at": "2026-11-01T22:36:24.711Z"}
+        }
+      },
+      "routine.deleteDayTitle": {
+        "source_hash": "55cdba9a3940",
+        "source_text": "Delete day",
+        "translations": {
+          "es-419": {"character_count": 10, "hash": "55cdba9a3940", "status": "translated", "translated_at": "2026-11-09T02:17:09.884Z"},
+          "fr": {"character_count": 10, "hash": "55cdba9a3940", "status": "translated", "translated_at": "2026-11-09T02:17:09.884Z"},
+          "nl": {"character_count": 10, "hash": "55cdba9a3940", "status": "translated", "translated_at": "2026-11-09T02:17:09.884Z"}
         }
       },
       "routine.editRoutine": {
@@ -1729,6 +1775,15 @@
           "nl": {"hash": "57fd7a0cf33f", "status": "translated", "translated_at": "2026-11-01T22:36:24.711Z"}
         }
       },
+      "routine.switchTypeTitle": {
+        "source_hash": "40a412da6690",
+        "source_text": "Change day type",
+        "translations": {
+          "es-419": {"character_count": 15, "hash": "40a412da6690", "status": "translated", "translated_at": "2026-11-09T02:17:09.884Z"},
+          "fr": {"character_count": 15, "hash": "40a412da6690", "status": "translated", "translated_at": "2026-11-09T02:17:09.884Z"},
+          "nl": {"character_count": 15, "hash": "40a412da6690", "status": "translated", "translated_at": "2026-11-09T02:17:09.884Z"}
+        }
+      },
       "routine.title": {
         "source_hash": "19d54b4e3c12",
         "source_text": "My current routine",
@@ -1873,6 +1928,24 @@
           "nl": {"hash": "7e9e5ac30f22", "status": "translated", "translated_at": "2026-11-01T22:36:24.711Z"}
         }
       },
+      "workout.addExerciseBtn": {
+        "source_hash": "e637763d9781",
+        "source_text": "Add exercise",
+        "translations": {
+          "es-419": {"character_count": 12, "hash": "e637763d9781", "status": "translated", "translated_at": "2026-11-09T02:17:09.884Z"},
+          "fr": {"character_count": 12, "hash": "e637763d9781", "status": "translated", "translated_at": "2026-11-09T02:17:09.884Z"},
+          "nl": {"character_count": 12, "hash": "e637763d9781", "status": "translated", "translated_at": "2026-11-09T02:17:09.884Z"}
+        }
+      },
+      "workout.addExerciseTitle": {
+        "source_hash": "36b2469fed96",
+        "source_text": "Add an exercise",
+        "translations": {
+          "es-419": {"character_count": 15, "hash": "36b2469fed96", "status": "translated", "translated_at": "2026-11-09T02:17:09.884Z"},
+          "fr": {"character_count": 15, "hash": "36b2469fed96", "status": "translated", "translated_at": "2026-11-09T02:17:09.884Z"},
+          "nl": {"character_count": 15, "hash": "36b2469fed96", "status": "translated", "translated_at": "2026-11-09T02:17:09.884Z"}
+        }
+      },
       "workout.added": {
         "source_hash": "279b8a60f444",
         "source_text": "added",
@@ -1880,6 +1953,15 @@
           "es-419": {"hash": "279b8a60f444", "status": "translated", "translated_at": "2026-11-09T02:01:33.375Z"},
           "fr": {"hash": "279b8a60f444", "status": "translated", "translated_at": "2026-11-01T22:36:24.705Z"},
           "nl": {"hash": "279b8a60f444", "status": "translated", "translated_at": "2026-11-01T22:36:24.711Z"}
+        }
+      },
+      "workout.allMuscles": {
+        "source_hash": "e60791ddbac6",
+        "source_text": "All muscles",
+        "translations": {
+          "es-419": {"character_count": 11, "hash": "e60791ddbac6", "status": "translated", "translated_at": "2026-11-09T02:17:09.884Z"},
+          "fr": {"character_count": 11, "hash": "e60791ddbac6", "status": "translated", "translated_at": "2026-11-09T02:17:09.884Z"},
+          "nl": {"character_count": 11, "hash": "e60791ddbac6", "status": "translated", "translated_at": "2026-11-09T02:17:09.884Z"}
         }
       },
       "workout.autoGenError": {
@@ -1927,6 +2009,15 @@
           "nl": {"hash": "4bd851bcd8a8", "status": "translated", "translated_at": "2026-11-01T22:36:24.711Z"}
         }
       },
+      "workout.colRemove": {
+        "source_hash": "c3812fc4acb8",
+        "source_text": "Remove",
+        "translations": {
+          "es-419": {"character_count": 6, "hash": "c3812fc4acb8", "status": "translated", "translated_at": "2026-11-09T02:17:09.884Z"},
+          "fr": {"character_count": 6, "hash": "c3812fc4acb8", "status": "translated", "translated_at": "2026-11-09T02:17:09.884Z"},
+          "nl": {"character_count": 6, "hash": "c3812fc4acb8", "status": "translated", "translated_at": "2026-11-09T02:17:09.884Z"}
+        }
+      },
       "workout.colReps": {
         "source_hash": "85bf5aae0c21",
         "source_text": "Reps",
@@ -1972,6 +2063,15 @@
           "nl": {"hash": "b51489bde8d8", "status": "translated", "translated_at": "2026-11-01T22:36:24.711Z"}
         }
       },
+      "workout.doneBtn": {
+        "source_hash": "11a6767d5674",
+        "source_text": "Done",
+        "translations": {
+          "es-419": {"character_count": 4, "hash": "11a6767d5674", "status": "translated", "translated_at": "2026-11-09T02:17:09.884Z"},
+          "fr": {"character_count": 4, "hash": "11a6767d5674", "status": "translated", "translated_at": "2026-11-09T02:17:09.884Z"},
+          "nl": {"character_count": 4, "hash": "11a6767d5674", "status": "translated", "translated_at": "2026-11-09T02:17:09.884Z"}
+        }
+      },
       "workout.gapNote": {
         "source_hash": "86bb28a0f274",
         "source_text": "No exercises found for: {{muscles}}.",
@@ -2006,6 +2106,15 @@
           "es-419": {"hash": "662603cc2ea0", "status": "translated", "translated_at": "2026-11-09T02:01:33.375Z"},
           "fr": {"hash": "662603cc2ea0", "status": "translated", "translated_at": "2026-11-01T22:36:24.705Z"},
           "nl": {"hash": "662603cc2ea0", "status": "translated", "translated_at": "2026-11-01T22:36:24.711Z"}
+        }
+      },
+      "workout.libraryEmpty": {
+        "source_hash": "718469103e1e",
+        "source_text": "No exercises in your library yet.",
+        "translations": {
+          "es-419": {"character_count": 33, "hash": "718469103e1e", "status": "translated", "translated_at": "2026-11-09T02:17:09.884Z"},
+          "fr": {"character_count": 33, "hash": "718469103e1e", "status": "translated", "translated_at": "2026-11-09T02:17:09.884Z"},
+          "nl": {"character_count": 33, "hash": "718469103e1e", "status": "translated", "translated_at": "2026-11-09T02:17:09.884Z"}
         }
       },
       "workout.linkAddExercises": {
@@ -2080,10 +2189,47 @@
           "nl": {"hash": "37c72e944486", "status": "translated", "translated_at": "2026-11-01T22:36:24.711Z"}
         }
       },
+      "workout.loggedWithDay_one": {
+        "source_hash": "c5f30020c98d",
+        "source_text": "Logged {{count}} exercise for {{day}}",
+        "translations": {
+          "es-419": {"character_count": 39, "hash": "c5f30020c98d", "status": "translated", "translated_at": "2026-11-09T02:17:09.884Z"},
+          "fr": {"character_count": 39, "hash": "c5f30020c98d", "status": "translated", "translated_at": "2026-11-09T02:17:09.884Z"},
+          "nl": {"character_count": 39, "hash": "c5f30020c98d", "status": "translated", "translated_at": "2026-11-09T02:17:09.884Z"}
+        }
+      },
+      "workout.loggedWithDay_other": {
+        "source_hash": "655a92c1e057",
+        "source_text": "Logged {{count}} exercises for {{day}}",
+        "translations": {
+          "es-419": {"character_count": 40, "hash": "655a92c1e057", "status": "translated", "translated_at": "2026-11-09T02:17:09.884Z"},
+          "fr": {"character_count": 40, "hash": "655a92c1e057", "status": "translated", "translated_at": "2026-11-09T02:17:09.884Z"},
+          "nl": {"character_count": 40, "hash": "655a92c1e057", "status": "translated", "translated_at": "2026-11-09T02:17:09.884Z"}
+        }
+      },
+      "workout.logged_one": {
+        "source_hash": "4c9ea3e371a2",
+        "source_text": "Logged {{count}} exercise",
+        "translations": {
+          "es-419": {"character_count": 25, "hash": "4c9ea3e371a2", "status": "translated", "translated_at": "2026-11-09T02:17:09.884Z"},
+          "fr": {"character_count": 25, "hash": "4c9ea3e371a2", "status": "translated", "translated_at": "2026-11-09T02:17:09.884Z"},
+          "nl": {"character_count": 25, "hash": "4c9ea3e371a2", "status": "translated", "translated_at": "2026-11-09T02:17:09.884Z"}
+        }
+      },
+      "workout.logged_other": {
+        "source_hash": "b3a82c5d5f48",
+        "source_text": "Logged {{count}} exercises",
+        "translations": {
+          "es-419": {"character_count": 26, "hash": "b3a82c5d5f48", "status": "translated", "translated_at": "2026-11-09T02:17:09.884Z"},
+          "fr": {"character_count": 26, "hash": "b3a82c5d5f48", "status": "translated", "translated_at": "2026-11-09T02:17:09.884Z"},
+          "nl": {"character_count": 26, "hash": "b3a82c5d5f48", "status": "translated", "translated_at": "2026-11-09T02:17:09.884Z"}
+        }
+      },
       "workout.manual": {
         "source_hash": "b0b9fe24ffa9",
         "source_text": "Manual",
         "translations": {
+          "es-419": {"hash": "b0b9fe24ffa9", "status": "translated", "translated_at": "2026-11-09T02:17:09.885Z"},
           "fr": {"hash": "b0b9fe24ffa9", "status": "translated", "translated_at": "2026-11-01T22:36:24.705Z"},
           "nl": {"hash": "b0b9fe24ffa9", "status": "translated", "translated_at": "2026-11-01T22:36:24.711Z"}
         }
@@ -2140,6 +2286,15 @@
           "es-419": {"hash": "f39c89797acb", "status": "translated", "translated_at": "2026-11-09T02:01:33.375Z"},
           "fr": {"hash": "f39c89797acb", "status": "translated", "translated_at": "2026-11-01T22:36:24.705Z"},
           "nl": {"hash": "f39c89797acb", "status": "translated", "translated_at": "2026-11-01T22:36:24.711Z"}
+        }
+      },
+      "workout.noSearchResults": {
+        "source_hash": "5e41254acf66",
+        "source_text": "Nothing matches {{query}}.",
+        "translations": {
+          "es-419": {"character_count": 26, "hash": "5e41254acf66", "status": "translated", "translated_at": "2026-11-09T02:17:09.884Z"},
+          "fr": {"character_count": 26, "hash": "5e41254acf66", "status": "translated", "translated_at": "2026-11-09T02:17:09.884Z"},
+          "nl": {"character_count": 26, "hash": "5e41254acf66", "status": "translated", "translated_at": "2026-11-09T02:17:09.884Z"}
         }
       },
       "workout.noSetsEntered": {
@@ -2223,6 +2378,24 @@
           "nl": {"hash": "dc85af8f2b1d", "status": "translated", "translated_at": "2026-11-01T22:36:24.711Z"}
         }
       },
+      "workout.searchLabel": {
+        "source_hash": "2d1fe17c8040",
+        "source_text": "Search exercises by name",
+        "translations": {
+          "es-419": {"character_count": 24, "hash": "2d1fe17c8040", "status": "translated", "translated_at": "2026-11-09T02:17:09.884Z"},
+          "fr": {"character_count": 24, "hash": "2d1fe17c8040", "status": "translated", "translated_at": "2026-11-09T02:17:09.884Z"},
+          "nl": {"character_count": 24, "hash": "2d1fe17c8040", "status": "translated", "translated_at": "2026-11-09T02:17:09.884Z"}
+        }
+      },
+      "workout.searchPlaceholder": {
+        "source_hash": "b54a78146120",
+        "source_text": "Search exercises",
+        "translations": {
+          "es-419": {"character_count": 16, "hash": "b54a78146120", "status": "translated", "translated_at": "2026-11-09T02:17:09.885Z"},
+          "fr": {"character_count": 16, "hash": "b54a78146120", "status": "translated", "translated_at": "2026-11-09T02:17:09.885Z"},
+          "nl": {"character_count": 16, "hash": "b54a78146120", "status": "translated", "translated_at": "2026-11-09T02:17:09.885Z"}
+        }
+      },
       "workout.setDayError": {
         "source_hash": "fa03c522a65f",
         "source_text": "Could not set the current day. Please try again.",
@@ -2279,8 +2452,8 @@
       }
     }
   },
-  "generated_at": "2026-11-09T02:01:33.375Z",
+  "generated_at": "2026-11-09T02:17:09.885Z",
   "source_locale": "en",
-  "stats": {"last_sync": "2026-11-09T02:01:33.375Z", "total_keys": 253, "total_translations": 757},
+  "stats": {"last_sync": "2026-11-09T02:17:09.885Z", "total_keys": 272, "total_translations": 816},
   "version": 1
 }

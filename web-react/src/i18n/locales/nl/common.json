@@ -59,14 +59,18 @@
     "mismatch": "Wachtwoorden komen niet overeen.",
     "tooShort": "Wachtwoord moet minstens 8 tekens bevatten.",
     "invalidToken": "Deze resetlink is ongeldig of verlopen.",
-    "backToLogin": "Terug naar inloggen"
+    "backToLogin": "Terug naar inloggen",
+    "changed": "Je wachtwoord is gewijzigd. Je kunt nu inloggen."
   },
   "common": {
     "loading": "Laden...",
     "day": "Dag {{day}}",
     "dayNamed": "Dag {{day}} — {{name}}",
     "dayNamedInline": "Dag {{day}} ({{name}})",
-    "optional": "(optioneel)"
+    "optional": "(optioneel)",
+    "cancel": "Annuleren",
+    "continue": "Ga verder",
+    "delete": "Verwijderen"
   },
   "profile": {
     "weightWithUnit": "Gewicht in {{unit}}",
@@ -233,7 +237,9 @@
     "addDay": "Dag toevoegen",
     "deleteDay": "Deze dag verwijderen",
     "confirmDeleteDay": "Dag {{day}} verwijderen? De oefeningen worden verwijderd.",
-    "errMinOneDay": "Een routine heeft minstens één dag nodig."
+    "errMinOneDay": "Een routine heeft minstens één dag nodig.",
+    "deleteDayTitle": "Dag verwijderen",
+    "switchTypeTitle": "Dagtype wijzigen"
   },
   "workout": {
     "wtWithUnit": "gew. ({{unit}})",
@@ -281,7 +287,20 @@
     "noMuscleExercises": "Geen {{muscle}}-oefeningen.",
     "manualNoExercises": "Voeg minstens één oefening toe.",
     "manualNoDate": "Kies een datum.",
-    "manual": "Handmatig"
+    "manual": "Handmatig",
+    "addExerciseBtn": "Voeg een oefening toe",
+    "addExerciseTitle": "Een oefening toevoegen",
+    "allMuscles": "Alle spieren",
+    "colRemove": "Verwijderen",
+    "doneBtn": "Klaar",
+    "libraryEmpty": "Er staan nog geen oefeningen in je bibliotheek.",
+    "logged_one": "Oefening {{count}} geregistreerd",
+    "logged_other": "{{count}} oefeningen geregistreerd",
+    "loggedWithDay_one": "Oefening {{count}} geregistreerd voor {{day}}",
+    "loggedWithDay_other": "Er zijn {{count}} oefeningen geregistreerd voor {{day}}",
+    "noSearchResults": "Er is niets dat overeenkomt met {{query}}.",
+    "searchLabel": "Zoek oefeningen op naam",
+    "searchPlaceholder": "Zoekopdrachten"
   },
   "errors": {
     "network": "Kan de server niet bereiken. Controleer je verbinding en probeer het opnieuw."

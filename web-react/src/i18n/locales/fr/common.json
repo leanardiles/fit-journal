@@ -59,14 +59,18 @@
     "mismatch": "Les mots de passe ne correspondent pas.",
     "tooShort": "Le mot de passe doit comporter au moins 8 caractères.",
     "invalidToken": "Ce lien de réinitialisation n'est pas valide ou a expiré.",
-    "backToLogin": "Retour à la page de connexion"
+    "backToLogin": "Retour à la page de connexion",
+    "changed": "Ton mot de passe a été modifié. Tu peux te connecter maintenant."
   },
   "common": {
     "loading": "Chargement en cours...",
     "day": "Jour {{day}}",
     "dayNamed": "Jour {{day}} — {{name}}",
     "dayNamedInline": "Jour {{day}} ({{name}})",
-    "optional": "(facultatif)"
+    "optional": "(facultatif)",
+    "cancel": "Annuler",
+    "continue": "Continuer",
+    "delete": "Supprimer"
   },
   "profile": {
     "weightWithUnit": "Poids en {{unit}}",
@@ -233,7 +237,9 @@
     "addDay": "Ajouter un jour",
     "deleteDay": "Supprimer ce jour",
     "confirmDeleteDay": "Supprimer le jour {{day}} ? Ses exercices seront supprimés.",
-    "errMinOneDay": "Une routine, ça prend au moins une journée."
+    "errMinOneDay": "Une routine, ça prend au moins une journée.",
+    "deleteDayTitle": "Jour de suppression",
+    "switchTypeTitle": "Changer le type de jour"
   },
   "workout": {
     "wtWithUnit": "Poids ({{unit}})",
@@ -281,7 +287,20 @@
     "noMuscleExercises": "Pas d'exercices sur {{muscle}}.",
     "manualNoExercises": "Ajoute au moins un exercice.",
     "manualNoDate": "Choisis une date.",
-    "manual": "Saisie manuelle"
+    "manual": "Saisie manuelle",
+    "addExerciseBtn": "Ajouter un exercice",
+    "addExerciseTitle": "Ajouter un exercice",
+    "allMuscles": "Tous les muscles",
+    "colRemove": "Supprimer",
+    "doneBtn": "C'est fait",
+    "libraryEmpty": "Il n'y a pas encore d'exercices dans ta bibliothèque.",
+    "logged_one": "Enregistrement de l'exercice {{count}}",
+    "logged_other": "Enregistrement des exercices {{count}}",
+    "loggedWithDay_one": "Enregistrement de l'exercice {{count}} pour {{day}}",
+    "loggedWithDay_other": "{{count}} exercices enregistrés pour {{day}}",
+    "noSearchResults": "Rien ne correspond à {{query}}.",
+    "searchLabel": "Rechercher des exercices par nom",
+    "searchPlaceholder": "Exercices de recherche"
   },
   "errors": {
     "network": "Impossible de joindre le serveur. Vérifie ta connexion et réessaie."
