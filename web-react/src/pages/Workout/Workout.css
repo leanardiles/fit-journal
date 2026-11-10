@@ -215,7 +215,7 @@
 /* Same treatment as the manual list: a small muted label rather than a red
    one, so the muscle reads as a tag on the row and the eye goes to the
    exercise name. */
-.wo-muscle-cell {
+.wo-table td.wo-muscle-cell {
   color: var(--muted);
   font-size: var(--fs-xs);
   text-transform: uppercase;
@@ -232,7 +232,7 @@
 /* --fs-base, as in the manual list. The table inherited --fs, 17px, which
    read heavier than the rest of the row. Smaller also buys characters before
    the ellipsis. */
-.wo-exname-cell {
+.wo-table td.wo-exname-cell {
   width: 100%;
   max-width: 0;
   white-space: nowrap;
@@ -245,10 +245,10 @@
 /* 600px up there is room for the full name, so the clipping is switched off
    entirely and the column goes back to sizing itself to its content. */
 @media (min-width: 600px) {
-  .wo-muscle-cell { padding-inline-end: 24px; }
+  .wo-table td.wo-muscle-cell { padding-inline-end: 24px; }
   .wo-table th.wo-remove-col,
   .wo-table td.wo-remove-col { width: 44px; }
-  .wo-exname-cell {
+  .wo-table td.wo-exname-cell {
     width: 1%;
     max-width: none;
     overflow: visible;
