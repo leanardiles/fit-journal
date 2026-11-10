@@ -6,7 +6,10 @@ import { useToast } from "../../context/ToastContext";
 import { formatList } from "../../i18n/format";
 import "./Calendar.css";
 
-const COLUMNS_TO_SHOW = 10;
+// The calendar's horizon: the most recent N logged sessions. Not a page size,
+// a ceiling, so the N+1th session is simply not fetched and nothing on screen
+// says so. Narrower session columns made room for a couple more.
+const COLUMNS_TO_SHOW = 12;
 
 // Parse a stored YYYY-MM-DD as a LOCAL date. new Date("2025-09-06") parses as
 // midnight UTC, a day earlier in timezones behind UTC. Build from parts.
