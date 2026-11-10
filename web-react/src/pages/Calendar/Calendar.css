@@ -187,6 +187,24 @@
 }
 
 .cal-wod-cell { font-size: var(--fs-xs); text-align: center; min-width: 44px; }
+
+/* Why a spacer column exists. The table is min-width: 100%, and with auto
+   layout a browser hands any surplus width to the auto-sized columns. With one
+   day selected there are only a few session columns, so each one stretched to
+   fill the row; in the all-days view there are many, the natural width already
+   exceeds 100%, and they stayed narrow. Same CSS, opposite result, purely
+   because of how many columns there happened to be.
+   A trailing cell with width: 100% claims the surplus instead, so a session
+   column is the same width whether one day is shown or twelve. It keeps the
+   table full width, so the header rule and the opaque background still span
+   the row. */
+.cal-table .cal-spacer {
+  width: 100%;
+  padding: 0;
+}
+/* The header rule lives on th, which the spacer is not, so it would stop short
+   of the right edge without this. */
+.cal-table thead .cal-spacer { border-bottom: 1px solid var(--divider); }
 .cal-wod-cell.completed { color: var(--text); }
 .cal-wod-cell.empty { color: var(--muted); }
 

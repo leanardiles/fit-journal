@@ -305,7 +305,9 @@ export function Calendar() {
     .filter((s) => logs.some((l) => l.session_id === s.session_id && rowIds.has(l.exercise_id)))
     .sort((a, b) => parseLocalDate(b.workout_date) - parseLocalDate(a.workout_date));
 
-  const colSpan = (showSelect ? 2 : 1) + columns.length;
+  // +1 for the trailing spacer column, which exists only to absorb the width
+  // the session columns would otherwise stretch into.
+  const colSpan = (showSelect ? 2 : 1) + columns.length + 1;
 
   // Localized, hand-formatting-free date headers — the whole point of the page.
   const weekdayFmt = new Intl.DateTimeFormat(i18n.language, { weekday: "short" });
@@ -354,6 +356,7 @@ export function Calendar() {
           </td>
         );
       })}
+      <td className="cal-spacer" />
     </tr>
   );
 
@@ -370,6 +373,7 @@ export function Calendar() {
             {columns.map((s) => (
               <td key={s.session_id} />
             ))}
+            <td className="cal-spacer" />
           </tr>
         );
       }
@@ -404,6 +408,7 @@ export function Calendar() {
           {columns.map((s) => (
             <td key={s.session_id} />
           ))}
+          <td className="cal-spacer" />
         </tr>
       );
       bodyRows.push(...renderMuscleGrouped(dayRows, `day-${d}`));
@@ -492,6 +497,7 @@ export function Calendar() {
                   </th>
                 );
               })}
+              <td className="cal-spacer" />
             </tr>
           </thead>
           <tbody>{bodyRows}</tbody>
