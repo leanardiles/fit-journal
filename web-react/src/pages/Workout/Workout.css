@@ -364,24 +364,11 @@
 }
 .wo-ml-empty { color: var(--text); font-family: var(--font-body); }
 
-/* Where exercises land, drawn as a field: an opaque card over the ruled paper
-   that holds its height while empty, so the target is visible before anything
-   is in it. Shorter on a phone, where 260px of empty card would push the
-   picker off the screen. */
+/* Stacked, the list is just a list: the picker's own rule below it does the
+   separating, and a border would box it in for no reason. */
 .wo-ml-col-left {
   display: flex;
   flex-direction: column;
-  min-height: 140px;
-  padding: 6px var(--space-md) var(--space-sm);
-  background: var(--bg);
-  border: 1px solid var(--control-border);
-  border-radius: var(--radius);
-}
-.wo-ml-col-left .wo-ml-empty {
-  margin: auto;
-  max-width: 24ch;
-  text-align: center;
-  color: var(--muted);
 }
 
 /* Two columns once there is room. 760px rather than the usual 600 because
@@ -389,7 +376,23 @@
    inputs can hold half the width without wrapping. */
 @media (min-width: 760px) {
   .wo-ml-grid { grid-template-columns: 1fr 1fr; gap: 32px; }
-  .wo-ml-col-left { min-height: 260px; }
+
+  /* Side by side, the left column is drawn as a field: an opaque card over the
+     ruled paper that holds its height while empty, so the target is visible
+     before anything is in it. */
+  .wo-ml-col-left {
+    min-height: 260px;
+    padding: 6px var(--space-md) var(--space-sm);
+    background: var(--bg);
+    border: 1px solid var(--control-border);
+    border-radius: var(--radius);
+  }
+  .wo-ml-col-left .wo-ml-empty {
+    margin: auto;
+    max-width: 24ch;
+    text-align: center;
+    color: var(--muted);
+  }
 }
 
 /* The manual screen owns the viewport instead of the document: the header and
