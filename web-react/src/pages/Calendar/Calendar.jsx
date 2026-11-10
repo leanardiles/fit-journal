@@ -217,6 +217,10 @@ export function Calendar() {
     return log ? log.sets_completed || "—" : null; // null => empty cell
   };
 
+  // A dash means nothing was recorded, whether there is no log at all or a log
+  // with no set count. Only a real number reads as a number.
+  const cellClass = (v) => (typeof v === "number" ? "completed" : "empty");
+
   const toggleDay = (day) => {
     if (filterMode === "specific" && selectedDays.includes(day)) {
       const next = selectedDays.filter((d) => d !== day);
@@ -354,7 +358,7 @@ export function Calendar() {
       {columns.map((s) => {
         const v = cellValue(ex.exercise_id, s.session_id);
         return (
-          <td key={s.session_id} className={`cal-wod-cell ${v == null ? "empty" : "completed"}`}>
+          <td key={s.session_id} className={`cal-wod-cell ${cellClass(v)}`}>
             {v == null ? "—" : v}
           </td>
         );

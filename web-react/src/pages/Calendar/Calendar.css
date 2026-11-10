@@ -205,6 +205,8 @@
 /* The header rule lives on th, which the spacer is not, so it would stop short
    of the right edge without this. */
 .cal-table thead .cal-spacer { border-bottom: 1px solid var(--divider); }
+/* Only a set count gets full ink. Both dashes, no log and a log with no sets,
+   are muted, so the numbers stand out against them. */
 .cal-wod-cell.completed { color: var(--text); }
 .cal-wod-cell.empty { color: var(--muted); }
 
