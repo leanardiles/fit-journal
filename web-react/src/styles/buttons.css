@@ -57,14 +57,18 @@
 /* Remove control: a bare red glyph for dropping a row from a list or table.
    Borderless because it sits inside dense rows where a bordered button would
    add visual noise per line, and red because the action is destructive. */
+/* One size everywhere: --fs-xl sits between the small multiplication sign at
+   --fs-lg and the heavier dingbat it replaced. 24px square also clears the
+   minimum target size, which 20px did not. */
 .btn-remove {
   background: transparent;
   border: none;
   padding: 0;
-  width: 20px;
+  width: 24px;
+  min-height: 24px;
   color: var(--red);
   font-family: var(--font-body);
-  font-size: var(--fs-lg);
+  font-size: var(--fs-xl);
   line-height: 1;
   cursor: pointer;
   transition: filter 0.12s;

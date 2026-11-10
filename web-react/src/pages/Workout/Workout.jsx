@@ -745,7 +745,7 @@ const isDone = (row) => {
                         aria-label={t("workout.remove", { name: ex.exercise_name })}
                         onClick={() => removeFromWorkout(ex.exercise_id)}
                       >
-                        ✕
+                        ×
                       </button>
                     </td>
                   </tr>
@@ -794,6 +794,9 @@ const isDone = (row) => {
                   </div>
                   {manualRows.map((r) => (
                     <div className={`wo-ml-row${isDone(r) ? " done" : ""}`} key={r.exercise_id}>
+                      {/* The wash lives on the body, not the row, so the remove
+                          control sits outside it as it does in the table. */}
+                      <div className="wo-ml-rowbody">
                       <span className="wo-ml-muscle">{t(`muscles.${r.muscle}`)}</span>
                       <span className="wo-ml-name">{r.name}</span>
                       <input
@@ -827,6 +830,7 @@ const isDone = (row) => {
                         aria-label={t("workout.weightFor", { unit: weightUnit, name: r.name })}
                         onChange={(e) => setManualField(r.exercise_id, "weight", e.target.value)}
                       />
+                      </div>
                       <button
                         type="button"
                         className="btn-remove"

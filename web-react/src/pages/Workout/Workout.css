@@ -212,9 +212,14 @@
 /* Muscle and the three number columns size to their content; the exercise
    name absorbs whatever is left and clips. width 1% is the table-layout idiom
    for shrink to content. */
+/* Same treatment as the manual list: a small muted label rather than a red
+   one, so the muscle reads as a tag on the row and the eye goes to the
+   exercise name. */
 .wo-muscle-cell {
-  color: var(--red);
+  color: var(--muted);
   font-size: var(--fs-xs);
+  text-transform: uppercase;
+  letter-spacing: 1px;
   padding-inline-end: 10px;
   white-space: nowrap;
   width: 1%;
@@ -224,12 +229,16 @@
    intrinsic minimum so the table algorithm is allowed to squeeze it. Without
    max-width the longest exercise name would still dictate the column and the
    table would overflow again. */
+/* --fs-base, as in the manual list. The table inherited --fs, 17px, which
+   read heavier than the rest of the row. Smaller also buys characters before
+   the ellipsis. */
 .wo-exname-cell {
   width: 100%;
   max-width: 0;
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
+  font-size: var(--fs-base);
   padding-inline-end: 10px;
 }
 
@@ -279,6 +288,9 @@
   transition: background-color 0.15s;
 }
 .wo-table tbody tr.done-row td { background-color: transparent; }
+/* The remove control sits outside the wash: it is not part of the work to do,
+   it is how you drop a row from it. */
+.wo-table tbody td.wo-remove-col { background-color: transparent; }
 
 /* The strike runs through the muscle and the exercise name as one rule.
    Drawn as a background line rather than text-decoration: a decoration stops
@@ -467,7 +479,8 @@
   font-family: var(--font-body);
 }
 /* Yellow means planned, clearing means logged: the same signal as the
-   generated table, so a set count empties the row out. */
+   generated table, so a set count empties the row out. The wash is on the
+   body rather than the row, so the remove control stays outside it. */
 .wo-ml-row {
   display: flex;
   align-items: center;
@@ -475,10 +488,17 @@
   min-height: var(--lh);
   padding-bottom: 2px;
   font-family: var(--font-body);
+}
+.wo-ml-rowbody {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex: 1;
+  min-width: 0;
   background-color: var(--pending-bg);
   transition: background-color 0.15s;
 }
-.wo-ml-row.done { background-color: transparent; }
+.wo-ml-row.done .wo-ml-rowbody { background-color: transparent; }
 .wo-ml-muscle {
   flex: 0 0 76px;
   font-size: var(--fs-xs);
