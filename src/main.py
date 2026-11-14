@@ -137,6 +137,15 @@ def get_current_user(
     if user is None:
         raise credentials_exception
 
+    # The revocation check. A token minted before the user's version was
+    # bumped is refused, which is how a password reset or a sign-out
+    # everywhere takes effect immediately rather than whenever the token
+    # happens to expire. Strict on purpose: a token with no `ver` claim at all
+    # predates this and is refused too, so the 30-day tokens already in the
+    # wild stop working on deploy.
+    if payload.get("ver") != user.token_version:
+        raise credentials_exception
+
     return user
 
 def verify_user_access(
@@ -259,7 +268,8 @@ def login(user: schemas.UserLogin, request: Request, db: Session = Depends(get_d
     access_token = create_access_token(
         data={
             "sub": str(db_user.user_id),
-            "email": db_user.user_email
+            "email": db_user.user_email,
+            "ver": db_user.token_version,
         }
     )
 
@@ -304,7 +314,9 @@ def verify_email(data: schemas.EmailVerifyRequest, request: Request, db: Session
     tok.used_at = datetime.utcnow()
     db.commit()
 
-    access_token = create_access_token(data={"sub": str(user.user_id), "email": user.user_email})
+    access_token = create_access_token(
+        data={"sub": str(user.user_id), "email": user.user_email, "ver": user.token_version}
+    )
     return {
         "message": "Email verified",
         "token_type": "bearer",
@@ -369,6 +381,10 @@ def reset_password(data: schemas.ResetPasswordRequest, request: Request, db: Ses
 
     user.user_password = hash_password(data.new_password)
     user.user_email_verified = True   # they just proved control of the inbox
+    # Someone resetting a password may be doing it because the account is
+    # compromised. Leaving the attacker's existing token valid would make the
+    # reset theatre, so every outstanding session is revoked here.
+    user.token_version += 1
     tok.used_at = datetime.utcnow()
     db.commit()
     return {"message": "Your password has been updated. You can now log in."}

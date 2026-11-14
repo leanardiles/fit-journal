@@ -211,3 +211,93 @@ def test_address_limit_catches_spraying_across_accounts(client):
         "user_password": "Winter2026!",
     })
     assert blocked.status_code == 429, blocked.text
+
+
+# ---- session revocation -----------------------------------------------------
+# Sessions are stateless JWTs, so revocation needs a server-side counter the
+# token is checked against. See users.token_version.
+
+def _auth_header(token):
+    return {"Authorization": f"Bearer {token}"}
+
+
+def _login(client, email, password):
+    return client.post("/v1/login", json={"user_email": email, "user_password": password})
+
+
+def test_token_works_before_revocation(client):
+    """Baseline: a freshly issued token is accepted."""
+    email, password = _register_and_verify(client, "rev1@example.com")
+    body = _login(client, email, password).json()
+
+    resp = client.get(f"/v1/profile/{body['user_id']}", headers=_auth_header(body["access_token"]))
+    assert resp.status_code == 200, resp.text
+
+
+def test_bumping_token_version_revokes_outstanding_tokens(client):
+    """The whole point: an existing token stops working the moment the counter moves."""
+    email, password = _register_and_verify(client, "rev2@example.com")
+    body = _login(client, email, password).json()
+    token, uid = body["access_token"], body["user_id"]
+
+    session = SessionLocal()
+    try:
+        user = session.query(models.User).filter(models.User.user_id == uid).first()
+        user.token_version += 1
+        session.commit()
+    finally:
+        session.close()
+
+    resp = client.get(f"/v1/profile/{uid}", headers=_auth_header(token))
+    assert resp.status_code == 401, resp.text
+
+
+def test_password_reset_revokes_existing_sessions(client):
+    """
+    A reset is often a response to compromise. Leaving the attacker's token
+    valid for the rest of its 30 days would make the reset theatre.
+    """
+    email, password = _register_and_verify(client, "rev3@example.com")
+    body = _login(client, email, password).json()
+    token, uid = body["access_token"], body["user_id"]
+
+    # Issue a reset token the way the endpoint does, then spend it.
+    import emailer
+    raw = emailer.generate_token()
+    session = SessionLocal()
+    try:
+        session.add(models.AuthToken(
+            user_id=uid,
+            purpose=models.AuthTokenPurposeEnum.password_reset,
+            token_hash=emailer.hash_secret(raw),
+            expires_at=datetime.utcnow() + timedelta(hours=1),
+        ))
+        session.commit()
+    finally:
+        session.close()
+
+    done = client.post("/v1/reset-password", json={"token": raw, "new_password": "brandnewpass123"})
+    assert done.status_code == 200, done.text
+
+    resp = client.get(f"/v1/profile/{uid}", headers=_auth_header(token))
+    assert resp.status_code == 401, resp.text
+
+
+def test_a_new_login_after_revocation_works(client):
+    """Revocation ends sessions; it must not lock the account."""
+    email, password = _register_and_verify(client, "rev4@example.com")
+    body = _login(client, email, password).json()
+    uid = body["user_id"]
+
+    session = SessionLocal()
+    try:
+        user = session.query(models.User).filter(models.User.user_id == uid).first()
+        user.token_version += 1
+        session.commit()
+    finally:
+        session.close()
+
+    fresh = _login(client, email, password)
+    assert fresh.status_code == 200, fresh.text
+    resp = client.get(f"/v1/profile/{uid}", headers=_auth_header(fresh.json()["access_token"]))
+    assert resp.status_code == 200, resp.text

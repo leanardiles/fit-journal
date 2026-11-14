@@ -55,6 +55,12 @@ class User(Base):
     user_subscription = Column(Integer, default=0)  # TINYINT in MySQL, this is not being used for the time being
     user_is_active = Column(Boolean, default=True)
     user_email_verified = Column(Boolean, nullable=False, default=False, server_default=text("0"))
+    # Every issued token carries this value as its `ver` claim, and
+    # get_current_user refuses a token whose claim no longer matches. Bumping
+    # it invalidates every outstanding session for this user at once, which a
+    # stateless JWT otherwise cannot do: without it a token stays valid until
+    # it expires, however compromised the account turns out to be.
+    token_version = Column(Integer, nullable=False, default=0, server_default=text("0"))
     user_created_at = Column(TIMESTAMP, server_default=func.current_timestamp())
     user_updated_at = Column(TIMESTAMP, server_default=func.current_timestamp(), onupdate=func.current_timestamp())
     next_workout_selections = relationship(
