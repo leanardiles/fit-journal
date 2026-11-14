@@ -1,6 +1,7 @@
 {
   "auth": {
     "invalidCredentials": "Incorrect email or password.",
+    "tooManyAttempts": "Too many sign-in attempts. Try again in {{minutes}} minutes.",
     "emailAlreadyRegistered": "That email is already registered.",
     "accountInactive": "Your account is inactive.",
     "notAuthenticated": "You are not signed in.",

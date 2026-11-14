@@ -1,4 +1,4 @@
-from sqlalchemy import Column, Integer, String, DECIMAL, Enum, Boolean, TIMESTAMP, ForeignKey, Text, CheckConstraint, UniqueConstraint, text, Date
+from sqlalchemy import Column, Integer, String, DECIMAL, Enum, Boolean, TIMESTAMP, ForeignKey, Text, CheckConstraint, UniqueConstraint, Index, text, Date
 from sqlalchemy.orm import relationship
 from sqlalchemy.sql import func
 from database import Base
@@ -299,4 +299,40 @@ class AuthToken(Base):
     attempts = Column(Integer, nullable=False, default=0)
     created_at = Column(TIMESTAMP, server_default=text("CURRENT_TIMESTAMP"))
 
-    user = relationship("User")    
+    user = relationship("User")
+
+
+class LoginAttempt(Base):
+    """
+    One row per failed sign-in, which is what makes a rate limit possible on
+    Lambda: the function keeps nothing between invocations, so the counter has
+    to live in the database.
+
+    Keyed on the email as submitted rather than on a user_id, deliberately. A
+    limit that only applied to accounts that exist would turn the lockout into
+    an enumeration oracle: an attacker would learn which addresses are
+    registered by seeing which ones can be locked. Unknown addresses are
+    recorded and rate limited exactly like real ones.
+
+    Rows are evidence of failure only. A successful sign-in deletes that
+    email's rows, and anything older than the retention window is swept on
+    write, so the table stays small without a scheduled job.
+    """
+
+    __tablename__ = "login_attempts"
+
+    login_attempt_id = Column(Integer, primary_key=True, autoincrement=True)
+    user_email = Column(String(255), nullable=False)   # as submitted, lowercased
+    ip = Column(String(45), nullable=True)             # 45 chars fits IPv6
+    # Always written explicitly by ratelimit.record_failure, from the app's
+    # clock. The server default is a backstop only: MySQL evaluates
+    # CURRENT_TIMESTAMP in the session time zone, which differs between a
+    # local install and RDS, and the window is measured in UTC.
+    attempted_at = Column(TIMESTAMP, nullable=False, server_default=text("CURRENT_TIMESTAMP"))
+
+    # Both counters filter on a key plus a time window, so both get a
+    # composite index in that order.
+    __table_args__ = (
+        Index("ix_login_attempts_email_time", "user_email", "attempted_at"),
+        Index("ix_login_attempts_ip_time", "ip", "attempted_at"),
+    )

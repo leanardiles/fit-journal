@@ -21,6 +21,7 @@ import emailer
 from config import settings
 from database import engine, get_db
 from i18n import t, resolve_request_locale
+import ratelimit
 
 
 # Create database tables (if they don't exist)
@@ -222,13 +223,26 @@ def login(user: schemas.UserLogin, request: Request, db: Session = Depends(get_d
     # Accept-Language header (the only locale signal available before login).
     locale = resolve_request_locale(accept_language=request.headers.get("accept-language"))
 
+    # Before the lookup, not after: a lockout that only applied to accounts
+    # that exist would tell an attacker which addresses are registered.
+    ip = ratelimit.client_ip(request)
+    ratelimit.check_login_allowed(
+        db, user.user_email, ip,
+        t("errors.auth.tooManyAttempts", locale, minutes=ratelimit.WINDOW_MINUTES),
+    )
+
     # Find user by email
     db_user = db.query(models.User).filter(models.User.user_email == user.user_email).first()
     
     # Verify user exists and password is correct
     if not db_user or not verify_password(user.user_password, db_user.user_password):
+        # Only a credential failure counts. An unverified or inactive account
+        # below is a state problem, not a guess, and must not fill the counter.
+        ratelimit.record_failure(db, user.user_email, ip)
         raise HTTPException(status_code=401, detail=t("errors.auth.invalidCredentials", locale))
-    
+
+    ratelimit.clear_failures(db, user.user_email)
+
     # Check if user is active
     if not db_user.user_is_active:
         raise HTTPException(status_code=403, detail=t("errors.auth.accountInactive", locale))
