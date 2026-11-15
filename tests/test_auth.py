@@ -301,3 +301,106 @@ def test_a_new_login_after_revocation_works(client):
     assert fresh.status_code == 200, fresh.text
     resp = client.get(f"/v1/profile/{uid}", headers=_auth_header(fresh.json()["access_token"]))
     assert resp.status_code == 200, resp.text
+
+
+# ===== JWT validation =====
+# These cases are not about revocation. They pin down that the library is doing
+# what the app assumes it does, so a future dependency swap, or a stray
+# options={"verify_signature": False}, fails here instead of in production.
+
+import base64
+import json as _json
+
+from jose import jwt as _jwt
+
+import main as _main
+
+
+def _mint(payload, secret=None):
+    """Sign a payload ourselves so a test can control exp, ver and the key."""
+    return _jwt.encode(payload, secret or _main.SECRET_KEY, algorithm=_main.ALGORITHM)
+
+
+def _b64(obj):
+    raw = _json.dumps(obj, separators=(",", ":")).encode()
+    return base64.urlsafe_b64encode(raw).rstrip(b"=").decode()
+
+
+def test_expired_token_is_rejected(client):
+    """
+    Everything else about this token is correct, including ver, so expiry is
+    the only reason it can fail.
+    """
+    email, password = _register_and_verify(client, "jwt1@example.com")
+    uid = _login(client, email, password).json()["user_id"]
+
+    expired = _mint({
+        "sub": str(uid),
+        "email": email,
+        "ver": 0,
+        "exp": datetime.utcnow() - timedelta(minutes=1),
+    })
+
+    resp = client.get(f"/v1/profile/{uid}", headers=_auth_header(expired))
+    assert resp.status_code == 401, resp.text
+
+
+def test_tampered_token_is_rejected(client):
+    """
+    Two shapes of the same attack: break the signature, and rewrite the
+    payload while keeping the original signature. The second is the one that
+    matters, because it is how a caller would promote itself to another user.
+    """
+    email, password = _register_and_verify(client, "jwt2@example.com")
+    body = _login(client, email, password).json()
+    token, uid = body["access_token"], body["user_id"]
+
+    head, payload, sig = token.split(".")
+
+    flipped = "B" if sig[-1] != "B" else "C"
+    assert client.get(
+        f"/v1/profile/{uid}",
+        headers=_auth_header(f"{head}.{payload}.{sig[:-1]}{flipped}"),
+    ).status_code == 401
+
+    swapped = _b64({"sub": str(uid + 1), "email": email, "ver": 0})
+    assert client.get(
+        f"/v1/profile/{uid}",
+        headers=_auth_header(f"{head}.{swapped}.{sig}"),
+    ).status_code == 401
+
+
+def test_unsigned_token_is_rejected(client):
+    """
+    The alg: none forgery. A decoder that trusts the header's algorithm accepts
+    this with no key at all, which is why algorithms is pinned at the call site.
+    """
+    email, password = _register_and_verify(client, "jwt3@example.com")
+    uid = _login(client, email, password).json()["user_id"]
+
+    forged = "{}.{}.".format(
+        _b64({"alg": "none", "typ": "JWT"}),
+        _b64({"sub": str(uid), "email": email, "ver": 0}),
+    )
+
+    resp = client.get(f"/v1/profile/{uid}", headers=_auth_header(forged))
+    assert resp.status_code == 401, resp.text
+
+
+def test_token_signed_with_another_key_is_rejected(client):
+    """A well-formed token is worthless without this deployment's SECRET_KEY."""
+    email, password = _register_and_verify(client, "jwt4@example.com")
+    uid = _login(client, email, password).json()["user_id"]
+
+    other = _mint(
+        {
+            "sub": str(uid),
+            "email": email,
+            "ver": 0,
+            "exp": datetime.utcnow() + timedelta(minutes=5),
+        },
+        secret="not-the-deployments-secret-key",
+    )
+
+    resp = client.get(f"/v1/profile/{uid}", headers=_auth_header(other))
+    assert resp.status_code == 401, resp.text
