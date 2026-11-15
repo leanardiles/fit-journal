@@ -20,6 +20,7 @@ blocking but is more code and harder to reason about; at this size the
 lockout is the better trade.
 """
 
+import hashlib
 from datetime import datetime, timedelta
 from typing import Optional
 
@@ -62,6 +63,18 @@ def _count(db: Session, column, value) -> int:
     ) or 0
 
 
+def _email_tag(email: str) -> str:
+    """
+    A short, stable handle for an account, so two lockouts can be told apart
+    in CloudWatch without writing the address itself into the logs (audit
+    item 8). Not a secret: anyone holding a candidate address can hash it.
+    That is the point, since it makes the tag useful to an operator who
+    already knows which account they are investigating, and useless as a
+    source of addresses to anyone who does not.
+    """
+    return hashlib.sha256((email or "").encode()).hexdigest()[:8]
+
+
 def check_login_allowed(db: Session, email: str, ip: Optional[str], detail: str) -> None:
     """
     Raise 429 if either limit is exceeded. Call this BEFORE looking the user
@@ -73,11 +86,20 @@ def check_login_allowed(db: Session, email: str, ip: Optional[str], detail: str)
     bcrypt is deliberately expensive, so this protects the compute bill too.
     """
     email = (email or "").strip().lower()
-    too_many = (
-        _count(db, models.LoginAttempt.user_email, email) >= MAX_PER_EMAIL
-        or _count(db, models.LoginAttempt.ip, ip) >= MAX_PER_IP
-    )
-    if too_many:
+    by_email = _count(db, models.LoginAttempt.user_email, email)
+    by_ip = _count(db, models.LoginAttempt.ip, ip)
+
+    if by_email >= MAX_PER_EMAIL or by_ip >= MAX_PER_IP:
+        # A control nobody can see firing is a control nobody can trust. This
+        # line is the only evidence that the limit ever engaged, and it is
+        # what distinguishes one person mistyping a password from someone
+        # working through a list. The address is logged because without it the
+        # record cannot answer the question an operator actually has.
+        print(
+            f"[WARN] login lockout account={_email_tag(email)} ip={ip} "
+            f"failures_email={by_email} failures_ip={by_ip} "
+            f"window_minutes={WINDOW_MINUTES}"
+        )
         raise HTTPException(
             status_code=429,
             detail=detail,
