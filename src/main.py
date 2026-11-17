@@ -28,7 +28,28 @@ import ratelimit
 models.Base.metadata.create_all(bind=engine)
 
 
-app = FastAPI(title="FitJournal API")
+# The interactive API console (/docs, /redoc) and the schema it is built from
+# (/openapi.json) are developer tools, and in production they are a working
+# client aimed at the live database: every route listed, a Try it out button on
+# each, and a box to paste a token into. It conceals nothing to switch them off
+# (the repository is public, so the routes are readable either way) but it does
+# remove the assembled version, and most probing is opportunistic.
+#
+# It also buys back the content security policy. The console loads its script
+# bundle from a third-party CDN and runs inline script, so keeping it would
+# mean allowing both across the whole API origin, which is the one exception
+# that would weaken the policy for every other route.
+#
+# All three are switched off together. Leaving /openapi.json reachable would
+# let anyone rebuild the console themselves and make the other two pointless.
+_DEV_DOCS = not settings.is_production
+
+app = FastAPI(
+    title="FitJournal API",
+    docs_url="/docs" if _DEV_DOCS else None,
+    redoc_url="/redoc" if _DEV_DOCS else None,
+    openapi_url="/openapi.json" if _DEV_DOCS else None,
+)
 
 api_v1 = APIRouter(prefix="/v1")
 

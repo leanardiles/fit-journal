@@ -87,6 +87,16 @@ def resolve_locale_chain(locale: str) -> list[str]:
 class Settings(BaseSettings):
     """Environment-driven configuration, validated at startup."""
 
+    # --- Environment ---
+    # Defaults to production deliberately, which is the opposite of convenient.
+    # This value gates the interactive API console (see main.py), so a missing
+    # variable has to fail toward the safe state: forgetting ENVIRONMENT in AWS
+    # would otherwise leave that console live on the internet with nothing to
+    # announce it. Forgetting it locally costs you the console, which you
+    # notice in a minute because you went looking for it. A mistake should cost
+    # convenience, not protection.
+    environment: str = "production"       # ENVIRONMENT=local in the root .env
+
     # --- Security / auth ---
     secret_key: str                       # SECRET_KEY (required; startup fails if missing)
     algorithm: str = "HS256"
@@ -117,6 +127,11 @@ class Settings(BaseSettings):
         case_sensitive=False,   # SECRET_KEY / secret_key both resolve
         extra="ignore",         # ignore unrelated env vars
     )
+
+    @property
+    def is_production(self) -> bool:
+        """True anywhere that is not a developer machine."""
+        return self.environment.strip().lower() == "production"
 
     @property
     def database_url(self) -> str:
