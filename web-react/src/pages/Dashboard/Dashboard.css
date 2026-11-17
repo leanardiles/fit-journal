@@ -1,3 +1,50 @@
+/* The dashboard's one piece of chrome that is not a note. It lives in the
+   title row so it scrolls away with the page instead of floating over the
+   notes, and it stays quieter than anything on one. */
+.dash-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-md);
+  margin-bottom: var(--space-md);
+}
+
+.dash-head .dash-title { margin-bottom: 0; }
+
+.dash-notes-btn {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  width: 34px;
+  height: 34px;
+  padding: 0;
+  background: transparent;
+  border: 1px solid var(--control-border);
+  border-radius: 6px;
+  color: var(--text);
+  cursor: pointer;
+  transition: all 0.12s;
+}
+
+/* 34px keeps it from shouting next to an 18px title, but a 34px tap target is
+   under the 44px minimum. The pseudo-element extends the target by 5px on
+   every side without changing what is drawn or how the row lays out. */
+.dash-notes-btn::after {
+  content: "";
+  position: absolute;
+  inset: -5px;
+}
+
+.dash-notes-btn:hover { border-color: var(--yellow); }
+
+.dash-empty {
+  margin: 0;
+  color: var(--muted);
+  font-size: var(--fs-md);
+}
+
 .dash-title {
   font-family: var(--font-body);
   color: var(--text);

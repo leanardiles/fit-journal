@@ -1,4 +1,4 @@
-from sqlalchemy import Column, Integer, String, DECIMAL, Enum, Boolean, TIMESTAMP, ForeignKey, Text, CheckConstraint, UniqueConstraint, Index, text, Date
+from sqlalchemy import Column, Integer, String, DECIMAL, Enum, Boolean, TIMESTAMP, ForeignKey, Text, CheckConstraint, UniqueConstraint, Index, text, Date, JSON
 from sqlalchemy.orm import relationship
 from sqlalchemy.sql import func
 from database import Base
@@ -52,6 +52,19 @@ class User(Base):
     user_height = Column(Integer, default=None)
     user_timezone = Column(String(50), default='America/New_York')
     user_locale = Column(String(35), nullable=True)   # BCP 47 tag; NULL = auto-detect
+    # Which dashboard notes this user sees and in what order:
+    # {"order": ["quickStats", ...], "hidden": ["setsPerMuscle"]}.
+    # NULL means the user has never customized it, which is not the same as an
+    # empty object: the client falls back to the default order either way, but
+    # NULL also tells us the feature has not been touched. Stored as JSON
+    # rather than a table because the list is short, belongs to exactly one
+    # user, and is never queried across users.
+    #
+    # The client, not this column, owns the catalogue of notes. A note the
+    # column does not mention is appended in default order, and an id the
+    # client no longer knows is ignored, so a release that adds or removes a
+    # note cannot strand a user on a stale preference.
+    user_dashboard_notes = Column(JSON, nullable=True)
     user_subscription = Column(Integer, default=0)  # TINYINT in MySQL, this is not being used for the time being
     user_is_active = Column(Boolean, default=True)
     user_email_verified = Column(Boolean, nullable=False, default=False, server_default=text("0"))

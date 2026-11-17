@@ -1,7 +1,52 @@
-from pydantic import BaseModel, ConfigDict, EmailStr
-from typing import Optional
+import re
+
+from pydantic import BaseModel, ConfigDict, EmailStr, field_validator
+from typing import List, Optional
 from datetime import datetime
 from datetime import date
+
+# ========== DASHBOARD SCHEMAS ==========
+
+_NOTE_ID = re.compile(r"^[A-Za-z0-9_-]{1,40}$")
+_MAX_NOTE_IDS = 40
+
+
+def _clean_note_ids(value):
+    """
+    Note ids are written by the client and stored verbatim, so they are
+    bounded here rather than trusted. The cap is not about any one user
+    misbehaving with their own row: it is that an unbounded list in a JSON
+    column is an unbounded write, and the only thing standing between that and
+    the database is this validator.
+    """
+    if value is None:
+        return []
+    if len(value) > _MAX_NOTE_IDS:
+        raise ValueError(f"at most {_MAX_NOTE_IDS} note ids")
+    seen = []
+    for item in value:
+        if not isinstance(item, str) or not _NOTE_ID.match(item):
+            raise ValueError("note ids must be 1 to 40 characters of A-Z, a-z, 0-9, _ or -")
+        if item not in seen:          # duplicates would make the order ambiguous
+            seen.append(item)
+    return seen
+
+
+class DashboardNotes(BaseModel):
+    """
+    What the user sees on their dashboard. `order` is every note they have an
+    opinion about, most important first; `hidden` is the subset switched off.
+    A note in neither list is one this user has not met yet.
+    """
+    order: List[str] = []
+    hidden: List[str] = []
+
+    @field_validator("order", "hidden")
+    @classmethod
+    def _validate_ids(cls, v):
+        return _clean_note_ids(v)
+
+    model_config = ConfigDict(from_attributes=True)
 
 # ========== USER SCHEMAS ==========
 

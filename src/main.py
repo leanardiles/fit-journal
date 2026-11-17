@@ -404,6 +404,53 @@ def get_profile(user_id: int, db: Session = Depends(get_db), current_user: model
     
     return user
 
+@api_v1.get("/dashboard/notes/{user_id}", response_model=schemas.DashboardNotes)
+def get_dashboard_notes(user_id: int, db: Session = Depends(get_db), current_user: models.User = Depends(verify_user_access)):
+    """
+    Which dashboard notes this user shows, and in what order.
+
+    A user who has never customized anything gets empty lists rather than a
+    404 or a null. The client treats that the same way it treats a partial
+    list, by falling back to its own default order, so there is no separate
+    first-run path to get wrong.
+    """
+    user = db.query(models.User).filter(models.User.user_id == user_id).first()
+
+    if not user:
+        raise HTTPException(status_code=404, detail="User not found")
+
+    stored = user.user_dashboard_notes or {}
+    return schemas.DashboardNotes(
+        order=stored.get("order", []),
+        hidden=stored.get("hidden", []),
+    )
+
+
+@api_v1.put("/dashboard/notes/{user_id}", response_model=schemas.DashboardNotes)
+def update_dashboard_notes(user_id: int, notes: schemas.DashboardNotes, db: Session = Depends(get_db), current_user: models.User = Depends(verify_user_access)):
+    """
+    Replace this user's dashboard preference.
+
+    A full replace, not a merge: the client always sends the whole list it is
+    showing, and a merge would make the order of two concurrent edits decide
+    the result. The schema has already bounded the ids by the time we get here.
+    """
+    user = db.query(models.User).filter(models.User.user_id == user_id).first()
+
+    if not user:
+        raise HTTPException(status_code=404, detail="User not found")
+
+    user.user_dashboard_notes = {"order": notes.order, "hidden": notes.hidden}
+    db.commit()
+    db.refresh(user)
+
+    stored = user.user_dashboard_notes or {}
+    return schemas.DashboardNotes(
+        order=stored.get("order", []),
+        hidden=stored.get("hidden", []),
+    )
+
+
 @api_v1.put("/profile/{user_id}", response_model=schemas.UserProfileResponse)
 def update_profile(user_id: int, profile: schemas.UserProfileUpdate, db: Session = Depends(get_db), current_user: models.User = Depends(verify_user_access)):
     """

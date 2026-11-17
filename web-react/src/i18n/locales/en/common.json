@@ -111,6 +111,13 @@
     "quickStats": "Quick stats",
     "thisWeek": "This week",
     "currentDay": "Current day",
+    "ofTarget": "{{done}} of {{target}}",
+    "lastWorkout": "Last workout",
+    "lastWorkoutToday": "Today",
+    "lastWorkoutYesterday": "Yesterday",
+    "lastWorkoutDaysAgo_one": "{{count}} day ago",
+    "lastWorkoutDaysAgo_other": "{{count}} days ago",
+    "lastWorkoutNever": "None logged yet",
     "currentRoutine": "Your current routine",
     "noRoutine": "No routine set up yet.",
     "createRoutine": "Create routine",
@@ -121,7 +128,20 @@
     "last7Days": "Last 7 days",
     "noSets": "No sets logged in this range.",
     "sets_one": "{{count}} set",
-    "sets_other": "{{count}} sets"
+    "sets_other": "{{count}} sets",
+    "notesTitle": "Dashboard notes",
+    "notesHelp": "Pick the notes you want to see, and the order they appear in.",
+    "notesButton": "Choose dashboard notes",
+    "notesSave": "Save",
+    "notesSaveError": "Could not save your dashboard.",
+    "notesMoveUp": "Move {{name}} up",
+    "notesMoveDown": "Move {{name}} down",
+    "notesAllHidden": "No notes are showing. Use the button above to pick some.",
+    "noteDesc": {
+      "quickStats": "How many workouts you have logged this week against your target, and when you last trained.",
+      "currentRoutine": "Every training day and the muscles it covers, with the current day highlighted.",
+      "setsPerMuscle": "How many sets each muscle got, this week (Monday to Sunday) or over the last 7 days."
+    }
   },
   "exercises": {
     "colWeightWithUnit": "Weight ({{unit}})",
