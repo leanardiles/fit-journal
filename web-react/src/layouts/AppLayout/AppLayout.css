@@ -209,3 +209,51 @@
     gap: 24px;
   }
 }
+
+/* ---------- Medium only (600 to 1023px): logo and user share the top row ----------
+
+   The one range query in this file, and it earns the exception. At this width
+   the flex header wrapped into three lines: the nav broke to line 2 and the
+   user block, which follows it in the DOM, was pushed to line 3. Reordering
+   flex items or forcing a break both depend on where the row happens to run
+   out of space, and that moves with the length of the nav labels, so it would
+   hold in English and fail in Dutch.
+
+   Grid places all three explicitly instead. Logo and user sit in row 1, the
+   nav spans row 2. No wrap involved, so no language can change the outcome.
+   It must not reach wide, where the single row fits and the nav belongs
+   between the logo and the user, hence the max-width rather than a reset
+   layered on at 1024px. */
+
+@media (min-width: 600px) and (max-width: 1023px) {
+  .app-header {
+    display: grid;
+    grid-template-columns: auto 1fr;  /* 1fr absorbs the slack, so the user
+                                         block has somewhere to be pushed to */
+    align-items: end;                 /* keeps the bottom-aligned look the
+                                         flex layout had at this width */
+  }
+
+  .app-header .app-logo { grid-area: 1 / 1; }
+
+  .app-user {
+    grid-area: 1 / 2;
+    justify-self: end;                /* logical: right in LTR, left in RTL */
+  }
+
+  .app-nav {
+    grid-area: 2 / 1 / 3 / 3;
+    justify-content: center;
+  }
+
+  /* Hand the writing area back the slack. At this width the 72px gutter was
+     sized for a desktop measure and costs about 96px of table across the two
+     sides, which is a whole session column. The narrow value is enough
+     breathing room on a screen this size.
+
+     This cannot go to zero on the start edge: the margin rule and the punch
+     holes live in the first --rule-x of the shell, so the start padding is
+     rule-x plus the gutter. The gain there is the 48px of gutter, not the
+     full 162px. */
+  .app-shell { --page-gutter: var(--space-lg); }
+}
