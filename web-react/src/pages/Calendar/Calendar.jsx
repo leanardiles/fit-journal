@@ -6,9 +6,17 @@ import { useToast } from "../../context/ToastContext";
 import { formatList } from "../../i18n/format";
 import "./Calendar.css";
 
-// The calendar's horizon: the most recent N logged sessions. Not a page size,
-// a ceiling, so the N+1th session is simply not fetched and nothing on screen
-// says so. Narrower session columns made room for a couple more.
+// Two different numbers, and conflating them was a bug.
+//
+// The fetch horizon is how far back the calendar looks. It has to reach well
+// past what it renders, because a single-day view keeps only the sessions that
+// trained that day's muscles and throws the rest away. On a three-day split,
+// fetching 12 sessions leaves about four candidates for any one day.
+const SESSION_FETCH_LIMIT = 70;
+
+// The render ceiling: the most session columns any view draws. Not a page
+// size, so the next one is simply not shown and nothing on screen says so.
+// Narrower session columns made room for a couple more.
 const COLUMNS_TO_SHOW = 12;
 
 // Parse a stored YYYY-MM-DD as a LOCAL date. new Date("2025-09-06") parses as
@@ -59,7 +67,7 @@ export function Calendar() {
         const [st, ex, ss, sel] = await Promise.all([
           apiGet(`/workout/state/${userId}`).then((r) => (r.ok ? r.json() : null)),
           apiGet(`/exercises?user_id=${userId}`).then((r) => (r.ok ? r.json() : [])),
-          apiGet(`/workout/sessions/${userId}?limit=${COLUMNS_TO_SHOW}`).then((r) => (r.ok ? r.json() : [])),
+          apiGet(`/workout/sessions/${userId}?limit=${SESSION_FETCH_LIMIT}`).then((r) => (r.ok ? r.json() : [])),
           apiGet(`/next-workout/selections/${userId}`).then((r) => (r.ok ? r.json() : [])),
         ]);
         if (cancelled) return;
@@ -308,9 +316,13 @@ export function Calendar() {
 
   const rows = isAllView ? allViewRows() : filteredExercises(activeDays);
   const rowIds = new Set(rows.map((r) => r.exercise_id));
+  // Filter first, then cap. A day's columns are the most recent sessions that
+  // trained one of its muscles, which includes manual logs made off-routine,
+  // not the most recent sessions that happen to qualify out of a short window.
   const columns = sessions
     .filter((s) => logs.some((l) => l.session_id === s.session_id && rowIds.has(l.exercise_id)))
-    .sort((a, b) => parseLocalDate(b.workout_date) - parseLocalDate(a.workout_date));
+    .sort((a, b) => parseLocalDate(b.workout_date) - parseLocalDate(a.workout_date))
+    .slice(0, COLUMNS_TO_SHOW);
 
   // +1 for the trailing spacer column, which exists only to absorb the width
   // the session columns would otherwise stretch into.
