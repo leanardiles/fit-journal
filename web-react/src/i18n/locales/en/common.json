@@ -137,10 +137,19 @@
     "notesMoveUp": "Move {{name}} up",
     "notesMoveDown": "Move {{name}} down",
     "notesAllHidden": "No notes are showing. Use the button above to pick some.",
+    "weeklyGoals": "Weekly set goals",
+    "goalCount": "{{done}} / {{target}}",
+    "goalMet": "Goal met",
+    "noGoals": "No goals set yet.",
+    "setGoals": "Set goals",
+    "goalsSave": "Save",
+    "goalsInvalid": "A target must be a whole number between 1 and 100 sets.",
+    "goalsSaveError": "Could not save your goals.",
     "noteDesc": {
       "quickStats": "How many workouts you have logged this week against your target, and when you last trained.",
       "currentRoutine": "Every training day and the muscles it covers, with the current day highlighted.",
-      "setsPerMuscle": "How many sets each muscle got, this week (Monday to Sunday) or over the last 7 days."
+      "setsPerMuscle": "How many sets each muscle got, this week (Monday to Sunday) or over the last 7 days.",
+      "weeklyGoals": "Your progress toward a weekly set target for each muscle, this week (Monday to Sunday) or over the last 7 days."
     }
   },
   "exercises": {

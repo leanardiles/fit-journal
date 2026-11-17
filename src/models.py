@@ -65,6 +65,11 @@ class User(Base):
     # client no longer knows is ignored, so a release that adds or removes a
     # note cannot strand a user on a stale preference.
     user_dashboard_notes = Column(JSON, nullable=True)
+    # Weekly target sets per muscle group: {"Chest": 12, "Back": 15}. Keys are
+    # MuscleGroupEnum values; a muscle the user has no opinion about is simply
+    # absent rather than stored as 0, so "no goal" and "a goal of none" stay
+    # distinguishable. NULL means goals have never been set.
+    user_weekly_set_goals = Column(JSON, nullable=True)
     user_subscription = Column(Integer, default=0)  # TINYINT in MySQL, this is not being used for the time being
     user_is_active = Column(Boolean, default=True)
     user_email_verified = Column(Boolean, nullable=False, default=False, server_default=text("0"))

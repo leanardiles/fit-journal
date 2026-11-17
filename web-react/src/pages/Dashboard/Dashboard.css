@@ -119,15 +119,152 @@
 }
 
 /* Edit-routine action: bordered button, transparent fill, black text. */
+/* Weekly set goals. The ratio carries the meaning and the bar carries the
+   glance, so the bar is deliberately thin: it is a second reading of a number
+   that is already on the row, not the row's main event. */
+/* One grid for every row, not a grid per row. The three tracks resolve once
+   for the whole list, so the bars are identical in width and the columns line
+   up vertically no matter how long a muscle name is. A per-row layout would
+   size each bar to whatever its name left over, and two fills of different
+   widths cannot be compared by eye, which is the only thing the bar is for.
+   No fixed pixel width needed: 1fr does it, and adapts to the note. */
+.goal-rows {
+  display: grid;
+  grid-template-columns: auto minmax(40px, 1fr) auto;
+  column-gap: 10px;
+  row-gap: 7px;
+  align-items: center;
+  margin-top: 2px;
+}
+
+.goal-count {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: var(--fs-md);
+  color: var(--text);
+  white-space: nowrap;
+}
+
+/* A tick, not a colour. It survives colour blindness and a black-and-white
+   print, and on a note it is the gesture the paper would get anyway. */
+.goal-tick { flex-shrink: 0; }
+
+/* An even guide line with a stroke laid over it slightly off true. The ends
+   are four different radii and the whole stroke sits half a degree off
+   horizontal, which is enough to stop it reading as machine-drawn without
+   becoming a texture that competes with the numbers.
+
+   Deliberately quiet. A turbulence filter gives a far more obviously
+   hand-drawn edge, and was rejected: at phone size it reads as noise, and it
+   forced the bar taller because the displacement ate a fifth of its height. */
+.goal-track {
+  height: 8px;
+  border-radius: 5px;
+  background: rgba(0, 0, 0, 0.12);
+}
+
+.goal-fill {
+  height: 8px;
+  background: var(--text);
+  border-radius: 6px 3px 7px 4px / 4px 6px 3px 7px;
+  transform: rotate(-0.5deg);
+  transition: width 0.2s;
+}
+
+/* The editor keeps its own two-column layout: it has no bar, and the fields
+   want to sit against the end edge rather than in a shared middle track. */
+.goal-edit-rows {
+  display: grid;
+  grid-template-columns: auto auto;
+  justify-content: space-between;
+  column-gap: 12px;
+  row-gap: 4px;
+  align-items: center;
+  margin-top: 2px;
+}
+
+.goal-edit-row { display: contents; }
+
+/* A field on paper: a ruled line under the number rather than a box around
+   it, so the note still reads as something written on rather than a form
+   dropped onto it. The spinners are removed for the same reason, and because
+   at this size they are unhittable anyway. */
+.goal-input {
+  width: 56px;
+  padding: 1px 4px;
+  font-family: var(--font-body);
+  font-size: var(--fs-md);
+  color: var(--text);
+  text-align: end;
+  background: transparent;
+  border: 0;
+  border-bottom: 1px solid var(--text);
+  border-radius: 0;
+}
+
+.goal-input:focus {
+  outline: none;
+  border-bottom-width: 2px;
+}
+
+.goal-input::-webkit-outer-spin-button,
+.goal-input::-webkit-inner-spin-button {
+  appearance: none;
+  margin: 0;
+}
+
+.goal-input[type="number"] { appearance: textfield; }
+
+.goal-error {
+  margin-top: 10px;
+  font-size: var(--fs-base);
+  color: var(--red);
+}
+
+/* Against the end edge, under the counts. The control that changes those
+   numbers belongs in the same column they sit in, not back at the start of
+   the note where nothing else lines up with it. */
+.goal-actions {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: var(--space-sm);
+  margin-top: 12px;
+}
+
+/* The dismissive half of the pair. No border, because a cancel should not
+   carry the same visual weight as the action it abandons. */
+.note-btn-plain {
+  display: inline-block;
+  color: var(--muted);
+  background: transparent;
+  border: 0;
+  font-family: var(--font-body);
+  font-size: var(--fs-xs);
+  padding: 2px 6px;
+  cursor: pointer;
+}
+
+.note-btn-plain:hover { color: var(--text); }
+
 .note-btn {
   display: inline-block;
   color: var(--text);
   border: 1px solid var(--text);
   background: transparent;
   text-decoration: none;
+  font-family: var(--font-body);
   font-size: var(--fs-xs);
   padding: 2px 10px;
   border-radius: 6px;
+  cursor: pointer;
+}
+
+/* Used only by the goals note's placeholder, until that control is designed. */
+.note-btn:disabled {
+  opacity: 0.45;
+  cursor: default;
 }
 
 .muscle-rows { margin-top: 10px; }

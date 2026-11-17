@@ -425,6 +425,42 @@ def get_profile(user_id: int, db: Session = Depends(get_db), current_user: model
     
     return user
 
+@api_v1.get("/goals/{user_id}", response_model=schemas.WeeklySetGoals)
+def get_weekly_set_goals(user_id: int, db: Session = Depends(get_db), current_user: models.User = Depends(verify_user_access)):
+    """
+    This user's weekly target sets per muscle group.
+
+    An empty map rather than a 404 when none are set, so the client has one
+    code path: no goals and some goals render the same component, one of them
+    with nothing in it.
+    """
+    user = db.query(models.User).filter(models.User.user_id == user_id).first()
+
+    if not user:
+        raise HTTPException(status_code=404, detail="User not found")
+
+    return schemas.WeeklySetGoals(goals=user.user_weekly_set_goals or {})
+
+
+@api_v1.put("/goals/{user_id}", response_model=schemas.WeeklySetGoals)
+def update_weekly_set_goals(user_id: int, body: schemas.WeeklySetGoals, db: Session = Depends(get_db), current_user: models.User = Depends(verify_user_access)):
+    """
+    Replace this user's goals. A full replace, like the dashboard notes: the
+    client sends every goal it is showing, so removing one is sending the map
+    without it rather than a separate delete.
+    """
+    user = db.query(models.User).filter(models.User.user_id == user_id).first()
+
+    if not user:
+        raise HTTPException(status_code=404, detail="User not found")
+
+    user.user_weekly_set_goals = body.goals
+    db.commit()
+    db.refresh(user)
+
+    return schemas.WeeklySetGoals(goals=user.user_weekly_set_goals or {})
+
+
 @api_v1.get("/dashboard/notes/{user_id}", response_model=schemas.DashboardNotes)
 def get_dashboard_notes(user_id: int, db: Session = Depends(get_db), current_user: models.User = Depends(verify_user_access)):
     """

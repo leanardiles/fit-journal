@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { Fragment, useState, useEffect } from "react";
 import { useTranslation } from "react-i18next";
 import { Link } from "react-router-dom";
 import { apiGet, apiPut } from "../../api/client";
@@ -17,6 +17,15 @@ const NOTE_CATALOGUE = [
   { id: "quickStats", nameKey: "dashboard.quickStats", descKey: "dashboard.noteDesc.quickStats" },
   { id: "currentRoutine", nameKey: "dashboard.currentRoutine", descKey: "dashboard.noteDesc.currentRoutine" },
   { id: "setsPerMuscle", nameKey: "dashboard.setsPerMuscle", descKey: "dashboard.noteDesc.setsPerMuscle" },
+  { id: "weeklyGoals", nameKey: "dashboard.weeklyGoals", descKey: "dashboard.noteDesc.weeklyGoals" },
+];
+
+// The order goals are listed in. Fixed rather than sorted by progress, which
+// would rearrange the note every time a set is logged and make it impossible
+// to find a muscle by where it was last time.
+const MUSCLE_ORDER = [
+  "Chest", "Back", "Shoulders", "Biceps", "Triceps",
+  "Legs", "Glutes", "Calves", "Abs", "Forearms",
 ];
 
 const DEFAULT_ORDER = NOTE_CATALOGUE.map((n) => n.id);
@@ -79,6 +88,11 @@ export function Dashboard() {
   const [range, setRange] = useState("week");
   const [order, setOrder] = useState(DEFAULT_ORDER);
   const [hidden, setHidden] = useState([]);
+  const [goals, setGoals] = useState({});
+  const [goalRange, setGoalRange] = useState("week");
+  const [editingGoals, setEditingGoals] = useState(false);
+  const [goalDraft, setGoalDraft] = useState({});
+  const [goalError, setGoalError] = useState("");
   const [notesOpen, setNotesOpen] = useState(false);
   const { showToast } = useToast();
 
@@ -91,8 +105,9 @@ export function Dashboard() {
       apiGet(`/exercises?user_id=${userId}`).then((r) => (r.ok ? r.json() : [])),
       apiGet(`/workout/logs/${userId}?limit=100`).then((r) => (r.ok ? r.json() : [])),
       apiGet(`/dashboard/notes/${userId}`).then((r) => (r.ok ? r.json() : null)),
+      apiGet(`/goals/${userId}`).then((r) => (r.ok ? r.json() : null)),
     ])
-      .then(([st, ss, rt, ex, lg, dn]) => {
+      .then(([st, ss, rt, ex, lg, dn, gl]) => {
         setState(st);
         setSessions(Array.isArray(ss) ? ss : []);
         setRoutine(rt);
@@ -100,6 +115,7 @@ export function Dashboard() {
         setLogs(Array.isArray(lg) ? lg : []);
         setOrder(resolveOrder(dn?.order));
         setHidden(resolveHidden(dn?.hidden));
+        setGoals(gl?.goals && typeof gl.goals === "object" ? gl.goals : {});
       })
       .finally(() => setLoading(false));
   }, []);
@@ -156,16 +172,114 @@ export function Dashboard() {
     sessionDate[s.session_id ?? s.id] = s.workout_date;
   });
 
-  const windowStart = range === "week" ? monday : sevenDaysAgo();
-  const muscleTotals = {};
-  logs.forEach((log) => {
-    const dateStr = log.workout_date || sessionDate[log.session_id];
-    if (!dateStr) return;
-    if (parseLocalDate(dateStr) < windowStart) return;
-    const muscle = log.muscle_group || exerciseMuscle[log.exercise_id];
-    if (!muscle) return;
-    muscleTotals[muscle] = (muscleTotals[muscle] || 0) + (Number(log.sets_completed) || 0);
-  });
+  // Extracted so the two notes can ask for different windows. They carry the
+  // same control but keep their own state, so changing one does not silently
+  // change the other: each note answers for itself.
+  const totalsSince = (start) => {
+    const totals = {};
+    logs.forEach((log) => {
+      const dateStr = log.workout_date || sessionDate[log.session_id];
+      if (!dateStr) return;
+      if (parseLocalDate(dateStr) < start) return;
+      const muscle = log.muscle_group || exerciseMuscle[log.exercise_id];
+      if (!muscle) return;
+      totals[muscle] = (totals[muscle] || 0) + (Number(log.sets_completed) || 0);
+    });
+    return totals;
+  };
+
+  const muscleTotals = totalsSince(range === "week" ? monday : sevenDaysAgo());
+
+  // A weekly target is a target per seven days, and a rolling window is as
+  // valid a seven days as a calendar one. The tick means something slightly
+  // different in each: met this calendar week, or met across any seven days.
+  const goalTotals = totalsSince(goalRange === "week" ? monday : sevenDaysAgo());
+
+  const goalRows = MUSCLE_ORDER.filter((m) => goals[m] > 0)
+    .map((muscle) => {
+      const target = goals[muscle];
+      const done = goalTotals[muscle] || 0;
+      return {
+        muscle,
+        done,
+        target,
+        met: done >= target,
+        remaining: target - done,
+        // Capped at 100 so an exceeded goal does not overflow its track. The
+        // ratio still reads 11 / 9, so nothing is hidden by the cap.
+        pct: Math.min(100, Math.round((done / target) * 100)),
+      };
+    })
+    // Most work left at the top, finished goals at the bottom. The note's job
+    // is what to train next, so a ticked muscle sitting above three untouched
+    // ones was exactly backwards.
+    //
+    // Remaining is absolute sets, not a percentage: 10 sets short of 20 is more
+    // work than 6 short of 6, even though the second is further behind as a
+    // fraction, and sets are what the user actually has to go and do.
+    //
+    // Returning 0 for ties leaves them in MUSCLE_ORDER, because Array sort is
+    // stable. So the done pile and any equally-behind muscles keep the
+    // anatomical order rather than shuffling between renders.
+    .sort((a, b) => {
+      if (a.met !== b.met) return a.met ? 1 : -1;
+      if (a.met) return 0;
+      return b.remaining - a.remaining;
+    });
+
+  // The editor offers every muscle group, not just the ones the routine
+  // trains. Filtering by the routine looked tidier and was wrong: a workout
+  // can be logged manually against any muscle, so a goal for something the
+  // routine does not cover is a thing a user can legitimately want, and a
+  // missing row gives them no way to find out why. Ten rows is a short form
+  // either way, so the filtering bought almost nothing and cost the ability
+  // to say something.
+  const goalEditMuscles = MUSCLE_ORDER;
+
+  const startEditGoals = () => {
+    const draft = {};
+    goalEditMuscles.forEach((m) => {
+      draft[m] = goals[m] ? String(goals[m]) : "";
+    });
+    setGoalDraft(draft);
+    setGoalError("");
+    setEditingGoals(true);
+  };
+
+  const cancelEditGoals = () => {
+    setEditingGoals(false);
+    setGoalError("");
+  };
+
+  const saveGoals = async () => {
+    const next = {};
+    for (const [muscle, raw] of Object.entries(goalDraft)) {
+      const value = String(raw).trim();
+      // An empty field is how a goal is removed. There is no separate delete,
+      // and no zero: a muscle with no goal is simply absent from the map,
+      // which is the same rule the API enforces.
+      if (value === "") continue;
+      const n = Number(value);
+      if (!Number.isInteger(n) || n < 1 || n > 100) {
+        setGoalError(t("dashboard.goalsInvalid"));
+        return;
+      }
+      next[muscle] = n;
+    }
+
+    const previous = goals;
+    setGoals(next);
+    setEditingGoals(false);
+    setGoalError("");
+    try {
+      const userId = localStorage.getItem("user_id");
+      const res = await apiPut(`/goals/${userId}`, { goals: next });
+      if (!res.ok) throw new Error("save failed");
+    } catch {
+      setGoals(previous);
+      showToast(t("dashboard.goalsSaveError"), "error");
+    }
+  };
   const muscleRows = Object.entries(muscleTotals)
     .map(([muscle, sets]) => ({ muscle, sets }))
     .filter((r) => r.sets > 0)
@@ -229,6 +343,93 @@ export function Dashboard() {
             </div>
           </>
         )}
+      </StickyNote>
+    ),
+    weeklyGoals: (
+      <StickyNote key="weeklyGoals">
+        <div className="note-heading">{t("dashboard.weeklyGoals")}</div>
+        {/* Hidden while editing: the window is irrelevant when you are setting
+            the targets themselves, and it would sit above fields it does not
+            affect. */}
+        {!editingGoals && (
+          <Toggle value={goalRange} onChange={setGoalRange} options={rangeOptions} />
+        )}
+        {editingGoals ? (
+          /* Edit mode replaces the ratio with a field in the same place, and
+             drops the bars: while the target is being typed, a bar that
+             recalculates on every keystroke is noise, and progress is not what
+             the user is looking at. */
+          <div className="goal-edit-rows">
+            {goalEditMuscles.map((muscle) => (
+              <div key={muscle} className="goal-edit-row">
+                <label className="muscle-name" htmlFor={`goal-${muscle}`}>
+                  {t(`muscles.${muscle}`)}
+                </label>
+                <input
+                  id={`goal-${muscle}`}
+                  className="goal-input"
+                  type="number"
+                  min="1"
+                  max="100"
+                  inputMode="numeric"
+                  value={goalDraft[muscle] ?? ""}
+                  onChange={(e) => {
+                    setGoalError("");
+                    setGoalDraft((prev) => ({ ...prev, [muscle]: e.target.value }));
+                  }}
+                />
+              </div>
+            ))}
+          </div>
+        ) : goalRows.length === 0 ? (
+          <div className="note-line">{t("dashboard.noGoals")}</div>
+        ) : (
+          /* One grid for the whole list rather than a grid per row: the
+             tracks resolve once, so every bar is the same width and the three
+             columns line up down the note. Per-row containers would size each
+             bar to whatever its muscle name left over, and fills of different
+             widths cannot be compared at a glance, which is the bar's only
+             job. */
+          <div className="goal-rows">
+            {goalRows.map((row) => (
+              <Fragment key={row.muscle}>
+                <span className="muscle-name">{t(`muscles.${row.muscle}`)}</span>
+                <div className="goal-track">
+                  <div className="goal-fill" style={{ width: `${row.pct}%` }} />
+                </div>
+                <span className="goal-count">
+                  {t("dashboard.goalCount", { done: row.done, target: row.target })}
+                  {row.met && (
+                    <svg className="goal-tick" width="14" height="14" viewBox="0 0 24 24"
+                         fill="none" stroke="currentColor" strokeWidth="3"
+                         strokeLinecap="round" strokeLinejoin="round"
+                         role="img" aria-label={t("dashboard.goalMet")}>
+                      <path d="M4 12.5l5 5L20 6.5" />
+                    </svg>
+                  )}
+                </span>
+              </Fragment>
+            ))}
+          </div>
+        )}
+        {goalError && <div className="goal-error">{goalError}</div>}
+
+        <div className="goal-actions">
+          {editingGoals ? (
+            <>
+              <button type="button" className="note-btn" onClick={saveGoals}>
+                {t("dashboard.goalsSave")}
+              </button>
+              <button type="button" className="note-btn-plain" onClick={cancelEditGoals}>
+                {t("common.cancel")}
+              </button>
+            </>
+          ) : (
+            <button type="button" className="note-btn" onClick={startEditGoals}>
+              {t("dashboard.setGoals")}
+            </button>
+          )}
+        </div>
       </StickyNote>
     ),
     setsPerMuscle: (

@@ -1,7 +1,9 @@
 import re
 
 from pydantic import BaseModel, ConfigDict, EmailStr, field_validator
-from typing import List, Optional
+
+from models import MuscleGroupEnum
+from typing import Dict, List, Optional
 from datetime import datetime
 from datetime import date
 
@@ -30,6 +32,42 @@ def _clean_note_ids(value):
         if item not in seen:          # duplicates would make the order ambiguous
             seen.append(item)
     return seen
+
+
+_MAX_GOAL_SETS = 100
+_VALID_MUSCLES = {m.value for m in MuscleGroupEnum}
+
+
+class WeeklySetGoals(BaseModel):
+    """
+    Target sets per muscle group for a Monday-to-Sunday week.
+
+    Weekly by definition, which is why the note that renders it has no range
+    control: progress toward a weekly target measured over a rolling seven
+    days is not a number that means anything.
+    """
+    goals: Dict[str, int] = {}
+
+    @field_validator("goals")
+    @classmethod
+    def _validate_goals(cls, v):
+        if v is None:
+            return {}
+        cleaned = {}
+        for muscle, target in v.items():
+            if muscle not in _VALID_MUSCLES:
+                raise ValueError(f"unknown muscle group: {muscle}")
+            if not isinstance(target, int) or isinstance(target, bool):
+                raise ValueError("a target must be a whole number of sets")
+            # Zero is refused rather than accepted and stored: a muscle with no
+            # goal is one that is absent from the map, and allowing both would
+            # give two spellings of the same thing for the UI to disagree about.
+            if target < 1 or target > _MAX_GOAL_SETS:
+                raise ValueError(f"a target must be between 1 and {_MAX_GOAL_SETS} sets")
+            cleaned[muscle] = target
+        return cleaned
+
+    model_config = ConfigDict(from_attributes=True)
 
 
 class DashboardNotes(BaseModel):
