@@ -88,13 +88,18 @@ pip install -r requirements.txt
 
 # 4. Environment: create a .env in the project root
 #    DB_HOST, DB_PORT, DB_USER, DB_PASSWORD, DB_NAME, DB_SSL, SECRET_KEY
+#    ENVIRONMENT=local
 
 # 5. Run
 cd src
 uvicorn main:app --reload
 ```
 
-API docs: `http://127.0.0.1:8000/docs`
+API docs: `http://127.0.0.1:8000/docs`, which needs `ENVIRONMENT=local` in
+your `.env`. The interactive console and `/openapi.json` are served only
+outside production: in production they are a working client pointed at the
+live database. `ENVIRONMENT` defaults to `production`, so forgetting it costs
+you the console rather than exposing it.
 
 **Web frontend (React)**
 

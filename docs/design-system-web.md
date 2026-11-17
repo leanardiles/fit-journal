@@ -122,6 +122,7 @@ Current state of every mutating action:
 | Set current day | Workout | Silent, the day strip highlight moves |
 | Delete a routine day | Routine | Silent, the row disappears |
 | Login / Verify email | auth | Silent, the dashboard proves it |
+| Save dashboard notes | Dashboard | Silent, optimistic with rollback: the dialog closes and the notes reorder behind it |
 
 **Validation is inline, never a toast.** A toast expires while the user is
 still reading the field it complained about. Validation sits next to the

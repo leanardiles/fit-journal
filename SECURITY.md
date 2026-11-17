@@ -41,6 +41,25 @@ is never stored or logged. Sign-in requires a verified email address. Sessions
 are JWTs signed with HS256, and the signing key is required configuration, so
 the application refuses to start without it.
 
+**Sign-in rate limiting.** Failed sign-ins are counted per account and per
+address over a fifteen-minute window, and the account limit is checked before
+the user is looked up, so an unknown address locks out exactly as a real one
+does and the limit cannot be used to discover which addresses are registered.
+A lockout is logged with the address and a hash of the account rather than the
+address itself, so the control leaves an auditable trace without putting email
+addresses in the logs.
+
+**Session revocation.** Each account carries a version counter that is issued
+into every token and checked on every authenticated request, so a session can
+be ended server-side rather than only expiring. A password reset bumps it,
+which means a reset ends every existing session, including an attacker's. A
+token carrying no version at all is refused.
+
+**Developer endpoints.** The interactive API console and the OpenAPI schema it
+is built from are served only outside production. This conceals nothing, since
+this repository is public and every route is readable, but it means production
+does not host a ready-made client aimed at the live database.
+
 **Authorization.** Every user-scoped endpoint depends on a guard that compares
 the `user_id` in the request against the authenticated user and returns 403 on
 a mismatch, so one account cannot read or write another's data. This is covered
@@ -75,3 +94,16 @@ automated update pull requests enabled.
 This is a portfolio project maintained by one person. It has not had a
 third-party penetration test or a formal security review, and it is not
 certified against any standard. Treat the data in it accordingly.
+
+Two specifics worth stating rather than leaving to be discovered:
+
+**Session lifetime is long.** Access tokens last thirty days and are held in
+`localStorage`. They are revocable, as above, but revocation only helps once
+someone knows there is something to revoke. Short-lived tokens with refresh
+are intended and not built.
+
+**The per-address sign-in limit is coarse.** Mobile carriers place many
+subscribers behind one address and rotate them per session, so the per-address
+count both over-counts unrelated people and can be shed by an attacker who
+waits. It raises the cost of naive probing from a fixed address and nothing
+more. The per-account limit is the control doing the real work.
