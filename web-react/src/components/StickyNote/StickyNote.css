@@ -42,3 +42,52 @@
 .sticky-note:nth-of-type(4n + 2) { --tape-x: 58%; --tape-tilt: 3deg;  --tape-w: 66px; }
 .sticky-note:nth-of-type(4n + 3) { --tape-x: 47%; --tape-tilt: -1deg; --tape-w: 52px; }
 .sticky-note:nth-of-type(4n + 4) { --tape-x: 65%; --tape-tilt: 5deg;  --tape-w: 62px; }
+/* ---------- Toggle chips on note paper ----------
+
+   The shared chip marks selection with a yellow border and a yellow wash,
+   which is emphasis against the dark page. On the note that is yellow on
+   yellow, so the selected chip loses its outline while the unselected one
+   keeps its var(--text) border and reads as the active one. The control was
+   showing the opposite of its own state.
+
+   The note is paper, so selection is marked the way it would be on paper:
+   underlined. Borders go on both states rather than off, so the 1px box is
+   still there and the chips do not shift size when the selection moves. */
+
+.sticky-note .toggle-group {
+  justify-content: flex-end;   /* logical end: right in LTR, left in RTL */
+  gap: 4px;                    /* the chips carry almost no padding now, so
+                                  the gap is most of what separates them.
+                                  Their 2px of inline padding adds the rest,
+                                  making the visible space about 8px. Tuned by
+                                  eye on the note rather than derived from the
+                                  spacing scale: the underline on the selected
+                                  label does the separating, so the labels can
+                                  sit closer than two bordered chips could. */
+}
+
+.sticky-note .toggle-chip {
+  border-color: transparent;
+  background: transparent;
+  border-radius: 0;
+  padding-inline: 2px;
+}
+
+/* A thin underline on hover, so the pair still reads as controls without a
+   border to announce them. */
+.sticky-note .toggle-chip:hover {
+  border-color: transparent;
+  text-decoration: underline;
+  text-decoration-thickness: 1px;
+  text-underline-offset: 3px;
+}
+
+.sticky-note .toggle-chip.selected {
+  border-color: transparent;
+  background: transparent;
+  color: var(--text);
+  text-decoration: underline;
+  text-decoration-thickness: 2px;   /* twice the hover weight, so the two
+                                       cues cannot be confused */
+  text-underline-offset: 3px;
+}

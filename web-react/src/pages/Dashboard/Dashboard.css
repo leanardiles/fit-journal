@@ -40,13 +40,24 @@
   text-transform: uppercase;
 }
 
+/* A heading followed by its own control sits closer to it than a heading
+   followed by the note's content. Scoped with :has so the other notes keep
+   the full 10px, and so the rule cannot be read as a global change to how
+   headings space. The chip carries 4px of block padding of its own, which is
+   the rest of the visible gap. */
+.note-heading:has(+ .toggle-field) { margin-bottom: 2px; }
+
 .note-line { margin-bottom: 4px; color: var(--text); }
 .note-value { color: var(--text); }
 
 .note-day { margin-bottom: 4px; color: var(--text); }
-/* Today's routine day, marked on the label only so the row does not read as
-   heavier than the others. --text is the note's dark ink, so this is black. */
-.note-day.today .note-day-label {
+/* Today's routine day, underlined across the whole row rather than the label
+   alone, so the mark reads as pointing at the day's training and not just at
+   its number. Declared on the block, which underlines its inline content to
+   the end of the text, not the width of the note. A day whose muscles wrap to
+   a second line is underlined on both, which is correct: it is one row.
+   --text is the note's dark ink, so this is black. */
+.note-day.today {
   text-decoration: underline;
   text-decoration-color: var(--text);
   text-decoration-thickness: 1px;
