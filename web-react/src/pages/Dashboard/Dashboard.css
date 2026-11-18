@@ -54,10 +54,33 @@
   margin: 0 0 var(--space-md);
 }
 
+/* Three notes to a row at most, each with a bounded width, and empty slots
+   left empty.
+
+   auto-FILL, not auto-fit: auto-fit collapses tracks nothing is in and lets
+   the survivors absorb the space, which is why two notes used to stretch
+   across the whole page. auto-fill keeps the empty third track, so two notes
+   sit in the first two slots at the width three would have had.
+
+   The maximum stays 1fr, and the width is bounded by max-width on the grid
+   instead. That is not interchangeable with a length: when a track's maximum
+   is a definite length, auto-fill counts repetitions using that maximum, so
+   minmax(260px, 360px) asks how many 360px tracks fit rather than how many
+   260px ones do, and drops to two columns on a screen where three would have
+   been comfortable. With 1fr the count comes from the 260px minimum and the
+   tracks then share the space evenly.
+
+   max-width caps the grid at three tracks plus two gaps, so a fourth note
+   wraps under the first rather than making the row narrower, and a note never
+   grows past 360px however wide the screen is. No breakpoints: the track size
+   decides, not a media query.
+
+   min(100%, 260px) as the minimum keeps it from overflowing below 260px. */
 .dashboard-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+  grid-template-columns: repeat(auto-fill, minmax(min(100%, 260px), 1fr));
   gap: 32px;
+  max-width: calc(360px * 3 + 32px * 2);
   align-items: start;
   justify-items: center;
 }

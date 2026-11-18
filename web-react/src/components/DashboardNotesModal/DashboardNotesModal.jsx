@@ -20,10 +20,11 @@ import "./DashboardNotesModal.css";
  *   notes    - the full catalogue: [{ id, nameKey, descKey }], in default order
  *   order    - current ids, most important first
  *   hidden   - ids currently switched off
+ *   max      - how many may show at once
  *   onCancel - dismiss without saving
  *   onSave   - called with (order, hidden)
  */
-export function DashboardNotesModal({ open, notes, order, hidden, onCancel, onSave }) {
+export function DashboardNotesModal({ open, notes, order, hidden, max, onCancel, onSave }) {
   const { t } = useTranslation();
 
   // The dialog edits a copy, so Cancel is a real cancel rather than an undo
@@ -52,18 +53,31 @@ export function DashboardNotesModal({ open, notes, order, hidden, onCancel, onSa
 
   const byId = (id) => notes.find((n) => n.id === id);
 
+  // The count is the part that teaches the rule, and it has to be visible
+  // before the rule binds. A checkbox that simply stops responding at the
+  // limit makes the user infer the limit from a refusal; having watched the
+  // count climb to 3 of 3, they already know why the next row is disabled.
+  const shownCount = draftOrder.filter((id) => !draftHidden.includes(id)).length;
+  const atLimit = shownCount >= max;
+
   return (
     <Modal open={open} onClose={onCancel} titleKey="dashboard.notesTitle">
-      <p className="dnm-help">{t("dashboard.notesHelp")}</p>
+      <p className="dnm-help">
+        {t("dashboard.notesHelp", { max })}{" "}
+        <span className="dnm-count">{t("dashboard.notesCount", { count: shownCount, max })}</span>
+      </p>
 
       <ul className="dnm-list">
         {draftOrder.map((id, index) => {
           const note = byId(id);
           if (!note) return null;
           const isHidden = draftHidden.includes(id);
+          // Only the unchecked rows lock: turning one OFF is always allowed,
+          // and is the way out of the limit.
+          const locked = isHidden && atLimit;
           const name = t(note.nameKey);
           return (
-            <li key={id} className={`dnm-row${isHidden ? " is-hidden" : ""}`}>
+            <li key={id} className={`dnm-row${isHidden ? " is-hidden" : ""}${locked ? " is-locked" : ""}`}>
               <label className="dnm-name" htmlFor={`dnm-${id}`}>{name}</label>
 
               <div className="dnm-moves">
@@ -98,6 +112,7 @@ export function DashboardNotesModal({ open, notes, order, hidden, onCancel, onSa
                 className="dnm-check"
                 type="checkbox"
                 checked={!isHidden}
+                disabled={locked}
                 onChange={() => toggle(id)}
               />
 
@@ -106,6 +121,12 @@ export function DashboardNotesModal({ open, notes, order, hidden, onCancel, onSa
           );
         })}
       </ul>
+
+      {/* aria-live so the rule is announced when it starts applying, rather
+          than only being visible. */}
+      <p className="dnm-limit" role="status">
+        {atLimit ? t("dashboard.notesAtLimit") : ""}
+      </p>
 
       <div className="dnm-actions">
         <Button labelKey="common.cancel" variant="neutral" onClick={onCancel} />

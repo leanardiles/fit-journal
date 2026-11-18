@@ -14,11 +14,18 @@ import "./Dashboard.css";
 // what a note IS: the stored preference only says which of these to show and
 // in what sequence.
 const NOTE_CATALOGUE = [
-  { id: "quickStats", nameKey: "dashboard.quickStats", descKey: "dashboard.noteDesc.quickStats" },
-  { id: "currentRoutine", nameKey: "dashboard.currentRoutine", descKey: "dashboard.noteDesc.currentRoutine" },
-  { id: "setsPerMuscle", nameKey: "dashboard.setsPerMuscle", descKey: "dashboard.noteDesc.setsPerMuscle" },
-  { id: "weeklyGoals", nameKey: "dashboard.weeklyGoals", descKey: "dashboard.noteDesc.weeklyGoals" },
+  { id: "quickStats", nameKey: "dashboard.quickStats", descKey: "dashboard.noteDesc.quickStats", defaultOn: true },
+  { id: "currentRoutine", nameKey: "dashboard.currentRoutine", descKey: "dashboard.noteDesc.currentRoutine", defaultOn: true },
+  { id: "setsPerMuscle", nameKey: "dashboard.setsPerMuscle", descKey: "dashboard.noteDesc.setsPerMuscle", defaultOn: true },
+  { id: "weeklyGoals", nameKey: "dashboard.weeklyGoals", descKey: "dashboard.noteDesc.weeklyGoals", defaultOn: false },
 ];
+
+// Three notes fill one row on a wide screen and stack cleanly on a phone. A
+// fourth starts a second row, and because a grid row is as tall as its tallest
+// item, the short notes in the first row leave a hole above it. The cap is a
+// layout constraint stated as a product rule rather than a layout bug left for
+// the user to discover.
+const MAX_VISIBLE_NOTES = 3;
 
 // The order goals are listed in. Fixed rather than sorted by progress, which
 // would rearrange the note every time a set is logged and make it impossible
@@ -46,8 +53,35 @@ function resolveOrder(stored) {
   return [...saved, ...DEFAULT_ORDER.filter((id) => !saved.includes(id))];
 }
 
-function resolveHidden(stored) {
-  return (Array.isArray(stored) ? stored : []).filter((id) => DEFAULT_ORDER.includes(id));
+/**
+ * Which notes to hide, from what the server returned.
+ *
+ * Three cases, and they are not the same:
+ *
+ * 1. No preference at all. An empty stored ORDER is the signal, because any
+ *    save writes the whole list. These users get the catalogue's own defaults,
+ *    which is how a new note ships switched off rather than appearing on every
+ *    existing dashboard uninvited.
+ * 2. A preference that predates the cap, or any that exceeds it. The first
+ *    MAX_VISIBLE_NOTES in the user's own order survive and the rest are hidden,
+ *    so an old preference degrades in the direction the user chose rather than
+ *    being discarded.
+ * 3. An ordinary preference, used as given.
+ */
+function resolveVisibility(storedOrder, storedHidden) {
+  const order = resolveOrder(storedOrder);
+  const hasPreference = Array.isArray(storedOrder) && storedOrder.length > 0;
+
+  let hidden = hasPreference
+    ? (Array.isArray(storedHidden) ? storedHidden : []).filter((id) => DEFAULT_ORDER.includes(id))
+    : NOTE_CATALOGUE.filter((n) => !n.defaultOn).map((n) => n.id);
+
+  const shown = order.filter((id) => !hidden.includes(id));
+  if (shown.length > MAX_VISIBLE_NOTES) {
+    hidden = [...hidden, ...shown.slice(MAX_VISIBLE_NOTES)];
+  }
+
+  return { order, hidden };
 }
 
 // Parse a stored YYYY-MM-DD as a LOCAL date. new Date("2025-09-06") parses as
@@ -113,8 +147,9 @@ export function Dashboard() {
         setRoutine(rt);
         setExercises(Array.isArray(ex) ? ex : []);
         setLogs(Array.isArray(lg) ? lg : []);
-        setOrder(resolveOrder(dn?.order));
-        setHidden(resolveHidden(dn?.hidden));
+        const visibility = resolveVisibility(dn?.order, dn?.hidden);
+        setOrder(visibility.order);
+        setHidden(visibility.hidden);
         setGoals(gl?.goals && typeof gl.goals === "object" ? gl.goals : {});
       })
       .finally(() => setLoading(false));
@@ -511,6 +546,7 @@ export function Dashboard() {
       <DashboardNotesModal
         open={notesOpen}
         notes={NOTE_CATALOGUE}
+        max={MAX_VISIBLE_NOTES}
         order={order}
         hidden={hidden}
         onCancel={() => setNotesOpen(false)}
