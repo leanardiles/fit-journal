@@ -111,7 +111,7 @@ function sevenDaysAgo() {
 }
 
 export function Dashboard() {
-  const { t } = useTranslation();
+  const { t, i18n } = useTranslation();
 
   const [state, setState] = useState(null);
   const [sessions, setSessions] = useState([]);
@@ -239,27 +239,36 @@ export function Dashboard() {
         done,
         target,
         met: done >= target,
-        remaining: target - done,
+        // Sorted on, so it is resolved once per row rather than per comparison.
+        label: t(`muscles.${muscle}`),
         // Capped at 100 so an exceeded goal does not overflow its track. The
         // ratio still reads 11 / 9, so nothing is hidden by the cap.
         pct: Math.min(100, Math.round((done / target) * 100)),
       };
     })
-    // Most work left at the top, finished goals at the bottom. The note's job
+    // Least complete at the top, finished goals at the bottom. The note's job
     // is what to train next, so a ticked muscle sitting above three untouched
     // ones was exactly backwards.
     //
-    // Remaining is absolute sets, not a percentage: 10 sets short of 20 is more
-    // work than 6 short of 6, even though the second is further behind as a
-    // fraction, and sets are what the user actually has to go and do.
+    // Ranked by PERCENTAGE, not by sets outstanding. Those disagree: 10 sets
+    // short of 20 is more work than 6 short of 6, but the second muscle has
+    // had nothing at all and is the one being neglected. Percentage answers
+    // which goal is furthest behind, which is what the bar already shows.
     //
-    // Returning 0 for ties leaves them in MUSCLE_ORDER, because Array sort is
-    // stable. So the done pile and any equally-behind muscles keep the
-    // anatomical order rather than shuffling between renders.
+    // On the ROUNDED percentage, the one the bar draws, so the order can be
+    // checked against the note. Two bars of visibly equal length ordered by an
+    // invisible fraction would look arbitrary.
+    //
+    // Ties break alphabetically on the TRANSLATED name, compared in the active
+    // language, so Spanish sorts by Espalda and Pecho rather than by the
+    // English keys behind them. At the start of a week everything sits at 0%
+    // and the whole note is alphabetical, which is a predictable place to
+    // start from. The met pile at the bottom is alphabetical throughout, since
+    // its percentages are all capped at 100.
     .sort((a, b) => {
       if (a.met !== b.met) return a.met ? 1 : -1;
-      if (a.met) return 0;
-      return b.remaining - a.remaining;
+      if (!a.met && a.pct !== b.pct) return a.pct - b.pct;
+      return a.label.localeCompare(b.label, i18n.language);
     });
 
   // The editor offers every muscle group, not just the ones the routine
