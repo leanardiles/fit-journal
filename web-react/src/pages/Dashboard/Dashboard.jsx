@@ -157,7 +157,15 @@ export function Dashboard() {
 
   const currentDay = state?.current_day_number ?? 1;
   const monday = mondayOfThisWeek();
-  const workoutsThisWeek = sessions.filter((s) => parseLocalDate(s.workout_date) >= monday).length;
+  // Distinct DAYS trained, not sessions logged. Each Log WOD click writes its
+  // own session row, so counting sessions made a Tuesday with a morning and an
+  // evening log read as two workouts against a target measured in days per
+  // week. The calendar counts days for the same reason.
+  const workoutsThisWeek = new Set(
+    sessions
+      .filter((s) => parseLocalDate(s.workout_date) >= monday)
+      .map((s) => s.workout_date)
+  ).size;
   const hasRoutine = routine && routine.days_per_week > 0;
 
   // When the user last TRAINED, which is workout_date, not created_at. The two

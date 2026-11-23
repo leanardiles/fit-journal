@@ -220,9 +220,16 @@ export function Calendar() {
         : a.exercise_name.localeCompare(b.exercise_name)
     );
 
-  const cellValue = (exId, sessionId) => {
-    const log = logs.find((l) => l.exercise_id === exId && l.session_id === sessionId);
-    return log ? log.sets_completed || "—" : null; // null => empty cell
+  // A day's total for one exercise, summed across however many sessions it was
+  // logged in. Logging twice in a day is two sessions, and reporting 3 and 2 in
+  // separate columns under the same date asks the reader to add them up.
+  const cellValue = (exId, sessionIds) => {
+    const dayLogs = logs.filter(
+      (l) => l.exercise_id === exId && sessionIds.includes(l.session_id)
+    );
+    if (!dayLogs.length) return null; // null => empty cell, the exercise was not done
+    const total = dayLogs.reduce((sum, l) => sum + (Number(l.sets_completed) || 0), 0);
+    return total > 0 ? total : "—"; // logged, but no set count recorded
   };
 
   // A dash means nothing was recorded, whether there is no log at all or a log
@@ -316,13 +323,32 @@ export function Calendar() {
 
   const rows = isAllView ? allViewRows() : filteredExercises(activeDays);
   const rowIds = new Set(rows.map((r) => r.exercise_id));
-  // Filter first, then cap. A day's columns are the most recent sessions that
+  // One column per DAY, not per session. Each Log WOD click writes its own
+  // workout_sessions row, so logging twice on a Tuesday used to draw two
+  // columns with the same date on them. The sessions behind a day are kept on
+  // the column so the cells can sum across them.
+  //
+  // Filter first, then cap. A day's columns are the most recent days that
   // trained one of its muscles, which includes manual logs made off-routine,
-  // not the most recent sessions that happen to qualify out of a short window.
-  const columns = sessions
-    .filter((s) => logs.some((l) => l.session_id === s.session_id && rowIds.has(l.exercise_id)))
-    .sort((a, b) => parseLocalDate(b.workout_date) - parseLocalDate(a.workout_date))
-    .slice(0, COLUMNS_TO_SHOW);
+  // not the most recent days that happen to qualify out of a short window.
+  // Capping days rather than sessions is also what COLUMNS_TO_SHOW always
+  // claimed to mean.
+  const columns = (() => {
+    const byDate = new Map();
+    sessions.forEach((s) => {
+      const used = logs.some(
+        (l) => l.session_id === s.session_id && rowIds.has(l.exercise_id)
+      );
+      if (!used) return;
+      if (!byDate.has(s.workout_date)) {
+        byDate.set(s.workout_date, { date: s.workout_date, sessionIds: [] });
+      }
+      byDate.get(s.workout_date).sessionIds.push(s.session_id);
+    });
+    return Array.from(byDate.values())
+      .sort((a, b) => parseLocalDate(b.date) - parseLocalDate(a.date))
+      .slice(0, COLUMNS_TO_SHOW);
+  })();
 
   // +1 for the trailing spacer column, which exists only to absorb the width
   // the session columns would otherwise stretch into.
@@ -367,10 +393,10 @@ export function Calendar() {
         </td>
       )}
       <td className="left cal-exname sticky-col sticky-name">{ex.exercise_name}</td>
-      {columns.map((s) => {
-        const v = cellValue(ex.exercise_id, s.session_id);
+      {columns.map((c) => {
+        const v = cellValue(ex.exercise_id, c.sessionIds);
         return (
-          <td key={s.session_id} className={`cal-wod-cell ${cellClass(v)}`}>
+          <td key={c.date} className={`cal-wod-cell ${cellClass(v)}`}>
             {v == null ? "—" : v}
           </td>
         );
@@ -389,8 +415,8 @@ export function Calendar() {
           <tr key={`${keyPrefix}-m-${current}`} className="cal-muscle-row">
             {showSelect && <td className="sticky-col sticky-select" />}
             <td className="left sticky-col sticky-name">{t(`muscles.${current}`)}</td>
-            {columns.map((s) => (
-              <td key={s.session_id} />
+            {columns.map((c) => (
+              <td key={c.date} />
             ))}
             <td className="cal-spacer" />
           </tr>
@@ -424,8 +450,8 @@ export function Calendar() {
           <td className="left sticky-col sticky-name">
             {lbl ? t("common.dayNamed", { day: d, name: lbl }) : t("common.day", { day: d })}
           </td>
-          {columns.map((s) => (
-            <td key={s.session_id} />
+          {columns.map((c) => (
+            <td key={c.date} />
           ))}
           <td className="cal-spacer" />
         </tr>
@@ -507,10 +533,10 @@ export function Calendar() {
                 </th>
               )}
               <th className="left sticky-col sticky-name">{t("calendar.exercise")}</th>
-              {columns.map((s) => {
-                const date = parseLocalDate(s.workout_date);
+              {columns.map((c) => {
+                const date = parseLocalDate(c.date);
                 return (
-                  <th key={s.session_id}>
+                  <th key={c.date}>
                     <div className="cal-wod-day">{weekdayFmt.format(date)}</div>
                     <div className="cal-wod-date">{dateFmt.format(date)}</div>
                   </th>
