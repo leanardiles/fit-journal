@@ -14,10 +14,11 @@ import "./Calendar.css";
 // fetching 12 sessions leaves about four candidates for any one day.
 const SESSION_FETCH_LIMIT = 70;
 
-// The render ceiling: the most session columns any view draws. Not a page
-// size, so the next one is simply not shown and nothing on screen says so.
-// Narrower session columns made room for a couple more.
-const COLUMNS_TO_SHOW = 12;
+// The render ceiling: the most day columns any view draws. Not a page size, so
+// the next one is simply not shown and nothing on screen says so. Narrower
+// session columns made room for more, and merging columns by day rather than
+// by session made each one carry more.
+const COLUMNS_TO_SHOW = 16;
 
 // Parse a stored YYYY-MM-DD as a LOCAL date. new Date("2025-09-06") parses as
 // midnight UTC, a day earlier in timezones behind UTC. Build from parts.
