@@ -111,8 +111,8 @@ will say forever.
 
 - [x] Run `add_user_is_admin.sql` on RDS, snapshot first
 - [x] Set your own `is_admin` there
-- [ ] Deploy API, then frontend
-- [ ] Close the temporary access in the same sitting
+- [x] Deploy API, then frontend
+- [x] Close the temporary access in the same sitting. Closed 2026-11-26
 
 ---
 
@@ -125,22 +125,30 @@ nothing is blocked on infrastructure.
       `event["source"] == "aws.events"`, which EventBridge always sets and no
       API Gateway event carries. Two tests in `test_stats.py`: a schedule
       event writes the row, anything else still reaches the web app
-- [ ] Daily EventBridge rule in the console, pointed at the existing Lambda
-- [ ] Confirm a row appears, then confirm a second run the same day updates it
-      rather than duplicating it
+- [x] Daily schedule in the console, pointed at the existing Lambda. Built as
+      an EventBridge Scheduler schedule rather than a rule, since the console
+      now marks scheduled rules legacy. Scheduler sends the payload you
+      configure rather than an envelope, so the target input carries
+      `{"source": "aws.events"}` by hand. 23:50 UTC, flexible time window off,
+      retries capped at 1 hour so a retry cannot land after midnight and
+      compute a row for the wrong date
+- [x] Confirm a row appears, then confirm a second run the same day updates it
+      rather than duplicating it. Done 2026-11-26 by invoking the function
+      with the schedule payload twice: same `stat_date` both times, and the
+      page reported one day of snapshots
 
 ---
 
 ## When the boxes are ticked
 
-- [ ] Harvest the metric definitions and the `X-FitJournal-Client` contract
+- [x] Harvest the metric definitions and the `X-FitJournal-Client` contract
       into `docs/ARCHITECTURE.md`
-- [ ] Harvest two decisions that outlive this file: the admin page is a
+- [x] Harvest two decisions that outlive this file: the admin page is a
       ledger rather than sticky notes, because its figures are read by
       scanning one aligned column; and it carries inline English rather
       than translation keys, so a back-office vocabulary never reaches
       Stringherd
-- [ ] Note in `docs/design-system-web.md` that `is_admin` rides on the
+- [x] Note in `docs/design-system-web.md` that `is_admin` rides on the
       profile response, and that the SPA guard is convenience while the
       403 is the boundary
 - [ ] Delete this file

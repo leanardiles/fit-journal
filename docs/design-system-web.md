@@ -176,6 +176,11 @@ pseudo-localization for finding hardcoded strings and tight layouts.
 meaning-level defects, six of them plural forms and five of those in the
 singular. A key that exists says nothing about whether it says the right thing.
 
+**The admin page is deliberately not localized.** `/admin` carries inline
+English rather than translation keys. It has exactly one reader, and routing it
+through i18n would push a back-office vocabulary to the translators alongside
+the product.
+
 ## 6. Layout and accessibility notes
 
 **The shell owns the viewport.** `.app-shell` is `height: 100dvh` with
@@ -190,6 +195,14 @@ log's panes would not scroll.
 
 **Utilities:** `.sr-only` for text that should be spoken but not seen,
 `.mirror-rtl` for direction-sensitive glyphs.
+
+**The admin page does not wear the sticky notes.** The notes are the user's
+training journal, where the content is personal and glanceable. `/admin` is a
+ledger: counts with denominators, read by scanning down one aligned column, so
+the page is a single alignment context with rows one ruled line (`--lh`) tall.
+A note would break that alignment once per note. Its route guard reads
+`is_admin` off the profile response and redirects a non-admin to the dashboard;
+that is convenience only, and the endpoint's 403 is the real boundary.
 
 Selection state never relies on hue alone (WCAG 1.4.1). The bottom nav marks
 the current item with weight and an underline, not colour. `NavLink` already

@@ -74,6 +74,69 @@ Two independent catalogs, connected by the `Accept-Language` header:
 - The React SPA localizes with react-i18next (English, Spanish on a LatAm base, an es-AR voseo override, and Dutch) and sends the active language as `Accept-Language` on every request.
 - The backend keeps its own catalogs under `locales/` for server-side messages such as API error text, selected from that same header.
 
+## Product metrics and the admin page
+
+A single private page at `/admin`, served by one endpoint, `GET /v1/admin/stats`.
+
+**The client contract.** Every request from every client carries
+`X-FitJournal-Client`, lowercase, today `web` or `android`. The backend
+validates its *shape*, not its membership: `^[a-z][a-z0-9-]{0,19}$`, store
+whatever passes (`src/clients.py`). An allowlist of two would mean that the day
+an iOS or watch client ships, every row from it is stored as NULL until a
+backend deploy catches up, which is exactly the loss the field exists to
+prevent, at the moment the data matters most. A stray bucket from a buggy
+client is bounded by the pattern and fixable with one `UPDATE`; a platform's
+first weeks are not recoverable. The value lands on `users.signup_source` at
+registration and on `workout_sessions.source` at every log. NULL means unknown,
+which is what every row written before the header shipped says permanently.
+
+**What the figures mean.**
+
+- Registered, verified, built a routine, logged a workout: cumulative counts of
+  people. The last is the activation number and the denominator for the
+  activity figures.
+- DAU, WAU, MAU: distinct users with a session created in the last 1, 7 or 30
+  days. Rolling windows, not calendar periods.
+- Everything called activity reads `WorkoutSession.created_at`, never
+  `workout_date`, which the user can backdate.
+- Cohorts: a cohort is everyone who signed up in one UTC week. Week N is how
+  many of *that* cohort logged a workout in it. The denominator is frozen at
+  the cohort's size and never shrinks to the still-active, which is the mistake
+  that makes retention look like it is improving while users leave. Week 0 is
+  the signup week itself and is not automatically 100 percent: it answers
+  activation rather than retention. A week that has not elapsed is absent from
+  the row rather than zero, because a zero for the future reads as churn.
+
+**Why `daily_stats` exists** when every figure is recomputable: account
+deletion cascades, so a user who leaves silently rewrites history. The
+snapshots are the only record that cannot be edited by a later deletion. The
+page therefore reads `today` live, so it works before the job has ever run, and
+`history` from the table.
+
+**The schedule.** One EventBridge Scheduler schedule at 23:50 UTC, targeting
+the same Lambda. The time is not arbitrary: `compute_today` counts from UTC
+midnight and stamps the row with that same UTC date, so the row is only
+complete at the end of its own day. The flexible time window is off and retries
+are capped at one hour for the same reason, since a retry landing after
+midnight computes a row for the new date and leaves the previous day missing.
+
+The gotcha worth remembering: EventBridge **Scheduler** sends the payload you
+configure, while a classic EventBridge **rule** sends an envelope containing
+`source: aws.events`. The handler dispatches on that field, so the Scheduler
+target input carries `{"source": "aws.events"}` by hand. `main.handler` checks
+for it before Mangum sees the event, and raises a named error for anything that
+is neither an HTTP request nor the schedule.
+
+**The boundary.** `users.is_admin`, checked per request by `require_admin`,
+which is a separate dependency from `verify_user_access` on purpose: that one
+answers whether the data is yours, this one whether you are staff, and
+conflating them is how a route ends up checking neither. The flag is read from
+the database on every request rather than baked into the token, so revoking it
+does not depend on the user logging out. It also rides on the profile response
+so the SPA can render the link and guard the route, but that guard is
+convenience: the repository is public, the route is readable in `main.py`, and
+the 403 is what protects the numbers.
+
 ## Networking & security
 
 RDS is not reachable from the internet. Access is controlled with security-group referencing inside the VPC:
