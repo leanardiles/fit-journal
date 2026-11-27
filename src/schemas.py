@@ -135,6 +135,11 @@ class UserProfileResponse(BaseModel):
     user_weight: Optional[float] = None
     user_timezone: Optional[str] = "America/New_York"
     user_locale: Optional[str] = None
+    # Whether this account is staff. Served here so the SPA can render the
+    # admin link and guard the route; it is the user's own flag on a route
+    # already scoped to that user, and the endpoint's 403 is what protects
+    # the numbers.
+    is_admin: bool = False
 
     model_config = ConfigDict(from_attributes=True)
 

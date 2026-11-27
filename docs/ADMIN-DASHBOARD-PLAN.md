@@ -41,7 +41,7 @@ will say forever.
 
 - [x] `users.signup_source`, nullable `VARCHAR(20)`
 - [x] `workout_sessions.source`, nullable `VARCHAR(20)`
-- [ ] `scripts/add_client_source_columns.sql`, run on local and RDS
+- [x] `scripts/add_client_source_columns.sql`, run on local and RDS
 - [x] A helper in the backend that reads the header, lowercases it, returns it
       if it matches the pattern and `None` otherwise. Lives next to
       `resolve_request_locale`, which does the same job for `Accept-Language`
@@ -57,28 +57,28 @@ will say forever.
 
 ## 2. The rest of the schema
 
-- [ ] `users.is_admin`, `BOOLEAN NOT NULL DEFAULT FALSE`
-- [ ] `daily_stats`, a new table so `create_all` makes it, no migration needed.
+- [x] `users.is_admin`, `BOOLEAN NOT NULL DEFAULT FALSE`
+- [x] `daily_stats`, a new table so `create_all` makes it, no migration needed.
       Columns fixed now, because one added later is empty for every day before
       it existed: `stat_date` (date, primary key), `registered`, `verified`,
       `with_routine`, `activated`, `new_signups`, `sessions_logged`, `dau`,
       `wau`, `mau`, and a JSON `by_source` holding the same counters split per
       client
-- [ ] `scripts/add_user_is_admin.sql`, run locally for now
-- [ ] Set your own flag locally
+- [x] `scripts/add_user_is_admin.sql`, run locally for now
+- [x] Set your own flag locally
 
 ---
 
 ## 3. `src/stats.py`
 
-- [ ] `compute_today(db)`: the counters, activation and the funnel, as a dict
-- [ ] `run_daily_stats(db)`: upserts today's row, idempotent on re-run
-- [ ] `compute_cohorts(db)`: weekly grid from the raw tables. Cohort by signup
+- [x] `compute_today(db)`: the counters, activation and the funnel, as a dict
+- [x] `run_daily_stats(db)`: upserts today's row, idempotent on re-run
+- [x] `compute_cohorts(db)`: weekly grid from the raw tables. Cohort by signup
       week from `user_created_at`, active if a workout was logged in week N,
       denominator frozen at cohort size, day 0 excluded
-- [ ] Everything called activity reads `created_at`, never `workout_date`,
+- [x] Everything called activity reads `created_at`, never `workout_date`,
       which can be backdated
-- [ ] Tests: two logs in one day count as one active user; a stored row does
+- [x] Tests: two logs in one day count as one active user; a stored row does
       not change when an account is deleted, which is the whole reason the
       table exists; the cohort denominator never moves
 
@@ -86,31 +86,31 @@ will say forever.
 
 ## 4. The endpoint
 
-- [ ] `require_admin`, built on `get_current_user`, 403 when the flag is false
-- [ ] `GET /v1/admin/stats` returning today (live), history (from
+- [x] `require_admin`, built on `get_current_user`, 403 when the flag is false
+- [x] `GET /v1/admin/stats` returning today (live), history (from
       `daily_stats`) and cohorts (live)
-- [ ] Tests: admin 200, ordinary user 403, no token 401
-- [ ] Audit item 6, the parametrized authorization sweep, which is the only
+- [x] Tests: admin 200, ordinary user 403, no token 401
+- [x] Audit item 6, the parametrized authorization sweep, which is the only
       thing that will catch the next privileged route added without thinking
 
 ---
 
 ## 5. The page
 
-- [ ] `/admin` route with a guard that redirects non-admins to the dashboard.
+- [x] `/admin` route with a guard that redirects non-admins to the dashboard.
       Convenience only: the 403 is the real boundary, and the repository is
       public so the route is readable in `main.py` regardless
-- [ ] Counters, funnel, two trend lines (registrations and WAU), cohort grid
-- [ ] A link at the foot of Profile, rendered only when `is_admin`. Not in the
+- [x] Counters, funnel, two trend lines (registrations and WAU), cohort grid
+- [x] A link at the foot of Profile, rendered only when `is_admin`. Not in the
       main nav, which is for the product and already has six items
-- [ ] English strings only
+- [x] English strings only
 
 ---
 
 ## 6. Production
 
-- [ ] Run `add_user_is_admin.sql` on RDS, snapshot first
-- [ ] Set your own `is_admin` there
+- [x] Run `add_user_is_admin.sql` on RDS, snapshot first
+- [x] Set your own `is_admin` there
 - [ ] Deploy API, then frontend
 - [ ] Close the temporary access in the same sitting
 

@@ -11,6 +11,7 @@ import { Exercises } from "./pages/Exercises/Exercises";
 import { Calendar } from "./pages/Calendar/Calendar";
 import { Profile } from "./pages/Profile/Profile";
 import { Workout } from "./pages/Workout/Workout";
+import { Admin } from "./pages/Admin/Admin";
 import { AppLayout } from "./layouts/AppLayout/AppLayout";
 import { AuthLayout } from "./layouts/AuthLayout/AuthLayout";   // ← ADD THIS
 import { ProtectedRoute } from "./components/ProtectedRoute/ProtectedRoute";
@@ -59,6 +60,10 @@ function App() {
             <Route path="/calendar" element={<Calendar />} />
             <Route path="/profile" element={<Profile />} />
             <Route path="/workout" element={<Workout />} />
+            {/* Guarded inside the page, which redirects a non-admin to the
+                dashboard. Convenience only: the 403 on /v1/admin/stats is the
+                real boundary. */}
+            <Route path="/admin" element={<Admin />} />
           </Route>
         </Routes>
         {import.meta.env.DEV && <DevL10nPanel />}

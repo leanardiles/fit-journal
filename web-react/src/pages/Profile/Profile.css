@@ -71,3 +71,17 @@
 .pf-row .toggle-field { margin: 0; }
 
 .pf-actions { margin-top: var(--space-sm); }
+
+/* Admin link, foot of the page. Muted until hovered: it is a door for one
+   person, not a call to action. */
+.pf-admin-link {
+  margin: var(--space-lg) 0 0;
+  font-size: var(--fs-base);
+}
+.pf-admin-link a {
+  color: var(--muted);
+  text-decoration: underline;
+  text-underline-offset: 4px;
+  text-decoration-color: var(--red-border);
+}
+.pf-admin-link a:hover { color: var(--text); text-decoration-color: var(--red); }

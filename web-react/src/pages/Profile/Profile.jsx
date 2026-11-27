@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { useTranslation } from "react-i18next";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import i18n from "../../i18n/config";
 import { apiGet, apiPut, apiDelete } from "../../api/client";
 import { logout } from "../../api/auth";
@@ -17,7 +17,7 @@ import "./Profile.css";
 export function Profile() {
   const { t } = useTranslation();
   const { showToast } = useToast();
-  const { setUser } = useUser();
+  const { user, setUser } = useUser();
   const navigate = useNavigate();
 
   const [form, setForm] = useState({
@@ -355,6 +355,15 @@ export function Profile() {
           </div>
         )}
       </div>
+
+      {/* Staff only, and the foot of Profile on purpose: the main nav is for
+          the product and already carries six items. English only, like the
+          page it links to. */}
+      {user?.is_admin && (
+        <p className="pf-admin-link">
+          <Link to="/admin">Admin dashboard</Link>
+        </p>
+      )}
     </div>
   );
 }

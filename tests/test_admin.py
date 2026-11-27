@@ -96,3 +96,19 @@ def test_today_is_live_before_any_snapshot_exists(auth):
     body = auth["client"].get("/v1/admin/stats", headers=auth["headers"]).json()
     assert body["history"] == []
     assert body["today"]["registered"] >= 1
+
+
+# --- The flag the SPA reads -------------------------------------------------
+
+def test_the_profile_reports_whether_this_account_is_staff(auth):
+    """
+    The SPA renders the admin link and guards the route off this field, so it
+    is part of the profile response's contract rather than an extra call.
+    False for everyone by default.
+    """
+    url = f"/v1/profile/{auth['user_id']}"
+    assert auth["client"].get(url, headers=auth["headers"]).json()["is_admin"] is False
+
+    _make_admin(auth["user_id"])
+    assert auth["client"].get(url, headers=auth["headers"]).json()["is_admin"] is True
+
