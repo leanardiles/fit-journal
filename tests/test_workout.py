@@ -268,7 +268,20 @@ def test_complete_workout_without_a_date_uses_today(auth):
         f"/v1/workout/logs/{auth['user_id']}", headers=auth["headers"]
     ).json()
     mine = [l for l in logs if l["exercise_id"] == ex]
-    assert mine[0]["workout_date"] == date.today().isoformat()
+    # The server stamps the date in the USER's timezone, which defaults to
+    # New York, not the machine's. Comparing against date.today() passed
+    # everywhere except between 00:00 and 05:00 UTC, when the two calendars
+    # disagree and CI fails for five hours a night.
+    from main import get_user_date
+    from database import SessionLocal
+
+    session = SessionLocal()
+    try:
+        expected = get_user_date(auth["user_id"], session)
+    finally:
+        session.close()
+
+    assert mine[0]["workout_date"] == expected.isoformat()
 
 
 # --- manual (off-routine) workout logging -----------------------------------
