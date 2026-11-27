@@ -121,8 +121,10 @@ will say forever.
 Last on purpose. Until it exists the page still works from the live half, so
 nothing is blocked on infrastructure.
 
-- [ ] Branch in the handler: `if event.get("source") == "aws.events": return run_daily_stats()`,
-      before Mangum sees the event
+- [x] Branch in the handler, before Mangum sees the event. Dispatch is on
+      `event["source"] == "aws.events"`, which EventBridge always sets and no
+      API Gateway event carries. Two tests in `test_stats.py`: a schedule
+      event writes the row, anything else still reaches the web app
 - [ ] Daily EventBridge rule in the console, pointed at the existing Lambda
 - [ ] Confirm a row appears, then confirm a second run the same day updates it
       rather than duplicating it
@@ -133,4 +135,12 @@ nothing is blocked on infrastructure.
 
 - [ ] Harvest the metric definitions and the `X-FitJournal-Client` contract
       into `docs/ARCHITECTURE.md`
+- [ ] Harvest two decisions that outlive this file: the admin page is a
+      ledger rather than sticky notes, because its figures are read by
+      scanning one aligned column; and it carries inline English rather
+      than translation keys, so a back-office vocabulary never reaches
+      Stringherd
+- [ ] Note in `docs/design-system-web.md` that `is_admin` rides on the
+      profile response, and that the SPA guard is convenience while the
+      403 is the boundary
 - [ ] Delete this file
