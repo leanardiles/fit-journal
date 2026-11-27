@@ -19,7 +19,7 @@ import models
 import schemas
 import emailer
 from config import settings
-from database import engine, get_db
+from database import SessionLocal, engine, get_db
 from i18n import t, resolve_request_locale
 import ratelimit
 import stats
@@ -1560,4 +1560,29 @@ def get_workout_logs_by_sessions(user_id: int, data: dict, db: Session = Depends
 app.include_router(api_v1)
 
 from mangum import Mangum
-handler = Mangum(app)
+
+_http_handler = Mangum(app)
+
+
+def handler(event, context):
+    """
+    The Lambda entry point, for two kinds of event.
+
+    An HTTP request from API Gateway goes to Mangum, as before. The daily
+    EventBridge schedule is not an HTTP request and carries no requestContext,
+    so Mangum raises on it; it is answered here instead by writing one row
+    into daily_stats.
+
+    Dispatch is on event["source"], which EventBridge always sets and no API
+    Gateway event carries. One Lambda rather than two, because the job needs
+    exactly the code and the database connection this one already has.
+    """
+    if isinstance(event, dict) and event.get("source") == "aws.events":
+        db = SessionLocal()
+        try:
+            row = stats.run_daily_stats(db)
+            return {"ok": True, "stat_date": row.stat_date.isoformat()}
+        finally:
+            db.close()
+
+    return _http_handler(event, context)

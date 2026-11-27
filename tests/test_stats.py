@@ -226,3 +226,38 @@ def test_signing_up_is_not_an_active_week(db):
     grid = stats.compute_cohorts(db)
     row = next(r for r in grid if r["cohort_start"] == signup.date().isoformat())
     assert row["weeks"][0] == 0
+
+
+# --- The scheduled entry point ----------------------------------------------
+
+def test_the_lambda_handler_runs_the_job_for_a_schedule_event(db):
+    """
+    EventBridge sends something that is not an HTTP request, so Mangum raises
+    on it. The handler has to recognise it before Mangum sees it.
+    """
+    import main
+
+    out = main.handler({"source": "aws.events", "detail-type": "Scheduled Event"}, None)
+    assert out["ok"] is True
+
+    from datetime import date as _date
+
+    row = db.query(models.DailyStat).filter(
+        models.DailyStat.stat_date == _date.fromisoformat(out["stat_date"])
+    ).first()
+    assert row is not None
+
+
+def test_anything_else_still_goes_to_the_web_app(monkeypatch):
+    """
+    The dispatch is on the one field EventBridge guarantees. Everything else,
+    including an event with no source at all, is an HTTP request.
+    """
+    import main
+
+    seen = {}
+    monkeypatch.setattr(main, "_http_handler", lambda event, context: seen.setdefault("event", event))
+
+    main.handler({"requestContext": {"http": {"method": "GET"}}}, None)
+    assert "event" in seen
+
