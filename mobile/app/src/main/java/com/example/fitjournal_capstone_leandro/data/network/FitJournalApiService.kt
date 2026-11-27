@@ -290,6 +290,7 @@ object RetrofitClient {
 
         okhttp3.OkHttpClient.Builder()
             .addInterceptor(AuthInterceptor(tm))
+            .addInterceptor(ClientInterceptor())
             .connectTimeout(60, java.util.concurrent.TimeUnit.SECONDS)
             .readTimeout(60, java.util.concurrent.TimeUnit.SECONDS)
             .writeTimeout(60, java.util.concurrent.TimeUnit.SECONDS)

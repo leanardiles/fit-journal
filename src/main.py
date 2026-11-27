@@ -22,6 +22,7 @@ from config import settings
 from database import engine, get_db
 from i18n import t, resolve_request_locale
 import ratelimit
+from clients import CLIENT_HEADER, resolve_client
 
 
 # Create database tables (if they don't exist)
@@ -201,6 +202,7 @@ def register(user: schemas.UserCreate, request: Request, db: Session = Depends(g
     Register a new user and copy all default exercises to their account
     """
     locale = resolve_request_locale(accept_language=request.headers.get("accept-language"))
+    signup_source = resolve_client(request.headers.get(CLIENT_HEADER))
 
     # Check if user already exists
     existing_user = db.query(models.User).filter(models.User.user_email == user.user_email).first()
@@ -211,7 +213,8 @@ def register(user: schemas.UserCreate, request: Request, db: Session = Depends(g
     hashed_pw = hash_password(user.user_password)
     new_user = models.User(
         user_email=user.user_email,
-        user_password=hashed_pw
+        user_password=hashed_pw,
+        signup_source=signup_source,
     )
     
     db.add(new_user)
@@ -980,7 +983,7 @@ def set_current_day(user_id: int, day_number: int, db: Session = Depends(get_db)
 
 
 @api_v1.post("/workout/complete/{user_id}")
-def complete_workout(user_id: int, workout_data: schemas.WorkoutComplete, db: Session = Depends(get_db), current_user: models.User = Depends(verify_user_access)):
+def complete_workout(user_id: int, workout_data: schemas.WorkoutComplete, request: Request, db: Session = Depends(get_db), current_user: models.User = Depends(verify_user_access)):
     """
     Mark workout as complete
     Main orchestration function - delegates to helpers
@@ -1051,7 +1054,8 @@ def create_workout_session(user_id: int, day_number: int, db: Session, workout_d
         user_id=user_id,
         routine_day_number=day_number,
         workout_date=workout_date,
-        session_order=next_session_order
+        session_order=next_session_order,
+        source=resolve_client(request.headers.get(CLIENT_HEADER)),
     )
     db.add(session)
     db.flush()  # Get session_id
@@ -1144,7 +1148,7 @@ class ManualLogRequest(BaseModel):
 
 
 @api_v1.post("/workout/log-manual/{user_id}")
-def log_manual_workout(user_id: int, data: ManualLogRequest, db: Session = Depends(get_db), current_user: models.User = Depends(verify_user_access)):
+def log_manual_workout(user_id: int, data: ManualLogRequest, request: Request, db: Session = Depends(get_db), current_user: models.User = Depends(verify_user_access)):
     """
     Log an off-routine ("manual") workout: exercises the user did on a chosen
     date, not tied to any routine day. Creates a session + logs with
@@ -1186,6 +1190,7 @@ def log_manual_workout(user_id: int, data: ManualLogRequest, db: Session = Depen
         routine_day_number=None,
         workout_date=data.workout_date,
         session_order=next_order,
+        source=resolve_client(request.headers.get(CLIENT_HEADER)),
     )
     db.add(session)
     db.flush()

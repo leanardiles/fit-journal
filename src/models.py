@@ -65,6 +65,12 @@ class User(Base):
     # client no longer knows is ignored, so a release that adds or removes a
     # note cannot strand a user on a stale preference.
     user_dashboard_notes = Column(JSON, nullable=True)
+    # Which client this account registered from ("web", "android", ...), from
+    # the X-FitJournal-Client header. NULL means unknown, which is every row
+    # written before this column existed and anything that arrived without a
+    # usable header. Not reconstructable later, which is why it was added
+    # ahead of the dashboard that reads it.
+    signup_source = Column(String(20), nullable=True)
     # Weekly target sets per muscle group: {"Chest": 12, "Back": 15}. Keys are
     # MuscleGroupEnum values; a muscle the user has no opinion about is simply
     # absent rather than stored as 0, so "no goal" and "a goal of none" stay
@@ -300,6 +306,10 @@ class WorkoutSession(Base):
     routine_day_number = Column(Integer, nullable=True)
     workout_date = Column(Date, nullable=False)
     session_order = Column(Integer, nullable=False)
+    # Which client logged this workout. Separate from users.signup_source
+    # because they genuinely differ: someone can register on the web and then
+    # log everything from the phone, and that is worth being able to see.
+    source = Column(String(20), nullable=True)
     created_at = Column(TIMESTAMP, server_default=text('CURRENT_TIMESTAMP'))
     
     # Relationship

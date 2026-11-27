@@ -12,7 +12,7 @@ places that keep it and delete this file.
 
 ## 0. Branch
 
-- [ ] `git checkout -b admin-dashboard`
+- [x] `git checkout -b admin-dashboard`
 
 ---
 
@@ -39,16 +39,16 @@ weeks is not.
 NULL still means unknown, which is what every row written before this step
 will say forever.
 
-- [ ] `users.signup_source`, nullable `VARCHAR(20)`
-- [ ] `workout_sessions.source`, nullable `VARCHAR(20)`
+- [x] `users.signup_source`, nullable `VARCHAR(20)`
+- [x] `workout_sessions.source`, nullable `VARCHAR(20)`
 - [ ] `scripts/add_client_source_columns.sql`, run on local and RDS
-- [ ] A helper in the backend that reads the header, lowercases it, returns it
+- [x] A helper in the backend that reads the header, lowercases it, returns it
       if it matches the pattern and `None` otherwise. Lives next to
       `resolve_request_locale`, which does the same job for `Accept-Language`
-- [ ] Write it on register and on session creation
-- [ ] React: send the header from `api/client.js`, in all four verbs
-- [ ] Android: send it from the Retrofit layer
-- [ ] Tests: `web` and `android` are stored; an unrecognised but well-formed
+- [x] Write it on register and on session creation
+- [x] React: send the header from `api/client.js`, in all four verbs
+- [x] Android: send it from the Retrofit layer
+- [x] Tests: `web` and `android` are stored; an unrecognised but well-formed
       value such as `ios` is stored too rather than discarded; a malformed
       value becomes NULL; a missing header becomes NULL; case is normalised
 - [ ] Deploy API, then both clients
