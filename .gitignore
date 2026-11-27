@@ -94,6 +94,7 @@ package/
 # Local-only planning docs (not for GitHub). A plan stays untracked while the
 # work runs, then gets harvested and deleted, see docs/README.md.
 docs/FitJournal_Adaptive_UI_Plan_FINAL.md
+docs/MOBILE-CONSOLIDATION.md
 
 # Security findings stay local on purpose: an unresolved finding in a public
 # repo is a map for anyone who wants in. SECURITY.md publishes the posture.
