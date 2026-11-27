@@ -261,3 +261,15 @@ def test_anything_else_still_goes_to_the_web_app(monkeypatch):
     main.handler({"requestContext": {"http": {"method": "GET"}}}, None)
     assert "event" in seen
 
+
+def test_an_unrecognised_event_says_so():
+    """
+    A schedule wired up without the right payload is the likely mistake, and
+    Mangum's own failure for it is unreadable. This one names it.
+    """
+    import main
+    import pytest as _pytest
+
+    with _pytest.raises(ValueError, match="source=aws.events"):
+        main.handler({"detail-type": "Scheduled Event"}, None)
+

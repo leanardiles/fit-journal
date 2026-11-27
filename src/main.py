@@ -1585,4 +1585,16 @@ def handler(event, context):
         finally:
             db.close()
 
+    # Not an HTTP request and not the schedule. Mangum would fail somewhere
+    # deep in its event parsing, so name the problem here instead: the usual
+    # cause is EventBridge Scheduler, which sends the payload you configure
+    # rather than the envelope a plain EventBridge rule sends.
+    if isinstance(event, dict) and not any(
+        key in event for key in ("requestContext", "rawPath", "path", "httpMethod")
+    ):
+        raise ValueError(
+            "Unrecognised Lambda event: neither an HTTP request nor the daily "
+            "stats schedule. A schedule must arrive with source=aws.events."
+        )
+
     return _http_handler(event, context)
