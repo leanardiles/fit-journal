@@ -8,7 +8,7 @@ the header not being read at a write site, and a valid value from a client
 that did not exist yet being thrown away.
 """
 
-from datetime import date
+from datetime import date, timedelta
 
 from clients import resolve_client
 from database import SessionLocal
@@ -99,10 +99,13 @@ def test_logging_a_manual_workout_records_the_client(auth):
     assert made.status_code in (200, 201), made.text
     exercise_id = made.json()["exercise_id"]
 
+    # Yesterday, not today. The endpoint rejects a future date measured in the
+    # USER's timezone, which defaults to New York, so a UTC "today" is in the
+    # future whenever this runs before 05:00 UTC. CI does, sometimes.
     resp = c.post(
         f"/v1/workout/log-manual/{uid}",
         json={
-            "workout_date": str(date.today()),
+            "workout_date": str(date.today() - timedelta(days=1)),
             "exercises": [{"exercise_id": exercise_id, "sets_completed": 3}],
         },
         headers=headers,

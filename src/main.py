@@ -999,7 +999,13 @@ def complete_workout(user_id: int, workout_data: schemas.WorkoutComplete, reques
         raise HTTPException(status_code=400, detail="Workout date can't be in the future.")
 
     # Create workout session
-    session = create_workout_session(user_id, workout_data.day_number, db, workout_date)
+    session = create_workout_session(
+        user_id,
+        workout_data.day_number,
+        db,
+        workout_date,
+        source=resolve_client(request.headers.get(CLIENT_HEADER)),
+    )
 
     # Log all exercises
     completed_exercise_ids = log_workout_exercises(session, workout_data.exercises, user_id, workout_data.day_number, db, workout_date)
@@ -1040,8 +1046,13 @@ def get_user_date(user_id: int, db: Session) -> date:
     tz = pytz.timezone(tz_str)
     return datetime.now(tz).date()
 
-def create_workout_session(user_id: int, day_number: int, db: Session, workout_date: date):
-    """Create a new workout session with incremented order"""
+def create_workout_session(user_id: int, day_number: int, db: Session, workout_date: date, source: Optional[str] = None):
+    """
+    Create a new workout session with incremented order.
+
+    `source` is which client logged it, resolved by the CALLER: this is a
+    helper, not an endpoint, so it has no request to read the header from.
+    """
     # Get next session order
     last_session = db.query(models.WorkoutSession).filter(
         models.WorkoutSession.user_id == user_id
@@ -1055,7 +1066,7 @@ def create_workout_session(user_id: int, day_number: int, db: Session, workout_d
         routine_day_number=day_number,
         workout_date=workout_date,
         session_order=next_session_order,
-        source=resolve_client(request.headers.get(CLIENT_HEADER)),
+        source=source,
     )
     db.add(session)
     db.flush()  # Get session_id
