@@ -71,6 +71,11 @@ class User(Base):
     # usable header. Not reconstructable later, which is why it was added
     # ahead of the dashboard that reads it.
     signup_source = Column(String(20), nullable=True)
+    # Admin flag, flipped by hand in SQL. Deliberately a column rather than an
+    # allowlist of emails in configuration: it is queryable, it is testable,
+    # and it keeps privileged identities out of Lambda environment variables,
+    # which anyone holding lambda:GetFunctionConfiguration can read.
+    is_admin = Column(Boolean, nullable=False, default=False, server_default=text("0"))
     # Weekly target sets per muscle group: {"Chest": 12, "Back": 15}. Keys are
     # MuscleGroupEnum values; a muscle the user has no opinion about is simply
     # absent rather than stored as 0, so "no goal" and "a goal of none" stay
@@ -314,6 +319,62 @@ class WorkoutSession(Base):
     
     # Relationship
     user = relationship("User")
+
+class DailyStat(Base):
+    """
+    One snapshot per day of the numbers the admin dashboard reads.
+
+    Almost everything here is recomputable from `users` and `workout_sessions`
+    at any time, which would argue against storing it. The reason it is stored
+    anyway: account deletion cascades. When a user leaves, their sessions go
+    with them, and every historical figure silently changes. A row written on
+    the day preserves what was true on the day.
+
+    The columns are settled up front rather than grown, because a column added
+    later is empty for every day before it existed, and a daily snapshot
+    cannot be backfilled any more than the client source can.
+    """
+    __tablename__ = "daily_stats"
+
+    stat_date = Column(Date, primary_key=True)
+
+    # Totals as at this date.
+    registered = Column(Integer, nullable=False, default=0)
+    verified = Column(Integer, nullable=False, default=0)
+    with_routine = Column(Integer, nullable=False, default=0)
+    # Ever logged a workout. The activation number, which the research calls
+    # the leading indicator of retention.
+    activated = Column(Integer, nullable=False, default=0)
+
+    # Movement on this date.
+    new_signups = Column(Integer, nullable=False, default=0)
+    sessions_logged = Column(Integer, nullable=False, default=0)
+
+    # Distinct users who RECORDED a workout in the trailing window. Read wau as
+    # the real engagement figure: people train three or four times a week, so a
+    # fully engaged user is absent on most days and dau says little here.
+    dau = Column(Integer, nullable=False, default=0)
+    wau = Column(Integer, nullable=False, default=0)
+    mau = Column(Integer, nullable=False, default=0)
+
+    # The client split, keyed counter-first:
+    #   {"registered": {"web": 12, "android": 3, "unknown": 40},
+    #    "new_signups": {...}, "sessions_logged": {...}, "wau": {...}}
+    #
+    # Two different groupings live in here on purpose. registered and
+    # new_signups group by users.signup_source, where the ACCOUNT came from;
+    # sessions_logged and wau group by workout_sessions.source, where the
+    # LOGGING came from. Registering on the web and then logging from the
+    # phone is the normal case, so they differ and both are worth seeing.
+    #
+    # JSON rather than a column per client, so a third app never means a
+    # migration. NULL sources arrive as "unknown", which is every row written
+    # before those columns existed.
+    by_source = Column(JSON, nullable=True)
+
+    # When the snapshot was taken, so a missed or double run is visible.
+    computed_at = Column(TIMESTAMP, server_default=text("CURRENT_TIMESTAMP"))
+
 
 class AuthToken(Base):
     """

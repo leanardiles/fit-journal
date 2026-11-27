@@ -22,6 +22,7 @@ from config import settings
 from database import engine, get_db
 from i18n import t, resolve_request_locale
 import ratelimit
+import stats
 from clients import CLIENT_HEADER, resolve_client
 
 
@@ -462,6 +463,71 @@ def update_weekly_set_goals(user_id: int, body: schemas.WeeklySetGoals, db: Sess
     db.refresh(user)
 
     return schemas.WeeklySetGoals(goals=user.user_weekly_set_goals or {})
+
+
+def require_admin(current_user: models.User = Depends(get_current_user)) -> models.User:
+    """
+    Admin-only access.
+
+    Deliberately a separate dependency from verify_user_access rather than a
+    flag inside it: that one answers "is this your data", this one answers "are
+    you staff", and conflating them is how a route ends up checking neither.
+
+    This is the whole boundary. The route guard in the SPA is convenience, and
+    the repository is public, so the endpoint is readable in this file by
+    anyone. 403 here is what actually protects the numbers.
+    """
+    if not current_user.is_admin:
+        raise HTTPException(status_code=403, detail="Not authorised")
+    return current_user
+
+
+@api_v1.get("/admin/stats")
+def admin_stats(db: Session = Depends(get_db), current_user: models.User = Depends(require_admin)):
+    """
+    Everything the admin dashboard shows, in one call.
+
+    One endpoint rather than three, because this is a page rather than an API:
+    it has one consumer, it always wants all three pieces together, and it is
+    one route to guard rather than three places to forget. The seam for
+    splitting later already exists in stats.py as three separate functions, so
+    if the cohort grid ever makes the page slow, that one moves out on its own
+    and the counters stay put.
+
+    `today` is computed live so the page is useful before the daily job has
+    ever run. `history` is the snapshots, which exist because account deletion
+    cascades and silently rewrites every live figure. `cohorts` is computed
+    live from the raw tables.
+    """
+    today = stats.compute_today(db)
+    today["stat_date"] = today["stat_date"].isoformat()
+
+    rows = (
+        db.query(models.DailyStat)
+        .order_by(models.DailyStat.stat_date.desc())
+        .limit(90)
+        .all()
+    )
+
+    history = [
+        {
+            "stat_date": r.stat_date.isoformat(),
+            "registered": r.registered,
+            "verified": r.verified,
+            "with_routine": r.with_routine,
+            "activated": r.activated,
+            "new_signups": r.new_signups,
+            "sessions_logged": r.sessions_logged,
+            "dau": r.dau,
+            "wau": r.wau,
+            "mau": r.mau,
+            "by_source": r.by_source or {},
+        }
+        # Oldest first, because the page draws lines left to right.
+        for r in reversed(rows)
+    ]
+
+    return {"today": today, "history": history, "cohorts": stats.compute_cohorts(db)}
 
 
 @api_v1.get("/dashboard/notes/{user_id}", response_model=schemas.DashboardNotes)
